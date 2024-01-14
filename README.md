@@ -1,6 +1,5 @@
-# Posting
-# taweepong mekchai
-# powerby anyi
+# System
+# powerby taweepong mekchai
 
 
 ## Project setup
