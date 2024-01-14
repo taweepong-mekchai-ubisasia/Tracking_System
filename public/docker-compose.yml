@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  php-apache:
+    container_name: php-apache
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - ./www:/var/www/html
+    ports:
+      - 8000:80
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: MYSQL_DATABASE
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+    ports:
+      - 3307:3306
+  mysql_adminer:
+    container_name: adminer
+    image: adminer:4.4.0
+    restart: always
+    ports:
+      - 8081:8080
