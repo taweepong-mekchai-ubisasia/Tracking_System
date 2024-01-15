@@ -8,11 +8,14 @@
       <template #modal> </template>
       <template #view>
         <div class="flex flex-col gap-4">
-          <div class=" flex flex-col-reverse lg:flex-row flex-nowrap justify-around items-center gap-4">
-           
-            <div class="max-h-[40vh] h-[40vh] self-center">
+          <div
+            class="flex flex-col-reverse lg:flex-row flex-nowrap justify-around items-center gap-4"
+          >
+            <div v-if="!seelct">
+              <h5>กรุณเลือกรายการ</h5>
+            </div>
+            <div class="max-h-[40vh] h-[40vh] self-center" v-else>
               <qrcode-stream
-              v-if="seelct"
                 @detect="onDetect"
                 @error="onError"
                 @camera-on="onReady"
@@ -21,38 +24,49 @@
               ></qrcode-stream>
             </div>
             <div class="w-full lg:w-auto">
-              <select class="select select-bordered select-sm w-full lg:max-w-xs"   v-model="seelct">
-                <option disabled selected value="0">เลือกรายการ</option>
-                <option value="1">รายการ 1</option>
-                <option value="2">รายการ 2</option>
-                <option value="3">รายการ 3</option>
-              </select>
+              <div class="join w-full min-w-[20vw]">
+                <select
+                  class="select select-bordered select-sm w-full lg:max-w-xs join-item"
+                  v-model="seelct"
+                >
+                  <option disabled selected value="0">เลือกรายการ</option>
+                  <option value="1">รายการ 1</option>
+                  <option value="2">รายการ 2</option>
+                  <option value="3">รายการ 3</option>
+                </select>
+                <div class="indicator">
+                  <button class="btn btn-primary btn-sm join-item">
+                    ยืนยัน
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="w-full text-left">Lists</div>
-          <div class="overflow-x-auto h-[30vh]">
-            <div class="card w-screen bg-base-100 shadow-xl">
-              <table class="table table-xs table-pin-rows table-pin-cols">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>รหัส</th>
-                    <th>code</th>
-                    <th>Lotno</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, index) in datalist" :key="index">
-                    <th>{{ index }}</th>
-                    <td>{{ item.code }}</td>
-                    <td>{{ item.title }}</td>
-                    <th>{{ item.lot }}</th>
-                  </tr>
-                </tbody>
-              </table>
+          <div v-if="seelct">
+            <div class="w-full text-left">Lists</div>
+            <div class="overflow-x-auto h-[30vh]">
+              <div class="card w-screen bg-base-100 shadow-xl">
+                <table class="table table-xs table-pin-rows table-pin-cols">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>รหัส</th>
+                      <th>code</th>
+                      <th>Lotno</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, index) in datalist" :key="index">
+                      <th>{{ index }}</th>
+                      <td>{{ item.code }}</td>
+                      <td>{{ item.title }}</td>
+                      <th>{{ item.lot }}</th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-          <button class="btn btn-primary">ยืนยัน</button>
         </div>
       </template>
     </AppLayout>
@@ -94,7 +108,7 @@ export default {
       ready: false,
       datalist: [],
       temp: null,
-      seelct:0
+      seelct: 0,
     };
   },
   computed: {
@@ -209,10 +223,10 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
-    seelct:function(v){
-      console.log(v)
-      this.datalist = []
-    }
+    seelct: function (v) {
+      console.log(v);
+      this.datalist = [];
+    },
   },
 };
 </script>
