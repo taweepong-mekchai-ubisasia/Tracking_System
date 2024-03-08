@@ -104,8 +104,8 @@ export default {
     gamelist() {
       return this.$store.getters.gamelist;
     },
-    jwt() {
-      return this.$store.getters.jwt;
+    user_token() {
+      return this.$store.getters.user_token;
     },
     game_type() {
       return this.$store.getters.game_type;

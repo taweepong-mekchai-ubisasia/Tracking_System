@@ -1,0 +1,670 @@
+<template>
+  <div class="Stock">
+    <div class="grid grid-cols-4 gap-6 lg:px-10 lg:py-5 xl:grid-cols-4">
+      <div class="card col-span-4 row-span-4 bg-transparent">
+        <div class="join mt-5 w-full md:justify-center lg:justify-end">
+          <button
+            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+            disabled
+          >
+            วันที่
+          </button>
+          <input
+            type="date"
+            placeholder="title"
+            class="join-item input input-sm input-bordered"
+            v-model="date.from"
+            @change="change"
+          />
+          <button
+            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+            disabled
+          >
+            -
+          </button>
+          <input
+            type="date"
+            placeholder="title"
+            class="join-item input input-sm input-bordered"
+            v-model="date.to"
+            @change="change"
+          />
+          <button
+            class="join-item btn btn-sm btn-primary"
+            @click="exportExcel()"
+          >
+            <Icon icon="mdi:file-excel-outline" class="h-5 w-5 text-white" />
+          </button>
+        </div>
+        <div class="join mt-5 w-full md:justify-center lg:justify-end">
+          <button
+            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+            disabled
+          >
+            สาขา
+          </button>
+          <select
+            class="join-item select select-sm select-bordered w-auto max-w-xs"
+            v-model="wh"
+          >
+            <option selected value="">ALL</option>
+            <option value="wh1">Factory</option>
+            <option value="wh2">External</option>
+          </select>
+          <AppModuleGlobalSearch
+            :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+            @search="
+              (q) => {
+                base.q = q;
+                base_search();
+              }
+            "
+          />
+        </div>
+      </div>
+
+      <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
+        <div class="card-body overflow-auto pt-0 max-h-[60vh]">
+          <div v-if="base.loading" class="overflow-x-auto mt-10 text-center">
+            <span class="loading loading-spinner loading-lg"></span>
+          </div>
+          <div class="overflow-x-auto w-full" v-else>
+            <table
+              class="table table-xs table-pin-rows table-pin-cols table-zebra"
+            >
+              <thead>
+                <tr>
+                  <th rowspan="2">Rack</th>
+                  <td rowspan="2">Create</td>
+                  <td rowspan="2">Update</td>
+                  <td rowspan="2">Item Code</td>
+                  <td rowspan="2">Item Description</td>
+                  <td rowspan="2">Lot No.</td>
+                  <td rowspan="2">Qty</td>
+                  <td rowspan="2">Pack Size</td>
+                  <td rowspan="2">Total Quantity</td>
+                  <td rowspan="2">Unit</td>
+                  <td rowspan="2">Shelf Life</td>
+                  <td
+                    colspan="4"
+                    class="bg-yellow-100 text-center font-bold text-black"
+                  >
+                    Calculated from the date of receipt
+                  </td>
+                  <td
+                    colspan="4"
+                    class="bg-cyan-100 text-center font-bold text-black"
+                  >
+                    Calculated from the date of MFG
+                  </td>
+                </tr>
+                <tr>
+                  <td class="bg-yellow-100 font-bold text-black">
+                    Receive Date
+                  </td>
+                  <td class="bg-yellow-100 font-bold text-black">Exp</td>
+                  <td class="bg-yellow-100 font-bold text-black">Life</td>
+                  <td class="bg-yellow-100 font-bold text-black">YMD</td>
+                  <td class="bg-cyan-100 font-bold text-black">MFG Date</td>
+                  <td class="bg-cyan-100 font-bold text-black">Exp</td>
+                  <td class="bg-cyan-100 font-bold text-black">Life</td>
+                  <td class="bg-cyan-100 font-bold text-black">YMD</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="hover"
+                  v-for="(row, index) in base.rows"
+                  :key="row.code"
+                >
+                  <th>
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{ row.rac }}-{{ row.bay }}-{{ row.level }}-{{
+                            row.pallet
+                          }}
+                        </div>
+                        <div
+                          class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{ row.id }}
+                        </div>
+                      </div>
+                    </div>
+                  </th>
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{ row.created_at ? row.created_at : "-" }}
+                        </div>
+                        <div
+                          class="text-opacity-20 overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{
+                            row.created_fullname ? row.created_fullname : "-"
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{ row.updated_at ? row.updated_at : "-" }}
+                        </div>
+                        <div
+                          class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{
+                            row.updated_fullname ? row.updated_fullname : "-"
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ row.item_short_code }}</td>
+                  <td>{{ row.item_name }}</td>
+                  <td>{{ row.batch }}</td>
+                  <td class="text-center">
+                    {{ new Intl.NumberFormat("th-TH").format(row.unit) }}
+                  </td>
+                  <td class="text-center">
+                    {{ new Intl.NumberFormat("th-TH").format(row.pack_size) }}
+                  </td>
+                  <td class="text-right">
+                    {{ new Intl.NumberFormat("th-TH").format(row.quantitys) }}
+                  </td>
+                  <td>{{ row.uom }}</td>
+                  <td>{{ row.shelf_life ? row.shelf_life : "-" }}</td>
+                  <td
+                    class="bg-yellow-100"
+                    :class="`${
+                      parseInt(
+                        row.receive_date
+                          ? $moment(row.receive_date)
+                              .add(parseInt(row.shelf_life) + 1, 'days')
+                              .diff($moment(new Date()), 'days')
+                          : '0'
+                      ) <= 30
+                        ? 'text-red-500'
+                        : ''
+                    }`"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{
+                            row.receive_date
+                              ? $moment(row.receive_date).format("YYYY-MM-DD")
+                              : "-"
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="bg-yellow-100"
+                    :class="`${
+                      parseInt(
+                        row.receive_date
+                          ? $moment(row.receive_date)
+                              .add(parseInt(row.shelf_life) + 1, 'days')
+                              .diff($moment(new Date()), 'days')
+                          : '0'
+                      ) <= 30
+                        ? 'text-red-500'
+                        : ''
+                    }`"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          Expire
+                          {{
+                            row.receive_date
+                              ? $moment(row.receive_date)
+                                  .add(parseInt(row.shelf_life), "days")
+                                  .format("YYYY-MM-DD")
+                              : "-"
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="bg-yellow-100"
+                    :class="`${
+                      parseInt(
+                        row.receive_date
+                          ? $moment(row.receive_date)
+                              .add(parseInt(row.shelf_life) + 1, 'days')
+                              .diff($moment(new Date()), 'days')
+                          : '0'
+                      ) <= 30
+                        ? 'text-red-500'
+                        : ''
+                    }`"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          Life
+                          {{
+                            row.receive_date
+                              ? $moment(row.receive_date)
+                                  .add(parseInt(row.shelf_life), "days")
+                                  .diff($moment(new Date()), "days")
+                              : "0"
+                          }}
+                          days
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="bg-yellow-100"
+                    :class="`${
+                      parseInt(
+                        row.receive_date
+                          ? $moment(row.receive_date)
+                              .add(parseInt(row.shelf_life) + 1, 'days')
+                              .diff($moment(new Date()), 'days')
+                          : '0'
+                      ) <= 30
+                        ? 'text-red-500'
+                        : ''
+                    }`"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{
+                            row.receive_date
+                              ? $moment
+                                  .duration(
+                                    $moment(row.receive_date)
+                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                      .diff($moment(new Date()), "days"),
+                                    "days"
+                                  )
+                                  .years()
+                              : "0"
+                          }}Y
+                          {{
+                            row.receive_date
+                              ? $moment
+                                  .duration(
+                                    $moment(row.receive_date)
+                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                      .diff($moment(new Date()), "days"),
+                                    "days"
+                                  )
+                                  .months()
+                              : "0"
+                          }}M
+                          {{
+                            row.receive_date
+                              ? $moment
+                                  .duration(
+                                    $moment(row.receive_date)
+                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                      .diff($moment(new Date()), "days"),
+                                    "days"
+                                  )
+
+                                  .days()
+                              : "0"
+                          }}D
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td
+                    class="bg-cyan-100"
+                    :class="`${
+                      parseInt(
+                        row.manufacturing_date
+                          ? $moment(row.manufacturing_date)
+                              .add(parseInt(row.shelf_life) + 1, 'days')
+                              .diff($moment(new Date()), 'days')
+                          : '0'
+                      ) <= 30
+                        ? 'text-red-500'
+                        : ''
+                    }`"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{
+                            row.manufacturing_date
+                              ? $moment(row.manufacturing_date).format(
+                                  "YYYY-MM-DD"
+                                )
+                              : "-"
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="bg-cyan-100"
+                    :class="`${
+                      parseInt(
+                        row.manufacturing_date
+                          ? $moment(row.manufacturing_date)
+                              .add(parseInt(row.shelf_life) + 1, 'days')
+                              .diff($moment(new Date()), 'days')
+                          : '0'
+                      ) <= 30
+                        ? 'text-red-500'
+                        : ''
+                    }`"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          Expire
+                          {{
+                            row.manufacturing_date
+                              ? $moment(row.manufacturing_date)
+                                  .add(parseInt(row.shelf_life), "days")
+                                  .format("YYYY-MM-DD")
+                              : "-"
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="bg-cyan-100"
+                    :class="`${
+                      parseInt(
+                        row.manufacturing_date
+                          ? $moment(row.manufacturing_date)
+                              .add(parseInt(row.shelf_life) + 1, 'days')
+                              .diff($moment(new Date()), 'days')
+                          : '0'
+                      ) <= 30
+                        ? 'text-red-500'
+                        : ''
+                    }`"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          Life
+                          {{
+                            row.manufacturing_date
+                              ? $moment(row.manufacturing_date)
+                                  .add(parseInt(row.shelf_life), "days")
+                                  .diff($moment(new Date()), "days")
+                              : "0"
+                          }}
+                          days
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="bg-cyan-100"
+                    :class="`${
+                      parseInt(
+                        row.manufacturing_date
+                          ? $moment(row.manufacturing_date)
+                              .add(parseInt(row.shelf_life) + 1, 'days')
+                              .diff($moment(new Date()), 'days')
+                          : '0'
+                      ) <= 30
+                        ? 'text-red-500'
+                        : ''
+                    }`"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div
+                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
+                          {{
+                            row.manufacturing_date
+                              ? $moment
+                                  .duration(
+                                    $moment(row.manufacturing_date)
+                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                      .diff($moment(new Date()), "days"),
+                                    "days"
+                                  )
+                                  .years()
+                              : "0"
+                          }}Y
+                          {{
+                            row.manufacturing_date
+                              ? $moment
+                                  .duration(
+                                    $moment(row.manufacturing_date)
+                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                      .diff($moment(new Date()), "days"),
+                                    "days"
+                                  )
+                                  .months()
+                              : "0"
+                          }}M
+                          {{
+                            row.manufacturing_date
+                              ? $moment
+                                  .duration(
+                                    $moment(row.manufacturing_date)
+                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                      .diff($moment(new Date()), "days"),
+                                    "days"
+                                  )
+
+                                  .days()
+                              : "0"
+                          }}D
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            class="text-right text-ellipsis whitespace-nowrap font-bold text-primary"
+          >
+            Total Quantitys
+            {{ new Intl.NumberFormat("th-TH").format(base.quantitys_total) }}
+          </div>
+          <AppModuleGlobalPageination
+            v-if="!base.loading"
+            :page="base.page"
+            :total="base.total"
+            :row="base.row"
+            :back="base.back"
+            :next="base.next"
+            :loading="base.loading"
+            @search="
+              (res) => {
+                base.page = res.page;
+                this.base_search();
+              }
+            "
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<style>
+.crop {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 1px;
+}
+</style>
+<script>
+// @ is an alias to /src
+import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
+import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
+export default {
+  name: "BinLocationReport",
+  components: {
+    AppModuleGlobalPageination,
+    AppModuleGlobalSearch,
+  },
+  data() {
+    return {
+      date: {
+        from: "",
+        to: "",
+      },
+      wh: "",
+      load: false,
+      tmpsLink: "",
+      category: {
+        rows: [],
+        page: 1,
+        row: 9999,
+        q: "",
+      },
+      base: {
+        rows: [],
+        quantitys_total: 0,
+        total: 0,
+        page: 1,
+        row: 20,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: {
+          title: "",
+          ref: "",
+        },
+      },
+      remove: {
+        current: 0,
+        model: false,
+        controll: "",
+        tb: "",
+      },
+    };
+  },
+  computed: {
+    ServiceUrl() {
+      return this.$store.getters.serviceUrl;
+    },
+    user_token() {
+      return this.$store.getters.user_token;
+    },
+  },
+  methods: {
+    exportExcel() {
+      return window.open(`${
+        this.$store.state.serviceUrl
+      }controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
+        this.base.page
+      }${this.base.row ? `&rows=${this.base.row}` : ""}${
+        this.base.q ? `&q=${this.base.q}` : ""
+      }${this.wh ? `&wh=${this.wh}` : ""}${
+        this.date.from ? `&createFrom=${this.date.from}` : ""
+      }${
+        this.date.to ? `&createTo=${this.date.to}` : ""
+      }&transref=I&transref_type_null=1&sumQuantitys=1
+
+        `);
+    },
+    change() {
+      this.base_search();
+    },
+    // base
+    base_search() {
+      this.base.loading = true;
+      this.base_get((res) => {
+        this.base.rows = res.rows;
+        this.base.total = res.total;
+        this.base.quantitys_total = res.quantitys_total;
+        this.base.next =
+          this.base.page * this.base.row >= this.base.total ? false : true;
+        this.base.back = this.base.page > 1 ? true : false;
+        this.base.loading = false;
+      });
+    },
+    base_get(callback) {
+      fetch(
+        `${
+          this.$store.state.serviceUrl
+        }controllers/MYSQL/INTERNAL/WH/shelf?total=1&page=${this.base.page}${
+          this.base.row ? `&rows=${this.base.row}` : ""
+        }${this.base.q ? `&q=${this.base.q}` : ""}${
+          this.wh ? `&wh=${this.wh}` : ""
+        }${this.date.from ? `&createFrom=${this.date.from}` : ""}${
+          this.date.to ? `&createTo=${this.date.to}` : ""
+        }&transref=I&transref_type_null=1&sumQuantitys=1
+
+        `,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.user_token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((res) => {
+          callback(
+            res.success
+              ? { ...res }
+              : { rows: [], total: 0, quantitys_total: 0 }
+          );
+        })
+        .catch((error) => {
+          callback([]);
+          console.error("Error:", error);
+        });
+    },
+  },
+  mounted() {
+    this.$nextTick(() => this.base_search());
+  },
+  watch: {
+    wh: function (v) {
+      this.base_search();
+    },
+  },
+};
+</script>
+<style>
+tr,
+td {
+  white-space: nowrap;
+}
+</style>

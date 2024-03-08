@@ -6,8 +6,8 @@
       @getgame="$emit('getgame')"
     >
       <template #modal> </template>
-      <template #view>
-        <div class="flex flex-col gap-4">
+      <template #view v-if="user">
+        <div class="flex flex-col gap-4 ">
           <div
             class="flex flex-col-reverse lg:flex-row flex-nowrap justify-around items-center gap-4"
           >
@@ -25,6 +25,33 @@
             </div>
             <div class="w-full lg:w-auto">
               <div class="join w-full min-w-[20vw]">
+                <!-- <SelectSearch
+                  :placeholder="'Short code'"
+                  :label="'ItemCode'"
+                  :code="'ItemCode'"
+                  :minChar="3"
+                  :delay="0.5"
+                  :limit="10"
+                  :customClass="`input input-bordered ${
+                    checkbox == 'M' ? 'input-disabled' : ''
+                  }`"
+                  :disabled="checkbox == 'M' ? true : false"
+                  :current="base.form.item_code"
+                  :refresh="refresh"
+                  @updateValue="
+                    (obj) => {
+                      seelct = obj;
+                    }
+                  "
+                  @stopRefresh="
+                    (obj) => {
+                      refresh = obj.value;
+                    }
+                  "
+                  :url="`${this.serviceUrl}controllers/SAP/UBA/oitm`"
+                  :param="`&total=1&wh=wh1&rac_list=1`"
+                /> -->
+
                 <select
                   class="select select-bordered select-sm w-full lg:max-w-xs join-item"
                   v-model="seelct"
@@ -77,6 +104,7 @@
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";
 import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from "vue-qrcode-reader";
+import SelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 
 export default {
   name: "Home",
@@ -85,6 +113,7 @@ export default {
     QrcodeStream,
     QrcodeDropZone,
     QrcodeCapture,
+    SelectSearch,
   },
   props: ["showLogin", "showtokens", "token_gameplay"],
   data() {
@@ -109,23 +138,29 @@ export default {
       datalist: [],
       temp: null,
       seelct: 0,
+      base: {
+        rows: [],
+        total: 0,
+        page: 1,
+        bay: 20,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: null,
+      },
     };
   },
   computed: {
-    ServiceUrl() {
+    serviceUrl() {
       return this.$store.getters.serviceUrl;
     },
-    isLogin() {
-      return this.$store.getters.isLogin;
+    user_token() {
+      return this.$store.getters.user_token;
     },
     user() {
       return this.$store.getters.user;
-    },
-    jwt() {
-      return this.$store.getters.jwt;
-    },
-    game_type() {
-      return this.$store.getters.game_type;
     },
   },
   methods: {
@@ -156,7 +191,6 @@ export default {
         ctx.strokeRect(x, y, width, height);
       }
     },
-
     paintCenterText(detectedCodes, ctx) {
       for (const detectedCode of detectedCodes) {
         const { boundingBox, rawValue } = detectedCode;
@@ -182,21 +216,26 @@ export default {
       }
     },
     onDetect(detectedCodes) {
-      console.log(detectedCodes);
+      let ar = JSON.parse(detectedCodes[0].rawValue);
+      let itemCode = ar[0].split(" : ")[1];
+      // console.log( );
       // if (this.temp == detectedCodes[0].rawValue) {
       //   return;
       // }
-      this.temp = detectedCodes[0].rawValue;
-      if ((detectedCodes[0].rawValue = this.dataset.doc.code && !this.ready)) {
-        this.ready = true;
-      }
-      if (!detectedCodes[0].rawValue && this.ready) {
+      // this.temp = detectedCodes[0].rawValue;
+      // if ((detectedCodes[0].rawValue = this.dataset.doc.code && !this.ready)) {
+      //   this.ready = true;
+      // }
+      if (itemCode) {
         console.log(this.datalist);
-        this.datalist.push({
-          code: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-          title: "BBBBBBBBBBBBBBBBBBBBBBBBB",
-          lot: "CCCCCCCCCCCCCCCCCCCCCCCCCCC",
+        this.getList(itemCode, (res) => {
+          console.log(res);
         });
+        // this.datalist.push({
+        //   code: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        //   title: "BBBBBBBBBBBBBBBBBBBBBBBBB",
+        //   lot: "CCCCCCCCCCCCCCCCCCCCCCCCCCC",
+        // });
       }
 
       // console.log(detectedCodes[0].rawValue)
@@ -219,13 +258,59 @@ export default {
         console.log("browser seems to be lacking features");
       }
     },
+
+    getList(itemCode, callback) {
+      let vm = this;
+      fetch(
+        `${this.ServiceUrl}controllers/tracking?DBType=mysqli&rows=20&total=1&itemCode=${itemCode}&transRef=I&quantitys=1&warehouse=wh1`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.user_token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((res) => {
+          callback(res);
+          // console.log(res)
+          // res.rows.forEach((v, i) => {
+          //   console.log(v.image ? true : false);
+          //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+          //   if (v.type == "decentraland") {
+          //     console.log(v.link);
+          //     this.decentraland = v.link;
+          //   }
+          //   console.log();
+          //   res.rows[i].master = 0;
+          // });
+          // this.explore = res;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    },
   },
-  mounted() {},
+  mounted() {
+    // this.getList();
+  },
   beforeDestroy() {},
   watch: {
     seelct: function (v) {
       console.log(v);
       this.datalist = [];
+    },
+    user: function (val) {
+      if (!val) {
+        return;
+      }
+      console.log(this.user.access);
+      !this.user.access["WH"]
+        ? this.$router.push({ name: `404` })
+        : !this.user.access["WH"][this.$route.name]
+        ? this.$router.push({ name: `404` })
+        : "";
     },
   },
 };

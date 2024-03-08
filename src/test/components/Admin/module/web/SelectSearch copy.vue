@@ -1,0 +1,253 @@
+<template>
+  <div class="Search">
+    <!-- {{ current }} -->
+    <div class="relative">
+      <!-- <div>
+    </div> -->
+      <!-- <span class="loading loading-spinner text-primary absolute"></span> -->
+      <div class="absolute z-10 w-full">
+        {{ base.current }}
+        <input
+          type="search"
+          placeholder="sear"
+          class="input input-bordered w-full"
+          @focus="base.showlist = true"
+          @blur="setBlur"
+          @keyup="search"
+          v-model="base.current.title"
+        />
+        <!-- {{ base.showlist }}{{ base.focuslist }} -->
+        <ul
+          class="menu menu-xs bg-base-100 border-2 w-full shadow-lg max-h-60 overflow-auto block"
+          v-if="base.showlist || base.focuslist"
+          ref="scrollComponent"
+          @scroll="handleScroll"
+          @mouseover="base.focuslist = true"
+          @mouseleave="base.focuslist = false"
+        >
+          <li v-for="(v, i) in base.rows" :key="i" @click="setValue(v)">
+            <a>{{ v.title }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- <Multiselect
+      ref="multiselect"
+      v-model="current"
+      :placeholder="placeholder"
+      :filter-results="false"
+      :min-chars="maxChar ? maxChar : 2"
+      :resolve-on-load="false"
+      :delay="delay ? delay : 100"
+      :searchable="true"
+      :class="customClass"
+      @open="
+        (select$) => {
+          if (select$.noOptions) {
+            select$.resolveOptions();
+          }
+        }
+      "
+      :options="getData"
+    /> -->
+  </div>
+</template>
+<script>
+import Multiselect from "@vueform/multiselect";
+export default {
+  name: "Search",
+  components: {
+    Multiselect,
+  },
+  props: [
+    "placeholder",
+    "label",
+    "maxChar",
+    "delay",
+    "customClass",
+    "limit",
+    "url",
+    "value",
+  ],
+  data() {
+    return {
+      datas: "",
+      base: {
+        rows: [],
+        total: 0,
+        page: 1,
+        row: 10,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+
+        showlist: false,
+        focuslist: false,
+        current: "",
+        temp: "",
+        timeout: null,
+        delay: 500,
+      },
+    };
+  },
+  computed: {
+    ServiceUrl() {
+      return this.$store.getters.serviceUrl;
+    },
+  },
+  methods: {
+    setBlur() {
+      this.base.showlist = false;
+      if (!this.base.showlist && !this.base.focuslist) {
+        this.base.current = { ...this.base.temp };
+      }
+    },
+    setValue(v) {
+      this.base.showlist = false;
+      this.base.focuslist = false;
+      console.log(v);
+      this.base.current = { ...v };
+      this.base.temp = { ...v };
+    },
+    handleScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
+      if (scrollTop + clientHeight >= scrollHeight) {
+        this.base.page++;
+        this.base.next
+          ? this.base_search((rows) => {
+              this.base.rows = this.base.rows.concat([...rows]);
+            })
+          : "";
+      }
+    },
+    search() {
+      this.base.page = 1;
+      this.base_search((rows) => {
+        this.base.rows = rows;
+      });
+    },
+    base_search(callback) {
+      this.base.loading = true;
+      this.base_get((res) => {
+        callback(res.rows);
+        this.base.total = res.total;
+        this.base.next =
+          this.base.page * this.base.row >= this.base.total ? false : true;
+        this.base.back = this.base.page > 1 ? true : false;
+        this.base.loading = false;
+      });
+    },
+    base_get(callback) {
+      // console.log(this.base.q)
+      fetch(
+        `${this.$store.state.serviceUrl}department?page=${this.base.page}${
+          this.base.row ? `&rows=${this.base.row}` : ""
+        }${this.base.q ? `&q=${this.base.q}` : ""}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // body: JSON.stringify({
+          //     "uuid": localStorage.getItem('uuid'),
+          // }),
+        }
+      )
+        .then((response) => response.json())
+        .then((res) => {
+          if (res.rows.length > 0) {
+            // res.rows[0].image = res.rows[0].image
+            //   ? JSON.parse(res.rows[0].image)
+            //   : [];
+            // res.rows[0].master = 0;
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              // console.log(res.rows[i].image)
+              // res.rows[i].image.forEach((vv, ii) => {
+              // if (ii == 0) {
+              res.rows[i].master = 0;
+              // }
+              // console.log(vv);
+              // if (vv.master) {
+              //   res.rows[i].master = ii;
+              // }
+              // });
+            });
+          }
+          callback(
+            res.success
+              ? { rows: res.rows, total: res.total }
+              : { rows: [], total: 0 }
+          );
+        })
+        .catch((error) => {
+          callback([]);
+          console.error("Error:", error);
+        });
+    },
+    // search() {
+    //   clearTimeout(this.base.timeout);
+    //   this.base.timeout = setTimeout(() => {
+    //     console.log("SEARCH");
+    //     clearTimeout(this.base.timeout);
+    //   }, this.base.delay);
+    // },
+    // getData(q) {
+    //   return this.fetchLanguages(q, (res) =>
+    //     res.map((item) => ({
+    //       value: item,
+    //       label: item[this.label ? this.label : "ItemCode"],
+    //     }))
+    //   );
+    // },
+    // async fetchLanguages(q, callback) {
+    //   return fetch(
+    //     `${this.url}?page=1${this.limit ? `&rows=${this.limit}` : ""}${
+    //       q ? `&q=${q}` : ""
+    //     }${
+    //       this.current[this.label ? this.label : "ItemCode"]
+    //         ? `&ItemCode=${this.current[this.label ? this.label : "ItemCode"]}`
+    //         : ""
+    //     }`,
+    //     {
+    //       method: "GET",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${localStorage.getItem("_jwt")}`,
+    //       },
+    //     }
+    //   )
+    //     .then((response) => response.json())
+    //     .then((res) => callback(res.success ? res.rows : []))
+    //     .catch((error) => {
+    //       console.error("Error:", error);
+    //       return callback([]);
+    //     });
+    // },
+  },
+  mounted() {
+    this.base_search((rows) => {
+      this.base.rows = rows;
+    });
+    // this.$refs.multiselect.refreshOptions();
+  },
+  watch: {
+    current: function (val) {
+      console.log(val);
+      this.$emit("updateValue", { value: val });
+    },
+  },
+};
+</script>
+<style >
+@import url("@vueform/multiselect/themes/default.css");
+.multiselect-option.is-selected {
+  background: var(--ms-option-bg-selected, #a7a7a7) !important;
+  color: var(--ms-option-color-selected, #fff);
+}
+.multiselect.is-active {
+  box-shadow: unset;
+  border-radius: var(--rounded-btn, 0.5rem);
+}
+</style>

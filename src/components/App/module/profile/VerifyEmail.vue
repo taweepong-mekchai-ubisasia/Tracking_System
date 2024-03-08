@@ -1,12 +1,10 @@
 <template>
   <div
-  class="card-body overflow-auto" style="max-height: inherit;" 
+    class="card-body overflow-auto"
+    style="max-height: inherit"
     :class="`${tab != 'verify-email' ? 'hidden' : ''}`"
   >
-    <font-awesome-icon
-      icon="fa-solid fa-envelope-circle-check"
-      class="text-5xl"
-    />
+    <Icon icon="fa6-solid:envelope-circle-check" class="text-5xl" />
     <div class="text-xl font-bold">Verify your email</div>
     <div class="text-md">Please check your email to verify your account.</div>
 
@@ -54,16 +52,7 @@
 
     <div class="form-control mt-2">
       <button
-        class="
-          btn btn-xs
-          sm:btn-sm
-          md:btn-md
-          lg:btn-lg
-          bg-black
-          text-white
-          border-black
-          w-full
-        "
+        class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg bg-black text-white border-black w-full"
         @click="verifyEmail"
         :disabled="process"
       >
@@ -123,7 +112,6 @@ export default {
 
       vm.errorMsg = "";
 
-      
       fetch(`${vm.ServiceUrl}controllers/verify-email`, {
         method: "GET",
         headers: {
@@ -180,11 +168,10 @@ export default {
       if (val == "verify-email") {
         // this.temp = { ...this.user };
         clearInterval(this.interval);
-              this.interval = null;
-              this.errorMsg = "";
+        this.interval = null;
+        this.errorMsg = "";
       }
     },
   },
 };
 </script>
-

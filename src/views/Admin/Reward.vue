@@ -68,12 +68,12 @@
                     "
                   >
                     <font-awesome-icon
-                      icon="fa-solid fa-eye"
+                      icon="fa-regular  fa-eye"
                       @click="showpassword = !showpassword"
                       :class="{ hidden: !showpassword, block: showpassword }"
                     />
                     <font-awesome-icon
-                      icon="fa-sharp fa-solid fa-eye-slash"
+                      icon="fa-regular  fa-eye-slash"
                       @click="showpassword = !showpassword"
                       :class="{ block: !showpassword, hidden: showpassword }"
                     />
@@ -132,7 +132,7 @@
                     "
                   >
                     <font-awesome-icon
-                      icon="fa-solid fa-eye"
+                      icon="fa-regular  fa-eye"
                       @click="showconfirm_password = !showconfirm_password"
                       :class="{
                         hidden: !showconfirm_password,
@@ -140,7 +140,7 @@
                       }"
                     />
                     <font-awesome-icon
-                      icon="fa-sharp fa-solid fa-eye-slash"
+                      icon="fa-regular  fa-eye-slash"
                       @click="showconfirm_password = !showconfirm_password"
                       :class="{
                         block: !showconfirm_password,
@@ -203,12 +203,12 @@
                     "
                   >
                     <font-awesome-icon
-                      icon="fa-solid fa-eye"
+                      icon="fa-regular  fa-eye"
                       @click="showpassword = !showpassword"
                       :class="{ hidden: !showpassword, block: showpassword }"
                     />
                     <font-awesome-icon
-                      icon="fa-sharp fa-solid fa-eye-slash"
+                      icon="fa-regular  fa-eye-slash"
                       @click="showpassword = !showpassword"
                       :class="{ block: !showpassword, hidden: showpassword }"
                     />
@@ -267,7 +267,7 @@
                     "
                   >
                     <font-awesome-icon
-                      icon="fa-solid fa-eye"
+                      icon="fa-regular  fa-eye"
                       @click="showconfirm_password = !showconfirm_password"
                       :class="{
                         hidden: !showconfirm_password,
@@ -275,7 +275,7 @@
                       }"
                     />
                     <font-awesome-icon
-                      icon="fa-sharp fa-solid fa-eye-slash"
+                      icon="fa-regular  fa-eye-slash"
                       @click="showconfirm_password = !showconfirm_password"
                       :class="{
                         block: !showconfirm_password,
@@ -542,7 +542,7 @@
 </template>
 <script>
 import AdminLayout from "@/components/Admin/layout.vue";
-import PageinationModule from "@/components/Admin/module/web/Pageination.vue";
+import PageinationModule from "@/components/App/Module/Global/Pageination.vue";
 
 export default {
   name: "Reward",

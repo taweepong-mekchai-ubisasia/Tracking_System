@@ -59,9 +59,8 @@
                     @click="logout()"
                   >
                     <a class="text-error">
-                      <font-awesome-icon
-                        icon="fa-solid fa-arrow-right-from-bracket fa-2x"
-                      />
+                      <Icon icon="fluent-emoji-high-contrast:right-arrow" />
+                  
                     </a>
                   </label>
                 </div>
@@ -230,7 +229,7 @@
                 class="flex gap-4"
                 @click="changepage('Home')"
               >
-                <span class="flex-1">Posting</span>
+                <span class="flex-1">UBIS</span>
               </a>
             </li>
           </ul>
@@ -242,7 +241,7 @@
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  // font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

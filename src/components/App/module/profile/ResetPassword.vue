@@ -66,16 +66,18 @@
               leading-5
             "
           >
-            <font-awesome-icon
-              icon="fa-solid fa-eye"
-              @click="showpassword = !showpassword"
-              :class="{ hidden: !showpassword, block: showpassword }"
-            />
-            <font-awesome-icon
-              icon="fa-sharp fa-solid fa-eye-slash"
+          <Icon icon="heroicons-outline:eye"      
+    
+          @click="showpassword = !showpassword"
+              :class="{ hidden: !showpassword, block: showpassword }"/>
+          
+              <Icon icon="heroicons-outline:eye-off"
+            
               @click="showpassword = !showpassword"
               :class="{ block: !showpassword, hidden: showpassword }"
             />
+    
+
           </div>
 
         </div>
@@ -143,22 +145,25 @@
               leading-5
             "
           >
-            <font-awesome-icon
-              icon="fa-solid fa-eye"
-              @click="showconfirm_password = !showconfirm_password"
+          <Icon icon="heroicons-outline:eye"      
+          @click="showconfirm_password = !showconfirm_password"
               :class="{
                 hidden: !showconfirm_password,
                 block: showconfirm_password,
-              }"
-            />
-            <font-awesome-icon
-              icon="fa-sharp fa-solid fa-eye-slash"
-              @click="showconfirm_password = !showconfirm_password"
+              }"/>
+    
+        <Icon icon="heroicons-outline:eye-off"
+      
+        @click="showconfirm_password = !showconfirm_password"
               :class="{
                 block: !showconfirm_password,
                 hidden: showconfirm_password,
               }"
-            />
+      />
+
+
+
+         
           </div>
         </div>
 

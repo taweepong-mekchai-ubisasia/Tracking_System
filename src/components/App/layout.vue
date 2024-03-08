@@ -30,10 +30,10 @@
             >
           </div>
         </div>
-        <LoginComponent
+        <AppModuleProfileLogin
           v-if="tab.join == 'login'"
           :tab="tab.join"
-          ref="LoginComponent"
+          ref="AppModuleProfileLogin"
           @setJoinnows="$refs.joinnows.checked = false"
           @changetab="
             (val) => {
@@ -42,7 +42,7 @@
           "
           :re_password="re_password"
         />
-        <RegisterComponent
+        <AppModuleProfileRegister
           :tab="tab.join"
           @changetab="
             (val) => {
@@ -51,7 +51,7 @@
           "
           @changePrivacyNotice="(val) => (PrivacyNotice = val)"
         />
-        <VerifyEmailComponent
+        <AppModuleProfileVerifyEmail
           :tab="tab.join"
           @changetab="
             (val) => {
@@ -66,7 +66,7 @@
             }
           "
         />
-        <ForgotPasswordComponent
+        <AppModuleProfileForgotPassword
           :tab="tab.join"
           @changetab="
             (val) => {
@@ -74,7 +74,7 @@
             }
           "
         />
-        <ResetPasswordComponent
+        <AppModuleProfileResetPassword
           :tab="tab.join"
           @changetab="
             (val) => {
@@ -128,7 +128,7 @@
             </div>
           </div>
 
-          <ProfileComponent
+          <AppModuleProfileProfile
             v-if="tab.profile == 'profile'"
             @changetab="
               (val) => {
@@ -137,7 +137,7 @@
             "
             @Logout="Logout"
           />
-          <EditDetailComponent
+          <AppModuleProfileEditDetail
             :tab="tab.profile"
             @changetab="
               (val) => {
@@ -151,7 +151,7 @@
               }
             "
           />
-          <EditPasswordComponent
+          <AppModuleProfileEditPassword
             :tab="tab.profile"
             @changetab="
               (val) => {
@@ -201,10 +201,7 @@
 
         <div class="card-body pb-2">
           <div class="text-xl font-bold">
-            <font-awesome-icon
-              icon="fa-solid fa-circle-exclamation"
-              class="fa-4x"
-            />
+            <Icon icon="zondicons:exclamation-outline" />
           </div>
           <div class="text-xl font-bold">Confirm Change</div>
 
@@ -271,13 +268,6 @@
         </div>
 
         <div class="card-body pb-2">
-          <!-- <div class="text-xl font-bold"> -->
-          <!-- <font-awesome-icon
-              icon="fa-solid fa-circle-exclamation"
-              class="fa-4x"
-            /> -->
-
-          <!-- </div> -->
           <div class="text-xl font-bold">Rate Us!</div>
           <p>How would you love this event</p>
 
@@ -379,7 +369,6 @@
             <button
               class="btn btn-sm md:btn-md lg:btn-lg bg-black text-white border-black w-full"
               :disabled="rating_setting ? false : true"
-              @click="rating_setting ? setRating() : ''"
             >
               Submit
             </button>
@@ -589,15 +578,7 @@
         </div>
 
         <div class="card-body overflow-auto" style="max-height: inherit">
-          <!-- <div class="text-xl font-bold">
-            <font-awesome-icon
-              icon="fa-solid fa-circle-exclamation"
-              class="fa-4x"
-            />
-          </div> -->
           <div class="text-xl font-bold">Privacy Notice</div>
-          <!-- <PrivacyNoticeVue /> -->
-          <!-- <div class="container"> -->
           <div class="text-center lg:text-center">
             <div class="text-4xl lg:text-5xl font-bold mt-6" ref="text">
               Privacy Notice
@@ -924,11 +905,11 @@
 
     <slot name="modal"></slot>
 
-    <div class="bg-base-100 drawer lg:drawer-open">
+    <div class="bg-base-100 drawer xl:drawer-open">
       <input id="drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content">
+      <div class="drawer-content bg-base-200">
         <div
-          class="bg-base-100 text-base-content sticky top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-shadow duration-100 [transform:translate3d(0,0,0)]"
+          class="bg-primary text-white shadow-sm sticky top-0 z-30 flex h-16 w-full justify-center bg-opacity-80 backdrop-blur transition-shadow duration-100 [transform:translate3d(0,0,0)]"
         >
           <nav class="navbar w-full">
             <div class="flex flex-1 md:gap-1 lg:gap-2">
@@ -938,7 +919,7 @@
                 ><label
                   aria-label="Open menu"
                   for="drawer"
-                  class="btn btn-square btn-ghost drawer-button lg:hidden"
+                  class="btn btn-square btn-ghost drawer-button xl:hidden"
                   ><svg
                     width="20"
                     height="20"
@@ -957,24 +938,12 @@
                 </label>
               </span>
               <div class="flex items-center gap-2 lg:hidden">
-                <a
-                  data-sveltekit-preload-data=""
-                  href="/"
-                  aria-current="page"
-                  aria-label="daisyUI"
-                  class="flex-0 btn btn-ghost gap-1 px-2 md:gap-2"
-                  data-svelte-h="svelte-dlyygu"
-                >
-                  <span
-                    class="font-title text-base-content text-lg md:text-2xl"
-                  >
-                    UbisAsia
-                  </span>
-                </a>
+                <LayoutLogoLight />
+                <LayoutChangelog />
               </div>
-              <div class="hidden w-full max-w-sm lg:flex">
+              <!-- <div class="hidden w-full max-w-sm lg:flex">
                 <label class="searchbox relative mx-3 w-full">
-                  <!-- <svg
+                  <svg
                     class="pointer-events-none absolute z-10 my-3.5 ms-4 stroke-current opacity-60 text-base-content"
                     width="16"
                     height="16"
@@ -988,9 +957,9 @@
                       stroke-width="2"
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     ></path>
-                  </svg> -->
-                  <!-- <font-awesome-icon :icon="['fas', 'magnifying-glass']"  class="pointer-events-none absolute z-10 my-3.5 ms-4 stroke-current opacity-60 text-base-content"/> -->
-                  <!-- <div
+                  </svg>
+                
+                  <div
                     data-svelte-typeahead=""
                     role="combobox"
                     aria-haspopup="listbox"
@@ -1028,14 +997,1456 @@
                       id="typeahead-0.tqt3y630zm-listbox"
                       class="svelte-4tg1b1 svelte-typeahead-list"
                     ></ul>
-                  </div> -->
-                  <!-- <div
+                  </div>
+                  <div
                     class="pointer-events-none absolute end-10 top-2.5 gap-1 opacity-50 rtl:flex-row-reverse hidden lg:flex"
                   >
                     <kbd class="kbd kbd-sm">ctrl</kbd>
                     <kbd class="kbd kbd-sm">K</kbd>
-                  </div> -->
+                  </div>
                 </label>
+              </div> -->
+            </div>
+            <div class="flex-0">
+              <div
+                title="Change Theme"
+                class="dropdown dropdown-end hidden [@supports(color:oklch(0_0_0))]:block"
+              >
+                <div tabindex="0" role="button" class="btn btn-ghost">
+                  <svg
+                    width="20"
+                    height="20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    class="h-5 w-5 stroke-current md:hidden"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                    ></path>
+                  </svg>
+                  <span class="hidden font-normal md:inline">Theme</span>
+                  <svg
+                    width="12px"
+                    height="12px"
+                    class="hidden h-2 w-2 fill-current opacity-60 sm:inline-block"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 2048 2048"
+                  >
+                    <path
+                      d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"
+                    ></path>
+                  </svg>
+                </div>
+                <div
+                  tabindex="0"
+                  class="dropdown-content bg-base-200 text-base-content rounded-box top-px h-[28.6rem] h-auto max-h-[calc(100vh-10rem)] w-56 overflow-y-auto border border-white/5 shadow-2xl outline outline-1 outline-black/5 mt-16"
+                >
+                  <div class="grid grid-cols-1 gap-3 p-3">
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="ubis"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'ubis'"
+                    >
+                      <span
+                        data-theme="ubis"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">ubis</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <!-- <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="light"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'light'"
+                    >
+                      <span
+                        data-theme="light"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">light</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="dark"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'dark'"
+                    >
+                      <span
+                        data-theme="dark"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">dark</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="cupcake"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'cupcake'"
+                    >
+                      <span
+                        data-theme="cupcake"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">cupcake</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="bumblebee"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'bumblebee'"
+                    >
+                      <span
+                        data-theme="bumblebee"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">bumblebee</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="emerald"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'emerald'"
+                    >
+                      <span
+                        data-theme="emerald"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">emerald</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button> -->
+                    <!-- 
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="corporate"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'corporate'"
+                    >
+                      <span
+                        data-theme="corporate"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">corporate</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="synthwave"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'synthwave'"
+                    >
+                      <span
+                        data-theme="synthwave"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">synthwave</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="retro"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'retro'"
+                    >
+                      <span
+                        data-theme="retro"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">retro</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="cyberpunk"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'cyberpunk'"
+                    >
+                      <span
+                        data-theme="cyberpunk"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">cyberpunk</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="valentine"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'valentine'"
+                    >
+                      <span
+                        data-theme="valentine"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">valentine</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="halloween"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'halloween'"
+                    >
+                      <span
+                        data-theme="halloween"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">halloween</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="garden"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'garden'"
+                    >
+                      <span
+                        data-theme="garden"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">garden</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="forest"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'forest'"
+                    >
+                      <span
+                        data-theme="forest"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">forest</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="aqua"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'aqua'"
+                    >
+                      <span
+                        data-theme="aqua"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">aqua</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="lofi"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'lofi'"
+                    >
+                      <span
+                        data-theme="lofi"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">lofi</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="pastel"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'pastel'"
+                    >
+                      <span
+                        data-theme="pastel"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">pastel</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="fantasy"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'fantasy'"
+                    >
+                      <span
+                        data-theme="fantasy"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">fantasy</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="wireframe"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'wireframe'"
+                    >
+                      <span
+                        data-theme="wireframe"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">wireframe</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="black"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'black'"
+                    >
+                      <span
+                        data-theme="black"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">black</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="luxury"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'luxury'"
+                    >
+                      <span
+                        data-theme="luxury"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">luxury</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="dracula"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'dracula'"
+                    >
+                      <span
+                        data-theme="dracula"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">dracula</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="cmyk"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'cmyk'"
+                    >
+                      <span
+                        data-theme="cmyk"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">cmyk</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="autumn"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'autumn'"
+                    >
+                      <span
+                        data-theme="autumn"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">autumn</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="business"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'business'"
+                    >
+                      <span
+                        data-theme="business"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">business</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="acid"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'acid'"
+                    >
+                      <span
+                        data-theme="acid"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">acid</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="lemonade"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'lemonade'"
+                    >
+                      <span
+                        data-theme="lemonade"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">lemonade</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="night"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'night'"
+                    >
+                      <span
+                        data-theme="night"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">night</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="coffee"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'coffee'"
+                    >
+                      <span
+                        data-theme="coffee"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">coffee</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4 [&amp;_svg]:visible"
+                      data-set-theme="winter"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'winter'"
+                    >
+                      <span
+                        data-theme="winter"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">winter</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="dim"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'dim'"
+                    >
+                      <span
+                        data-theme="dim"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">dim</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="nord"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'nord'"
+                    >
+                      <span
+                        data-theme="nord"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">nord</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      class="outline-base-content text-start outline-offset-4"
+                      data-set-theme="sunset"
+                      data-act-class="[&amp;_svg]:visible"
+                      @click="theme = 'sunset'"
+                    >
+                      <span
+                        data-theme="sunset"
+                        class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans"
+                      >
+                        <span class="grid grid-cols-5 grid-rows-3">
+                          <span
+                            class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              class="invisible h-3 w-3 shrink-0"
+                            >
+                              <path
+                                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                              ></path>
+                            </svg>
+                            <span class="flex-grow text-sm">sunset</span>
+                            <span class="flex h-full shrink-0 flex-wrap gap-1">
+                              <span class="bg-primary rounded-badge w-2">
+                              </span>
+                              <span class="bg-secondary rounded-badge w-2">
+                              </span>
+                              <span class="bg-accent rounded-badge w-2"> </span>
+                              <span class="bg-neutral rounded-badge w-2">
+                              </span>
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+            -->
+                  </div>
+                </div>
+              </div>
+              <div title="Change Language" class="dropdown dropdown-end">
+                <div
+                  tabindex="0"
+                  role="button"
+                  class="btn btn-ghost"
+                  aria-label="Language"
+                >
+                  <svg
+                    class="h-5 w-5 fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 512 512"
+                  >
+                    <path
+                      d="M363,176,246,464h47.24l24.49-58h90.54l24.49,58H480ZM336.31,362,363,279.85,389.69,362Z"
+                    ></path>
+                    <path
+                      d="M272,320c-.25-.19-20.59-15.77-45.42-42.67,39.58-53.64,62-114.61,71.15-143.33H352V90H214V48H170V90H32v44H251.25c-9.52,26.95-27.05,69.5-53.79,108.36-32.68-43.44-47.14-75.88-47.33-76.22L143,152l-38,22,6.87,13.86c.89,1.56,17.19,37.9,54.71,86.57.92,1.21,1.85,2.39,2.78,3.57-49.72,56.86-89.15,79.09-89.66,79.47L64,368l23,36,19.3-11.47c2.2-1.67,41.33-24,92-80.78,24.52,26.28,43.22,40.83,44.3,41.67L255,362Z"
+                    ></path>
+                  </svg>
+                  <svg
+                    width="12px"
+                    height="12px"
+                    class="hidden h-2 w-2 fill-current opacity-60 sm:inline-block"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 2048 2048"
+                  >
+                    <path
+                      d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"
+                    ></path>
+                  </svg>
+                </div>
+                <div
+                  tabindex="0"
+                  class="dropdown-content bg-base-200 text-base-content rounded-box top-px mt-16 max-h-[calc(100vh-10rem)] w-56 overflow-y-auto border border-white/5 shadow-2xl outline outline-1 outline-black/5"
+                >
+                  <ul class="menu menu-sm gap-1">
+                    <li>
+                      <button
+                        @click="changeLanguage('th')"
+                        :class="language == 'th' ? 'active' : ''"
+                      >
+                        <span
+                          class="badge badge-sm badge-outline !pl-1.5 !pr-1 pt-px font-mono !text-[.6rem] font-bold tracking-widest opacity-50"
+                          >TH</span
+                        >
+                        <span class="font-[sans-serif]">ภาษาไทย</span>
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        @click="changeLanguage('en')"
+                        :class="language == 'en' ? 'active' : ''"
+                      >
+                        <span
+                          class="badge badge-sm badge-outline !pl-1.5 !pr-1 pt-px font-mono !text-[.6rem] font-bold tracking-widest opacity-50"
+                          >EN</span
+                        >
+                        <span class="font-[sans-serif]">English</span>
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        @click="changeLanguage('zn')"
+                        :class="language == 'zn' ? 'active' : ''"
+                      >
+                        <span
+                          class="badge badge-sm badge-outline !pl-1.5 !pr-1 pt-px font-mono !text-[.6rem] font-bold tracking-widest opacity-50"
+                          >ZH</span
+                        >
+                        <span class="font-[sans-serif]">繁體中文</span>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
             <div class="flex-0">
@@ -1043,14 +2454,17 @@
                 title="Profile"
                 class="dropdown dropdown-end hidden [@supports(color:oklch(0_0_0))]:block"
               >
-                <div tabindex="0" role="button" class="btn btn-ghost">
-                  <font-awesome-icon
-                    :icon="['fas', 'user']"
-                    class="w-3 h-3 stroke-current"
-                  />
+                <div
+                  v-if="user"
+                  tabindex="0"
+                  role="button"
+                  class="btn btn-ghost"
+                >
+                
+                  <Icon icon="ph:user-bold" class="w-3 h-3 stroke-current" />
 
                   <span class="hidden font-normal md:inline"
-                    >taweepong mekchai</span
+                    >{{ user.firstname }} {{ user.lastname }}</span
                   >
                   <svg
                     width="12px"
@@ -1070,7 +2484,7 @@
                 >
                   <!-- h-[28.6rem]  -->
                   <ul class="menu menu-sm gap-1">
-                    <li>
+                    <li @click="showProfile()">
                       <!-- <button> -->
                       <!-- <span
                           class="badge badge-sm badge-outline !pl-1.5 !pr-1 pt-px font-mono !text-[.6rem] font-bold tracking-widest opacity-50"
@@ -1086,7 +2500,9 @@
                           class="badge badge-sm badge-outline !pl-1.5 !pr-1 pt-px font-mono !text-[.6rem] font-bold tracking-widest opacity-50"
                           >Profile</span
                         > -->
-                      <span class="font-[sans-serif]">Logout</span>
+                      <span class="font-[sans-serif]" @click="Logout()"
+                        >Logout</span
+                      >
                       <!-- <span class="badge badge-sm badge-ghost">beta</span> -->
                       <!-- </button> -->
                     </li>
@@ -1105,9 +2521,9 @@
             </div>
           </nav>
         </div>
-        <div class="max-w-[100vw] px-6 pb-6 xl:pr-2">
+        <div class="max-w-[100vw] px-2 pb-2 md:px-6 md:pb-6 xl:pr-2">
           <div class="flex flex-col-reverse justify-between gap-6 xl:flex-row">
-            <div class="prose prose-sm md:prose-base w-full flex-grow pt-10">
+            <div class="prose prose-sm md:prose-base w-full flex-grow pt-4">
               <slot name="view"></slot>
               <div class="not-prose flex justify-center xl:hidden"></div>
             </div>
@@ -1144,17 +2560,8 @@
             data-sveltekit-preload-data=""
             class="bg-base-100 sticky top-0 z-20 hidden items-center gap-2 bg-opacity-90 px-4 py-2 backdrop-blur lg:flex"
           >
-            <a
-              href="/"
-              aria-current="page"
-              aria-label="Homepage"
-              class="flex-0 btn btn-ghost px-2"
-              data-svelte-h="svelte-nce89e"
-            >
-              <div class="font-title inline-flex text-lg md:text-2xl">
-                UbisAsia
-              </div></a
-            >
+            <LayoutLogo />
+            <LayoutChangelog />
           </div>
           <div class="h-4"></div>
           <ul class="menu px-4 py-0">
@@ -1165,178 +2572,82 @@
                 :class="$route.name == 'Dashboard' ? 'active' : ''"
                 @click="changepage('Dashboard')"
               >
-                <span>
-                  <font-awesome-icon :icon="['fas', 'house']" class="w-5 h-5" />
-                </span>
+                <Icon
+                  icon="material-symbols:home-outline"
+                  class="w-5 h-5 text-orange-400"
+                />
                 <span>Dashboard</span>
-                <span class="badge badge-sm font-mono badge-primary"
-                  >Develop</span
-                >
               </a>
             </li>
-            <!-- <li>
-              <details id="disclosure-docs" open="">
+            <li>
+              <details id="disclosure-docs" :open="false">
                 <summary class="group">
-                  Coming soon
+                  <span>
+                    <!-- <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 text-orange-400"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+                />
+              </svg> -->
+                    <!-- <Icon name="line-md:chat" class="w-5 h-5 text-orange-400"/> -->
+                    <Icon
+                      icon="material-symbols:book-outline"
+                      class="w-5 h-5 text-orange-400"
+                    />
+                  </span>
+                  Docs
                 </summary>
                 <ul>
                   <li>
-                    <a href="#" class="flex gap-4" @click="menu = false">
-                      <span class="flex-1 text-1xl font-bold">Coming Soon</span>
-                    </a>
-                  </li>
-                </ul>
-              </details>
-            </li> -->
-            <li>
-              <details id="disclosure-components" open="">
-                <summary class="group">Menu</summary>
-                <ul>
-                  <li>
-                    <details id="disclosure-components">
-                      <summary class="group">
-                        <span class="text-base-content">new</span>
-                        <h2 class="menu-title flex items-center gap-4 px-1.5">
-                          PO
-                        </h2>
-                      </summary>
-                      <ul>
-                        <li>
-                          <a href="#" class="flex gap-4" @click="menu = false">
-                            <span class="flex-1 text-1xl font-bold">WH</span>
-                            <span class="badge badge-sm font-mono undefined"
-                              >Develop</span
-                            >
-                          </a>
-                        </li>
-                      </ul>
-                    </details>
-                  </li>
-                  <li>
-                    <details id="disclosure-components">
-                      <summary class="group">
-                        <span class="text-base-content">new</span>
-                        <h2 class="menu-title flex items-center gap-4 px-1.5">
-                          QC
-                        </h2>
-                      </summary>
-                      <ul>
-                        <li>
-                          <a href="#" class="flex gap-4" @click="menu = false">
-                            <span class="flex-1 text-1xl font-bold">WH</span>
-                            <span class="badge badge-sm font-mono undefined"
-                              >Develop</span
-                            >
-                          </a>
-                        </li>
-                      </ul>
-                    </details>
-                  </li>
-                  <li>
-                    <details id="disclosure-components">
-                      <summary class="group">
-                        <span class="text-base-content">new</span>
-                        <h2 class="menu-title flex items-center gap-4 px-1.5">
-                          RD
-                        </h2>
-                      </summary>
-                      <ul>
-                        <li>
-                          <a href="#" class="flex gap-4" @click="menu = false">
-                            <span class="flex-1 text-1xl font-bold">WH</span>
-                            <span class="badge badge-sm font-mono undefined"
-                              >Develop</span
-                            >
-                          </a>
-                        </li>
-                      </ul>
-                    </details>
-                  </li>
-                  <li>
-                    <details id="disclosure-components" open>
-                      <summary class="group">
-                        <span class="text-base-content">new</span>
-                        <h2 class="menu-title flex items-center gap-4 px-1.5">
-                          WH
-                        </h2>
-                      </summary>
-                      <ul>
-                        <li>
-                          <a
-                            href="#"
-                            class="flex gap-4 group"
-                            :class="$route.name == 'Tracking' ? 'active' : ''"
-                            @click="changepage('Tracking')"
-                          >
-                            <span class="flex-1 text-1xl font-bold"
-                              >Tracking</span
-                            >
-                            <span class="badge badge-sm font-mono undefined"
-                              >Develop
-                            </span>
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="#"
-                            class="flex gap-4 group"
-                            :class="$route.name == 'Tracking2' ? 'active' : ''"
-                            @click="changepage('WH')"
-                          >
-                            <span class="flex-1 text-1xl font-bold">WH</span>
-                            <span class="badge badge-sm font-mono undefined"
-                              >Develop</span
-                            >
-                          </a>
-                        </li>
-                      </ul>
-                    </details>
+                    <a href="#" class="group"> <span>Use</span> </a>
                   </li>
                 </ul>
               </details>
             </li>
+            <AppModuleMenu_
+              v-if="user"
+              :menutype="'menu'"
+              :access="user.access"
+              @object_access="(obj) => {}"
+            />
+
             <li></li>
             <li>
               <a href="#" class="group">
                 <span>
-                  <font-awesome-icon
-                    :icon="['fas', 'envelope-circle-check']"
-                    class="w-5 h-5"
-                  />
+          
+                  <Icon icon="mdi:envelope-outline" class="w-5 h-5"/>
                 </span>
                 <span>News</span>
-                <span class="badge badge-sm font-mono badge-primary"
-                  >Develop</span
-                >
               </a>
             </li>
             <li></li>
             <li>
-              <a href="#" class="group">
-                <span>
-                  <font-awesome-icon :icon="['fas', 'user']" class="w-5 h-5" />
-                </span>
+              <a href="#" class="group" @click="showProfile()">
+              
+                <Icon icon="bx:user" class="w-5 h-5 text-green-600" />
                 <span>Profile</span>
-                <span class="badge badge-sm font-mono badge-primary"
-                  >Develop</span
-                >
               </a>
             </li>
             <li>
-              <a href="#" class="group">
-                <span>
-                  <font-awesome-icon
-                    :icon="['fas', 'arrow-right-from-bracket']"
-                    class="w-5 h-5"
-                  />
-                </span>
+              <a href="#" class="group" @click="Logout()">
+                
+                <Icon icon="uil:signout" class="w-5 h-5 text-error" />
                 <span>Logout</span>
               </a>
             </li>
           </ul>
-          <div
+          <!-- <div
             class="bg-base-100 pointer-events-none sticky bottom-0 flex h-40 [mask-image:linear-gradient(transparent,#000000)]"
-          ></div>
+          ></div> -->
         </aside>
       </div>
     </div>
@@ -1344,19 +2655,23 @@
 </template>
 
 <script>
-import RegisterComponent from "@/components/App/module/profile/Register.vue";
-import LoginComponent from "@/components/App/module/profile/Login.vue";
-import VerifyEmailComponent from "@/components/App/module/profile/VerifyEmail.vue";
-import ForgotPasswordComponent from "@/components/App/module/profile/ForgotPassword.vue";
-import ResetPasswordComponent from "@/components/App/module/profile/ResetPassword.vue";
-import ProfileComponent from "@/components/App/module/profile/Profile.vue";
-import EditDetailComponent from "@/components/App/module/profile/EditDetail.vue";
-import EditPasswordComponent from "@/components/App/module/profile/EditPassword.vue";
-// import PrivacyNoticeVue from "@/components/App/module/PrivacyNotice.vue";
+import AppModuleMenu_ from "@/components/App/Module/Menu/_.vue";
+import AppModuleProfileRegister from "@/components/App/Module/Profile/Register.vue";
+import AppModuleProfileVerifyEmail from "@/components/App/Module/Profile/VerifyEmail.vue";
+import AppModuleProfileForgotPassword from "@/components/App/Module/Profile/ForgotPassword.vue";
+import AppModuleProfileResetPassword from "@/components/App/Module/Profile/ResetPassword.vue";
+import AppModuleProfileProfile from "@/components/App/Module/Profile/Profile.vue";
+import AppModuleProfileEditDetail from "@/components/App/Module/Profile/EditDetail.vue";
+import AppModuleProfileEditPassword from "@/components/App/Module/Profile/EditPassword.vue";
+// import PrivacyNoticeVue from "@/components/App/Module/PrivacyNotice.vue";
 // import PrivacyNoticeVue from "@/views/App/PrivacyNotice.vue";
-// import PrivacyNoticeComponent from "@/components/App/module/PrivacyNotice.vue";
+// import PrivacyNoticeComponent from "@/components/App/Module/PrivacyNotice.vue";
 // import PrivacyNotice from '@/views/App/PrivacyNotice.vue'
 
+import LayoutLogo from "@/components/Layout/Logo.vue";
+import LayoutLogoLight from "@/components/Layout/LogoLight.vue";
+import LayoutChangelog from "@/components/Layout/Changelog.vue";
+// import { Icon } from '@iconify/vue';
 import { ref, onMounted } from "vue";
 export default {
   setup() {
@@ -1370,16 +2685,20 @@ export default {
 
     return { joinnows, profile, rating, survey };
   },
-  name: "hotel",
+  name: "AppLayout",
   components: {
-    RegisterComponent,
-    LoginComponent,
-    VerifyEmailComponent,
-    ForgotPasswordComponent,
-    ResetPasswordComponent,
-    ProfileComponent,
-    EditDetailComponent,
-    EditPasswordComponent,
+    AppModuleProfileRegister,
+    AppModuleProfileLogin,
+    AppModuleProfileVerifyEmail,
+    AppModuleProfileForgotPassword,
+    AppModuleProfileResetPassword,
+    AppModuleProfileProfile,
+    AppModuleProfileEditDetail,
+    AppModuleProfileEditPassword,
+    AppModuleMenu_,
+    LayoutLogo,
+    LayoutLogoLight,
+    LayoutChangelog,
   },
   name: "Layout",
   data() {
@@ -1392,6 +2711,7 @@ export default {
         profile: "profile",
       },
       menu: false,
+
       re_password: null,
       confirm: false,
       PrivacyNotice: false,
@@ -1425,8 +2745,34 @@ export default {
         temp: null,
         success: "",
       },
-      language: "th",
+      // language: "th",
       // veridated:false
+      obj: {
+        batch: "810544",
+        bay: "1",
+        column24: null,
+        comments: "\n Add: 1x21 = 21.00 kg",
+        createDate: "2024-01-15",
+        docNum: "24019825",
+        itemCode: "S431H-PF",
+        itemName: null,
+        level: "1",
+        ownerAdd: "สาธิต ดวงแจ่มใส",
+        ownerIssue: null,
+        packSize: "21",
+        pallet: "1",
+        quantitys: "21.00",
+        rack: "D",
+        recId: "97e4ac2a8916b6b6c9fcffb42b0410c1",
+        sourceDatabase: "UBP",
+        systemDate: "2024-01-15 10:56:47",
+        tableName: "shelfs",
+        transRef: "I",
+        transRefComments: "",
+        unit: "1",
+        uomCode: "kg",
+        warehouse: "wh1",
+      },
     };
   },
   computed: {
@@ -1436,30 +2782,33 @@ export default {
     isLogin() {
       return this.$store.getters.isLogin;
     },
-    admin_isLogin() {
-      return this.$store.getters.admin_isLogin;
-    },
+    // admin_isLogin() {
+    //   return this.$store.getters.admin_isLogin;
+    // },
     // scrollTop() {
     //   return this.$store.getters.scrollTop;
     // },
-    jwt() {
-      return this.$store.getters.jwt;
+    user_token() {
+      return this.$store.getters.user_token;
     },
     user() {
       return this.$store.getters.user;
     },
+    language() {
+      return this.$store.getters.language;
+    },
     // rating() {
     //   return this.$store.getters.rating;
     // },
-    veridated() {
-      return this.$store.getters.veridated;
-    },
-    testLogin() {
-      return this.$store.getters.testLogin;
-    },
-    testPosting() {
-      return this.$store.getters.testPosting;
-    },
+    // veridated() {
+    //   return this.$store.getters.veridated;
+    // },
+    // testLogin() {
+    //   return this.$store.getters.testLogin;
+    // },
+    // testPosting() {
+    //   return this.$store.getters.testPosting;
+    // },
     // Vue3GoogleOauth() {
     //   return this.$store.getters.Vue3GoogleOauth;
     // },
@@ -1468,160 +2817,10 @@ export default {
     // },
   },
   methods: {
-    getCoin() {
-      fetch(`${this.ServiceUrl}controllers/coin`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.jwt}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (res.success) {
-            // console.log("GET RATITGFDHGFDHFDGHFD")
-            // console.log(res)
-            let total = 0;
-            console.log(res);
-            res.rows.forEach((v) => {
-              // console.log(v)
-              total += parseInt(v.coin);
-            });
-            this.$store.commit("coin", total);
-            return;
-          }
-          // alert(res.errorMsg);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+    changeLanguage(v) {
+      this.$store.commit("language", v);
+      localStorage.setItem("language", v);
     },
-    getRating() {
-      fetch(`${this.ServiceUrl}controllers/rating`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.jwt}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (res.success) {
-            // console.log("GET RATITGFDHGFDHFDGHFD")
-            // console.log(res)
-            this.$store.commit("rating", res.rows.length > 0 ? res.rows : null);
-            return;
-          }
-          // alert(res.errorMsg);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    },
-    setRating() {
-      this.rating_setting = false;
-      let obj = {
-        rating: this.rating_score,
-        comment_feedback: this.comment_feedback,
-      };
-      fetch(`${this.ServiceUrl}controllers/rating`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.jwt}`,
-        },
-        body: JSON.stringify(obj),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          this.rating_setting = true;
-          console.log(res.row);
-          if (res.success) {
-            this.rating_score = 0;
-
-            this.comment_feedback = "";
-            this.$refs.rating.checked = false;
-            this.getCoin();
-            return this.getRating();
-          }
-          alert(res.errorMsg);
-        })
-        .catch((error) => {
-          this.rating_setting = true;
-          console.error("Error:", error);
-        });
-    },
-    getSurvey() {
-      fetch(`${this.ServiceUrl}controllers/survey`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.jwt}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (res.success) {
-            // console.log("GET RATITGFDHGFDHFDGHFD")
-            // console.log(res)
-            this.$store.commit("survey", res.rows.length > 0 ? res.rows : null);
-            return;
-          }
-          // alert(res.errorMsg);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    },
-    setSurvey() {
-      this.survey_setting = false;
-      let obj = {
-        contentment: this.survey_data.temp.contentment,
-        experience: this.survey_data.temp.experience,
-        feedback: this.survey_data.temp.feedback,
-      };
-      fetch(`${this.ServiceUrl}controllers/survey`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.jwt}`,
-        },
-        body: JSON.stringify(obj),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          this.survey_setting = true;
-          console.log(res.row);
-          if (res.success) {
-            this.survey_data = {
-              temp: {
-                contentment: "",
-                experience: "",
-                feedback: "",
-              },
-              errorMsg: {
-                contentment: true,
-                experience: true,
-                feedback: false,
-              },
-              check: {
-                contentment: false,
-                experience: false,
-                feedback: false,
-              },
-            };
-            this.$refs.survey.checked = false;
-            this.getCoin();
-            return this.getSurvey();
-          }
-          alert(res.errorMsg);
-        })
-        .catch((error) => {
-          this.rating_setting = true;
-          console.error("Error:", error);
-        });
-    },
-
     update() {
       // this.$emit("update_profile",this.profileUpdate.temp)
       console.log(this.profileUpdate.temp);
@@ -1631,40 +2830,42 @@ export default {
         // image: this.profileUpdate.temp.image,
         firstname: this.profileUpdate.temp.firstname,
         lastname: this.profileUpdate.temp.lastname,
-        mobile: this.profileUpdate.temp.mobile,
-        roblox: this.profileUpdate.temp.roblox,
-        rating: this.profileUpdate.temp.rating,
-        coin: this.profileUpdate.temp.coin,
-        type: this.profileUpdate.temp.type,
-        comment_feedback: this.profileUpdate.temp.comment_feedback,
-
+        tel: this.profileUpdate.temp.tel,
         image: [image],
       };
       if (this.user.type == "email") {
         obj.image = [image];
       }
-      fetch(`${this.ServiceUrl}controllers/user`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.jwt}`,
-        },
+      fetch(
+        `${this.$store.state.serviceUrl}controllers/MYSQL/INTERNAL/user`,
 
-        body: JSON.stringify(obj),
-      })
+        // `${this.ServiceUrl}controllers/user`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.user_token}`,
+          },
+
+          body: JSON.stringify(obj),
+        }
+      )
         .then((response) => response.json())
         .then((res) => {
           console.log(res.row);
           if (res.success) {
             // alert("SUCCESS");
-            if (localStorage.getItem("jwt")) {
-              localStorage.setItem("jwt", res.jwt);
+            if (localStorage.getItem("user_token")) {
+              localStorage.setItem("user_token", res.jwt);
             }
-            // this.$store.commit("jwt", localStorage.getItem("jwt"));
-            // jwt
+            // this.$store.commit("user_token", localStorage.getItem("user_token"));
+            // user_token
             // this.comfirm = false;
             this.$store.commit("user", res.row);
-            this.$store.commit("jwt", localStorage.getItem("jwt"));
+            this.$store.commit(
+              "user_token",
+              localStorage.getItem("user_token")
+            );
             // this.$store.commit("user", res.row);
             this.tab.profile = "profile";
             // console.log(this.confirm)
@@ -1685,22 +2886,23 @@ export default {
       this.$router.push({ name: `${page}` });
     },
     Logout() {
-      console.log("LOGOIT");
-      this.$refs.LoginComponent ? this.$refs.LoginComponent.Logout() : "";
-      this.$refs.joinnows ? (this.$refs.joinnows.checked = true) : "";
-      this.$refs.profile ? (this.$refs.profile.checked = false) : "";
+      console.log("sad");
+      this.$store.commit("isLogin", false);
+      this.$store.commit("user_token", false);
+      localStorage.removeItem("user_token");
+      // console.log("LOGOIT");
+      // this.$refs.AppModuleProfileLogin ? this.$refs.AppModuleProfileLogin.Logout() : "";
+      // this.$refs.joinnows ? (this.$refs.joinnows.checked = true) : "";
+      // this.$refs.profile ? (this.$refs.profile.checked = false) : "";
     },
-    // scrolling() {
-    //   this.$store.commit("scrollTop", this.$refs.msgContainer.scrollTop);
-    // },
     authentication() {
       let vm = this;
       vm.$store.commit("user", null);
-      fetch(`${this.ServiceUrl}controllers/authentication`, {
+      fetch(`${this.ServiceUrl}controllers/MYSQL/INTERNAL/authentication`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${this.jwt}`,
+          Authorization: `Bearer ${this.user_token}`,
         },
       })
         .then((response) => response.json())
@@ -1708,171 +2910,102 @@ export default {
           console.log(res);
           if (res.success) {
             vm.$store.commit("isLogin", true);
-            vm.$store.commit("user", res.user);
-            vm.$store.commit("jwt", vm.jwt);
-            // console.log(vm.$route.query);
-
-            if (vm.$route.query.gp_code) {
-              // console.log(
-              //   "vm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_code"
-              // );
-              vm.$emit("setgame");
-            } else {
-              vm.$emit("getgame");
-            }
-            vm.getSurvey();
-            vm.getRating();
-            vm.getCoin();
-          } else {
-            vm.$store.commit("isLogin", false);
-            vm.$store.commit("jwt", false);
-            localStorage.removeItem("jwt");
-            // if (FB) {
-            //   FB.logout(function (response) {});
-            // }
-            // if (this.Vue3GoogleOauth.isAuthorized) {
-            //   this.handleClickSignOut();
-            // }
-          }
-        })
-        .catch((error) => {
-          vm.$store.commit("isLogin", false);
-          vm.$store.commit("jwt", false);
-          localStorage.removeItem("jwt");
-          console.error("Error:", error);
-        });
-    },
-    // async handleClickSignOut() {
-    //   try {
-    //     await this.gAuth.signOut();
-    //     // console.log("isAuthorized", this.Vue3GoogleOauth.isAuthorized);
-    //     // this.user = "";
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // },
-    verifyEmail() {
-      console.log(this.$route.query.token);
-
-      let vm = this;
-      let token = vm.$route.query.token;
-      vm.$router.push({ query: {} });
-
-      fetch(`${this.ServiceUrl}controllers/verify-email`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.jwt}`,
-        },
-        body: JSON.stringify({
-          token: token,
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          console.log(res);
-          if (res.success) {
-            // vm.$store.commit("isLogin", true);
-            // vm.$store.commit("user", res.user);
-            // vm.$store.commit("jwt", vm.jwt);
-            // console.log(vm.$route.query);
+            console.log(res.row);
+            res.row.access = JSON.parse(res.row.access);
+            console.log(res.row);
+            vm.$store.commit("user", res.row);
+            // console.log(this.user)
+            vm.$store.commit("user_token", vm.user_token);
             // if (vm.$route.query.gp_code) {
-            //   // console.log("vm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_code")
             //   vm.$emit("setgame");
             // } else {
             //   vm.$emit("getgame");
             // }
-
-            vm.tab.join = "login";
-            vm.$refs.joinnows.checked = false;
-
-            if (localStorage.getItem("jwt")) {
-              localStorage.setItem("jwt", res.jwt);
-            }
-            // this.$store.commit("jwt", localStorage.getItem("jwt"));
-            // jwt
-            // this.comfirm = false;
-            vm.$store.commit("user", res.row);
-            console.log(this.jwt);
-            vm.$store.commit("jwt", res.jwt);
-            console.log(this.jwt);
-            // this.$store.commit("user", res.row);
-            vm.$emit("changetab", "profile");
-
-            // vm.authentication();
           } else {
-            // vm.$store.commit("isLogin", false);
-            // vm.$store.commit("jwt", false);
-            // localStorage.removeItem("jwt");
-            this.tab.join = "verify-email";
-            this.$refs.joinnows.checked = true;
-            this.$store.commit("isLogin", false);
+            vm.goLoginPage(vm);
           }
         })
         .catch((error) => {
-          // vm.$store.commit("isLogin", false);
-          // vm.$store.commit("jwt", false);
-          // localStorage.removeItem("jwt");
-          console.error("Error:", error);
-          this.tab.join = "verify-email";
-          this.$refs.joinnows.checked = true;
-          this.$store.commit("isLogin", false);
+          vm.goLoginPage(vm);
         });
+    },
+    goLoginPage(vm) {
+      // console.log("DASdsa");
+      vm.$store.commit("isLogin", false);
+      vm.$store.commit("user_token", false);
+      localStorage.removeItem("user_token");
+      vm.$router.push({ name: "AppLogin" });
+    },
+    showProfile() {
+      // console.log(this.user)
+      this.tab.profile = "profile";
+      this.$refs.profile.checked = true;
     },
   },
   mounted() {
     this.$nextTick(() => {
-      this.language = localStorage.getItem("language")
-        ? localStorage.getItem("language")
-        : "th";
+      this.$store.commit(
+        "language",
+        localStorage.getItem("language")
+          ? localStorage.getItem("language")
+          : "th"
+      );
+      // this.language = localStorage.getItem("language")
+      //   ? localStorage.getItem("language")
+      //   : "th";
       // this.$store.commit("scrollTop", this.$refs.msgContainer.scrollTop);
-      if (
-        this.$route.query.token &&
-        !this.jwt &&
-        this.$route.query.type == "verify"
-      ) {
-        this.$refs.joinnows.checked = true;
-        //   // tab.join
-        //   console.log(this.tab);
-        //   // this.tab.join = "verify-email";
-        //   // this.$refs.joinnows.checked = true;
-        //   // this.tab.profile = "editpassword";
-        //   // this.$refs.profile.checked = true;
-      }
-      if (this.$route.query.token && this.$route.query.type == "forgot") {
-        // this.$refs.joinnows.checked = /true;
-        // this.$refs.joinnows.checked = true;
-        this.tab.join = "resetpassword";
-        this.$refs.joinnows.checked = true;
-      }
-      // this.scrollTop = this.$refs.msgContainer.scrollTop;
-      if (this.$route.matched[0].props.default.type == "default") {
-        return;
-      }
-      if (
-        this.$route.matched[0].props.default.type == "member" &&
-        !this.testLogin
-      ) {
-        this.changepage("Home");
-      }
-      if (
-        this.$route.matched[0].props.default.type == "poster" &&
-        !this.testPosting
-      ) {
-        this.changepage("Home");
-      }
-
+      // if (
+      //   this.$route.query.token &&
+      //   !this.user_token &&
+      //   this.$route.query.type == "verify"
+      // ) {
+      //   this.$refs.joinnows.checked = true;
+      //   //   // tab.join
+      //   //   console.log(this.tab);
+      //   //   // this.tab.join = "verify-email";
+      //   //   // this.$refs.joinnows.checked = true;
+      //   //   // this.tab.profile = "editpassword";
+      //   //   // this.$refs.profile.checked = true;
+      // }
+      // if (this.$route.query.token && this.$route.query.type == "forgot") {
+      //   // this.$refs.joinnows.checked = /true;
+      //   // this.$refs.joinnows.checked = true;
+      //   this.tab.join = "resetpassword";
+      //   this.$refs.joinnows.checked = true;
+      // }
+      // // this.scrollTop = this.$refs.msgContainer.scrollTop;
+      // if (this.$route.matched[0].props.default.type == "default") {
+      //   return;
+      // }
+      // if (
+      //   this.$route.matched[0].props.default.type == "member" &&
+      //   !this.testLogin
+      // ) {
+      //   this.changepage("Home");
+      // }
+      // if (
+      //   this.$route.matched[0].props.default.type == "poster" &&
+      //   !this.testPosting
+      // ) {
+      //   this.changepage("Home");
+      // }
       // if(!this.testLogin){
       //   this && !this.testPosting
       //   if(){
       //     this.$route.name = 'PosterDashboard' PosterSurvey PosterAdvertising
       //   }
       // }
-      this.$route;
+      // this.$route;
+      // if (this.$route.query.hash) {
+      // }
     });
-    // this.$store.jwt = null
-    // console.log(localStorage.getItem("jwt"));
-    this.$store.commit("jwt", localStorage.getItem("jwt"));
+    // this.$store.user_token = null
+    // console.log(localStorage.getItem("user_token"));
+    // console.log("A")
+    // console.log(localStorage.getItem("user_token"))
+    this.$store.commit("user_token", localStorage.getItem("user_token"));
+    // console.log(this.user_token)
+    // console.log("B")
     // this.$store.commit("_a", localStorage.getItem("_a"));
   },
   created() {
@@ -1882,38 +3015,26 @@ export default {
     // },5000)
   },
   watch: {
-    jwt: function (val) {
+    user_token: function (val) {
       if (val) {
-        if (this.$route.query.token && this.$route.query.type == "verify") {
-          // tab.join
-          // console.log(this.tab);
-          this.verifyEmail();
-          return;
-          // this.tab.join = "verify-email";
-          // this.$refs.joinnows.checked = true;
-          // this.tab.profile = "editpassword";
-          // this.$refs.profile.checked = true;
-        }
         this.authentication();
       } else {
-        this.$store.commit("isLogin", false);
-        localStorage.removeItem("jwt");
+        this.goLoginPage(this);
       }
       // console.log(val);
     },
     user: function (val) {
-      // console.log("valvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalvalval");
-      // console.log(val);
+      console.log(val);
       if (!val) {
         return;
       }
-      if (!this.user.row.veridated_at) {
-        this.tab.join = "verify-email";
-        this.$refs.joinnows.checked = true;
-        this.$store.commit("isLogin", false);
-        return;
-      }
-      this.$store.commit("veridated", false);
+      // if (!this.user.row.veridated_at) {
+      //   this.tab.join = "verify-email";
+      //   this.$refs.joinnows.checked = true;
+      //   this.$store.commit("isLogin", false);
+      //   return;
+      // }
+      // this.$store.commit("veridated", false);
     },
     "tab.profile": function (val) {
       console.log(val);
@@ -1929,9 +3050,9 @@ export default {
 </script>
 
 <style lang="scss">
-* {
-  font-family: cursive !important;
-}
+// * {
+//   font-family: cursive !important;
+// }
 #app {
   // font-family: Avenir, Helvetica, Arial, sans-serif;
 
@@ -1949,5 +3070,8 @@ nav {
       color: #42b983;
     }
   }
+}
+span {
+  line-break: anywhere;
 }
 </style>
