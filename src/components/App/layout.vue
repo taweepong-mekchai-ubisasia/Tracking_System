@@ -30,27 +30,8 @@
             >
           </div>
         </div>
-        <AppModuleProfileLogin
-          v-if="tab.join == 'login'"
-          :tab="tab.join"
-          ref="AppModuleProfileLogin"
-          @setJoinnows="$refs.joinnows.checked = false"
-          @changetab="
-            (val) => {
-              tab.join = val;
-            }
-          "
-          :re_password="re_password"
-        />
-        <AppModuleProfileRegister
-          :tab="tab.join"
-          @changetab="
-            (val) => {
-              tab.join = val;
-            }
-          "
-          @changePrivacyNotice="(val) => (PrivacyNotice = val)"
-        />
+        
+      
         <AppModuleProfileVerifyEmail
           :tab="tab.join"
           @changetab="
@@ -2656,7 +2637,6 @@
 
 <script>
 import AppModuleMenu_ from "@/components/App/Module/Menu/_.vue";
-import AppModuleProfileRegister from "@/components/App/Module/Profile/Register.vue";
 import AppModuleProfileVerifyEmail from "@/components/App/Module/Profile/VerifyEmail.vue";
 import AppModuleProfileForgotPassword from "@/components/App/Module/Profile/ForgotPassword.vue";
 import AppModuleProfileResetPassword from "@/components/App/Module/Profile/ResetPassword.vue";
@@ -2687,8 +2667,6 @@ export default {
   },
   name: "AppLayout",
   components: {
-    AppModuleProfileRegister,
-    AppModuleProfileLogin,
     AppModuleProfileVerifyEmail,
     AppModuleProfileForgotPassword,
     AppModuleProfileResetPassword,
@@ -2890,10 +2868,6 @@ export default {
       this.$store.commit("isLogin", false);
       this.$store.commit("user_token", false);
       localStorage.removeItem("user_token");
-      // console.log("LOGOIT");
-      // this.$refs.AppModuleProfileLogin ? this.$refs.AppModuleProfileLogin.Logout() : "";
-      // this.$refs.joinnows ? (this.$refs.joinnows.checked = true) : "";
-      // this.$refs.profile ? (this.$refs.profile.checked = false) : "";
     },
     authentication() {
       let vm = this;

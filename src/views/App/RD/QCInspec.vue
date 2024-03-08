@@ -722,10 +722,10 @@ import AppLayout from "@/components/App/layout.vue";
 
 import SelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 
-import FGModule from "@/components/App/Module/RD/QCInspace/FG.vue";
-import PDModule from "@/components/App/Module/RD/QCInspace/PD.vue";
-import RMModule from "@/components/App/Module/RD/QCInspace/RM.vue";
-import TFGModule from "@/components/App/Module/RD/QCInspace/TFG.vue";
+import FGModule from "@/components/App/Module/Pages/RD/QCInspace/FG.vue";
+import PDModule from "@/components/App/Module/Pages/RD/QCInspace/PD.vue";
+import RMModule from "@/components/App/Module/Pages/RD/QCInspace/RM.vue";
+import TFGModule from "@/components/App/Module/Pages/RD/QCInspace/TFG.vue";
 
 export default {
   name: "Home",

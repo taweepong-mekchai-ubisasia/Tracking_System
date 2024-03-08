@@ -1102,11 +1102,11 @@
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
-import AppModuleWHRacLayout from "@/components/App/Module/WH/RacLayout.vue";
-import AppModuleWHStock from "@/components/App/Module/WH/Stock.vue";
-import AppModuleWHStockOnHand from "@/components/App/Module/WH/StockOnHand.vue";
-import AppModuleWHTransaction from "@/components/App/Module/WH/Transaction.vue";
-import AppModuleWHReportDashboard from "@/components/App/Module/WH/ReportDashboard.vue";
+import AppModuleWHRacLayout from "@/components/App/Module/Pages/WH/RacLayout.vue";
+import AppModuleWHStock from "@/components/App/Module/Pages/WH/Stock.vue";
+import AppModuleWHStockOnHand from "@/components/App/Module/Pages/WH/StockOnHand.vue";
+import AppModuleWHTransaction from "@/components/App/Module/Pages/WH/Transaction.vue";
+import AppModuleWHReportDashboard from "@/components/App/Module/Pages/WH/ReportDashboard.vue";
 
 export default {
   name: "Home",
