@@ -1,5 +1,5 @@
 <template>
-  <div id="Pageination" v-if="total > row">
+  <div v-if="total > row" class="w-full justify-center lg:text-right">
     <div class="join hidden md:block">
       <button
         class="join-item btn text-secondary"
@@ -55,12 +55,19 @@
         »
       </button>
     </div>
-    <select class="select select-bordered select-xs w-full max-w-xs block  md:hidden">
-  <option disabled selected>Tiny</option>
-  <option>Tiny Apple</option>
+
+    <div class="mt-2">
+    <select
+      v-model="current"
+      class="select select-bordered select-sm w-full max-w-xs block md:hidden text-center"
+      @change="category_index(current)"
+    >
+      <option selected v-for="v in maxpage" :value="v" class="text-center">{{ v }}</option>
+      <!-- <option>Tiny Apple</option>
   <option>Tiny Orange</option>
-  <option>Tiny Tomato</option>
-</select>
+  <option>Tiny Tomato</option> -->
+    </select>
+  </div>
   </div>
 </template>
 
@@ -70,10 +77,12 @@ export default {
   props: ["page", "total", "row", "back", "next", "loading"],
   data() {
     return {
+      current: 1,
       maxpage: 0,
     };
   },
   created() {
+    this.current = this.page;
     this.maxpage = Math.ceil(this.total / this.row);
   },
   methods: {

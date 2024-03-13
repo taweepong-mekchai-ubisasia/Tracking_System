@@ -20,3 +20,7 @@ npm run build
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 "# UBIS" 
+
+
+### icon
+https://icon-sets.iconify.design/fa6-solid/envelope-circle-check/

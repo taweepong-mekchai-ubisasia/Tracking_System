@@ -189,19 +189,18 @@
     </div>
 
     <div class="flex relative flex-row flex-wrap justify-center content-center">
-      <div class="w-full h-[80vh] relative overflow-auto" >
+      <div class="w-full h-[80vh] relative overflow-auto">
         <draggable-resizable-vue
           :show-grid="false"
           :resizable="false"
           grid-color="rgba(1, 1, 1, 1)"
-        
           v-model:h="aa.height"
           v-model:w="aa.width"
           v-model:active="aa.isActive"
           :draggable="drag.main"
           :style="{
-            left:`-${this.aa.padding.x / 2}px`,
-            top:`-${this.aa.padding.y / 2}px`,
+            left: `-${this.aa.padding.x / 2}px`,
+            top: `-${this.aa.padding.y / 2}px`,
             border: 'unset',
             padding: `${this.aa.padding.y * this.scale}px ${
               this.aa.padding.x * this.scale
@@ -295,7 +294,6 @@
           class="btn btn-square join-item"
           @click="scale < 2 ? (scale = scale + 0.1).toFixed(1) : ''"
         >
-     
           <Icon icon="mingcute:plus-line" class="h-5 w-5 text-primary" />
         </button>
         <div
@@ -307,7 +305,6 @@
           class="btn btn-square join-item"
           @click="scale > 0.1 ? (scale = scale - 0.1).toFixed(1) : ''"
         >
-         
           <Icon icon="typcn:minus-outline" class="h-5 w-5 text-primary" />
         </button>
         <button
@@ -316,7 +313,6 @@
           v-if="!edit"
         >
           <Icon icon="lucide:square-pen" class="h-5 w-5 text-white" />
-       
         </button>
 
         <button
@@ -325,7 +321,6 @@
           v-if="edit"
         >
           <Icon icon="mdi:check-outline" class="h-5 w-5 text-white" />
-
         </button>
 
         <button

@@ -32,6 +32,26 @@
                 style="max-height: 60vh"
               >
                 <div class="grid gap-4 md:grid-cols-1 grid-cols-1">
+                  <AppModuleGlobalUpload
+                    :imageLink="base.form.imageLink"
+                    :image="base.form.image"
+                    :id="'base'"
+                    :multiple="false"
+                    @respone="
+                      (res) => {
+                        let length = base.form.image.length
+                          ? base.form.image.length
+                          : 0;
+                        base.form.image = base.form.image.concat(res.image);
+                      }
+                    "
+                    @resetdata="
+                      (res) => {
+                        base.form.image = [...res.image];
+                      }
+                    "
+                  />
+
                   <div class="form-control">
                     <label class="label">
                       <span class="label-text">บริษัท</span>
@@ -598,6 +618,14 @@
             </div>
           </div>
         </div>
+
+        <!-- Open the modal using ID.showModal() method -->
+
+        <!-- The button to open modal -->
+
+        <!-- Put this part before </body> tag -->
+
+        <AppModuleGlobalShowImage :row="imagerow" />
       </template>
       <template #view>
         <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2">
@@ -615,7 +643,7 @@
                 />
                 <label
                   for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button"
+                  class="join-item btn-sm btn btn-primary modal-button text-white"
                   @click="base_create()"
                   >Create</label
                 >
@@ -627,9 +655,11 @@
                   <thead>
                     <tr>
                       <th>id</th>
+                      <td>รูป</td>
                       <td>ข้อมูลผู้พนักงาน</td>
                       <td>ติดต่อ</td>
                       <td>ตำแหน่ง</td>
+                      <td>สิทธิ์การใช้งาน</td>
                       <td>วันที่</td>
                       <td>บันทึก</td>
                       <td>แก้ไข</td>
@@ -639,6 +669,27 @@
                   <tbody>
                     <tr v-for="(row, index) in base.rows" :key="row.code">
                       <th>{{ row.id }}</th>
+                      <th class="text-center">
+                        <div class="avatar w-auto">
+                          <label
+                            for="modal_showImage"
+                            class="btn btn-link"
+                            @click="imagerow = row"
+                          >
+                            <img
+                              v-if="row.image.length > 0"
+                              :src="`${
+                                row.image[row.master ? row.master : 0].temp
+                                  ? tmpsLink
+                                  : row.imageLink
+                                  ? row.imageLink
+                                  : tmpsLink
+                              }${row.image[row.master ? row.master : 0].file}`"
+                              alt="Image"
+                            />
+                          </label>
+                        </div>
+                      </th>
                       <td>
                         <div>
                           <div class="font-bold">
@@ -690,6 +741,16 @@
                             <div class="text-sm">
                               {{ row.companyTitle ? row.companyTitle : "-" }}
                             </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div class="font-bold">
+                              {{ row.accessTitle ? row.accessTitle : "-" }}
+                            </div>
+                          
                           </div>
                         </div>
                       </td>
@@ -827,6 +888,7 @@ import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageinati
 import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
 
 export default {
   name: "Department",
@@ -836,6 +898,7 @@ export default {
     AppModuleGlobalPageination,
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,
+    AppModuleGlobalShowImage,
   },
   data() {
     return {
@@ -884,6 +947,7 @@ export default {
         controll: "",
         tb: "",
       },
+      imagerow: null,
     };
   },
   computed: {
@@ -913,7 +977,7 @@ export default {
     base_get(callback) {
       fetch(
         `${
-          this.$store.state.serviceUrl
+          this.serviceUrl
         }controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
         }${this.base.q ? `&q=${this.base.q}` : ""}`,
@@ -927,6 +991,12 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
+          if (res.rows.length > 0) {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+          }
           callback(
             res.success
               ? { rows: res.rows, total: res.total }
@@ -956,6 +1026,15 @@ export default {
         position: "",
         started_at: "",
         leaves_at: "",
+        title: "",
+        link: "",
+        type: "",
+        // imageLink_empty: "",
+        // image_empty: [],
+        // imageLink_active: "",
+        // image_active: [],
+        imageLink: "",
+        image: [],
       };
       this.detail.rows = [];
       this.base.controll = "create";
@@ -971,6 +1050,9 @@ export default {
     base_save() {
       let vm = this;
 
+      let image = { ...this.base.form.image[0] };
+      delete image.temp;
+
       if (this.base.controll != "create") {
         if (
           !this.base.form.current_password ||
@@ -982,35 +1064,33 @@ export default {
       } else {
         this.base.form.new_password = this.base.form.uid;
       }
-      fetch(
-        `${this.$store.state.serviceUrl}controllers/MYSQL/INTERNAL/HR/employee`,
-        {
-          method: this.base.controll == "create" ? "POST" : "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-          body: JSON.stringify({
-            code: this.base.current,
-            uid: this.base.form.uid,
-            firstname: this.base.form.firstname,
-            lastname: this.base.form.lastname,
-            current_password: this.base.form.current_password,
-            password: this.base.form.new_password,
-            confirm_password: this.base.form.confirm_password,
-            email: this.base.form.email,
-            tel: this.base.form.tel,
-            birthdate: this.base.form.birthdate,
-            department: this.base.form.department,
-            branch: this.base.form.branch,
-            company: this.base.form.company,
-            position: this.base.form.position,
-            started_at: this.base.form.started_at,
-            leaves_at: this.base.form.leaves_at,
-            access: this.base.form.access,
-          }),
-        }
-      )
+      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/employee`, {
+        method: this.base.controll == "create" ? "POST" : "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.user_token}`,
+        },
+        body: JSON.stringify({
+          code: this.base.current,
+          uid: this.base.form.uid,
+          firstname: this.base.form.firstname,
+          lastname: this.base.form.lastname,
+          current_password: this.base.form.current_password,
+          password: this.base.form.new_password,
+          confirm_password: this.base.form.confirm_password,
+          email: this.base.form.email,
+          tel: this.base.form.tel,
+          birthdate: this.base.form.birthdate,
+          department: this.base.form.department,
+          branch: this.base.form.branch,
+          company: this.base.form.company,
+          position: this.base.form.position,
+          started_at: this.base.form.started_at,
+          leaves_at: this.base.form.leaves_at,
+          access: this.base.form.access,
+          image: [image],
+        }),
+      })
         .then((response) => response.json())
         .then((res) => {
           if (res.success) {
@@ -1110,10 +1190,10 @@ export default {
         });
     },
     detail_create() {
-      console.log("detail_create");
+      // console.log("detail_create");
       // this.clearimage();
       this.detail.current = 0;
-      console.log("callback");
+      // console.log("callback");
       // this.detail.rows = [];
       this.detail.form = {
         code: "",
@@ -1197,17 +1277,14 @@ export default {
         if (this.detail.controll == "edit") {
           obj["code"] = this.detail.form.code;
         }
-        fetch(
-          `${this.$store.state.serviceUrl}controllers/MYSQL/INTERNAL/HR/email`,
-          {
-            method: this.detail.controll == "create" ? "POST" : "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${this.user_token}`,
-            },
-            body: JSON.stringify(obj),
-          }
-        )
+        fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email`, {
+          method: this.detail.controll == "create" ? "POST" : "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.user_token}`,
+          },
+          body: JSON.stringify(obj),
+        })
           .then((response) => response.json())
           .then((res) => {
             if (res.success) {
@@ -1235,7 +1312,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.$store.state.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -1264,9 +1341,9 @@ export default {
     this.$nextTick(() => {
       this.base_search();
       this.tmpsLink = `${
-        window.location.origin == "http://localhost:8080"
-          ? `http://localhost/sub/`
-          : `https://url/`
+        window.location.origin == "http://localhost:8081"
+          ? `http://localhost:8080/kay/rewrite_demo/services/`
+          : `${window.location.origin}/services/`
       }tmps/`;
     });
   },

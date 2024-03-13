@@ -2,22 +2,9 @@
   <div id="Upload">
     <div class="flex items-center justify-center w-full">
       <label
-        :class="!image.length>0 || multiple ? '' : 'hidden'"
+        :class="!image.length > 0 || multiple ? '' : 'hidden'"
         :for="`dropzone-file-${id}`"
-        class="
-          flex flex-col
-          items-center
-          justify-center
-          w-full
-          min-h-min
-          border-2 border-dashed
-          rounded-lg
-          cursor-pointer
-          bg-base-100
-          dark:hover:bg-base-200 dark:bg-base-100
-          hover:bg-gray-100
-          dark:border-base-200 dark:hover:border-base-100
-        "
+        class="flex flex-col items-center justify-center w-full min-h-min border-2 border-dashed rounded-lg cursor-pointer bg-base-100 dark:hover:bg-base-200 dark:bg-base-100 hover:bg-gray-100 dark:border-base-200 dark:hover:border-base-100"
       >
         <div class="flex flex-col items-center justify-center pt-5 pb-6">
           <svg
@@ -52,51 +39,45 @@
         />
       </label>
 
-     <div :class="!image.length>0 || multiple ? 'hidden' : ''" class="indicator mx-auto items-center
-          justify-center
-          w-full
-          min-h-min
-          border-2 border-gray-300 border-dashed
-          rounded-lg">
+      <div
+        :class="!image.length > 0 || multiple ? 'hidden' : ''"
+        class="indicator mx-auto items-center justify-center w-full min-h-min border-2 border-gray-300 border-dashed rounded-lg"
+      >
         <span
           class="indicator-item badge cursor-pointer py-3"
-
           @click="removeimage(0)"
           >x</span
         >
         <div
-          class="
-            grid
-            
-            card-bordered
-            p-1
-            place-items-center
-            cursor-pointer
-             overflow-hidden
-          "
+          class="grid card-bordered p-1 place-items-center cursor-pointer overflow-hidden"
         >
-          <img v-if="image.length>0" :src="`${image[0].temp?tmpsLink:imageLink}${image[0].file}`" :alt="`${image[0].file}`" />
+          <img
+            v-if="image.length > 0"
+            :src="`${image[0].temp ? tmpsLink : imageLink}${image[0].file}`"
+            :alt="`${image[0].file}`"
+          />
         </div>
-        
       </div>
     </div>
 
     <div
       v-if="multiple"
-      class="
-        grid
-        md:gap-6
-        gap-6
-        
-        
-        md:grid-rows-1
-        grid-rows-2
-        mt-6
-        mx-auto
-      "
+      class="grid md:gap-6 gap-6 md:grid-rows-1 grid-rows-2 mt-6 mx-auto"
       :class="`
-        md:grid-cols-${image.length<5?image.length:Math.ceil(image.length/2)<5?Math.ceil(image.length/2):5}
-        grid-cols-${image.length<5?image.length:Math.ceil(image.length/2)<5?Math.ceil(image.length/2):5}
+        md:grid-cols-${
+          image.length < 5
+            ? image.length
+            : Math.ceil(image.length / 2) < 5
+            ? Math.ceil(image.length / 2)
+            : 5
+        }
+        grid-cols-${
+          image.length < 5
+            ? image.length
+            : Math.ceil(image.length / 2) < 5
+            ? Math.ceil(image.length / 2)
+            : 5
+        }
       `"
     >
       <!-- <div class="flex-0 w-full aspect-video mx-auto"> -->
@@ -108,31 +89,20 @@
         >
         <!-- <span class="indicator-item indicator-start badge badge-secondary"></span> -->
         <span
-          class="
-            indicator-item indicator-center indicator-middle
-            badge badge-secondary
-          "
+          class="indicator-item indicator-center indicator-middle badge badge-secondary"
           v-if="row.master"
         >
           main
         </span>
         <div
-          class="
-            grid
-            w-16
-            h-16
-            card-bordered
-            p-1
-            place-items-center
-            cursor-pointer
-             overflow-hidden
-          "
+          class="grid w-16 h-16 card-bordered p-1 place-items-center cursor-pointer overflow-hidden"
           @click="setMaster(index)"
         >
+        {{ tmpsLink }}
+        {{ imageLink }}
           <img
             v-if="row.file"
-            :src="
-            `${row.temp?tmpsLink:imageLink}${row.file}`"
+            :src="`${row.temp ? tmpsLink : imageLink}${row.file}`"
             :alt="`${row.file}`"
           />
         </div>
@@ -144,15 +114,18 @@
 <script>
 export default {
   name: "Upload",
-  props: ["imageLink", "image", "multiple","id"],
+  props: ["imageLink", "image", "multiple", "id"],
   data() {
     return {
-      tmpsLink:''
+      tmpsLink: "",
     };
   },
   computed: {
-    ServiceUrl() {
+    serviceUrl() {
       return this.$store.getters.serviceUrl;
+    },
+    serviceImage() {
+      return this.$store.getters.serviceImage;
     },
   },
   methods: {
@@ -165,7 +138,7 @@ export default {
         console.log(file);
       }
       formData.append("userid", "1");
-      fetch(`${this.$store.state.serviceUrl}controllers/upload`, {
+      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/GLOBAL/upload`, {
         method: "POST",
         body: formData,
       })
@@ -176,23 +149,22 @@ export default {
           result.forEach((v, i) => {
             console.error(v);
             if (v.upload.success) {
-              console.log("AAAA")
+              console.log("AAAA");
               image.push({
                 file: `${v.log.row.current_file}.${v.log.row.ext}`,
                 master: false,
-                temp: true
+                temp: true,
               });
-              console.log(image)
+              console.log(image);
             } else {
-              console.log("nnnnnn")
+              console.log("nnnnnn");
               console.log("Error:", v);
             }
           });
 
-          console.log(image)
+          console.log(image);
           this.$emit("respone", {
             image: image,
-            
           });
         })
         .catch((error) => {
@@ -223,7 +195,7 @@ export default {
     },
   },
   mounted() {
-    this.tmpsLink = `${this.ServiceUrl}tmps/`
+    this.tmpsLink = `${this.serviceImage}tmps/`;
   },
 };
 </script>

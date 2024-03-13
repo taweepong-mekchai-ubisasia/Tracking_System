@@ -185,26 +185,6 @@
             <Icon icon="zondicons:exclamation-outline" />
           </div>
           <div class="text-xl font-bold">Confirm Change</div>
-
-          <!-- <div class="text-md">Log in with social</div> -->
-          <!-- <div class="flex flex-col w-full border-opacity-50">
-            <div class="text-md">ENTER YOUR MEMBERS CREDENTIALS</div>
-       
-            <div class="form-control grid mt-4">
-              <label class="label">
-                <span class="label-text">Email Address*</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Email Address*"
-                class="input input-bordered"
-             
-             
-              />
-            </div>
-           
-          </div> -->
-
           <div class="form-control mt-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
@@ -229,660 +209,6 @@
       </div>
     </div>
 
-    <input
-      type="checkbox"
-      id="modal-rating"
-      ref="rating"
-      class="modal-toggle"
-    />
-    <div class="modal">
-      <div class="modal-box relative text-center m-0 p-0">
-        <div class="navbar absolute top-0 left-0 bg-transparent z-10">
-          <div class="flex-1"></div>
-          <div class="flex-none">
-            <label
-              for="modal-rating"
-              class="btn btn-sm btn-ghost absolute right-2 top-2"
-              >✕</label
-            >
-          </div>
-        </div>
-
-        <div class="card-body pb-2">
-          <div class="text-xl font-bold">Rate Us!</div>
-          <p>How would you love this event</p>
-
-          <div class="form-control items-center my-4">
-            <div class="rating rating-lg rating-half">
-              <input
-                type="radio"
-                name="rating-10"
-                class="rating-hidden"
-                :checked="rating_score == 0 ? true : false"
-                @click="rating_score = 0"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-1"
-                :checked="rating_score == 0.5 ? true : false"
-                @click="rating_score = 0.5"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-2"
-                :checked="rating_score == 1 ? true : false"
-                @click="rating_score = 1"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-1"
-                :checked="rating_score == 1.5 ? true : false"
-                @click="rating_score = 1.5"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-2"
-                :checked="rating_score == 2 ? true : false"
-                @click="rating_score = 2"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-1"
-                :checked="rating_score == 2.5 ? true : false"
-                @click="rating_score = 2.5"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-2"
-                :checked="rating_score == 3 ? true : false"
-                @click="rating_score = 3"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-1"
-                :checked="rating_score == 3.5 ? true : false"
-                @click="rating_score = 3.5"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-2"
-                :checked="rating_score == 4 ? true : false"
-                @click="rating_score = 4"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-1"
-                :checked="rating_score == 4.5 ? true : false"
-                @click="rating_score = 4.5"
-              />
-              <input
-                type="radio"
-                name="rating-10"
-                class="bg-black mask mask-star-2 mask-half-2"
-                :checked="rating_score == 5 ? true : false"
-                @click="rating_score = 5"
-              />
-            </div>
-          </div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Comment & Feedback</span>
-            </label>
-            <textarea
-              class="textarea textarea-bordered"
-              placeholder="Description"
-              v-model="comment_feedback"
-              cols="5"
-              rows="5"
-            ></textarea>
-          </div>
-
-          <div class="form-control mt-4">
-            <button
-              class="btn btn-sm md:btn-md lg:btn-lg bg-black text-white border-black w-full"
-              :disabled="rating_setting ? false : true"
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <input
-      type="checkbox"
-      id="modal-survey"
-      ref="survey"
-      class="modal-toggle"
-    />
-    <div class="modal">
-      <div class="modal-box relative text-center m-0 p-0">
-        <div class="navbar absolute top-0 left-0 bg-transparent z-10">
-          <div class="flex-1"></div>
-          <div class="flex-none">
-            <label
-              for="modal-survey"
-              class="btn btn-sm btn-ghost absolute right-2 top-2"
-              >✕</label
-            >
-          </div>
-        </div>
-        <div class="card-body pb-2">
-          <div class="text-xl font-bold">Survey!</div>
-          <p>How would you love this event</p>
-
-          <!-- <div class="form-control">
-            <label class="label">
-              <span class="label-text">Email Address*</span>
-            </label>
-            <input
-              type="email"
-              placeholder="Email Address*"
-              class="input input-bordered"
-              v-model="temp.email"
-              :class="errorMsgemail ? 'input-error' : ''"
-            />
-            <label class="label" :class="errorMsgemail ? '' : 'hidden'">
-              <span class="label-text-alt text-error">{{ errorMsgemail }}</span>
-            </label>
-          </div> -->
-
-          <div class="form-control mt-4">
-            <label class="label">
-              <span class="label-text">ความพึงพอใจในการใช้งานระบบ</span>
-            </label>
-            <!-- <textarea
-              class="textarea textarea-bordered"
-              placeholder="Description"
-              v-model="comment_feedback"
-              cols="5"
-              rows="5"
-            ></textarea> -->
-            <select
-              class="select w-full select-bordered"
-              @focus="survey_data.check.contentment = true"
-              v-model="survey_data.temp.contentment"
-              :class="
-                survey_data.check.contentment &&
-                survey_data.errorMsg.contentment
-                  ? 'select-error'
-                  : ''
-              "
-              @change="
-                survey_data.errorMsg.contentment = !survey_data.temp.contentment
-                  ? true
-                  : false
-              "
-            >
-              <!-- contentment:'',
-        experience:'',
-        feedback:'', -->
-              <option value="" disabled selected>เลือกรายการ</option>
-              <option value="มากที่สุด">มากที่สุด</option>
-              <option value="มาก">มาก</option>
-              <option value="ปานกลาง">ปานกลาง</option>
-              <option value="น้อย">น้อย</option>
-              <option value="น้อยที่สุด">น้อยที่สุด</option>
-            </select>
-            <label
-              class="label"
-              :class="
-                survey_data.check.contentment &&
-                survey_data.errorMsg.contentment
-                  ? ''
-                  : 'hidden'
-              "
-            >
-              <span class="label-text-alt text-error">กรุณาเลือกรายการ</span>
-              <!-- <span class="label-text-alt">Alt label</span> -->
-            </label>
-          </div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text"
-                >ประสบการณ์โดยรวมที่ได้รับจากการเข้าร่วม Me Verse</span
-              >
-            </label>
-            <select
-              class="select w-full select-bordered"
-              v-model="survey_data.temp.experience"
-              @focus="survey_data.check.experience = true"
-              @change="
-                survey_data.errorMsg.experience = !survey_data.temp.experience
-                  ? true
-                  : false
-              "
-              :class="
-                survey_data.check.experience && survey_data.errorMsg.experience
-                  ? 'select-error'
-                  : ''
-              "
-            >
-              <option value="" disabled selected>เลือกรายการ</option>
-              <option value="มากที่สุด">มากที่สุด</option>
-              <option value="มาก">มาก</option>
-              <option value="ปานกลาง">ปานกลาง</option>
-              <option value="น้อย">น้อย</option>
-              <option value="น้อยที่สุด">น้อยที่สุด</option>
-            </select>
-            <label
-              class="label"
-              :class="
-                survey_data.check.experience && survey_data.errorMsg.experience
-                  ? ''
-                  : 'hidden'
-              "
-            >
-              <span class="label-text-alt text-error">กรุณาเลือกรายการ</span>
-              <!-- <span class="label-text-alt">Alt label</span> -->
-            </label>
-            <!-- <textarea
-              class="textarea textarea-bordered"
-              placeholder="Description"
-              v-model="comment_feedback"
-              cols="5"
-              rows="5"
-            ></textarea> -->
-          </div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text"
-                >ข้อเสนอแนะในการปรับปรุงระบบจากผู้ใช้งาน</span
-              >
-            </label>
-            <!-- <select class="select w-full select-bordered">
-              <option disabled selected>Pick your favorite Simpson</option>
-              <option>Homer</option>
-              <option>Marge</option>
-              <option>Bart</option>
-              <option>Lisa</option>
-              <option>Maggie</option>
-            </select> -->
-            <textarea
-              class="textarea textarea-bordered"
-              placeholder="Description"
-              v-model="survey_data.temp.feedback"
-              cols="5"
-              rows="5"
-            ></textarea>
-          </div>
-          <div class="form-control mt-4">
-            <button
-              class="btn btn-sm md:btn-md lg:btn-lg bg-black text-white border-black w-full"
-              :disabled="
-                survey_data.errorMsg.contentment ||
-                survey_data.errorMsg.experience ||
-                survey_data.errorMsg.feedback
-              "
-              @click="
-                survey_data.errorMsg.contentment ||
-                survey_data.errorMsg.experience ||
-                survey_data.errorMsg.feedback
-                  ? ''
-                  : setSurvey()
-              "
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <input
-      type="checkbox"
-      id="modal-PrivacyNotice"
-      ref="PrivacyNotice"
-      class="modal-toggle"
-      v-model="PrivacyNotice"
-    />
-    <div class="modal">
-      <div class="modal-box relative text-center m-0 p-0">
-        <div class="navbar absolute top-0 left-0 bg-transparent z-10">
-          <div class="flex-1"></div>
-          <div class="flex-none">
-            <label
-              for="modal-PrivacyNotice"
-              class="btn btn-sm btn-ghost absolute right-2 top-2"
-              >✕</label
-            >
-          </div>
-        </div>
-
-        <div class="card-body overflow-auto" style="max-height: inherit">
-          <div class="text-xl font-bold">Privacy Notice</div>
-          <div class="text-center lg:text-center">
-            <div class="text-4xl lg:text-5xl font-bold mt-6" ref="text">
-              Privacy Notice
-            </div>
-            <div class="divider text-orange-500">
-              ประกาศเกี่ยวกับความเป็นส่วนตัว (Me Verse)
-            </div>
-            <div class="container">
-              <span class="text-orange-500 my-5">
-                เรื่อง นโยบายการคุ้มครองข้อมูลส่วนบุคคล
-              </span>
-
-              <div>
-                <section class="container text-left text-sm">
-                  <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body">
-                      <!-- <h2 class="card-title text-sm">1. วัตถุประสงค์</h2> -->
-                      <p>
-                        ประกาศเกี่ยวกับความเป็นส่วนตัวฉบับนี้จึงจัดทำขึ้นเพื่อให้ท่านในฐานะ
-                        ผู้สมัครสมาชิกของเว็บไซต์ สสส.
-                        (ซึ่งต่อไปในประกาศนี้เรียกว่า "เจ้าของข้อมูลส่วนบุคคล")
-                        ได้ทราบและเข้าใจรูปแบบ วิธีการ
-                        และวัตถุประสงค์และความจำเป็นของกองทุนสนับสนุนการสร้างเสริมสุขภาพ
-                        ("สสส.") ในฐานะผู้ควบคุมข้อมูลส่วนบุคคล
-                        ที่ต้องดำเนินการเก็บรวบรวม ใช้
-                        หรือเปิดเผยข้อมูลส่วนบุคคลจากท่าน
-                        รวมทั้งทราบถึงนโยบายการคุ้มครองข้อมูลส่วนบุคคล
-                        มาตรการในการรักษาความมั่นคงปลอดภัยของข้อมูลส่วนบุคคล
-                        ตลอดจนสิทธิตามกฎหมายของท่านในฐานะเจ้าของข้อมูลส่วนบุคคล
-                        ซึ่งมีรายละเอียดดังต่อไปนี้
-                      </p>
-
-                      <div class="divider"></div>
-                      <b>1. ฐานกฎหมายในการเก็บรวบรวมข้อมูลส่วนบุคคล</b>
-                      <p>
-                        สสส.
-                        จำเป็นต้องดำเนินการเก็บรวบรวมข้อมูลส่วนบุคคลของท่านภายใต้ฐานกฎหมาย
-                        โดยมีรายละเอียด ดังต่อไปนี้
-                      </p>
-                      <ul class="menu bg-base-100">
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            (1)
-                            ดำเนินการเก็บรวบรวมข้อมูลส่วนบุคคลเพื่อการปฏิบัติตามสัญญา
-                            (Contract)
-                            โดยนำข้อมูลส่วนบุคคลของท่านไปใช้ประโยชน์ในประชาสัมพันธ์กิจกรรมและข้อมูลข่าวสารของ
-                            สสส. ให้กับท่านทราบ
-                            ตลอดจนเชิญท่านเข้าร่วมกิจกรรมต่าง ๆ ของ สสส. หาก
-                            สสส. ไม่ได้รับข้อมูลส่วนบุคคลดังกล่าวจะทำให้ สสส.
-                            ไม่สามารถดำเนินงานให้เป็นไปตามวัตถุประสงค์ได้
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            (2)
-                            ดำเนินการเก็บรวบรวมข้อมูลส่วนบุคคลเพื่อประโยชน์ชอบด้วยกฎหมาย
-                            (Legitimate Interest)
-                            โดยนำข้อมูลส่วนบุคคลของท่านไปใช้ประโยชน์ในการวิเคราะห์สังเคราะห์
-                            เพื่อนำมาปรับปรุง วางแผนการดำเนินกิจกรรมต่าง ๆ
-                            และการประชาสัมพันธ์ และการใช้งานภายใน สสส.
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                      </ul>
-                      <div class="divider"></div>
-                      <b>2. วัตถุประสงค์ในการเก็บรวบรวมข้อมูลส่วนบุคคล</b>
-                      <p>
-                        สสส.
-                        ดำเนินการเก็บรวบรวมข้อมูลส่วนบุคคลของท่านเพื่อใช้ประโยชน์ในประชาสัมพันธ์กิจกรรมและข้อมูลข่าวสารของ
-                        สสส. ให้กับท่านทราบ ตลอดจนเชิญท่านเข้าร่วมกิจกรรมต่าง ๆ
-                        ของ สสส.
-                      </p>
-                      <div class="divider"></div>
-                      <b>3. แหล่งข้อมูลและรายการข้อมูลส่วนบุคคลที่เก็บรวบรวม</b>
-                      <p>
-                        สสส.
-                        ดำเนินการเก็บรวบรวมข้อมูลส่วนบุคคลของท่านจากแหล่งข้อมูลและรายการข้อมูล
-                        ดังต่อไปนี้
-                      </p>
-                      <div class="overflow-x-auto">
-                        <table class="table table-compact w-full">
-                          <thead>
-                            <tr>
-                              <th>แหล่งข้อมูล/วิธีการเก็บรวบรวม</th>
-                              <th>รายการข้อมูลส่วนบุคคล</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <th>
-                                เก็บข้อมูลจากท่านโดยตรงผ่านหน้าเว็บไซต์ สสส.
-                                ในส่วนของการสมัครสมาชิกเว็บไซต์
-                              </th>
-                              <td>
-                                ชื่อ นามสกุล อีเมล ชื่อเล่น รวมถึงข้อมูลอื่น ๆ
-                                ที่ท่านได้กรอกผ่านหน้าเว็บไซต์ สสส.
-                                ในส่วนของการสมัครสมาชิกเว็บไซต์
-                                ซึ่งสามารถเชื่อมโยงไปถึงเจ้าของข้อมูลส่วนบุคคล
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div class="divider"></div>
-                      <b>4. ระยะเวลาในการเก็บรวบรวมข้อมูลส่วนบุคคล</b>
-                      <!-- <p>สสส. จำเป็นต้องดำเนินการเก็บรวบรวมข้อมูลส่วนบุคคลของท่านภายใต้ฐานกฎหมาย โดยมีรายละเอียด ดังต่อไปนี้</p> -->
-                      <ul class="menu bg-base-100">
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            4.1 สสส. ดำเนินการเก็บรวบรวมข้อมูลส่วนบุคคลของท่าน
-                            เป็นระยะเวลาไม่เกิน 5 ปี
-                            นับแต่นับแต่วันที่ที่ท่านได้สมัครเป็นสมาชิกเว็บไซต์
-                            สสส. ยกเว้นจะมีกฎหมายไว้เป็นอย่างอื่น
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            4.2 เมื่อครบกำหนดระยะเวลาตามข้อ 4.1
-                            หรือเมื่อข้อมูลส่วนบุคคลของท่านไม่สามารถใช้ประโยชน์ได้ตามวัตถุประสงค์ที่กำหนดไว้ในข้อ
-                            2. สสส.
-                            จะลบหรือทำลายหรือทำให้ข้อมูลส่วนบุคคลของท่านเป็นข้อมูลที่ไม่สามารถระบุตัวตนของเจ้าของข้อมูลส่วนบุคคลได้อีก
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                      </ul>
-                      <div class="divider"></div>
-                      <b>5. มาตรการรักษาความมั่นคงปลอดภัยข้อมูลส่วนบุคคล</b>
-                      <!-- <p>สสส. จำเป็นต้องดำเนินการเก็บรวบรวมข้อมูลส่วนบุคคลของท่านภายใต้ฐานกฎหมาย โดยมีรายละเอียด ดังต่อไปนี้</p> -->
-                      <ul class="menu bg-base-100">
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            5.1 สสส.
-                            มีมาตรการในการรักษาความมั่นคงปลอดภัยข้อมูลส่วนบุคคลของท่านอย่างเหมาะสม
-                            ทั้งในเชิงเทคนิคและการบริหารจัดการ
-                            เพื่อป้องกันมิให้ข้อมูลสูญหาย หรือมีการเข้าถึง ทำลาย
-                            ใช้ เปลี่ยนแปลง แก้ไข
-                            หรือเปิดเผยข้อมูลส่วนบุคคลโดยไม่ได้รับอนุญาต
-                            ซึ่งสอดคล้องกับนโยบายและแนวปฏิบัติด้านความมั่นคงปลอดภัยสารสนเทศ
-                            (Information Security Policy) ของ สสส.
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            5.2 สสส.
-                            ได้กำหนดนโยบายการคุ้มครองข้อมูลส่วนบุคคลที่ประกาศให้ทราบโดยทั่วกันทั้งองค์กร
-                            พร้อมทั้งกำหนดแนวทางปฏิบัติเพื่อให้เกิดความมั่นคงปลอดภัยในการเก็บรวบรวม
-                            ใช้ และเปิดเผยข้อมูลส่วนบุคคล
-                            โดยธำรงไว้ซึ่งความเป็นความลับ (Confidentiality)
-                            ความถูกต้องครบถ้วน (Integrity) และสภาพพร้อมใช้งาน
-                            (Availability) ของข้อมูลส่วนบุคคล
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                      </ul>
-
-                      <div class="divider"></div>
-                      <b>6. สิทธิของเจ้าของข้อมูลส่วนบุคคล</b>
-                      <p>
-                        เพื่อให้ข้อมูลส่วนบุคคลของท่านยังคงอยู่ในความควบคุมของท่านได้มากขึ้น
-                        ท่านสามารถใช้สิทธิเกี่ยวกับข้อมูลส่วนบุคคลของท่านได้ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล
-                        พ.ศ. 2562 ดังต่อไปนี้
-                      </p>
-                      <ul class="menu bg-base-100">
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            (1) สิทธิในการเข้าถึง ขอสำเนา
-                            หรือขอรับข้อมูลส่วนบุคคลที่เก็บรวบรวมไว้
-                            รวมถึงขอให้เปิดเผยถึง
-                            การได้มาซึ่งข้อมูลส่วนบุคคลที่เจ้าของข้อมูลส่วนบุคคลไม่ได้ให้ความยินยอม
-                            เว้นแต่กรณีที่ สสส.
-                            มีสิทธิปฏิเสธคำขอของท่านได้ตามกฎหมาย
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            (2)
-                            สิทธิขอรับหรือขอให้ส่งหรือโอนข้อมูลส่วนบุคคลที่มีการจัดทำให้อยู่ในรูปแบบที่สามารถอ่านหรือใช้งานได้ด้วยเครื่องมือหรืออุปกรณ์ที่ทำงานได้โดยอัตโนมัติและสามารถใช้หรือเปิดเผยข้อมูลส่วนบุคคลได้ด้วยวิธีอัตโนมัติ
-                            เว้นแต่กรณีที่ สสส.
-                            มีสิทธิปฏิเสธคำขอของท่านได้ตามกฎหมาย
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            (3) สิทธิในการคัดค้านหรือขอให้ระงับการเก็บรวบรวม ใช้
-                            หรือเปิดเผยข้อมูลส่วนบุคคลตามเงื่อนไขที่กฎหมายกำหนด
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            (4) สิทธิในการขอให้ลบ ทำลาย
-                            หรือทำให้ข้อมูลส่วนบุคคลเป็นข้อมูลที่ไม่สามารถระบุตัวบุคคลของเจ้าของข้อมูลส่วนบุคคลได้ตามเงื่อนไขที่กฎหมายกำหนด
-                            เว้นแต่กรณีที่ สสส.
-                            มีสิทธิปฏิเสธคำขอของท่านได้ตามกฎหมาย
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            (5)
-                            สิทธิในการขอให้ดำเนินการให้ข้อมูลส่วนบุคคลถูกต้อง
-                            เป็นปัจจุบัน สมบูรณ์ และไม่ก่อให้เกิดความเข้าใจผิด
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            (6) สิทธิในการเพิกถอนความยินยอมในการเก็บรวบรวม ใช้
-                            หรือเปิดเผยข้อมูลส่วนบุคคล
-                            เว้นแต่ในกรณีที่มีกฎหมายหรือข้อตกลงกำหนดไว้เป็นอย่างอื่น
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                      </ul>
-                      <p>
-                        ทั้งนี้ ท่านสามารถยื่นคำร้องขอให้ สสส.
-                        ดำเนินการตามสิทธิได้โดยวิธีการหรือช่องทางดังนี้
-                        แบบคำร้องขอใช้สิทธิของเจ้าของข้อมูลส่วนบุคคล ที่ สสส.
-                        ได้จัดเตรียมไว้ให้ หรือ
-                        <a href="https://pdpa.thaihealth.or.th"
-                          >https://pdpa.thaihealth.or.th</a
-                        >
-                      </p>
-                      <div class="divider"></div>
-                      <b>7. การติดต่อ สสส.</b>
-                      <p>
-                        ท่านสามารถติดต่อสอบถามรายละเอียดในประกาศเกี่ยวกับความเป็นส่วนตัวนี้ได้ตามช่องทาง
-                        ดังต่อไปนี้
-                      </p>
-                      <ul class="menu bg-base-100">
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            7.1 ผู้ควบคุมข้อมูลส่วนบุคคล
-                            <br />
-                            กองทุนสนับสนุนการสร้างเสริมสุขภาพ (สสส.)
-                            <br />
-                            เลขที่ 99/8 ซอยงามดูพลี แขวงทุ่งมหาเมฆ เขตสาทร
-                            กรุงเทพมหานคร 10120
-                            <br />
-                            โทร. 0 2343 1500 / อีเมล : dpo@thaihealth.or.th
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                        <li class="disabled">
-                          <!-- <a href="#"> -->
-                          <p class="text-left" style="color: grey">
-                            7.2 เจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคล
-                            <br />
-                            นายวิเชียร ทิพย์ชุมภู
-                            <br />
-                            เลขที่ 99/8 ซอยงามดูพลี แขวงทุ่งมหาเมฆ เขตสาทร
-                            กรุงเทพมหานคร 10120
-                            <br />
-                            โทร. 0 2343 1500 / อีเมล : dpo@thaihealth.or.th
-                          </p>
-                          <!-- </a> -->
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- <div class="form-control mt-4"> -->
-        <!-- <div class="grid grid-cols-2 gap-4">
-              <div>
-                <button
-                  class="
-                    btn btn-sm
-                    md:btn-md
-                    lg:btn-lg
-                    bg-black
-                    text-white
-                    border-black
-                    w-full
-                  "
-                  @click="PrivacyNotice = !PrivacyNotice"
-                >
-                  Cancel
-                </button>
-              </div>
-              <div>
-                <button
-                  class="
-                    btn btn-sm
-                    md:btn-md
-                    lg:btn-lg
-                    bg-black
-                    text-white
-                    border-black
-                    w-full
-                  "
-                  @click="update()"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div> -->
-
-        <!-- </div> -->
-        <!-- </div> -->
-      </div>
-    </div>
 
     <slot name="modal"></slot>
 
@@ -2564,21 +1890,6 @@
               <details id="disclosure-docs" :open="false">
                 <summary class="group">
                   <span>
-                    <!-- <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5 text-orange-400"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
-                />
-              </svg> -->
-                    <!-- <Icon name="line-md:chat" class="w-5 h-5 text-orange-400"/> -->
                     <Icon
                       icon="material-symbols:book-outline"
                       class="w-5 h-5 text-orange-400"
@@ -2626,9 +1937,6 @@
               </a>
             </li>
           </ul>
-          <!-- <div
-            class="bg-base-100 pointer-events-none sticky bottom-0 flex h-40 [mask-image:linear-gradient(transparent,#000000)]"
-          ></div> -->
         </aside>
       </div>
     </div>
@@ -2643,10 +1951,6 @@ import AppModuleProfileResetPassword from "@/components/App/Module/Profile/Reset
 import AppModuleProfileProfile from "@/components/App/Module/Profile/Profile.vue";
 import AppModuleProfileEditDetail from "@/components/App/Module/Profile/EditDetail.vue";
 import AppModuleProfileEditPassword from "@/components/App/Module/Profile/EditPassword.vue";
-// import PrivacyNoticeVue from "@/components/App/Module/PrivacyNotice.vue";
-// import PrivacyNoticeVue from "@/views/App/PrivacyNotice.vue";
-// import PrivacyNoticeComponent from "@/components/App/Module/PrivacyNotice.vue";
-// import PrivacyNotice from '@/views/App/PrivacyNotice.vue'
 
 import LayoutLogo from "@/components/Layout/Logo.vue";
 import LayoutLogoLight from "@/components/Layout/LogoLight.vue";
@@ -2760,12 +2064,6 @@ export default {
     isLogin() {
       return this.$store.getters.isLogin;
     },
-    // admin_isLogin() {
-    //   return this.$store.getters.admin_isLogin;
-    // },
-    // scrollTop() {
-    //   return this.$store.getters.scrollTop;
-    // },
     user_token() {
       return this.$store.getters.user_token;
     },
@@ -2775,24 +2073,6 @@ export default {
     language() {
       return this.$store.getters.language;
     },
-    // rating() {
-    //   return this.$store.getters.rating;
-    // },
-    // veridated() {
-    //   return this.$store.getters.veridated;
-    // },
-    // testLogin() {
-    //   return this.$store.getters.testLogin;
-    // },
-    // testPosting() {
-    //   return this.$store.getters.testPosting;
-    // },
-    // Vue3GoogleOauth() {
-    //   return this.$store.getters.Vue3GoogleOauth;
-    // },
-    // gAuth() {
-    //   return this.$store.getters.gAuth;
-    // },
   },
   methods: {
     changeLanguage(v) {
@@ -2830,27 +2110,18 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          console.log(res.row);
           if (res.success) {
-            // alert("SUCCESS");
             if (localStorage.getItem("user_token")) {
               localStorage.setItem("user_token", res.jwt);
             }
-            // this.$store.commit("user_token", localStorage.getItem("user_token"));
-            // user_token
-            // this.comfirm = false;
             this.$store.commit("user", res.row);
             this.$store.commit(
               "user_token",
               localStorage.getItem("user_token")
             );
-            // this.$store.commit("user", res.row);
             this.tab.profile = "profile";
-            // console.log(this.confirm)
             this.confirm = false;
-            // console.log(this.confirm)
             this.profileUpdate.success = "Update profile is successfully.";
-            // this.$emit("changetab", "profile");
             return callback();
           }
           alert(res.errorMsg);
@@ -2860,11 +2131,9 @@ export default {
         });
     },
     changepage(page) {
-      console.log(page);
       this.$router.push({ name: `${page}` });
     },
     Logout() {
-      console.log("sad");
       this.$store.commit("isLogin", false);
       this.$store.commit("user_token", false);
       localStorage.removeItem("user_token");
@@ -2872,7 +2141,7 @@ export default {
     authentication() {
       let vm = this;
       vm.$store.commit("user", null);
-      fetch(`${this.ServiceUrl}controllers/MYSQL/INTERNAL/authentication`, {
+      fetch(`${this.ServiceUrl}controllers/MYSQL/INTERNAL/GLOBAL/auth`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -2881,20 +2150,11 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          console.log(res);
           if (res.success) {
             vm.$store.commit("isLogin", true);
-            console.log(res.row);
             res.row.access = JSON.parse(res.row.access);
-            console.log(res.row);
             vm.$store.commit("user", res.row);
-            // console.log(this.user)
             vm.$store.commit("user_token", vm.user_token);
-            // if (vm.$route.query.gp_code) {
-            //   vm.$emit("setgame");
-            // } else {
-            //   vm.$emit("getgame");
-            // }
           } else {
             vm.goLoginPage(vm);
           }
@@ -2904,14 +2164,12 @@ export default {
         });
     },
     goLoginPage(vm) {
-      // console.log("DASdsa");
       vm.$store.commit("isLogin", false);
       vm.$store.commit("user_token", false);
       localStorage.removeItem("user_token");
       vm.$router.push({ name: "AppLogin" });
     },
     showProfile() {
-      // console.log(this.user)
       this.tab.profile = "profile";
       this.$refs.profile.checked = true;
     },
@@ -2924,69 +2182,10 @@ export default {
           ? localStorage.getItem("language")
           : "th"
       );
-      // this.language = localStorage.getItem("language")
-      //   ? localStorage.getItem("language")
-      //   : "th";
-      // this.$store.commit("scrollTop", this.$refs.msgContainer.scrollTop);
-      // if (
-      //   this.$route.query.token &&
-      //   !this.user_token &&
-      //   this.$route.query.type == "verify"
-      // ) {
-      //   this.$refs.joinnows.checked = true;
-      //   //   // tab.join
-      //   //   console.log(this.tab);
-      //   //   // this.tab.join = "verify-email";
-      //   //   // this.$refs.joinnows.checked = true;
-      //   //   // this.tab.profile = "editpassword";
-      //   //   // this.$refs.profile.checked = true;
-      // }
-      // if (this.$route.query.token && this.$route.query.type == "forgot") {
-      //   // this.$refs.joinnows.checked = /true;
-      //   // this.$refs.joinnows.checked = true;
-      //   this.tab.join = "resetpassword";
-      //   this.$refs.joinnows.checked = true;
-      // }
-      // // this.scrollTop = this.$refs.msgContainer.scrollTop;
-      // if (this.$route.matched[0].props.default.type == "default") {
-      //   return;
-      // }
-      // if (
-      //   this.$route.matched[0].props.default.type == "member" &&
-      //   !this.testLogin
-      // ) {
-      //   this.changepage("Home");
-      // }
-      // if (
-      //   this.$route.matched[0].props.default.type == "poster" &&
-      //   !this.testPosting
-      // ) {
-      //   this.changepage("Home");
-      // }
-      // if(!this.testLogin){
-      //   this && !this.testPosting
-      //   if(){
-      //     this.$route.name = 'PosterDashboard' PosterSurvey PosterAdvertising
-      //   }
-      // }
-      // this.$route;
-      // if (this.$route.query.hash) {
-      // }
     });
-    // this.$store.user_token = null
-    // console.log(localStorage.getItem("user_token"));
-    // console.log("A")
-    // console.log(localStorage.getItem("user_token"))
     this.$store.commit("user_token", localStorage.getItem("user_token"));
-    // console.log(this.user_token)
-    // console.log("B")
-    // this.$store.commit("_a", localStorage.getItem("_a"));
   },
   created() {
-    // setTimeout(()=>{
-    //   console.log(FB)
-    // console.log(googleUser)
-    // },5000)
   },
   watch: {
     user_token: function (val) {
@@ -2995,20 +2194,12 @@ export default {
       } else {
         this.goLoginPage(this);
       }
-      // console.log(val);
     },
     user: function (val) {
       console.log(val);
       if (!val) {
         return;
       }
-      // if (!this.user.row.veridated_at) {
-      //   this.tab.join = "verify-email";
-      //   this.$refs.joinnows.checked = true;
-      //   this.$store.commit("isLogin", false);
-      //   return;
-      // }
-      // this.$store.commit("veridated", false);
     },
     "tab.profile": function (val) {
       console.log(val);
@@ -3024,12 +2215,7 @@ export default {
 </script>
 
 <style lang="scss">
-// * {
-//   font-family: cursive !important;
-// }
 #app {
-  // font-family: Avenir, Helvetica, Arial, sans-serif;
-
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

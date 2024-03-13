@@ -1279,6 +1279,9 @@ export default {
       });
     },
     detail_get(callback) {
+      console.error(
+        "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+      );
       fetch(
         `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.form.code}&transref=I&transref_type_null=1`,
         {

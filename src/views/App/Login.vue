@@ -151,7 +151,7 @@ export default {
         return;
       }
       fetch(
-        `${this.$store.state.serviceUrl}controllers/MYSQL/INTERNAL/authentication`,
+        `${this.$store.state.serviceUrl}controllers/MYSQL/INTERNAL/GLOBAL/auth`,
         {
           method: "POST",
           headers: {

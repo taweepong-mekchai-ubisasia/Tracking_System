@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vue/cli-plugin-pwa": "^5.0.8",
+    "ant-design-vue": "^4.1.2",
     "apexcharts": "^3.45.2",
     "core-js": "^3.8.3",
     "draggable-resizable-vue3": "^1.0.94-beta",

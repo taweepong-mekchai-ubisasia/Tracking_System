@@ -28,6 +28,7 @@
 {{ label }} -->
         <ul
           class="absolute menu menu-xs bg-base-100 border-2 w-full shadow-lg max-h-60 overflow-auto block z-10"
+          :class="subCustomClass?subCustomClass:''"
           v-if="base.showlist || base.focuslist"
           ref="scrollComponent"
           @scroll="handleScroll"
@@ -70,6 +71,7 @@ export default {
   props: [
     "placeholder",
     "customClass",
+    "subCustomClass",
     "label",
     "code",
     "text",
@@ -289,8 +291,8 @@ export default {
       // !this.current ? () : "";
       this.base_search((rows) => {
         this.base.rows = rows;
-        console.error(this.current);
-        console.table(this.base.rows);
+        // console.error(this.current);
+        // console.table(this.base.rows);
         let current = this.base.rows.find(
           (v, i) => v[this.code] == this.current
         );

@@ -1,8 +1,6 @@
 <template>
   <div class="scroll-smooth">
-    <router-view
-      ref="view"
-    />
+    <router-view ref="view" />
   </div>
 </template>
 <script>
@@ -20,29 +18,24 @@ export default {
     },
   },
   data() {
-    return {
-
-    };
+    return {};
   },
-  methods: {  },
-  mounted() {
-  },
-  created() {
-  },
-  watch: {
-  },
+  methods: {},
+  mounted() {},
+  created() {},
+  watch: {},
 };
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap");
 #app,
 html,
 * {
   // font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
   //   Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    //  font-family: 'IBM Plex Sans Thai', sans-serif;
-    // font-weight: 500; 
+  //  font-family: 'IBM Plex Sans Thai', sans-serif;
+  // font-weight: 500;
   // --font-mono: "Fira Mono", monospace;
   --pure-white: #ffffff;
   --primary-color: #b9c6d2;
@@ -64,7 +57,9 @@ body {
   background-color: var(--fallback-b2, oklch(var(--b2) / 1));
   background-color: var(--fallback-b2, oklch(var(--b2) / var(--tw-bg-opacity)));
 }
-[data-theme="ubis"] .menu li > *:not(ul):not(.menu-title):not(details):active, .menu li > *:not(ul):not(.menu-title):not(details).active, .menu li > details > summary:active {
+[data-theme="ubis"] .menu li > *:not(ul):not(.menu-title):not(details):active,
+.menu li > *:not(ul):not(.menu-title):not(details).active,
+.menu li > details > summary:active {
   border-width: 2px;
   border-color: rgba(180, 180, 180, 0.2);
   color: white !important;

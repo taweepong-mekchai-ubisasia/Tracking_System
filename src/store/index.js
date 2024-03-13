@@ -15,6 +15,12 @@ export default createStore({
           : //  `http://localhost:8080/kay/rewrite_demo/services/api/` :
             `${window.location.origin}/services/api/`
       }`,
+      serviceImage: `${
+        window.location.origin == "http://localhost:8081"
+          ? "http://localhost:8080/kay/rewrite_demo/services/"
+          : //  `http://localhost:8080/kay/rewrite_demo/services/` :
+            `${window.location.origin}/services/`
+      }`,
       // serviceUrl: `https://publicly-quality-javelin.ngrok-free.app/dev/rewrite_demo/services/api/`
       // `${
       //   window.location.origin == 'http://localhost:8081' ?
@@ -47,6 +53,38 @@ export default createStore({
           },
         ],
         AC: [
+          {
+            title: "CostCalculate",
+            access: false,
+            menu: [
+              {
+                title: "Dashboard",
+                name: "ACCostCalculateDashboard",
+                access: false,
+              },
+              {
+                title: "CostView",
+                name: "ACCostCalculateCostView",
+                access: false,
+              },
+              {
+                title: "CostAdjust",
+                name: "ACCostCalculateCostAdjust",
+                access: false,
+              },
+              {
+                title: "CostCustom",
+                name: "ACCostCalculateCostCustom",
+                access: false,
+              },
+              {
+                title: "Report",
+                name: "ACCostCalculateReport",
+                access: false,
+              },
+            ],
+          },
+
           {
             title: "Budget",
             access: false,
@@ -81,17 +119,33 @@ export default createStore({
         ],
         WH: [
           {
+            title: "Item",
+            access: false,
+            menu: [
+              {
+                title: "Request",
+                name: "WHItemRequest",
+                access: false,
+              },
+              {
+                title: "Approve",
+                name: "WHItemApprove",
+                access: false,
+              },
+            ],
+          },
+          {
             title: "Bin Location",
             access: false,
             menu: [
               {
                 title: "Management",
-                name: "WHBinLocation",
+                name: "WHBinLocationManagement",
                 access: false,
               },
               {
                 title: "Short Code",
-                name: "WHShortCode",
+                name: "WHBinLocationShortCode",
                 access: false,
               },
             ],
@@ -102,44 +156,76 @@ export default createStore({
             access: false,
           },
         ],
-        PU: [
+        PUR: [
           {
             title: "Purchase Request",
             access: false,
             menu: [
               {
                 title: "Request",
-                name: "PUPORequest",
+                name: "PURPORequestOld",
                 access: false,
               },
               {
                 title: "Approve",
-                name: "PUPOApprove",
+                name: "PURPOApproveOld",
                 access: false,
               },
               {
                 title: "Recruitment",
-                name: "PUPORecruitment",
+                name: "PURPORecruitmentOld",
                 access: false,
               },
               {
                 title: "Order",
-                name: "PUPOOrder",
+                name: "PURPOOrderOld",
                 access: false,
               },
               {
                 title: "Follow",
-                name: "PUPOFollow",
+                name: "PURPOFollowOld",
                 access: false,
               },
               {
                 title: "Supplier",
-                name: "PUPOSupplier",
+                name: "PURPOSupplierOld",
                 access: false,
               },
               {
                 title: "Receive",
-                name: "PUPOReceive",
+                name: "PURPOReceiveOld",
+                access: false,
+              },
+            ],
+          },
+          {
+            title: "PR",
+            access: false,
+            menu: [
+              {
+                title: "Request",
+                name: "PURPRRequest",
+                access: false,
+              },
+              {
+                title: "Approve",
+                name: "PURPRApprove",
+                access: false,
+              },
+            ],
+          },
+          {
+            title: "PO",
+            access: false,
+            menu: [
+              {
+                title: "Request",
+                name: "PURPORequest",
+                access: false,
+              },
+              {
+                title: "Approve",
+                name: "PURPOApprove",
                 access: false,
               },
             ],
@@ -204,6 +290,29 @@ export default createStore({
             access: false,
           },
         ],
+        SuperData: [
+          {
+            title: "Material",
+            access: false,
+            menu: [
+              {
+                title: "Raw Material",
+                name: "SuperDataMaterialRawMaterial",
+                access: false,
+              },
+              {
+                title: "Master Formula",
+                name: "SuperDataMaterialMasterFormula",
+                access: false,
+              },
+              {
+                title: "Product Cost",
+                name: "SuperDataMaterialProductCost",
+                access: false,
+              },
+            ],
+          },
+        ],
       },
     };
   },
@@ -223,8 +332,8 @@ export default createStore({
     WH(state) {
       return state.menu.WH;
     },
-    PU(state) {
-      return state.menu.PU;
+    PUR(state) {
+      return state.menu.PUR;
     },
     PD(state) {
       return state.menu.PD;
@@ -237,6 +346,12 @@ export default createStore({
     },
     System(state) {
       return state.menu.System;
+    },
+    SuperData(state) {
+      return state.menu.SuperData;
+    },
+    test(state) {
+      return state.menu.test;
     },
     user_token(state) {
       return state.user_token;
@@ -262,6 +377,11 @@ export default createStore({
       // console.log(state)
       return state.serviceUrl;
     },
+    serviceImage(state) {
+      // console.log(state)
+      return state.serviceImage;
+    },
+
     isLogin(state) {
       // console.log(state)
       return state.isLogin;
@@ -334,10 +454,7 @@ export default createStore({
     //   // console.log(state)
     //   return state.Vue3GoogleOauth = data
     // },
-    serviceUrl(state, data) {
-      // console.log(state)
-      return (state.serviceUrl = data);
-    },
+
     admin_isLogin(state, data) {
       // console.log(state)
       return (state.admin_isLogin = data);

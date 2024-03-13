@@ -15,7 +15,8 @@
           <details
             v-if="
               v.menu &&
-              (menutype == 'access' || (menutype == 'menu' && v.access))
+              (menutype == 'access' ||
+                (menutype == 'menu' && v.access && v.access != 'none'))
             "
             id="disclosure-components"
             :open="
@@ -31,7 +32,8 @@
               >
                 <a
                   v-if="
-                    menutype == 'access' || (menutype == 'menu' && vv.access)
+                    menutype == 'access' ||
+                    (menutype == 'menu' && vv.access && vv.access != 'none')
                   "
                   href="#"
                   class="flex gap-4 group hover:no-underline"
@@ -59,7 +61,10 @@
             </ul>
           </details>
           <a
-            v-else-if="menutype == 'access' || (menutype == 'menu' && v.access)"
+            v-else-if="
+              menutype == 'access' ||
+              (menutype == 'menu' && v.access && v.access != 'none')
+            "
             href="#"
             class="flex gap-4 group hover:no-underline"
             :class="
@@ -144,7 +149,7 @@ export default {
     menuAccess() {
       function lv2(vm, vv, value, key) {
         vv.menu.forEach((v, i) => {
-          if (v.name == key) {
+          if (v.name == key && v.access != "none") {
             v.access = value;
             vv.access = value;
             vm.havemenu == false ? (vm.havemenu = value ? true : false) : "";
@@ -158,7 +163,7 @@ export default {
           if (v.menu) {
             lv2(this, v, value, key);
           } else {
-            if (v.name == key) {
+            if (v.name == key && v.access != "none") {
               v.access = value;
               this.havemenu == false
                 ? (this.havemenu = value ? true : false)

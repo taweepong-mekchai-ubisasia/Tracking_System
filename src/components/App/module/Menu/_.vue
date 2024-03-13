@@ -14,6 +14,13 @@
         <AppModuleMenuTemplate
           :menutype="menutype"
           @object_access="objectAccess"
+          :access="menuArray['SuperData']"
+          :head="'SuperData'"
+          :icon="'icon-park-outline:data'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          @object_access="objectAccess"
           :access="menuArray['HR']"
           :head="'HR'"
           :icon="'grommet-icons:group'"
@@ -35,8 +42,8 @@
         <AppModuleMenuTemplate
           :menutype="menutype"
           @object_access="objectAccess"
-          :access="menuArray['PU']"
-          :head="'PU'"
+          :access="menuArray['PUR']"
+          :head="'PUR'"
           :icon="'bx:purchase-tag-alt'"
         />
         <AppModuleMenuTemplate
@@ -59,7 +66,6 @@
           :access="menuArray['RD']"
           :head="'RD'"
           :icon="'material-symbols:lab-research-outline'"
-        
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
@@ -74,27 +80,9 @@
 </template>
 
 <script>
-// import AppModuleMenuPU from "@/components/App/Module/Menu/PU.vue";
-// // import PRModule from "@/components/App/Module/Menu/PR.vue";
-// import AppModuleMenuPD from "@/components/App/Module/Menu/PD.vue";
-// import AppModuleMenuAC from "@/components/App/Module/Menu/AC.vue";
-// import AppModuleMenuQC from "@/components/App/Module/Menu/QC.vue";
-// import AppModuleMenuRD from "@/components/App/Module/Menu/RD.vue";
-// import AppModuleMenuHR from "@/components/App/Module/Menu/HR.vue";
-// import AppModuleMenuWH from "@/components/App/Module/Menu/WH.vue";
-// import AppModuleMenuSystem from "@/components/App/Module/Menu/System.vue";
-
 import AppModuleMenuTemplate from "@/components/App/Module/Menu/Template.vue";
 export default {
   components: {
-    // AppModuleMenuPU,
-    // AppModuleMenuPD,
-    // AppModuleMenuAC,
-    // AppModuleMenuQC,
-    // AppModuleMenuRD,
-    // AppModuleMenuHR,
-    // AppModuleMenuWH,
-    // AppModuleMenuSystem,
     AppModuleMenuTemplate,
   },
   props: ["menutype", "access"],
@@ -108,10 +96,11 @@ export default {
       this.menuArray = this.access
         ? { ...this.access }
         : {
+            SuperData: {},
             HR: {},
             WH: {},
             QC: {},
-            PU: {},
+            PUR: {},
             PD: {},
             AC: {},
             RD: {},

@@ -4,8 +4,12 @@ import Index from "../views/App/Index.vue";
 import Login from "../views/App/Login.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 
-import WHBinLocation from "../views/App/WH/BinLocation.vue";
-import WHShortCode from "../views/App/WH/ShortCode.vue";
+import WHBinLocationManagement from "../views/App/WH/BinLocation/Management.vue";
+import WHBinLocationShortCode from "../views/App/WH/BinLocation/ShortCode.vue";
+
+import WHItemRequest from "../views/App/WH/Item/Request.vue";
+import WHItemApprove from "../views/App/WH/Item/Approve.vue";
+
 import WHTracking from "../views/App/WH/Tracking.vue";
 
 import HREmployee from "../views/App/HR/Employee.vue";
@@ -15,21 +19,41 @@ import SystemDepartment from "../views/App/System/Department.vue";
 import SystemBranch from "../views/App/System/Branch.vue";
 import SystemCompany from "../views/App/System/Company.vue";
 
+import SuperDataMaterialRawMaterial from "../views/App/SuperData/Material/RawMaterial.vue";
+import SuperDataMaterialMasterFormula from "../views/App/SuperData/Material/MasterFormula.vue";
+import SuperDataMaterialProductCost from "../views/App/SuperData/Material/ProductCost.vue";
+
 import ACBudgetGroup from "../views/App/AC/BudgetGroup.vue";
 import ACBudgetRequest from "../views/App/AC/BudgetRequest.vue";
 import ACBudgetRequestOverApprove from "../views/App/AC/BudgetRequestOverApprove.vue";
 import ACBudgetRequestReport from "../views/App/AC/BudgetRequestReport.vue";
 
+import ACCostCalculateDashboard from "../views/App/AC/CostCalculate/Dashboard.vue";
+import ACCostCalculateCostView from "../views/App/AC/CostCalculate/CostView.vue";
+import ACCostCalculateCostAdjust from "../views/App/AC/CostCalculate/CostAdjust.vue";
+import ACCostCalculateCostCustom from "../views/App/AC/CostCalculate/CostCustom.vue";
+import ACCostCalculateReport from "../views/App/AC/CostCalculate/Report.vue";
+
+    
+
 import PDPORequest from "../views/App/PD/request.vue";
 import PDPOApprove from "../views/App/PD/approve.vue";
 import PDPOComplete from "../views/App/PD/complete.vue";
-import PUPORequest from "../views/App/PU/request.vue";
-import PUPOApprove from "../views/App/PU/approve.vue";
-import PUPORecruitment from "../views/App/PU/recruitment.vue";
-import PUPOOrder from "../views/App/PU/order.vue";
-import PUPOFollow from "../views/App/PU/follow.vue";
-import PUPOSupplier from "../views/App/PU/supplier.vue";
-import PUPOReceive from "../views/App/PU/receive.vue";
+
+import PURPORequest_old from "../views/App/PUR/request.vue";
+import PURPOApprove_old from "../views/App/PUR/approve.vue";
+import PURPORecruitment_old from "../views/App/PUR/recruitment.vue";
+import PURPOOrder_old from "../views/App/PUR/order.vue";
+import PURPOFollow_old from "../views/App/PUR/follow.vue";
+import PURPOSupplier_old from "../views/App/PUR/supplier.vue";
+import PURPOReceive_old from "../views/App/PUR/receive.vue";
+
+import PURPRRequest from "../views/App/PUR/PR/Request.vue";
+import PURPRApprove from "../views/App/PUR/PR/Approve.vue";
+import PURPORequest from "../views/App/PUR/PO/Request.vue";
+import PURPOApprove from "../views/App/PUR/PO/Approve.vue";
+
+    
 
 import RDQCInspec from "../views/App/RD/QCInspec.vue";
 const routes = [
@@ -56,6 +80,31 @@ const routes = [
     component: Login,
     props: { default: true, menu: true, type: "default" },
   },
+  {
+    path: "/App/WH/BinLocation/Management",
+    name: "WHBinLocationManagement",
+    component: WHBinLocationManagement,
+    props: { default: true, menu: true, type: "member" },
+    params: { title: "test title" },
+  },
+  {
+    path: "/App/WH/BinLocation/ShortCode",
+    name: "WHBinLocationShortCode",
+    component: WHBinLocationShortCode,
+    props: { default: true, menu: true, type: "member" },
+  },
+  {
+    path: "/App/WH/Item/Request",
+    name: "WHItemRequest",
+    component: WHItemRequest,
+    props: { default: true, menu: true, type: "member" },
+  },
+  {
+    path: "/App/WH/Item/Approve",
+    name: "WHItemApprove",
+    component: WHItemApprove,
+    props: { default: true, menu: true, type: "member" },
+  },
 
   {
     path: "/App/WH/Tracking",
@@ -63,19 +112,7 @@ const routes = [
     component: WHTracking,
     props: { default: true, menu: true, type: "member" },
   },
-  {
-    path: "/App/WH/BinLocation",
-    name: "WHBinLocation",
-    component: WHBinLocation,
-    props: { default: true, menu: true, type: "member" },
-    params: { title: "test title" },
-  },
-  {
-    path: "/App/WH/ShortCode",
-    name: "WHShortCode",
-    component: WHShortCode,
-    props: { default: true, menu: true, type: "member" },
-  },
+
 
   {
     path: "/HR/Employee",
@@ -108,6 +145,59 @@ const routes = [
     component: SystemCompany,
     props: { default: true, menu: true, type: "default" },
   },
+
+  {
+    path: "/SuperData/Material/RawMaterial",
+    name: "SuperDataMaterialRawMaterial",
+    component: SuperDataMaterialRawMaterial,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/SuperData/Material/MasterFormula",
+    name: "SuperDataMaterialMasterFormula",
+    component: SuperDataMaterialMasterFormula,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/SuperData/Material/ProductCost",
+    name: "SuperDataMaterialProductCost",
+    component: SuperDataMaterialProductCost,
+    props: { default: true, menu: true, type: "default" },
+  },
+  
+  
+
+  {
+    path: "/AC/CostCalculate/Dashboard",
+    name: "ACCostCalculateDashboard",
+    component: ACCostCalculateDashboard,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/AC/CostCalculate/CostView",
+    name: "ACCostCalculateCostView",
+    component: ACCostCalculateCostView,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/AC/CostCalculate/CostAdjust",
+    name: "ACCostCalculateCostAdjust",
+    component: ACCostCalculateCostAdjust,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/AC/CostCalculate/Custom",
+    name: "ACCostCalculateCostCustom",
+    component: ACCostCalculateCostCustom,
+    props: { default: true, menu: true, type: "default" }, 
+  },
+  {
+    path: "/AC/CostCalculate/Report",
+    name: "ACCostCalculateReport",
+    component: ACCostCalculateReport,
+    props: { default: true, menu: true, type: "default" },
+  },
+
 
   {
     path: "/AC/BudgetGroup",
@@ -160,50 +250,76 @@ const routes = [
   },
 
   {
-    path: "/PU/Request",
-    name: "PUPORequest",
-    component: PUPORequest,
+    path: "/PUR/Request",
+    name: "PURPORequestOld",
+    component: PURPORequest_old,
     props: { default: true, menu: true, type: "default" },
   },
   {
-    path: "/PU/Approve",
-    name: "PUPOApprove",
-    component: PUPOApprove,
+    path: "/PUR/Approve",
+    name: "PURPOApproveOld",
+    component: PURPOApprove_old,
     props: { default: true, menu: true, type: "default" },
   },
   {
-    path: "/PU/Recruitment",
-    name: "PUPORecruitment",
-    component: PUPORecruitment,
+    path: "/PUR/Recruitment",
+    name: "PURPORecruitmentOld",
+    component: PURPORecruitment_old,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/PUR/Order",
+    name: "PURPOOrderOld",
+    component: PURPOOrder_old,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/PUR/Follow",
+    name: "PURPOFollowOld",
+    component: PURPOFollow_old,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/PUR/Supplier",
+    name: "PURPOSupplierOld",
+    component: PURPOSupplier_old,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/PUR/Receive",
+    name: "PURPOReceiveOld",
+    component: PURPOReceive_old,
+    props: { default: true, menu: true, type: "default" },
+  },
+
+
+  
+  {
+    path: "/PUR/PR/Request",
+    name: "PURPRRequest",
+    component: PURPRRequest,
+    props: { default: true, menu: true, type: "default" }, 
+  },
+  {
+    path: "/PUR/PR/Approve",
+    name: "PURPRApprove",
+    component: PURPRApprove,
     props: { default: true, menu: true, type: "default" },
   },
 
   {
-    path: "/PU/Order",
-    name: "PUPOOrder",
-    component: PUPOOrder,
+    path: "/PUR/PO/Request",
+    name: "PURPORequest",
+    component: PURPORequest,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
+    path: "/PUR/PO/Approve",
+    name: "PURPOApprove",
+    component: PURPOApprove,
     props: { default: true, menu: true, type: "default" },
   },
 
-  {
-    path: "/PU/Follow",
-    name: "PUPOFollow",
-    component: PUPOFollow,
-    props: { default: true, menu: true, type: "default" },
-  },
-
-  {
-    path: "/PU/Supplier",
-    name: "PUPOSupplier",
-    component: PUPOSupplier,
-    props: { default: true, menu: true, type: "default" },
-  },
-  {
-    path: "/PU/Receive",
-    name: "PUPOReceive",
-    component: PUPOReceive,
-    props: { default: true, menu: true, type: "default" },
-  },
 ];
 
 const router = createRouter({
