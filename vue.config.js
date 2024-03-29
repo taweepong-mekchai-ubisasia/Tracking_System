@@ -1,17 +1,26 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
+
   publicPath: process.env.NODE_ENV === 'production'
-  ? '/'
+  ? '/UAT/WEBAPP/'
   : '/',
-    // "vue": {
-      "pwa": {
-        "workboxOptions": {
-          "exclude": [
-            ".htaccess"
-          ]
-        }
-      }
-    // }
-    
+
+  // "vue": {
+  // }
+  "pwa": {
+    "workboxOptions": {
+      "exclude": [
+        ".htaccess"
+      ]
+    }
+  },
+  pwa: {
+    workboxOptions: {
+      exclude: [
+        '.htaccess'
+      ]
+    },
+    name: 'UBIS Asia'
+  }
 })

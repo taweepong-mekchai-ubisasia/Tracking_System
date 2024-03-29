@@ -1,5 +1,5 @@
 <template>
-  <div class="Search">
+  <div class="Search w-full">
     <!-- {{ current }} -->
     <div class="relative">
       <!-- <div>
@@ -36,7 +36,23 @@
           @mouseleave="base.focuslist = false"
         >
           <li v-for="(v, i) in base.rows" :key="i" @click="setValue(v)">
-            <a :class="`${v[code] == current ? 'active' : ''}`">{{
+            <a :class="`${v[code] == current ? 'active' : ''}`" @click="()=>rets">
+
+              <img
+                                  v-if="image && v.image.length > 0"
+                                  :src="`${
+                                    v.image[v.master ? v.master : 0].temp
+                                      ? tmpsLink
+                                      : v.imageLink
+                                      ? `${v.imageLink}QAIndirectItem/${v.code}/`
+                                      : tmpsLink
+                                  }${
+                                    v.image[v.master ? v.master : 0].file
+                                  }`"
+                                  alt="Image" 
+                                  style="    object-fit: contain;"
+                                  class="w-5 h-5"
+                                />{{
               v[label]
             }}</a>
           </li>
@@ -83,6 +99,7 @@ export default {
     "current",
     "param",
     "disabled",
+    "image"
   ],
   data() {
     return {
@@ -178,12 +195,12 @@ export default {
     base_search(callback) {
       this.base.loading = true;
       this.base_get((res) => {
-        callback(res.rows);
         this.base.total = res.total;
         this.base.next =
           this.base.page * this.base.row >= this.base.total ? false : true;
         this.base.back = this.base.page > 1 ? true : false;
         this.base.loading = false;
+        callback(res.rows);
       });
     },
     base_get(callback) {
@@ -210,6 +227,13 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
+          if(this.image){
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+          }
+         
           // if (res.rows.length > 0) {
           // res.rows[0].image = res.rows[0].image
           //   ? JSON.parse(res.rows[0].image)

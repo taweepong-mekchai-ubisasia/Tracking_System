@@ -32,7 +32,7 @@
             class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
           >
             <Icon
-              icon="heroicons-outline:eye"
+              icon="heroicons-outline:eye-off"
               @click="showcurrentpassword = !showcurrentpassword"
               :class="{
                 hidden: !showcurrentpassword,
@@ -41,7 +41,7 @@
             />
 
             <Icon
-              icon="heroicons-outline:eye-off"
+              icon="heroicons-outline:eye"
               @click="showcurrentpassword = !showcurrentpassword"
               :class="{
                 block: !showcurrentpassword,
@@ -62,7 +62,7 @@
             class="input input-bordered text-md w-full"
             :class="
               temp.password &&
-              (temp.password.length < 8 ||
+              (temp.password.length < 4 ||
                 (temp.confirm_password &&
                   temp.password != temp.confirm_password))
                 ? 'input-error'
@@ -74,13 +74,13 @@
             class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
           >
             <Icon
-              icon="heroicons-outline:eye"
+              icon="heroicons-outline:eye-off"
               @click="showpassword = !showpassword"
               :class="{ hidden: !showpassword, block: showpassword }"
             />
 
             <Icon
-              icon="heroicons-outline:eye-off"
+              icon="heroicons-outline:eye"
               @click="showpassword = !showpassword"
               :class="{ block: !showpassword, hidden: showpassword }"
             />
@@ -90,15 +90,15 @@
           class="label"
           :class="
             temp.password &&
-            (temp.password.length < 8 ||
+            (temp.password.length < 4 ||
               (temp.confirm_password && temp.password != temp.confirm_password))
               ? ''
               : 'hidden'
           "
         >
           <span class="label-text-alt text-error">{{
-            temp.password.length < 8
-              ? "Password require min 8 characters."
+            temp.password.length < 4
+              ? "Password require min 4 characters."
               : temp.password != temp.confirm_password
               ? "Password not match."
               : ""
@@ -117,7 +117,7 @@
             :class="
               temp.password &&
               temp.confirm_password &&
-              (temp.password.length < 8 ||
+              (temp.password.length < 4 ||
                 temp.password != temp.confirm_password)
                 ? 'input-error'
                 : ''
@@ -128,7 +128,7 @@
             class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
           >
             <Icon
-              icon="heroicons-outline:eye"
+              icon="heroicons-outline:eye-off"
               @click="showconfirmpassword = !showconfirmpassword"
               :class="{
                 hidden: !showconfirmpassword,
@@ -137,7 +137,7 @@
             />
 
             <Icon
-              icon="heroicons-outline:eye-off"
+              icon="heroicons-outline:eye"
               @click="showconfirmpassword = !showconfirmpassword"
               :class="{
                 block: !showconfirmpassword,
@@ -151,15 +151,15 @@
           :class="
             temp.password &&
             temp.confirm_password &&
-            (temp.password.length < 8 ||
+            (temp.password.length < 4 ||
               (temp.confirm_password && temp.password != temp.confirm_password))
               ? ''
               : 'hidden'
           "
         >
           <span class="label-text-alt text-error">{{
-            temp.password.length < 8
-              ? "Password require min 8 characters."
+            temp.password.length < 4
+              ? "Password require min 4 characters."
               : temp.password != temp.confirm_password
               ? "Password not match."
               : ""
@@ -174,8 +174,8 @@
         @click="
           !temp.current_password ||
           !temp.password ||
-          temp.password.length < 8 ||
-          temp.confirm_password.length < 8 ||
+          temp.password.length < 4 ||
+          temp.confirm_password.length < 4 ||
           !temp.confirm_password ||
           temp.password != temp.confirm_password
             ? ''
@@ -184,8 +184,8 @@
         :disabled="
           !temp.current_password ||
           !temp.password ||
-          temp.password.length < 8 ||
-          temp.confirm_password.length < 8 ||
+          temp.password.length < 4 ||
+          temp.confirm_password.length < 4 ||
           !temp.confirm_password ||
           temp.password != temp.confirm_password
         "
@@ -232,6 +232,8 @@ export default {
   },
   methods: {
     update() {
+      alert("ระบบยังไม่เปิดใช้งาน กรุณาติดต่อเจ้าหน้าที่แผนก IT")
+      return
       if (this.temp.password != this.temp.confirm_password) {
         this.errorMsg = "password not match.";
         return;

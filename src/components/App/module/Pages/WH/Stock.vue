@@ -78,14 +78,15 @@
                   <td rowspan="2">Create</td>
                   <td rowspan="2">Update</td>
                   <!-- <td>Transaction</td> -->
-                  <td rowspan="2">Item Code</td>
-                  <td rowspan="2">Item Description</td>
+                  <td rowspan="2">Short Code</td>
+                  <td rowspan="2">Item Name</td>
                   <td rowspan="2">Lot No.</td>
                   <td rowspan="2">Qty</td>
                   <td rowspan="2">Pack Size</td>
                   <td rowspan="2">Total Quantity</td>
                   <td rowspan="2">Unit</td>
                   <td rowspan="2">Shelf Life</td>
+                  <td rowspan="2">Comments</td>
 
                 
                 </tr>
@@ -185,7 +186,7 @@
                   <td>{{ row.uom }}</td>
 
                   <td>{{ row.shelf_life ? row.shelf_life : "-" }}</td>
-              
+                  <td>{{ row.comments ? row.comments : "-" }}</td>
 
                 </tr>
               </tbody>
@@ -287,7 +288,7 @@ export default {
     exportExcel() {
       return window.open(`${
         this.$store.state.serviceUrl
-      }controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
+      }controllers/MYSQL/INTERNAL/WH/exports?type=stock&total=1&page=${
         this.base.page
       }${this.base.row ? `&rows=${this.base.row}` : ""}${
         this.base.q ? `&q=${this.base.q}` : ""

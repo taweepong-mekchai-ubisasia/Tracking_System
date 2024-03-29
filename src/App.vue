@@ -4,6 +4,11 @@
   </div>
 </template>
 <script>
+import { useFavicon } from '@vueuse/core'
+
+const icon = useFavicon()
+
+icon.value = require(`@/assets/img/favicon-32x32.png`)
 export default {
   name: "app",
   computed: {

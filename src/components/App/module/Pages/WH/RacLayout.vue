@@ -299,7 +299,7 @@
         <div
           class="btn btn-square text-opacity-50 max-w-xs join-item text-center text-xs p-0 text-primary font-black"
         >
-          {{ scale.toFixed(1) }}
+          {{ scale.toFixed(1) }} 
         </div>
         <button
           class="btn btn-square join-item"
@@ -307,10 +307,12 @@
         >
           <Icon icon="typcn:minus-outline" class="h-5 w-5 text-primary" />
         </button>
+   
         <button
+        
           class="btn btn-square btn-primary join-item"
           @click="editLayout()"
-          v-if="!edit"
+          v-if="!edit && user.access.WH.WHBinLocationManagement == 'superadmin'"
         >
           <Icon icon="lucide:square-pen" class="h-5 w-5 text-white" />
         </button>
@@ -342,6 +344,12 @@ export default {
   name: "RacLayoutModule",
   components: {
     DraggableResizableVue,
+  },
+
+  computed:{
+    user() {
+      return this.$store.getters.user;
+    },
   },
   props: ["data", "wh", "parentX", "parentY", "scale", "refresh"],
   data() {

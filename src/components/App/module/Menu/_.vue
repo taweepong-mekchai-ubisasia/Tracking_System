@@ -14,9 +14,9 @@
         <AppModuleMenuTemplate
           :menutype="menutype"
           @object_access="objectAccess"
-          :access="menuArray['SuperData']"
-          :head="'SuperData'"
-          :icon="'icon-park-outline:data'"
+          :access="menuArray['AC']"
+          :head="'AC'"
+          :icon="'ph:calculator'"
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
@@ -28,23 +28,9 @@
         <AppModuleMenuTemplate
           :menutype="menutype"
           @object_access="objectAccess"
-          :access="menuArray['WH']"
-          :head="'WH'"
-          :icon="'bx:store-alt'"
-        />
-        <AppModuleMenuTemplate
-          :menutype="menutype"
-          @object_access="objectAccess"
-          :access="menuArray['QC']"
-          :head="'QC'"
-          :icon="'mdi:progress-check'"
-        />
-        <AppModuleMenuTemplate
-          :menutype="menutype"
-          @object_access="objectAccess"
-          :access="menuArray['PUR']"
-          :head="'PUR'"
-          :icon="'bx:purchase-tag-alt'"
+          :access="menuArray['LM']"
+          :head="'LM'"
+          :icon="'la:shipping-fast'"
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
@@ -56,9 +42,16 @@
         <AppModuleMenuTemplate
           :menutype="menutype"
           @object_access="objectAccess"
-          :access="menuArray['AC']"
-          :head="'AC'"
-          :icon="'ph:calculator'"
+          :access="menuArray['QA']"
+          :head="'QA'"
+          :icon="'octicon:shield-check-16'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          @object_access="objectAccess"
+          :access="menuArray['QC']"
+          :head="'QC'"
+          :icon="'mdi:progress-check'"
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
@@ -67,6 +60,33 @@
           :head="'RD'"
           :icon="'material-symbols:lab-research-outline'"
         />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          @object_access="objectAccess"
+          :access="menuArray['PUR']"
+          :head="'PUR'"
+          :icon="'bx:purchase-tag-alt'"
+        />
+       
+       
+       
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          @object_access="objectAccess"
+          :access="menuArray['SuperData']"
+          :head="'SuperData'"
+          :icon="'icon-park-outline:data'"
+        />
+     
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          @object_access="objectAccess"
+          :access="menuArray['WH']"
+          :head="'WH'"
+          :icon="'bx:store-alt'"
+        />
+      
+        <li></li>
         <AppModuleMenuTemplate
           :menutype="menutype"
           @object_access="objectAccess"
@@ -86,6 +106,11 @@ export default {
     AppModuleMenuTemplate,
   },
   props: ["menutype", "access"],
+  computed:{
+    user() {
+      return this.$store.getters.user;
+    },
+  },
   data() {
     return {
       menuArray: null,
@@ -93,23 +118,13 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.menuArray = this.access
-        ? { ...this.access }
-        : {
-            SuperData: {},
-            HR: {},
-            WH: {},
-            QC: {},
-            PUR: {},
-            PD: {},
-            AC: {},
-            RD: {},
-            System: {},
-          };
+      this.menuArray = { ...this.access }
+        
     });
   },
   methods: {
     objectAccess(obj) {
+      // console.log(this.user)
       this.menuArray[obj.key] = obj.array;
       this.$emit("object_access", this.menuArray);
     },

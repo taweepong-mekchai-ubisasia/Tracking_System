@@ -3,31 +3,63 @@
     <div class="text-xl font-bold">My profile</div>
     <!-- <div class="text-md">Edit Detail</div> -->
     <!-- <div class="grid flex-grow rounded-box justify-end"> -->
-      <div>
-      <label class="label float-left">
+    <div>
+      <label class="label float-right">
         <a
           href="#"
           class="label-text-alt link link-hover font-bold"
           @click="$emit('changetab', 'editpassword')"
         >
-        <Icon icon="solar:pen-outline" /> Edit Password
+          <!-- <Icon icon="solar:pen-outline" />  -->
+          Edit Password
         </a>
       </label>
-      <label class="label float-right">
+      <!-- <label class="label float-right">
         <a
           href="#"
-          class="label-text-alt link link-hover font-bold "
+          class="label-text-alt link link-hover font-bold"
           @click="$emit('changetab', 'editdetail')"
         >
-        <Icon icon="solar:pen-outline" /> Edit Details
+          Edit Details
         </a>
-      </label></div>
+      </label> -->
+    </div>
     <!-- </div> -->
     <!-- {{ user }} -->
     <div class="flex flex-col w-full border-opacity-50" v-if="user">
       <div class="divider mt-0"></div>
 
-      <div class="form-control grid hidden">
+      <div
+        class="indicator mx-auto items-center justify-center w-full min-h-min border-2 border-gray-300 border-dashed rounded-lg"
+        v-if="image.length>0"
+      >
+        <!-- <div> -->
+        <!-- <label
+            for="modal_showImage"
+            class="btn btn-link p-0"
+            @click="imagerow = row"
+          > -->
+        <div class="grid card-bordered p-1 place-items-center overflow-hidden">
+          <!-- {{ user.imageLink }}{{ image[0].file }} -->
+          <img
+            class="max-h-44 object-cover bg-cover"
+            v-if="image.length > 0"
+            :src="`${user.imageLink}/employee/${user.code}/${image[0].file}`"
+            alt="Image"
+          />
+          <img
+            class="max-h-44 object-cover bg-cover"
+            v-else
+            :src="`https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png`"
+            alt="Image"
+          />
+        </div>
+
+        <!-- </label> -->
+        <!-- </div> -->
+      </div>
+
+      <div class="form-control grid">
         <label class="label">
           <span class="label-text">Code</span>
         </label>
@@ -39,7 +71,51 @@
           :value="`${user.code ? user.code : 'empty'}`"
         />
       </div>
-      <div class="form-control grid hidden">
+      <div class="form-control grid">
+        <label class="label">
+          <span class="label-text">Company</span>
+        </label>
+        <input
+          disabled
+          type="text"
+          placeholder="Position"
+          class="input input-bordered"
+          :value="`${user.companyTitle ? user.companyTitle : 'empty'}`"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <!-- <div> -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Branch</span>
+          </label>
+          <input
+            disabled
+            type="text"
+            placeholder="Branch"
+            class="input input-bordered"
+            :value="`${user.branchTitle ? user.branchTitle : 'empty'}`"
+          />
+        </div>
+        <!-- </div>
+        <div> -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">UID</span>
+          </label>
+          <input
+            disabled
+            type="text"
+            placeholder="UID"
+            class="input input-bordered"
+            :value="`${user.uid ? user.uid : 'empty'}`"
+          />
+        </div>
+        <!-- </div> -->
+      </div>
+
+      <!-- <div class="form-control grid">
         <label class="label">
           <span class="label-text">UID</span>
         </label>
@@ -50,7 +126,7 @@
           class="input input-bordered"
           :value="`${user.uid ? user.uid : 'empty'}`"
         />
-      </div>
+      </div> -->
       <div class="grid grid-cols-2 gap-4">
         <div>
           <div class="form-control">
@@ -82,7 +158,7 @@
         </div>
       </div>
 
-      <div class="form-control grid">
+      <!-- <div class="form-control grid">
         <label class="label">
           <span class="label-text">Email</span>
         </label>
@@ -93,19 +169,19 @@
           class="input input-bordered"
           :value="`${user.emailTitle ? user.emailTitle : 'empty'}`"
         />
-      </div> <div class="form-control grid">
+      </div> -->
+      <div class="form-control grid">
         <label class="label">
-          <span class="label-text">Tel</span>
+          <span class="label-text">Departmant</span>
         </label>
         <input
           disabled
           type="text"
           placeholder="Position"
           class="input input-bordered"
-          :value="`${user.tel ? user.tel : 'empty'}`"
+          :value="`${user.depTitle ? user.depTitle : 'empty'}`"
         />
       </div>
-
       <div class="form-control grid">
         <label class="label">
           <span class="label-text">Position</span>
@@ -118,36 +194,48 @@
           :value="`${user.position ? user.position : 'empty'}`"
         />
       </div>
+      <div class="form-control grid">
+        <label class="label">
+          <span class="label-text">Access</span>
+        </label>
+        <input
+          disabled
+          type="text"
+          placeholder="Position"
+          class="input input-bordered"
+          :value="`${user.accessTitle ? user.accessTitle : 'empty'}`"
+        />
+      </div>
 
       <div class="grid grid-cols-2 gap-4">
-        <div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Departmant</span>
-            </label>
-            <input
-              disabled
-              type="text"
-              placeholder="Departmant"
-              class="input input-bordered"
-              :value="`${user.depTitle ? user.depTitle : 'empty'}`"
-            />
-          </div>
+        <!-- <div> -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Email</span>
+          </label>
+          <input
+            disabled
+            type="text"
+            placeholder="Position"
+            class="input input-bordered"
+            :value="`${user.emailTitle ? user.emailTitle : 'empty'}`"
+          />
         </div>
-        <div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Branch</span>
-            </label>
-            <input
-              disabled
-              type="text"
-              placeholder="Branch"
-              class="input input-bordered"
-              :value="`${user.branchTitle ? user.branchTitle : 'empty'}`"
-            />
-          </div>
+        <!-- </div>
+        <div> -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Tel</span>
+          </label>
+          <input
+            disabled
+            type="text"
+            placeholder="Position"
+            class="input input-bordered"
+            :value="`${user.tel ? user.tel : 'empty'}`"
+          />
         </div>
+        <!-- </div> -->
       </div>
 
       <div class="grid grid-cols-2 gap-4">
@@ -242,7 +330,7 @@ export default {
   name: "Profile",
   props: ["tab"],
   data() {
-    return {};
+    return { image: [], master: 0, tmpsLink: "" };
   },
   computed: {
     ServiceUrl() {
@@ -254,6 +342,19 @@ export default {
     user() {
       return this.$store.getters.user;
     },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      // this.base_search();
+// console.log(this.user)
+      this.image = this.user.image ? JSON.parse(this.user.image) : [];
+      this.master = 0;
+      this.tmpsLink = `${
+        window.location.origin == "http://localhost:8081"
+          ? `http://localhost:8080/kay/rewrite_demo/services/`
+          : `${window.location.origin}/services/`
+      }tmps/`;
+    });
   },
 };
 </script>

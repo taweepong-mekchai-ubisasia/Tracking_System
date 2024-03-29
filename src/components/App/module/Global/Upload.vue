@@ -52,6 +52,7 @@
           class="grid card-bordered p-1 place-items-center cursor-pointer overflow-hidden"
         >
           <img
+          class="  max-h-44 object-cover bg-cover"
             v-if="image.length > 0"
             :src="`${image[0].temp ? tmpsLink : imageLink}${image[0].file}`"
             :alt="`${image[0].file}`"
@@ -101,6 +102,8 @@
         {{ tmpsLink }}
         {{ imageLink }}
           <img
+       
+          class="  max-h-44 object-cover bg-cover"
             v-if="row.file"
             :src="`${row.temp ? tmpsLink : imageLink}${row.file}`"
             :alt="`${row.file}`"

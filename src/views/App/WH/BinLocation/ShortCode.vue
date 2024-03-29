@@ -50,61 +50,113 @@
                 />
               </div>
               <div class="form-control">
-                <!-- {{ base.form }} -->
+                  <label class="label">
+                    <span class="label-text">รูปแบบข้อมูล</span>
+                  </label>
+                  <select
+                class="join-item select select-bordered w-auto"
+                v-model="selectType"
+              >
+                <option selected value="">เลือกรายการ</option>
+                <option value="1">เลือกจาก SAP</option>
+                <option value="2">สร้างใหม่</option>
+              </select>
+                </div>
+           
+              <div v-if="selectType == '2'">
+                <div class="form-control">
                 <label class="label">
                   <span class="label-text">Item Name</span>
                 </label>
-                <!-- {{ base.form.wh }} -->
-                <AppModuleGlobalSelectSearch
-                  v-if="base.form.wh && base.modal"
-                  :placeholder="'Short code'"
-                  :label="'ItemName'"
-                  :code="'ItemCode'"
-                  :minChar="3"
-                  :delay="0.5"
-                  :limit="10"
-                  :customClass="`input input-bordered `"
-                  :current="base.form.item_code"
-                  :refresh="refresh"
-                  @updateValue="
-                    (obj) => {
-                      base.form.item_code = obj.ItemCode;
-                      base.form.item_name = obj.ItemName;
-                    }
-                  "
-                  @stopRefresh="
-                    (obj) => {
-                      refresh = obj.value;
-                    }
-                  "
-                  :url="
-                    base.form.wh == 'UBA'
-                      ? `${this.serviceUrl}controllers/SAP/UBA/oitm`
-                      : `${this.serviceUrl}controllers/SAP/UBP/oitm`
-                  "
-                  :param="`&total=1&wh=wh1&rac_list=1`"
-                />
-                <!-- <input
-                  v-else
-                  type="text"
-                  placeholder="item_name"
-                  class="input input-bordered"
-                  v-model="base.form.item_name"
-                /> -->
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Item Code</span>
-                </label>
                 <input
                   type="text"
-                  placeholder="item_code"
-                  class="input input-bordered input-disabled"
-                  v-model="base.form.item_code"
-                  readonly
+                  placeholder="Item Name"
+                  class="input input-bordered"
+                  v-model="base.form.item_name"
                 />
               </div>
-
+              </div>
+              <div v-if="selectType == '1'">
+                <div class="form-control">
+                  <!-- {{ base.form }} -->
+                  <label class="label">
+                    <span class="label-text">Item Name</span>
+                  </label>
+                  <!-- {{ base.form.wh }} -->
+                  <div v-if="base.controll == 'create'">
+                    <AppModuleGlobalSelectSearch
+                      v-if="base.form.wh == 'UBA' && base.modal"
+                      :placeholder="'Item Name'"
+                      :label="'ItemName'"
+                      :code="'ItemCode'"
+                      :minChar="3"
+                      :delay="0.5"
+                      :limit="10"
+                      :customClass="`input input-bordered `"
+                      :current="base.form.item_code"
+                      :refresh="refresh"
+                      @updateValue="
+                        (obj) => {
+                          base.form.item_code = obj.ItemCode;
+                          base.form.item_name = obj.ItemName;
+                        }
+                      "
+                      @stopRefresh="
+                        (obj) => {
+                          refresh = obj.value;
+                        }
+                      "
+                      :url="`${this.serviceUrl}controllers/SAP/UBA/oitm`"
+                      :param="`&total=1`"
+                    />
+                    <AppModuleGlobalSelectSearch
+                      v-if="base.form.wh == 'UBP' && base.modal"
+                      :placeholder="'Item Name'"
+                      :label="'ItemName'"
+                      :code="'ItemCode'"
+                      :minChar="3"
+                      :delay="0.5"
+                      :limit="10"
+                      :customClass="`input input-bordered `"
+                      :current="base.form.item_code"
+                      :refresh="refresh"
+                      @updateValue="
+                        (obj) => {
+                          base.form.item_code = obj.ItemCode;
+                          base.form.item_name = obj.ItemName;
+                        }
+                      "
+                      @stopRefresh="
+                        (obj) => {
+                          refresh = obj.value;
+                        }
+                      "
+                      :url="`${this.serviceUrl}controllers/SAP/UBP/oitm`"
+                      :param="`&total=1`"
+                    />
+                  </div>
+                  <input
+                    v-else
+                    type="text"
+                    placeholder="item_name"
+                    class="input input-bordered"
+                    v-model="base.form.item_name"
+                    :disabled="true"
+                  />
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Item Code</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="item_code"
+                    class="input input-bordered input-disabled"
+                    v-model="base.form.item_code"
+                    readonly
+                  />
+                </div>
+              </div>
               <!-- <div class="form-control">
                 <label class="label">
                   <span class="label-text">รหัสอ้างอิง</span>
@@ -157,7 +209,10 @@
                 <label for="modal-remove" class="btn btn-danger">Cancle</label>
               </div>
               <div class="flex-1 form-control mt-6">
-                <button class="btn btn-error text-white" @click="confirm_remove()">
+                <button
+                  class="btn btn-error text-white"
+                  @click="confirm_remove()"
+                >
                   Confirm
                 </button>
               </div>
@@ -232,13 +287,13 @@
                       </td>
                       <td>{{ row.wh }}</td>
                       <th class="text-right">
-                        <label
+                        <!-- <label
                           for="modal-base"
                           class="btn btn-ghost modal-button btn-xs"
                           @click="base_edit(`${row.code}`, `${index}`)"
-                          >edit
+                          >Detail
                         </label>
-                        |
+                        | -->
                         <label
                           for="modal-remove"
                           class="btn btn-ghost modal-button btn-xs"
@@ -249,7 +304,7 @@
                               'controllers/MYSQL/INTERNAL/WH/shelfshort'
                             )
                           "
-                          >remove
+                          >Remove
                         </label>
                       </th>
                     </tr>
@@ -334,6 +389,7 @@ export default {
         controll: "",
         tb: "",
       },
+      selectType:''
     };
   },
   computed: {
@@ -407,6 +463,7 @@ export default {
         wh: "UBA",
       };
       this.base.controll = "create";
+      this.selectType = ''
     },
     base_edit(code, index) {
       this.base.form = { ...this.base.rows[index] };
@@ -492,6 +549,15 @@ export default {
         ? this.$router.push({ name: `404` })
         : "";
     },
+    // changeWH:function(val){
+    //   // console.log(val)
+    //   if(val){
+    //     console.log(val)
+    //     this.changeWH = !this.changeWH
+    //   }
+
+    //   // console.log(val)
+    // }
   },
 };
 </script>

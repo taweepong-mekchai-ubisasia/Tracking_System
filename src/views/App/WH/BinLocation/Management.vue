@@ -383,7 +383,7 @@
                                 Weight Total :
                                 {{
                                   new Intl.NumberFormat("th-TH", {
-                                    maximumSignificantDigits: 3,
+                                    minimumFractionDigits: 2,
                                   }).format(
                                     parseFloat(
                                       total[l]
@@ -416,7 +416,7 @@
                           {{
                             //
                             new Intl.NumberFormat("th-TH", {
-                              maximumSignificantDigits: 3,
+                              minimumFractionDigits: 2,
                             }).format(
                               parseFloat(total[l] ? total[l].total : 0).toFixed(
                                 2
@@ -695,6 +695,7 @@
                       </label>
 
                       <select
+                        v-if="detail.controll == 'create' || checkbox == 'E'"
                         class="select select-bordered w-full"
                         v-model="detail.form.item_code"
                       >
@@ -706,6 +707,15 @@
                           {{ v.item_name }}
                         </option>
                       </select>
+                      <input
+                        v-else
+                        type="text"
+                        placeholder="Item Code"
+                        class="input input-bordered input-disabled"
+                        required=""
+                        v-model="detail.form.item_code"
+                        disabled
+                      />
                       <!-- <AppModuleGlobalSelectSearch
                         v-if="
                           (modal.detail && detail.controll == 'create') ||
@@ -733,15 +743,6 @@
                         :param="`&total=1&wh=wh1&rac_list=1`"
                       /> -->
                       <!-- http://localhost:8080/kay/rewrite_demo/services/api/controllers/MYSQL/INTERNAL/WH/shelfshort -->
-                      <!-- <input
-                        v-else
-                        type="text"
-                        placeholder="Item Code"
-                        class="input input-bordered input-disabled"
-                        required=""
-                        v-model="detail.form.item_code"
-                        disabled
-                      /> -->
                     </div>
                   </div>
 
@@ -948,6 +949,7 @@
               aria-label="Report"
               @change="setCheckbox('reportDashboard')"
               :checked="wh.tab == 'reportDashboard' ? true : false"
+              v-if="user.access.WH.WHBinLocationManagement == 'superadmin'"
             />
             <div
               role="tabpanel"
@@ -1020,6 +1022,7 @@
               aria-label="Stock"
               @change="setCheckbox('stock')"
               :checked="wh.tab == 'stock' ? true : false"
+              v-if="user.access.WH.WHBinLocationManagement == 'superadmin'"
             />
             <div
               role="tabpanel"
@@ -1036,6 +1039,7 @@
               aria-label="Onhand"
               @change="setCheckbox('stockOnHand')"
               :checked="wh.tab == 'stockOnHand' ? true : false"
+              v-if="user.access.WH.WHBinLocationManagement == 'superadmin'"
             />
             <div
               role="tabpanel"
@@ -1053,6 +1057,7 @@
               aria-label="Transaction"
               @change="setCheckbox('Transaction')"
               :checked="wh.tab == 'Transaction' ? true : false"
+              v-if="user.access.WH.WHBinLocationManagement == 'superadmin'"
             />
             <div
               role="tabpanel"
@@ -1279,9 +1284,9 @@ export default {
       });
     },
     detail_get(callback) {
-      console.error(
-        "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
-      );
+      // console.error(
+      //   "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+      // );
       fetch(
         `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.form.code}&transref=I&transref_type_null=1`,
         {
@@ -1295,32 +1300,35 @@ export default {
         .then((response) => response.json())
         .then((res) => {
           this.total = [];
-          res.rows.forEach((v, i) => {
-            this.total[v.level]
-              ? this.total[v.level][v.pallet]
-                ? (this.total[v.level][v.pallet] =
-                    parseFloat(this.total[v.level][v.pallet]) +
-                    parseFloat(v.quantitys))
-                : (this.total[v.level][v.pallet] = parseFloat(v.quantitys))
-              : (this.total[v.level] = {
-                  [v.pallet]: parseFloat(v.quantitys),
-                });
+          if (res.rows.length > 0) {
+            res.rows.forEach((v, i) => {
+              this.total[v.level]
+                ? this.total[v.level][v.pallet]
+                  ? (this.total[v.level][v.pallet] =
+                      parseFloat(this.total[v.level][v.pallet]) +
+                      parseFloat(v.quantitys))
+                  : (this.total[v.level][v.pallet] = parseFloat(v.quantitys))
+                : (this.total[v.level] = {
+                    [v.pallet]: parseFloat(v.quantitys),
+                  });
 
-            this.total[v.level]
-              ? this.total[v.level]["total"]
-                ? (this.total[v.level]["total"] =
-                    parseFloat(this.total[v.level]["total"]) +
-                    parseFloat(v.quantitys))
-                : (this.total[v.level]["total"] = parseFloat(v.quantitys))
-              : (this.total[v.level] = {
-                  ["total"]: parseFloat(v.quantitys),
-                });
-            //             level: "4"
-            // manufacturing_date: "2024-02-14"
-            // pack_size: "2"
-            // pallet: "1"
-            // quantitys: "2"
-          });
+              this.total[v.level]
+                ? this.total[v.level]["total"]
+                  ? (this.total[v.level]["total"] =
+                      parseFloat(this.total[v.level]["total"]) +
+                      parseFloat(v.quantitys))
+                  : (this.total[v.level]["total"] = parseFloat(v.quantitys))
+                : (this.total[v.level] = {
+                    ["total"]: parseFloat(v.quantitys),
+                  });
+              //             level: "4"
+              // manufacturing_date: "2024-02-14"
+              // pack_size: "2"
+              // pallet: "1"
+              // quantitys: "2"
+            });
+          }
+
           callback(
             res.success
               ? { rows: res.rows, total: res.total }
@@ -1328,7 +1336,9 @@ export default {
           );
         })
         .catch((error) => {
-          callback([]);
+          // callback([]);
+          // localStorage.removeItem("user_token");
+          // this.$router.push({ name: "AppLogin" });
           console.error("Error:", error);
         });
     },
@@ -1532,7 +1542,25 @@ export default {
     },
   },
   mounted() {
-    this.base.temp = { ...this.base.form };
+    // this.$nextTick(() => {
+    //   // console.log(this.user);
+    //   console.log(this.user)
+    //   this.base.temp = { ...this.base.form };
+    //   this.user.access.WH.WHBinLocationManagement != "superadmin"
+    //     ? (this.wh.tab = "External")
+    //     : "";
+    // });
+  },
+  updated(){
+    this.$nextTick(() => {
+      // console.log(this.user);
+      console.log(this.user.access.WH.WHBinLocationManagement)
+      console.log(this.user)
+      this.base.temp = { ...this.base.form };
+      this.wh.tab =  this.user.access.WH.WHBinLocationManagement != "superadmin"
+        ? "factory"
+        : "reportDashboard";
+    });
   },
   created() {},
   beforeDestroy() {},

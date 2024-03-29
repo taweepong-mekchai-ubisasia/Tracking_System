@@ -11,24 +11,28 @@
         />
         <div class="modal">
           <div
-            class="modal-box max-w-[100vw] relative text-center m-0 p-0 max-h-[90vh] overflow-auto"
+            class="modal-box max-w-[100vw] overflow-hidden relative text-center m-0 p-0"
           >
+            <!-- <div class="navbar relative top-0 left-0 bg-transparent z-10"><div class="flex-1 px-4"><h2 class="card-title">ISSUE ON SHELF</h2></div><div class="flex-none"><label for="modal-detail" class="btn btn-sm btn-ghost float-end">✕</label></div></div> -->
             <!-- <div class="navbar absolute top-0 left-0 bg-transparent z-10 "> -->
             <div class="absolute top-0 left-0 bg-transparent z-10 w-full">
               <div class="flex-1"></div>
               <div class="flex-none">
                 <label
                   for="modal-base"
-                  class="btn btn-sm btn-ghost absolute right-2 top-2"
+                  class="btn btn-sm bg-white absolute right-2 top-2"
                   >✕</label
                 >
               </div>
             </div>
 
-            <div class="card-body" v-if="base.form">
+            <div
+              class="card-body max-h-[90vh] overflow-auto px-0 pb-0"
+              v-if="base.form"
+            >
               <div class="flex flex-col-reverse">
                 <div
-                  class="grid items-start w-full gap-2 p-2"
+                  class="grid items-start w-full gap-2 p-2 pb-0"
                   :class="`grid-cols-${base.form.pallets}`"
                   v-for="l in parseInt(base.form.levels)"
                   :key="l"
@@ -40,14 +44,16 @@
                   >
                     <div class="stats stats-vertical shadow-lg w-full">
                       <div class="stat bg-primary p-3 pb-1">
-                        <div class="stat-title font-bold text-sm relative">
+                        <div
+                          class="stat-title font-bold text-sm relative text-white"
+                        >
                           {{ base.form.rac }}-{{ base.form.bay }}-{{ l }}-{{
                             p
                           }}
 
                           <div class="float-right">
                             <button
-                              class="btn btn-xs bg-white text-black border-white w-full"
+                              class="btn btn-xs bg-accent text-white w-full"
                               @click="
                                 detail_create(
                                   base.form.rac,
@@ -63,17 +69,23 @@
                         </div>
                       </div>
                       <div>
-                        <div class="stat w-full">
-                          <div class="overflow-x-auto max-h-[30vh]">
+                        <div class="stat w-full p-1">
+                          <div
+                            class="overflow-x-auto max-h-[10vh] min-h-[10vh]"
+                          >
                             <table
-                              class="table table-xs table-pin-rows table-pin-cols"
+                              class="table table-xs table-pin-rows table-pin-cols table-zebra"
                             >
-                              <thead>
+                              <!-- <thead>
                                 <tr>
                                   <td>Item</td>
+                                  <td>Shelf Life</td>
+
+                                  <td>Receive</td>
+                                  <td>Manufacturing</td>
                                   <th></th>
                                 </tr>
-                              </thead>
+                              </thead> -->
                               <tbody>
                                 <tr
                                   v-for="(v, i) in detail.rows.filter(
@@ -85,30 +97,187 @@
                                   :key="i"
                                 >
                                   <td>
+                                    <!-- {{ v }} -->
                                     {{
-                                      `${v.item_code} #${v.batch} = ${v.unit}x${v.pack_size}=${v.quantitys} ${v.uom}`
+                                      `${v.item_short_code} #${v.batch} = ${
+                                        v.unit
+                                      }x${v.pack_size}=${v.quantitys} ${
+                                        v.uom ? v.uom : ""
+                                      }`
                                     }}
+                                  </td>
+
+                                  <td>
+                                    {{ v.shelf_life ? v.shelf_life : "-" }}
+                                  </td>
+                                  <td
+                                    :class="`${
+                                      parseInt(
+                                        v.receive_date
+                                          ? $moment(v.receive_date)
+                                              .add(
+                                                parseInt(v.shelf_life) + 1,
+                                                'days'
+                                              )
+                                              .diff($moment(new Date()), 'days')
+                                          : '0'
+                                      ) <= 30
+                                        ? 'text-red-500'
+                                        : ''
+                                    }`"
+                                  >
+                                    <div class="flex items-center space-x-3">
+                                      <div>
+                                        <div
+                                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                                        >
+                                          Expire
+                                          {{
+                                            v.receive_date
+                                              ? $moment(v.receive_date)
+                                                  .add(
+                                                    parseInt(v.shelf_life),
+                                                    "days"
+                                                  )
+                                                  .format("YYYY-MM-DD")
+                                              : "-"
+                                          }}
+                                        </div>
+                                        <div
+                                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                                        >
+                                          Life
+                                          {{
+                                            $moment(v.receive_date)
+                                              .add(
+                                                parseInt(v.shelf_life),
+                                                "days"
+                                              )
+                                              .diff($moment(new Date()), "days")
+                                          }}
+                                          days
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  <td
+                                    :class="`${
+                                      parseInt(
+                                        v.manufacturing_date
+                                          ? $moment(v.manufacturing_date)
+                                              .add(
+                                                parseInt(v.shelf_life) + 1,
+                                                'days'
+                                              )
+                                              .diff($moment(new Date()), 'days')
+                                          : '0'
+                                      ) <= 30
+                                        ? 'text-red-500'
+                                        : ''
+                                    }`"
+                                  >
+                                    <div class="flex items-center space-x-3">
+                                      <div>
+                                        <div
+                                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                                        >
+                                          Expire
+                                          {{
+                                            v.manufacturing_date
+                                              ? $moment(v.manufacturing_date)
+                                                  .add(
+                                                    parseInt(v.shelf_life),
+                                                    "days"
+                                                  )
+                                                  .format("YYYY-MM-DD")
+                                              : "-"
+                                          }}
+                                        </div>
+                                        <div
+                                          class="overflow-hidden text-ellipsis whitespace-nowrap"
+                                        >
+                                          {{
+                                            v.manufacturing_date
+                                              ? $moment(v.manufacturing_date)
+                                                  .add(
+                                                    parseInt(v.shelf_life) + 1,
+                                                    "days"
+                                                  )
+                                                  .diff(
+                                                    $moment(new Date()),
+                                                    "days"
+                                                  )
+                                              : "0"
+                                          }}
+                                          days
+                                        </div>
+                                      </div>
+                                    </div>
                                   </td>
                                   <th class="text-right">
                                     <button
-                                      class="btn btn-xs btn-warning"
+                                      class="btn btn-xs btn-warning text-white"
                                       @click="
                                         detail_edit(v.rac, v.bay, l, p, v)
                                       "
                                     >
-                                      <font-awesome-icon
-                                        icon="fa-solid fa-pen"
-                                      />
+                                      Edit
                                     </button>
                                   </th>
                                 </tr>
                               </tbody>
                             </table>
                           </div>
+                          <div
+                            class="shadow-lg w-full bg-accent text-white mt-2 text-xs"
+                          >
+                            <div>
+                              <div class="p-2 w-full">
+                                Weight Total :
+                                {{
+                                  new Intl.NumberFormat("th-TH", {
+                                    minimumFractionDigits: 2,
+                                  }).format(
+                                    parseFloat(
+                                      total[l]
+                                        ? total[l][p]
+                                          ? total[l][p]
+                                          : 0
+                                        : 0
+                                    ).toFixed(2)
+                                  )
+                                }}
+                                Kg.
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  <div class="grid flex-grow place-items-center col-span-2">
+                    <div class="shadow-lg w-full bg-neutral text-white">
+                      <div>
+                        <div class="p-1 w-full">
+                          Weight Total :
+                          {{
+                            //
+                            new Intl.NumberFormat("th-TH", {
+                              minimumFractionDigits: 2,
+                            }).format(
+                              parseFloat(total[l] ? total[l].total : 0).toFixed(
+                                2
+                              )
+                            )
+                          }}
+                          Kg.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="divider col-span-2 mt-0 mb-1"></div>
                 </div>
               </div>
             </div>
@@ -140,13 +309,9 @@
               v-if="detail.form"
             >
               <div class="card-body bg-primary">
-                <h2 class="card-title">
+                <h2 class="card-title text-white">
                   Shelf Details :
                   {{ `${temp.rac}-${temp.bay}-${temp.level}-${temp.pallet}` }}
-
-                  <!-- {{ this.detail.current }}
-
-                  {{ detail.form }} -->
                 </h2>
               </div>
               <div class="card-body bg-base-200" v-if="detail.form.code">
@@ -191,24 +356,6 @@
                       </select>
                     </div>
                   </div>
-                  <!-- <div class="flex-1 w-auto">
-                    <div class="form-control">
-                      <label class="label"
-                        ><span class="label-text">BAY</span></label
-                      >
-                      <select
-                        class="select select-bordered w-full"
-                        v-model="detail.form.bay"
-                        :class="`${detail.form.rac ? '' : 'select-disabled'}`"
-                        :disabled="!detail.form.rac"
-                      >
-                        <option disabled selected value="">...</option>
-                        <option :value="v.bay" v-for="(v, i) in bay.rows">
-                          {{ v.bay }}
-                        </option>
-                      </select>
-                    </div>
-                  </div> -->
                   <div class="flex-1 w-auto">
                     <div class="form-control">
                       <label class="label"
@@ -275,14 +422,15 @@
                       <label class="label"
                         ><span class="label-text">Short code</span>
                       </label>
-                      <SelectSearch
+
+                      <AppModuleGlobalSelectSearch
                         v-if="
                           (modal.detail && detail.controll == 'create') ||
                           checkbox == 'E'
                         "
                         :placeholder="'Short code'"
-                        :label="'ItemCode'"
-                        :code="'ItemCode'"
+                        :label="'short_code'"
+                        :code="'short_code'"
                         :minChar="3"
                         :delay="0.5"
                         :limit="10"
@@ -290,25 +438,30 @@
                           checkbox == 'M' ? 'input-disabled' : ''
                         }`"
                         :disabled="checkbox == 'M' ? true : false"
-                        :current="detail.form.item_code"
-                        :refresh="refresh"
-                        @updateValue="updateValue"
-                        @stopRefresh="
+                        :current="detail.form.item_short_code"
+                        :refresh="refresh.item_short_code"
+                        @updateValue="
                           (obj) => {
-                            refresh = obj.value;
+                            detail.form.item_short = obj;
+                            detail.form.item_short_code = obj.short_code;
+                            // base.form.item_short.code = obj.code;
                           }
                         "
-                        :url="`${this.serviceUrl}controllers/SAP/UBA/oitm`"
-                        :param="`&total=1&wh=wh1&rac_list=1`"
+                        @stopRefresh="
+                          (obj) => {
+                            refresh.item_short_code = obj.value;
+                          }
+                        "
+                        :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort`"
+                        :param="`&total=1&wh=${user.branchTitle}&action=groupby-code`"
                       />
-
                       <input
                         v-else
                         type="text"
-                        placeholder="Item Code"
+                        placeholder="Short code"
                         class="input input-bordered input-disabled"
                         required=""
-                        v-model="detail.form.item_code"
+                        v-model="detail.form.item_short_code"
                         disabled
                       />
                     </div>
@@ -337,124 +490,44 @@
                   <div class="flex-1 w-auto">
                     <div class="form-control">
                       <label class="label"
+                        ><span class="label-text">Item Description</span>
+                      </label>
+
+                      <select
+                        class="select select-bordered w-full"
+                        v-model="detail.form.item_code"
+                      >
+                        <option disabled selected value="">เลือกรายการ</option>
+                        <option
+                          v-for="(v, i) in item.rows"
+                          :value="v.item_code"
+                        >
+                          {{ v.item_name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 w-full gap-4">
+                  <div class="flex-1 w-auto">
+                    <div class="form-control">
+                      <label class="label"
                         ><span class="label-text">Item Code</span>
                       </label>
-                      <SelectSearch
-                        v-if="
-                          (modal.detail && detail.controll == 'create') ||
-                          checkbox == 'E'
-                        "
-                        :placeholder="'Item Code'"
-                        :label="'ItemCode'"
-                        :code="'ItemCode'"
-                        :minChar="3"
-                        :delay="0.5"
-                        :limit="10"
-                        :customClass="`input input-bordered ${
-                          checkbox == 'M' ? 'input-disabled' : ''
-                        }`"
-                        :disabled="checkbox == 'M' ? true : false"
-                        :current="detail.form.item_code"
-                        :refresh="refresh"
-                        @updateValue="updateValue"
-                        @stopRefresh="
-                          (obj) => {
-                            refresh = obj.value;
-                          }
-                        "
-                        :url="`${this.serviceUrl}controllers/SAP/UBA/oitm`"
-                        :param="`&total=1&wh=wh1&rac_list=1`"
-                      />
-
                       <input
-                        v-else
                         type="text"
                         placeholder="Item Code"
-                        class="input input-bordered input-disabled"
+                        class="input input-bordered"
                         required=""
                         v-model="detail.form.item_code"
                         disabled
                       />
                     </div>
                   </div>
-
-                  <!-- <div class="flex-1 w-auto">
-                    <div class="form-control">
-                      <label class="label"
-                        ><span class="label-text">Lot Number</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="Lot Number"
-                        class="input input-bordered"
-                        required=""
-                        v-model="detail.form.batch"
-                        :disabled="
-                          detail.controll != 'create' && checkbox != 'E'
-                        "
-                      />
-                    </div>
-                  </div> -->
-                </div>
-                <div
-                  class="grid grid-cols-2 w-full gap-4"
-                  v-if="detail.controll == 'create'"
-                >
                   <div class="flex-1 w-auto">
                     <div class="form-control">
                       <label class="label"
-                        ><span class="label-text">Item Name</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Item Name"
-                        class="input input-bordered"
-                        required=""
-                        v-model="detail.form.item.ItemName"
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  <div class="flex-1 w-auto">
-                    <div class="form-control">
-                      <label class="label"
-                        ><span class="label-text">Shelf life</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Shelf life"
-                        class="input input-bordered"
-                        required=""
-                        v-model="detail.form.item.U_Agin"
-                        disabled
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="grid grid-cols-2 w-full gap-4"
-                  v-if="detail.controll == 'edit'"
-                >
-                  <div class="flex-1 w-auto">
-                    <div class="form-control">
-                      <label class="label"
-                        ><span class="label-text">Item Name</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Item Name"
-                        class="input input-bordered"
-                        required=""
-                        v-model="detail.form.item_name"
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  <div class="flex-1 w-auto">
-                    <div class="form-control">
-                      <label class="label"
-                        ><span class="label-text">Shelf life</span>
+                        ><span class="label-text">Shelf Life</span>
                       </label>
                       <input
                         type="text"
@@ -555,15 +628,6 @@
                         ><span class="label-text">Unit</span></label
                       >
                       <input
-                        v-if="detail.form.item"
-                        type="text"
-                        placeholder="Unit"
-                        class="input input-bordered input-disabled w-full"
-                        v-model="detail.form.item.UomCode"
-                        readonly
-                      />
-                      <input
-                        v-else
                         type="text"
                         placeholder="Unit"
                         class="input input-bordered w-full input-disabled"
@@ -609,107 +673,123 @@
                   </div>
                 </div>
                 <div class="form-control mt-6" @click="detail_save()">
-                  <button class="btn btn-primary">บันทึก</button>
+                  <button class="btn btn-primary text-white">Save</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </template>
-      <template #view>
-        <div role="tablist" class="tabs tabs-lifted">
-          <input
-            type="radio"
-            role="tab"
-            class="tab"
-            name="WH"
-            aria-label="Factory"
-            :checked="wh.tab == 'factory' ? true : false"
-            @change="setCheckbox('factory')"
-          />
-          <div
-            role="tabpanel"
-            class="tab-content bg-base-100 border-base-300"
-            v-if="wh.tab == 'factory'"
-          >
-            <FGModule />
+      <template #view v-if="user">
+        <div class="grid gap-6 lg:px-10 lg:py-2">
+          <!-- <div class="card col-span-4 bg-transparent"> -->
+          <div role="tablist" class="tabs tabs-lifted">
+            <input
+              type="radio"
+              role="tab"
+              class="tab"
+              name="WH"
+              aria-label="Report"
+              @change="setCheckbox('reportDashboard')"
+              :checked="wh.tab == 'reportDashboard' ? true : false"
+            />
+            <div
+              role="tabpanel"
+              class="tab-content bg-base-100 border-base-300"
+              v-if="wh.tab == 'reportDashboard'"
+            >
+            COMING SOON
+              <!-- <AppModuleWHReportDashboard /> -->
+            </div>
+            <input
+              type="radio"
+              role="tab"
+              class="tab"
+              name="WH"
+              aria-label="RMInspection"
+              :checked="wh.tab == 'RMInspection' ? true : false"
+              @change="setCheckbox('RMInspection')"
+            />
+            <div
+              role="tabpanel"
+              class="tab-content bg-base-100 border-base-300"
+              v-if="wh.tab == 'RMInspection'"
+            >
+              <AppModulePagesRDQCInspaceRM
+                :wh="'wh1'"
+                @clickRac="clickRac"
+                :parentX="0"
+                :parentY="0"
+                :scale="0.7"
+                :refresh="layout.wh1"
+                @stopRefresh="
+                  (obj) => {
+                    layout.wh1 = obj.value;
+                  }
+                "
+              />
+            </div>
+            <input
+              type="radio"
+              role="tab"
+              class="tab"
+              name="WH"
+              aria-label="FGInspection"
+              @change="setCheckbox('FGInspection')"
+              :checked="wh.tab == 'FGInspection' ? true : false"
+            />
+            <div
+              role="tabpanel"
+              class="tab-content bg-base-100 border-base-300"
+              v-if="wh.tab == 'FGInspection'"
+            >
+              <AppModulePagesRDQCInspaceFG
+                :wh="'wh2'"
+                @clickRac="clickRac"
+                :parentX="0"
+                :parentY="0"
+                :scale="0.7"
+                :refresh="layout.wh2"
+                @stopRefresh="
+                  (obj) => {
+                    layout.wh2 = obj.value;
+                  }
+                "
+              />
+            </div>
+            <input
+              type="radio"
+              role="tab"
+              class="tab"
+              name="WH"
+              aria-label="PDInspection"
+              @change="setCheckbox('PDInspection')"
+              :checked="wh.tab == 'PDInspection' ? true : false"
+            />
+            <div
+              role="tabpanel"
+              class="tab-content bg-base-100 border-base-300"
+              v-if="wh.tab == 'PDInspection'"
+            >
+              <AppModulePagesRDQCInspacePD />
+            </div>
+            <input
+              type="radio"
+              role="tab"
+              class="tab"
+              name="WH"
+              aria-label="TrackeabilityFG"
+              @change="setCheckbox('TrackeabilityFG')"
+              :checked="wh.tab == 'TrackeabilityFG' ? true : false"
+            />
+            <div
+              role="tabpanel"
+              class="tab-content bg-base-100 border-base-300"
+              v-if="wh.tab == 'TrackeabilityFG'"
+            >
+              <AppModulePagesRDQCInspaceTFG />
+            </div>
           </div>
-          <input
-            type="radio"
-            role="tab"
-            class="tab"
-            name="WH"
-            aria-label="External"
-            @change="setCheckbox('external')"
-            :checked="wh.tab == 'external' ? true : false"
-          />
-          <div
-            role="tabpanel"
-            class="tab-content bg-base-100 border-base-300"
-            v-if="wh.tab == 'external'"
-          >
-            <PDModule />
-          </div>
-          <input
-            type="radio"
-            role="tab"
-            class="tab"
-            name="WH"
-            aria-label="Stock"
-            @change="setCheckbox('stock')"
-            :checked="wh.tab == 'stock' ? true : false"
-          />
-          <div
-            role="tabpanel"
-            class="tab-content bg-base-100 border-base-300"
-            v-if="wh.tab == 'stock'"
-          >
-            <RMModule />
-          </div>
-          <input
-            type="radio"
-            role="tab"
-            class="tab"
-            name="WH"
-            aria-label="Transaction"
-            @change="setCheckbox('Transaction')"
-            :checked="wh.tab == 'Transaction' ? true : false"
-          />
-          <div
-            role="tabpanel"
-            class="tab-content bg-base-100 border-base-300"
-            v-if="wh.tab == 'Transaction'"
-          >
-            <TFGModule />
-          </div>
-          <!-- </div>
-
-        <div role="tablist" class="tabs tabs-lifted" v-if="wh.select == 'external'"> -->
-
-          <!-- <input
-            type="radio"
-            role="tab"
-            class="tab"
-               name="WH"
-            aria-label="Stock"
-            @change="setCheckbox('external', 'stock')"
-            :checked="wh.select=='external' && wh.tab=='stock'?true:false"
-          />
-          <div role="tabpanel" class="tab-content bg-base-100 border-base-300" v-if="wh.select=='external' && wh.tab=='stock'">
-            <StockModule />
-          </div> -->
-          <!-- <input
-            type="radio"
-            role="tab"
-            class="tab"
-               name="WH"
-            aria-label="Transaction"
-            @change="setCheckbox('external', 'Transaction')"
-            :checked="wh.select=='external' && wh.tab=='Transaction'?true:false"
-          />
-          <div role="tabpanel" class="tab-content bg-base-100 border-base-300" v-if="wh.select=='external' && wh.tab=='Transaction'">
-            <TransactionModule />
-          </div> -->
         </div>
       </template>
     </AppLayout>
@@ -719,35 +799,45 @@
 <script>
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";
+import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+// import AppModuleWHRacLayout from "@/components/App/Module/Pages/WH/RacLayout.vue";
 
-import SelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import AppModulePagesRDQCInspaceFG from "@/components/App/Module/Pages/RD/QCInspace/FG.vue";
+import AppModulePagesRDQCInspacePD from "@/components/App/Module/Pages/RD/QCInspace/PD.vue";
+import AppModulePagesRDQCInspaceRM from "@/components/App/Module/Pages/RD/QCInspace/RM.vue";
+import AppModulePagesRDQCInspaceTFG from "@/components/App/Module/Pages/RD/QCInspace/TFG.vue";
 
-import FGModule from "@/components/App/Module/Pages/RD/QCInspace/FG.vue";
-import PDModule from "@/components/App/Module/Pages/RD/QCInspace/PD.vue";
-import RMModule from "@/components/App/Module/Pages/RD/QCInspace/RM.vue";
-import TFGModule from "@/components/App/Module/Pages/RD/QCInspace/TFG.vue";
+// import AppModuleWHStockOnHand from "@/components/App/Module/Pages/WH/StockOnHand.vue";
+// import AppModuleWHTransaction from "@/components/App/Module/Pages/WH/Transaction.vue";
+import AppModuleWHReportDashboard from "@/components/App/Module/Pages/WH/ReportDashboard.vue";
 
 export default {
   name: "Home",
   components: {
     AppLayout,
-    SelectSearch,
-    FGModule,
-    PDModule,
-    RMModule,
-    TFGModule,
+    // AppModuleWHRacLayout,
+    AppModuleGlobalSelectSearch,
+    AppModulePagesRDQCInspaceFG,
+    AppModulePagesRDQCInspacePD,
+    AppModulePagesRDQCInspaceRM,
+    AppModulePagesRDQCInspaceTFG,
+    AppModuleWHReportDashboard,
   },
-  props: ["showLogin", "showtokens", "token_gameplay"],
+  props: [],
   data() {
     return {
-      wh: { tab: "factory" },
+      total: [],
+      wh: { tab: "reportDashboard" },
       // wh: "factory",
       layout: {
         wh1: false,
         wh2: false,
       },
       checkbox: "",
-      refresh: false,
+      refresh: {
+        item_short_code: false,
+        item_code: false,
+      },
       rac: {
         rows: [],
         total: 0,
@@ -771,7 +861,29 @@ export default {
           image: [],
         },
       },
-
+      item: {
+        rows: [],
+        total: 0,
+        page: 1,
+        row: null,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: {
+          name: "",
+          number: "",
+          size: "",
+          description: "",
+          category_id: "0",
+          store_id: "0",
+          recommend: "",
+          room: "",
+          imageLink: "",
+          image: [],
+        },
+      },
       modal: {
         base: false,
 
@@ -871,6 +983,9 @@ export default {
       });
     },
     detail_get(callback) {
+      // console.error(
+      //   "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+      // );
       fetch(
         `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.form.code}&transref=I&transref_type_null=1`,
         {
@@ -883,6 +998,33 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
+          this.total = [];
+          res.rows.forEach((v, i) => {
+            this.total[v.level]
+              ? this.total[v.level][v.pallet]
+                ? (this.total[v.level][v.pallet] =
+                    parseFloat(this.total[v.level][v.pallet]) +
+                    parseFloat(v.quantitys))
+                : (this.total[v.level][v.pallet] = parseFloat(v.quantitys))
+              : (this.total[v.level] = {
+                  [v.pallet]: parseFloat(v.quantitys),
+                });
+
+            this.total[v.level]
+              ? this.total[v.level]["total"]
+                ? (this.total[v.level]["total"] =
+                    parseFloat(this.total[v.level]["total"]) +
+                    parseFloat(v.quantitys))
+                : (this.total[v.level]["total"] = parseFloat(v.quantitys))
+              : (this.total[v.level] = {
+                  ["total"]: parseFloat(v.quantitys),
+                });
+            //             level: "4"
+            // manufacturing_date: "2024-02-14"
+            // pack_size: "2"
+            // pallet: "1"
+            // quantitys: "2"
+          });
           callback(
             res.success
               ? { rows: res.rows, total: res.total }
@@ -919,7 +1061,6 @@ export default {
       this.detail.form.oldcomments = this.detail.form.comments;
       this.detail.form.comments = "";
       this.detail.form.item = {};
-      // this.detail.current = v.code;
       this.detail.controll = "edit";
       this.checkbox = "";
 
@@ -940,27 +1081,9 @@ export default {
         this.detail.form.level = this.temp.level;
         this.detail.form.pallet = this.temp.pallet;
       } else {
-        // this.detail.from.code = this.detail.current
         this.detail.form.rac_layout = this.detail.form.rac_data.code;
       }
-
-      // this.detail.form.doc_num = "A"
-
-      this.detail.form.item
-        ? (this.detail.form.item_code = this.detail.form.item.ItemCode)
-        : "";
-      this.detail.form.item
-        ? (this.detail.form.item_name = this.detail.form.item.ItemName)
-        : "";
-      this.detail.form.item
-        ? (this.detail.form.shelf_life = this.detail.form.item.U_Agin)
-        : "";
-      this.detail.form.item
-        ? (this.detail.form.uom = this.detail.form.item.UomCode)
-        : "";
-      // this.detail.form.comments = "comments";
       this.detail.form.transref = this.checkbox ? this.checkbox : "I";
-      // this.detail.form.comments = "comments";
       fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf`, {
         method: this.detail.controll == "create" ? "POST" : "PUT",
         headers: {
@@ -974,10 +1097,6 @@ export default {
           if (res.success) {
             this.modal.detail = false;
             this.detail_search();
-            // console.log(vm.detail.form);
-
-            // console.log(vm.layout);
-            // console.log(this.detail.form);
             this.layout[this.detail.form.wh] = true;
           }
         })
@@ -1071,26 +1190,57 @@ export default {
           console.error("Error:", error);
         });
     },
+
+    // Item
+    item_search(callback) {
+      this.item.loading = true;
+      this.item_get((res) => {
+        this.item.rows = res.rows;
+        this.item.total = res.total;
+        this.item.next =
+          this.item.page * this.item.row >= this.item.total ? false : true;
+        this.item.back = this.item.page > 1 ? true : false;
+        this.item.loading = false;
+        callback(res);
+      });
+    },
+    item_get(callback) {
+      fetch(
+        `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&rac=${this.detail.form.rac}&wh=${this.user.branchTitle}&short_code=${this.detail.form.item_short_code}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.user_token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((res) => {
+          if (res.rows.length > 0) {
+            // res.rows.forEach((v, i) => {
+            //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            //   res.rows[i].master = 0;
+            // });
+          }
+          callback(
+            res.success
+              ? { rows: res.rows, total: res.total }
+              : { rows: [], total: 0 }
+          );
+        })
+        .catch((error) => {
+          callback([]);
+          console.error("Error:", error);
+        });
+    },
   },
   mounted() {
-    this.$nextTick(() => {
-      // !this.user.access["WH"]
-      //   ? this.$router.push({ name: `Dashboard` })
-      //   : !this.user.access["WH"][this.$route.name]
-      //   ? this.$router.push({ name: `Dashboard` })
-      //   : "";
-      this.base.temp = { ...this.base.form };
-    });
+    this.base.temp = { ...this.base.form };
   },
   created() {},
   beforeDestroy() {},
   watch: {
-    // 'wh.select': function (v) {
-    //   localStorage.setItem("WH", JSON.stringify(this.wh));
-    // },
-    // 'wh.tab': function (v) {
-    //   localStorage.setItem("WH", JSON.stringify(this.wh));
-    // },
     "detail.form.unit": function (val) {
       if (!this.detail.form.unit || !this.detail.form.pack_size) {
         return;
@@ -1098,13 +1248,10 @@ export default {
       this.detail.form.quantitys =
         this.detail.form.unit * this.detail.form.pack_size;
       if (this.checkbox == "M" || this.checkbox == "O") {
-        // console.log(this.detail.form.backupUnit)
-        // console.log(val)
         this.detail.form.unit =
           this.detail.form.unit > this.detail.form.backupUnit
             ? this.detail.form.backupUnit
             : this.detail.form.unit;
-        // this.checkbox = false;
       }
     },
     "detail.form.pack_size": function (val) {
@@ -1123,22 +1270,54 @@ export default {
         this.rac_search();
       }
       if (this.checkbox == "M" || this.checkbox == "O") {
-        // console.log(this.detail.form.backupUnit)
-        // console.log(val)
         this.detail.form.unit =
           this.detail.form.unit > this.detail.form.backupUnit
             ? this.detail.form.backupUnit
             : this.detail.form.unit;
-        // this.checkbox = false;
       }
     },
-    // "detail.form.rac_layout": function (val) {
-    //   this.detail.form.bay = "";
-    //   val ? this.bay_search() : "";
-    // },
-    // "detail.form.bay": function (val) {
-    //   this.detail.form.level = "";
-    // },
+    "detail.form.item_short_code": function (val) {
+      if (this.detail.controll == "create" || this.checkbox == "E") {
+        this.detail.form.item_code = "";
+        this.detail.form.shelf_life = "";
+        this.detail.form.item_name = "";
+      }
+
+      this.item_search((res) => {
+        if (this.item.rows.length == 1) {
+          this.detail.form.item_code = this.item.rows[0].item_code;
+          this.detail.form.item_wh = this.item.rows[0].wh;
+        }
+      });
+    },
+    "detail.form.item_code": function (val) {
+      if (val) {
+        fetch(
+          `${this.serviceUrl}controllers/SAP/${
+            this.detail.form.item_wh ? this.detail.form.item_wh : "UBA"
+          }/oitm?item_code=${val}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${this.user_token}`,
+            },
+          }
+        )
+          .then((response) => response.json())
+          .then((res) => {
+            if (res.rows.length > 0) {
+              this.detail.form.item_code = res.rows[0].ItemCode;
+              this.detail.form.item_name = res.rows[0].ItemName;
+              this.detail.form.shelf_life = res.rows[0].U_Agin;
+              this.detail.form.uom = res.rows[0].UomCode;
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    },
     "modal.detail": function (val) {
       if (!val) {
         this.checkbox = false;
@@ -1148,13 +1327,17 @@ export default {
       if (!val) {
         return;
       }
-      console.log(this.user.access);
-      !this.user.access["RD"]
-        ? this.$router.push({ name: `404` })
-        : !this.user.access["RD"][this.$route.name]
-        ? this.$router.push({ name: `404` })
+      !this.user.access["WH"]
+        ? this.$router.push({ name: `Dashboard` })
+        : !this.user.access["WH"][this.$route.name]
+        ? this.$router.push({ name: `Dashboard` })
         : "";
     },
   },
 };
 </script>
+<style scrope>
+.tab-content {
+  border-radius: 10px 10px 10px 10px;
+}
+</style>

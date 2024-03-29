@@ -77,8 +77,8 @@
                   <th rowspan="2">Rack</th>
                   <td rowspan="2">Create</td>
                   <td rowspan="2">Update</td>
-                  <td rowspan="2">Item Code</td>
-                  <td rowspan="2">Item Description</td>
+                  <td rowspan="2">Short Code</td>
+                  <td rowspan="2">Item Name</td>
                   <td rowspan="2">Lot No.</td>
                   <td rowspan="2">Qty</td>
                   <td rowspan="2">Pack Size</td>
@@ -89,7 +89,7 @@
                     colspan="4"
                     class="bg-yellow-100 text-center font-bold text-black"
                   >
-                    Calculated from the date of receipt
+                    Calculated from the date of receive
                   </td>
                   <td
                     colspan="4"
@@ -589,7 +589,7 @@ export default {
     exportExcel() {
       return window.open(`${
         this.$store.state.serviceUrl
-      }controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
+      }controllers/MYSQL/INTERNAL/WH/exports?type=stockOnHand&total=1&page=${
         this.base.page
       }${this.base.row ? `&rows=${this.base.row}` : ""}${
         this.base.q ? `&q=${this.base.q}` : ""
@@ -600,6 +600,20 @@ export default {
       }&transref=I&transref_type_null=1&sumQuantitys=1
 
         `);
+
+    //     exportExcel() {
+    //   return window.open(
+    //     `${
+    //       this.$store.state.serviceUrl
+    //     }controllers/MYSQL/INTERNAL/WH/exports?type=transaction&total=1&page=${
+    //       this.base.page
+    //     }${this.base.row ? `&rows=${this.base.row}` : ""}${
+    //       this.base.q ? `&q=${this.base.q}` : ""
+    //     }${this.wh ? `&wh=${this.wh}` : ""}${
+    //       this.transref ? `&transref=${this.transref}` : ""
+    //     }`
+    //   );
+    // },
     },
     change() {
       this.base_search();

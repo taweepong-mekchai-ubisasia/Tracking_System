@@ -1964,7 +1964,7 @@ export default {
     const rating = ref(null);
     const survey = ref(null);
     onMounted(() => {
-      console.log(joinnows.value);
+      // console.log(joinnows.value);
     });
 
     return { joinnows, profile, rating, survey };
@@ -2137,70 +2137,71 @@ export default {
       this.$store.commit("isLogin", false);
       this.$store.commit("user_token", false);
       localStorage.removeItem("user_token");
+      this.changepage('Login')
     },
-    authentication() {
-      let vm = this;
-      vm.$store.commit("user", null);
-      fetch(`${this.ServiceUrl}controllers/MYSQL/INTERNAL/GLOBAL/auth`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (res.success) {
-            vm.$store.commit("isLogin", true);
-            res.row.access = JSON.parse(res.row.access);
-            vm.$store.commit("user", res.row);
-            vm.$store.commit("user_token", vm.user_token);
-          } else {
-            vm.goLoginPage(vm);
-          }
-        })
-        .catch((error) => {
-          vm.goLoginPage(vm);
-        });
-    },
-    goLoginPage(vm) {
-      vm.$store.commit("isLogin", false);
-      vm.$store.commit("user_token", false);
-      localStorage.removeItem("user_token");
-      vm.$router.push({ name: "AppLogin" });
-    },
+    // authentication() {
+    //   let vm = this;
+    //   vm.$store.commit("user", null);
+    //   fetch(`${this.ServiceUrl}controllers/MYSQL/INTERNAL/GLOBAL/auth`, {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${this.user_token}`,
+    //     },
+    //   })
+    //     .then((response) => response.json())
+    //     .then((res) => {
+    //       if (res.success) {
+    //         vm.$store.commit("isLogin", true);
+    //         res.row.access = JSON.parse(res.row.access);
+    //         vm.$store.commit("user", res.row);
+    //         vm.$store.commit("user_token", vm.user_token);
+    //       } else {
+    //         vm.goLoginPage(vm);
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       vm.goLoginPage(vm);
+    //     });
+    // },
+    // goLoginPage(vm) {
+    //   vm.$store.commit("isLogin", false);
+    //   vm.$store.commit("user_token", false);
+    //   localStorage.removeItem("user_token");
+    //   vm.$router.push({ name: "Login" });
+    // },
     showProfile() {
       this.tab.profile = "profile";
       this.$refs.profile.checked = true;
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      this.$store.commit(
-        "language",
-        localStorage.getItem("language")
-          ? localStorage.getItem("language")
-          : "th"
-      );
-    });
-    this.$store.commit("user_token", localStorage.getItem("user_token"));
+    // this.$nextTick(() => {
+    //   this.$store.commit(
+    //     "language",
+    //     localStorage.getItem("language")
+    //       ? localStorage.getItem("language")
+    //       : "th"
+    //   );
+    // });
+    // this.$store.commit("user_token", localStorage.getItem("user_token"));
   },
   created() {
   },
   watch: {
-    user_token: function (val) {
-      if (val) {
-        this.authentication();
-      } else {
-        this.goLoginPage(this);
-      }
-    },
-    user: function (val) {
-      console.log(val);
-      if (!val) {
-        return;
-      }
-    },
+    // user_token: function (val) {
+    //   if (val) {
+    //     this.authentication();
+    //   } else {
+    //     this.goLoginPage(this);
+    //   }
+    // },
+    // user: function (val) {
+    //   console.log(val);
+    //   if (!val) {
+    //     return;
+    //   }
+    // },
     "tab.profile": function (val) {
       console.log(val);
       if (val == "profile") {

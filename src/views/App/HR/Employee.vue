@@ -10,13 +10,14 @@
           v-model="base.modal"
         />
         <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-6/12 max-w-5xl">
+          <div class="modal-box relative w-10/12 lg:w-6/12 max-w-5xl">
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
               >✕
             </label>
             <h3 class="text-lg font-bold">Employee</h3>
+
             <div role="tablist" class="tabs tabs-lifted">
               <input
                 type="radio"
@@ -33,7 +34,7 @@
               >
                 <div class="grid gap-4 md:grid-cols-1 grid-cols-1">
                   <AppModuleGlobalUpload
-                    :imageLink="base.form.imageLink"
+                    :imageLink="`${base.form.imageLink}employee/${base.form.code}/`"
                     :image="base.form.image"
                     :id="'base'"
                     :multiple="false"
@@ -51,7 +52,31 @@
                       }
                     "
                   />
-
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">ลายเซ็นต์</span>
+                    </label>
+                    <!-- {{ loadimage }} -->
+                    <VueSignaturePad
+                      id="signature"
+                      width="100%"
+                      height="100px"
+                      :scaleToDevicePixelRatio="true"
+                   :class="`${!loadimage?'':'hidden'}`"
+                    />
+                    <div class=" h-20 bg-cover w-fit border-2 self-center
+                    "
+                    :class="`${loadimage?'':'hidden'} `"
+                    >  <img
+                    
+                    :class="`h-[inherit]`"
+                       :src="`${base.form.imageLink}signature/${base.form.uid}.signature.png`"
+                       alt="Image"
+                       @error="error"
+                       @load="loaded"
+                     /></div>
+                  
+                  </div>
                   <div class="form-control">
                     <label class="label">
                       <span class="label-text">บริษัท</span>
@@ -83,6 +108,7 @@
                       "
                       :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/company`"
                       :param="`&total=1`"
+                      :image="false"
                     />
                   </div>
                 </div>
@@ -125,7 +151,7 @@
                         }
                       "
                       :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/branch`"
-                      :param="`&total=1`"
+                      :param="`&total=1`" :image="false"
                     />
                   </div>
                   <div class="form-control">
@@ -194,7 +220,7 @@
                       }
                     "
                     :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/department`"
-                    :param="`&total=1&wh=wh1&rac_list=1`"
+                    :param="`&total=1&wh=wh1&rac_list=1`" :image="false"
                   />
                 </div>
                 <div class="form-control">
@@ -233,7 +259,7 @@
                         }
                       "
                       :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/System/access`"
-                      :param="`&total=1`"
+                      :param="`&total=1`" :image="false"
                     />
                   </div>
                 </div>
@@ -421,9 +447,9 @@
                             <label
                               for="modal-detail"
                               class="btn btn-link modal-button btn-xs"
-                              @click="detail_edit(`${row.code}`, `${index}`)"
+                              @click="detail_edit(`${row.code}`)"
                             >
-                              แก้ไข
+                              แก้ไข 
                             </label>
                             |
                             <label
@@ -495,6 +521,21 @@
                   />
                 </div>
               </div>
+              <!-- <input
+                type="radio"
+                name="my_tabs_2"
+                role="tab"
+                class="tab"
+                aria-label="Signature"
+                v-if="base.controll != 'create'"
+              />
+              <div
+                role="tabpanel"
+                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full"
+                style="max-height: 60vh"
+              >
+          
+              </div> -->
               <!-- <input
                 type="radio"
                 name="my_tabs_2"
@@ -625,7 +666,7 @@
 
         <!-- Put this part before </body> tag -->
 
-        <AppModuleGlobalShowImage :row="imagerow" />
+        <AppModuleGlobalShowImage :src="imageSrc" />
       </template>
       <template #view>
         <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2">
@@ -637,6 +678,7 @@
                   @search="
                     (q) => {
                       base.q = q;
+                      base.page = 1;
                       base_search();
                     }
                   "
@@ -655,7 +697,7 @@
                   <thead>
                     <tr>
                       <th>id</th>
-                      <td>รูป</td>
+                      <!-- <td>รูป</td> -->
                       <td>ข้อมูลผู้พนักงาน</td>
                       <td>ติดต่อ</td>
                       <td>ตำแหน่ง</td>
@@ -669,12 +711,62 @@
                   <tbody>
                     <tr v-for="(row, index) in base.rows" :key="row.code">
                       <th>{{ row.id }}</th>
-                      <th class="text-center">
-                        <div class="avatar w-auto">
+                      <td class="text-center">
+                        <div class="flex items-center gap-3">
+                          <div class="avatar">
+                            <div class="mask mask-square w-12 h-12">
+                              <label
+                                for="modal_showImage"
+                                class="btn btn-link p-0"
+                                @click="
+                                  row.image.length > 0 ? (imageSrc = `${
+                                    row.image[row.master ? row.master : 0].temp
+                                      ? tmpsLink
+                                      : row.imageLink
+                                      ? `${row.imageLink}employee/${row.code}/`
+                                      : tmpsLink
+                                  }${
+                                    row.image[row.master ? row.master : 0].file
+                                  }`) : ''
+                                "
+                              >
+                                <img
+                                  v-if="row.image.length > 0"
+                                  :src="`${
+                                    row.image[row.master ? row.master : 0].temp
+                                      ? tmpsLink
+                                      : row.imageLink
+                                      ? `${row.imageLink}employee/${row.code}/`
+                                      : tmpsLink
+                                  }${
+                                    row.image[row.master ? row.master : 0].file
+                                  }`"
+                                  alt="Image"
+                                  style="    object-fit: contain;"
+                                />
+                              </label>
+                            </div>
+                          </div>
+                          <div class="text-left">
+                            <div class="font-bold">
+                              <span class="pr-2">{{ row.firstname }}</span>
+                              <span>{{ row.lastname }}</span>
+                            </div>
+
+                            <div class="text-sm">
+                              รหัสพนักงาน : {{ row.uid }}
+                            </div>
+                            <div class="text-xs">
+                              {{ row.code }}
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- <div class="avatar w-auto">
                           <label
                             for="modal_showImage"
-                            class="btn btn-link"
-                            @click="imagerow = row"
+                            class="btn btn-link p-0"
+                            @click="imageSrc = row"
                           >
                             <img
                               v-if="row.image.length > 0"
@@ -688,9 +780,9 @@
                               alt="Image"
                             />
                           </label>
-                        </div>
-                      </th>
-                      <td>
+                        </div> -->
+                      </td>
+                      <!-- <td>
                         <div>
                           <div class="font-bold">
                             <span class="pr-2">{{ row.firstname }}</span>
@@ -702,7 +794,7 @@
                             {{ row.code }}
                           </div>
                         </div>
-                      </td>
+                      </td> -->
                       <td>
                         <div class="flex items-center space-x-3">
                           <div>
@@ -750,7 +842,6 @@
                             <div class="font-bold">
                               {{ row.accessTitle ? row.accessTitle : "-" }}
                             </div>
-                          
                           </div>
                         </div>
                       </td>
@@ -902,6 +993,10 @@ export default {
   },
   data() {
     return {
+      loadimage: false,
+      options: {
+        penColor: "#c0f",
+      },
       checkbox: "",
       refresh: false,
       tmpsLink: "",
@@ -947,7 +1042,7 @@ export default {
         controll: "",
         tb: "",
       },
-      imagerow: null,
+      imageSrc: null,
     };
   },
   computed: {
@@ -955,13 +1050,44 @@ export default {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
+      console.log("TOKEN")
+      console.log(this.$store.getters.user_token)
       return this.$store.getters.user_token;
     },
   },
   methods: {
+    error() {
+      this.loadimage = false;
+    },
+    loaded() {
+      this.loadimage = true;
+    },
+
     change() {
       this.base_search();
     },
+
+    undo() {
+      this.$refs.signaturePad.undoSignature();
+    },
+    save() {
+      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
+
+      alert("Open DevTools see the save data.");
+      console.log(isEmpty);
+      console.log(data);
+    },
+    // change() {
+    //   this.options = {
+    //     penColor: "#00f",
+    //   };
+    // },
+    // resume() {
+    //   this.options = {
+    //     penColor: "#c0f",
+    //   };
+    // },
+
     // base
     base_search() {
       this.base.loading = true;
@@ -1004,7 +1130,9 @@ export default {
           );
         })
         .catch((error) => {
-          callback([]);
+          // callback([]);
+          // localStorage.removeItem("user_token");
+          // this.$router.push({name:"AppLogin"})
           console.error("Error:", error);
         });
     },
@@ -1050,9 +1178,11 @@ export default {
     base_save() {
       let vm = this;
 
-      let image = { ...this.base.form.image[0] };
-      delete image.temp;
-
+      let image = this.base.form.image[0]
+        ? { ...this.base.form.image[0] }
+        : null;
+      image ? delete image.temp : "";
+      // console.log(this.base.form)
       if (this.base.controll != "create") {
         if (
           !this.base.form.current_password ||
@@ -1087,8 +1217,8 @@ export default {
           position: this.base.form.position,
           started_at: this.base.form.started_at,
           leaves_at: this.base.form.leaves_at,
-          access: this.base.form.access,
-          image: [image],
+          access_code: this.base.form.access_code,
+          image: image ? [image] : "",
         }),
       })
         .then((response) => response.json())
@@ -1207,23 +1337,27 @@ export default {
       };
       this.detail.controll = "create";
     },
-    detail_edit(code, index) {
+    detail_edit(code) {
       // console.log("detail_edit");
       // this.clearimage();
       // console.log(id,index);
       // setTimeout(() => {
       this.detail.current = code;
+      let index = this.detail.rows.findIndex(
+            (v) => v.code == this.detail.current
+          );
+          // this.detail.rows[index] = { ...this.detail.form };
       this.detail.form = Object.assign({}, this.detail.rows[index]);
-      this.detail.form.color = this.detail.form.color == "0" ? false : true;
+      // this.detail.form.color = this.detail.form.color == "0" ? false : true;
 
       // console.log(this.detail.form.image);
-      this.detail.form.image.forEach((v, i) => {
-        // console.log(v);
-        this.detail.form.image[i] = Object.assign(
-          {},
-          this.detail.form.image[i]
-        );
-      });
+      // this.detail.form.image.forEach((v, i) => {
+      //   // console.log(v);
+      //   this.detail.form.image[i] = Object.assign(
+      //     {},
+      //     this.detail.form.image[i]
+      //   );
+      // });
 
       // console.log(this.detail.form);
       // this.detail.form.image = JSON.parse(this.detail.form.image)
@@ -1231,12 +1365,14 @@ export default {
       // }, 5000);
 
       // this.base.form = this.base.rows[index]
-      this.detail.current = id;
+      // this.detail.current = index;
       // this.detail_search();
 
       this.detail.controll = "edit";
     },
     detail_save(type) {
+      console.log(this.base.current)
+      console.log(this.detail.controll)
       if (!this.base.current) {
         if (this.detail.controll == "create") {
           this.detail.form.code = this.detail.rows.length;
@@ -1339,6 +1475,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      console.log(this.user_token)
       this.base_search();
       this.tmpsLink = `${
         window.location.origin == "http://localhost:8081"
@@ -1353,5 +1490,35 @@ export default {
 tr,
 td {
   white-space: nowrap;
+}
+/* 
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+} */
+
+#signature {
+  border: double 3px transparent;
+  border-radius: 5px;
+  background-image: linear-gradient(white, white),
+    radial-gradient(circle at top left, #000000, #000000);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
+
+.container {
+  width: "100%";
+  padding: 8px 16px;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 8px;
 }
 </style>

@@ -1,4 +1,5 @@
 <template>
+  <!-- {{ havemenu }} -->
   <li v-if="havemenu || menutype == 'access'">
     <details
       id="disclosure-components"
@@ -128,8 +129,11 @@ export default {
     this.menu = this.menus;
   },
   mounted() {
-    this.menuArray = { ...this.access };
-    this.menutype == "access" ? this.settingFormat() : this.menuAccess();
+    this.$nextTick(() => {
+      // console.log("AAAAAAAAAAAAAAAAAAA")
+      this.menuArray = { ...this.access };
+      this.menutype == "access" ? this.settingFormat() : this.menuAccess();
+    });
   },
   methods: {
     settingFormat() {
@@ -147,27 +151,38 @@ export default {
       });
     },
     menuAccess() {
+      // console.log("dddddddddddddddd")
       function lv2(vm, vv, value, key) {
         vv.menu.forEach((v, i) => {
-          if (v.name == key && v.access != "none") {
+          // console.error(v.name,key,v.access)
+          if (v.name == key  && value && value != 'none') {
+            
+          // console.log(value)
             v.access = value;
             vv.access = value;
-            vm.havemenu == false ? (vm.havemenu = value ? true : false) : "";
+            // console.error(v.name,key,v.access,v.access != "none",v.name == key,v.name == key && v.access != "none" && v.access)
+            // console.log("HAVE ME NU")
+            // vm.havemenu == false ? (vm.havemenu = value && value != 'none' ? true : false) : "";
+            vm.havemenu == false ? vm.havemenu = true : "";
             return;
           }
         });
       }
+      // console.error(this.menuArray)
       for (let key in this.menuArray) {
         let value = this.menuArray[key];
         this.menu.forEach((v, i) => {
+          // console.log(value)
           if (v.menu) {
             lv2(this, v, value, key);
           } else {
-            if (v.name == key && v.access != "none") {
+            // console.log(v.access)
+            // console.log(v.name,v.access != "none",v.access,v.access != "false")
+            if (v.name == key && value && value != 'none') {
+              // console.log(v.name ,key)
+              // console.log(value)
               v.access = value;
-              this.havemenu == false
-                ? (this.havemenu = value ? true : false)
-                : "";
+              this.havemenu == false ? this.havemenu = true : "";
             }
           }
         });
@@ -184,6 +199,7 @@ export default {
   watch: {
     menuArray: {
       handler(val) {
+        // console.log(val)
         this.$emit("object_access", { key: this.head, array: this.menuArray });
       },
       deep: true,

@@ -37,6 +37,9 @@ const momentPlugin = {
   }
 }
 import { Icon } from '@iconify/vue';
+import { VueSignaturePad } from "vue-signature-pad";
+
+// const app = createApp(App);
 
 // app
 const app = createApp(App).use(store).use(router).use(momentPlugin).use(VueApexCharts)
@@ -55,5 +58,5 @@ const app = createApp(App).use(store).use(router).use(momentPlugin).use(VueApexC
 .component('Icon',Icon)
 // import moment from 'moment'
 // Vue.use(require('vue-moment'));
-
+.component("VueSignaturePad", VueSignaturePad);
 app.mount('#app')

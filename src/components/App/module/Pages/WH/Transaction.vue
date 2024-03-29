@@ -86,8 +86,8 @@
                   <th>Rack</th>
 
                   <td>Date Time</td>
-                  <th>Code</th>
-                  <th>Ref</th>
+                  <td>Code</td>
+                  <td>Ref</td>    <td>Ref2</td>
                   <td>Transaction</td>
                   <td>Short Code</td>
                   <td>Item Name</td>
@@ -283,7 +283,7 @@ export default {
       return window.open(
         `${
           this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
+        }controllers/MYSQL/INTERNAL/WH/exports?type=transaction&total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
