@@ -12,7 +12,7 @@
           v-if="base.current"
           type="search"
           :placeholder="placeholder"
-          class="input input-bordered w-full"
+          class="input input-bordered border-base-content w-full"
           :class="customClass"
           @focus="base.showlist = true"
           @blur="setBlur"
@@ -28,7 +28,7 @@
 {{ label }} -->
         <ul
           class="absolute menu menu-xs bg-base-100 border-2 w-full shadow-lg max-h-60 overflow-auto block z-10"
-          :class="subCustomClass?subCustomClass:''"
+          :class="subCustomClass ? subCustomClass : ''"
           v-if="base.showlist || base.focuslist"
           ref="scrollComponent"
           @scroll="handleScroll"
@@ -36,25 +36,31 @@
           @mouseleave="base.focuslist = false"
         >
           <li v-for="(v, i) in base.rows" :key="i" @click="setValue(v)">
-            <a :class="`${v[code] == current ? 'active' : ''}`" @click="()=>rets">
-
+            <a
+              :class="`${v[code] == current ? 'active' : ''}`"
+              @click="() => rets"
+            >
               <img
-                                  v-if="image && v.image.length > 0"
-                                  :src="`${
-                                    v.image[v.master ? v.master : 0].temp
-                                      ? tmpsLink
-                                      : v.imageLink
-                                      ? `${v.imageLink}QAIndirectItem/${v.code}/`
-                                      : tmpsLink
-                                  }${
-                                    v.image[v.master ? v.master : 0].file
-                                  }`"
-                                  alt="Image" 
-                                  style="    object-fit: contain;"
-                                  class="w-5 h-5"
-                                />{{
-              v[label]
-            }}</a>
+                v-if="image && v.image.length > 0"
+                :src="`${
+                  v.image[v.master ? v.master : 0].temp
+                    ? `${serviceUrl}tmps/`
+                    : `${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=QAIndirectItem/${
+                        v.code
+                      }/${v.image[v.master ? v.master : 0].file}&s=10`
+                }`"
+                alt="Image"
+                style="object-fit: contain"
+                class="w-5 h-5"
+              />
+              <img
+                class="w-5 h-5 object-cover bg-cover"
+                v-else
+                :src="`https://mexicana.cultura.gob.mx/work/models/repositorio/img/empty.jpg`"
+                alt="Image"
+              />
+              {{ v[label] }}
+            </a>
           </li>
         </ul>
       </div>
@@ -99,7 +105,7 @@ export default {
     "current",
     "param",
     "disabled",
-    "image"
+    "image",
   ],
   data() {
     return {
@@ -136,7 +142,7 @@ export default {
   },
   methods: {
     onQueryChange(e) {
-      console.log(e.target.value.trim());
+      // console.log(e.target.value.trim());
       if (e.target.value.trim() == "") {
         // this.base.current = {  };
         // this.base.temp = {  };
@@ -227,14 +233,17 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if(this.image){
-            res.rows.forEach((v, i) => {
-              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-              res.rows[i].master = 0;
-            });
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
+            if (this.image) {
+              res.rows.forEach((v, i) => {
+                res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+                res.rows[i].master = 0;
+              });
+            }
           }
-         
-          // if (res.rows.length > 0) {
           // res.rows[0].image = res.rows[0].image
           //   ? JSON.parse(res.rows[0].image)
           //   : [];
@@ -320,7 +329,7 @@ export default {
         let current = this.base.rows.find(
           (v, i) => v[this.code] == this.current
         );
-        console.log(current);
+        // console.log(current);
         current ? (this.base.current = current) : "";
         this.first = false;
         // this.base.current ? '' : this.base.current[this.label];

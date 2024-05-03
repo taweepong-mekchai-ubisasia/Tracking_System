@@ -1,9 +1,21 @@
 <template>
-  <div class="card-body overflow-auto" style="max-height: inherit">
-    <div class="text-xl font-bold">My profile</div>
+  <div
+    class="card-body overflow-auto p-4 max-h-[inherit]"
+    v-if="user"
+  >
+    <div class="text-xl font-bold">My profile : {{ user.code }}</div>
     <!-- <div class="text-md">Edit Detail</div> -->
     <!-- <div class="grid flex-grow rounded-box justify-end"> -->
     <div>
+      <label class="label float-start">
+        <a
+          href="#"
+          class="label-text-alt link link-hover font-bold"
+          @click="$emit('changetab', 'editsignature')"
+        >
+          Edit Signature
+        </a>
+      </label>
       <label class="label float-right">
         <a
           href="#"
@@ -14,298 +26,311 @@
           Edit Password
         </a>
       </label>
-      <!-- <label class="label float-right">
-        <a
-          href="#"
-          class="label-text-alt link link-hover font-bold"
-          @click="$emit('changetab', 'editdetail')"
-        >
-          Edit Details
-        </a>
-      </label> -->
     </div>
     <!-- </div> -->
     <!-- {{ user }} -->
-    <div class="flex flex-col w-full border-opacity-50" v-if="user">
+    <div class="flex flex-col w-full border-opacity-50">
       <div class="divider mt-0"></div>
-
-      <div
-        class="indicator mx-auto items-center justify-center w-full min-h-min border-2 border-gray-300 border-dashed rounded-lg"
-        v-if="image.length>0"
-      >
-        <!-- <div> -->
-        <!-- <label
-            for="modal_showImage"
-            class="btn btn-link p-0"
-            @click="imagerow = row"
-          > -->
-        <div class="grid card-bordered p-1 place-items-center overflow-hidden">
-          <!-- {{ user.imageLink }}{{ image[0].file }} -->
-          <img
-            class="max-h-44 object-cover bg-cover"
-            v-if="image.length > 0"
-            :src="`${user.imageLink}/employee/${user.code}/${image[0].file}`"
-            alt="Image"
-          />
-          <img
-            class="max-h-44 object-cover bg-cover"
-            v-else
-            :src="`https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png`"
-            alt="Image"
-          />
+      <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
+        <div
+          class="grid gap-4 md:grid-cols-1 grid-cols-1 content-stretch justify-center justify-items-center items-start"
+        >
+          <div>
+            <div
+              class="indicator mx-auto items-center justify-center w-full min-h-min border-2 border-gray-300 border-dashed rounded-lg"
+             
+            >
+              <div
+                class="grid card-bordered p-1 place-items-center overflow-hidden"
+              >
+                <img
+                  class="max-h-44 object-cover bg-cover"
+                  v-if="image.length > 0"
+                  :src="`${user.imageLink}/employee/${user.code}/${image[0].file}`"
+                  alt="Image"
+                />
+                <img
+                  class="max-h-44 object-cover bg-cover"
+                  v-else
+                  :src="`${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=web/emptyProfile.png&s=10`"
+                  alt="Image"
+                />
+              </div>
+            </div>
+            <div class="form-control grid">
+              <label class="label">
+                <span class="label-text">Signature</span>
+              </label>
+              <div
+                class="bg-cover border-2 self-center w-full h-full"
+                :class="`${loadimage ? '' : 'hidden'} `"
+                style="text-align: -webkit-center"
+              >
+                <img
+                  :class="`h-[inherit]`"
+                  :src="`${user.imageLink}signature/${user.uid}.signature.png`"
+                  alt="Image"
+                  @error="error"
+                  @load="loaded"
+                />
+              </div>
+            </div>
+          </div>
         </div>
-
-        <!-- </label> -->
-        <!-- </div> -->
-      </div>
-
-      <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Code</span>
-        </label>
-        <input
-          disabled
-          type="text"
-          placeholder="Code"
-          class="input input-bordered"
-          :value="`${user.code ? user.code : 'empty'}`"
-        />
-      </div>
-      <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Company</span>
-        </label>
-        <input
-          disabled
-          type="text"
-          placeholder="Position"
-          class="input input-bordered"
-          :value="`${user.companyTitle ? user.companyTitle : 'empty'}`"
-        />
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <!-- <div> -->
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">Branch</span>
-          </label>
-          <input
-            disabled
-            type="text"
-            placeholder="Branch"
-            class="input input-bordered"
-            :value="`${user.branchTitle ? user.branchTitle : 'empty'}`"
-          />
-        </div>
-        <!-- </div>
-        <div> -->
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">UID</span>
-          </label>
-          <input
-            disabled
-            type="text"
-            placeholder="UID"
-            class="input input-bordered"
-            :value="`${user.uid ? user.uid : 'empty'}`"
-          />
-        </div>
-        <!-- </div> -->
-      </div>
-
-      <!-- <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">UID</span>
-        </label>
-        <input
-          disabled
-          type="text"
-          placeholder="UID"
-          class="input input-bordered"
-          :value="`${user.uid ? user.uid : 'empty'}`"
-        />
-      </div> -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <div class="form-control">
+        <div
+          class="grid gap-4 md:grid-cols-1 grid-cols-1 max-h-[50vh] overflow-auto pr-4 pb-4"
+        >
+          <!-- <div class="form-control grid">
             <label class="label">
-              <span class="label-text">Firstname</span>
+              <span class="label-text">Code</span>
             </label>
             <input
               disabled
               type="text"
-              placeholder="Firstname"
-              class="input input-bordered"
-              :value="`${user.firstname ? user.firstname : 'empty'}`"
+              placeholder="Code"
+              class="input input-bordered border-base-content"
+              :value="`${user.code ? user.code : 'empty'}`"
             />
-          </div>
-        </div>
-        <div>
+          </div> -->
           <div class="form-control">
-            <label class="label">
-              <span class="label-text">Lastname</span>
-            </label>
-            <input
-              disabled
-              type="text"
-              placeholder="Lastname"
-              class="input input-bordered"
-              :value="`${user.lastname ? user.lastname : 'empty'}`"
-            />
+            <div class="overflow-x-auto">
+              <table class="table table-sm table-pin-rows table-pin-cols">
+                <tbody>
+                  <tr>
+                    <th>UID</th>
+                    <td>{{ `${user.uid ? user.uid : "empty"}` }}</td>
+                  </tr>
+                  <tr>
+                    <th>Fullname</th>
+                    <td>
+                      {{ `${user.firstname ? user.firstname : ""}` }}
+                      {{ `${user.lastname ? user.lastname : ""}` }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Company</th>
+                    <td>
+                      {{ `${user.companyTitle ? user.companyTitle : "empty"}` }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Branch</th>
+                    <td>
+                      {{ `${user.branchTitle ? user.branchTitle : "empty"}` }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Position</th>
+                    <td>
+                      {{ `${user.position ? user.position : "empty"}` }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Departmant</th>
+                    <td>
+                      {{ `${user.depTitle ? user.depTitle : "empty"}` }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Access</th>
+                    <td>
+                      {{ `${user.accessTitle ? user.accessTitle : "empty"}` }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Email</th>
+                    <td>
+                      {{ `${user.emailTitle ? user.emailTitle : "empty"}` }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Tel</th>
+                    <td>
+                      {{ `${user.tel ? user.tel : "empty"}` }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Birthdate</th>
+                    <td>
+                      {{ `${user.birthdate ? user.birthdate : "empty"}` }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Started</th>
+                    <td>
+                      {{ `${user.started_at ? user.started_at : "empty"}` }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <!-- <th>Started</th> -->
+                    <th colspan="2">
+                      <button
+                        class="btn btn-xs bg-black text-white border-black w-full"
+                        @click="$emit('Logout')"
+                      >
+                        Logout
+                      </button>
+                    </th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <!-- <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Email</span>
-        </label>
-        <input
-          disabled
-          type="text"
-          placeholder="Email"
-          class="input input-bordered"
-          :value="`${user.emailTitle ? user.emailTitle : 'empty'}`"
-        />
-      </div> -->
-      <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Departmant</span>
-        </label>
-        <input
-          disabled
-          type="text"
-          placeholder="Position"
-          class="input input-bordered"
-          :value="`${user.depTitle ? user.depTitle : 'empty'}`"
-        />
-      </div>
-      <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Position</span>
-        </label>
-        <input
-          disabled
-          type="text"
-          placeholder="Position"
-          class="input input-bordered"
-          :value="`${user.position ? user.position : 'empty'}`"
-        />
-      </div>
-      <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Access</span>
-        </label>
-        <input
-          disabled
-          type="text"
-          placeholder="Position"
-          class="input input-bordered"
-          :value="`${user.accessTitle ? user.accessTitle : 'empty'}`"
-        />
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <!-- <div> -->
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">Email</span>
-          </label>
-          <input
-            disabled
-            type="text"
-            placeholder="Position"
-            class="input input-bordered"
-            :value="`${user.emailTitle ? user.emailTitle : 'empty'}`"
-          />
-        </div>
-        <!-- </div>
-        <div> -->
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">Tel</span>
-          </label>
-          <input
-            disabled
-            type="text"
-            placeholder="Position"
-            class="input input-bordered"
-            :value="`${user.tel ? user.tel : 'empty'}`"
-          />
-        </div>
-        <!-- </div> -->
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Birth Date</span>
-            </label>
-            <input
-              disabled
-              type="text"
-              placeholder="Birth Date"
-              class="input input-bordered"
-              :value="`${user.birthdate ? user.birthdate : 'empty'}`"
-            />
+          <!-- <div class="grid grid-cols-4 gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">UID</span>
+              </label>
+              <input
+                disabled
+                type="text"
+                placeholder="UID"
+                class="input input-bordered border-base-content"
+                :value="`${user.uid ? user.uid : 'empty'}`"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Access</span>
+              </label>
+              <input
+                disabled
+                type="text"
+                placeholder="Position"
+                class="input input-bordered border-base-content"
+                :value="`${user.accessTitle ? user.accessTitle : 'empty'}`"
+              />
+            </div>
+            <div class="form-control col-span-2">
+              <label class="label">
+                <span class="label-text">Branch</span>
+              </label>
+              <input
+                disabled
+                type="text"
+                placeholder="Branch"
+                class="input input-bordered border-base-content"
+                :value="`${user.branchTitle ? user.branchTitle : 'empty'}`"
+              />
+            </div>
           </div>
-        </div>
-        <div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Started At</span>
-            </label>
-            <input
-              disabled
-              type="text"
-              placeholder="Started At"
-              class="input input-bordered"
-              :value="`${user.started_at ? user.started_at : 'empty'}`"
-            />
+          <div class="grid grid-cols-2 gap-4">
+            <div class="form-control grid">
+              <label class="label">
+                <span class="label-text">Departmant</span>
+              </label>
+              <input
+                disabled
+                type="text"
+                placeholder="Position"
+                class="input input-bordered border-base-content"
+                :value="`${user.depTitle ? user.depTitle : 'empty'}`"
+              />
+            </div>
+            <div class="form-control grid">
+              <label class="label">
+                <span class="label-text">Position</span>
+              </label>
+              <input
+                disabled
+                type="text"
+                placeholder="Position"
+                class="input input-bordered border-base-content"
+                :value="`${user.position ? user.position : 'empty'}`"
+              />
+            </div>
           </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Firstname</span>
+                </label>
+                <input
+                  disabled
+                  type="text"
+                  placeholder="Firstname"
+                  class="input input-bordered border-base-content"
+                  :value="`${user.firstname ? user.firstname : 'empty'}`"
+                />
+              </div>
+            </div>
+            <div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Lastname</span>
+                </label>
+                <input
+                  disabled
+                  type="text"
+                  placeholder="Lastname"
+                  class="input input-bordered border-base-content"
+                  :value="`${user.lastname ? user.lastname : 'empty'}`"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Email</span>
+              </label>
+              <input
+                disabled
+                type="text"
+                placeholder="Position"
+                class="input input-bordered border-base-content"
+                :value="`${user.emailTitle ? user.emailTitle : 'empty'}`"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Tel</span>
+              </label>
+              <input
+                disabled
+                type="text"
+                placeholder="Position"
+                class="input input-bordered border-base-content"
+                :value="`${user.tel ? user.tel : 'empty'}`"
+              />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Birth Date</span>
+                </label>
+                <input
+                  disabled
+                  type="text"
+                  placeholder="Birth Date"
+                  class="input input-bordered border-base-content"
+                  :value="`${user.birthdate ? user.birthdate : 'empty'}`"
+                />
+              </div>
+            </div>
+            <div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Started At</span>
+                </label>
+                <input
+                  disabled
+                  type="text"
+                  placeholder="Started At"
+                  class="input input-bordered border-base-content"
+                  :value="`${user.started_at ? user.started_at : 'empty'}`"
+                />
+              </div>
+            </div>
+          </div> -->
         </div>
       </div>
-
-      <!-- <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Leaves At</span>
-        </label>
-        <input disabled type="text" placeholder="Leaves At" class="input input-bordered" :value="`${user.leaves_at ? user.leaves_at : 'empty'}`" />
-      </div> -->
-      <!-- <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Email</span>
-        </label>
-        <input disabled type="text" placeholder="Email" class="input input-bordered" :value="`${user.password ? user.password : 'empty'}`" />
-      </div>
-      <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Email</span>
-        </label>
-        <input disabled type="text" placeholder="Email" class="input input-bordered" :value="`${user.password ? user.password : 'empty'}`" />
-      </div>
-       <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Email</span>
-        </label>
-        <input disabled type="text" placeholder="Email" class="input input-bordered" :value="`${user.password ? user.password : 'empty'}`" />
-      </div> -->
-
-      <!-- <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Mobile No.</span>
-        </label>
-        <input disabled type="text" placeholder="Mobile" class="input input-bordered" :value="`${user.mobile ? user.mobile : 'empty'}`" />
-      </div>
-      <div class="form-control grid">
-        <label class="label">
-          <span class="label-text">Roblox</span>
-        </label>
-        <input disabled type="text" placeholder="Roblox" class="input input-bordered" :value="`${user.roblox ? user.roblox : 'empty'}`" />
-      </div> -->
     </div>
     <!-- <div class="form-control mt-4">
       <button
@@ -330,14 +355,11 @@ export default {
   name: "Profile",
   props: ["tab"],
   data() {
-    return { image: [], master: 0, tmpsLink: "" };
+    return { image: [], master: 0,  loadimage: false };
   },
   computed: {
-    ServiceUrl() {
+    serviceUrl() {
       return this.$store.getters.serviceUrl;
-    },
-    isLogin() {
-      return this.$store.getters.isLogin;
     },
     user() {
       return this.$store.getters.user;
@@ -346,15 +368,20 @@ export default {
   mounted() {
     this.$nextTick(() => {
       // this.base_search();
-// console.log(this.user)
-      this.image = this.user.image ? JSON.parse(this.user.image) : [];
+      // console.log(this.user)
+      // this.image = this.user.image ? JSON.parse(this.user.image) : [];
+      this.image = this.user.image?this.user.image:[]
       this.master = 0;
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
+      
     });
+  },
+  methods: {
+    error() {
+      this.loadimage = false;
+    },
+    loaded() {
+      this.loadimage = true;
+    },
   },
 };
 </script>

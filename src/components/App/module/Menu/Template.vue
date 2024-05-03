@@ -1,27 +1,53 @@
 <template>
   <!-- {{ havemenu }} -->
-  <li v-if="havemenu || menutype == 'access'">
+  <li v-if="havemenu && (head == 'System' || head == 'Event')"></li>
+  <li v-if="havemenu || menutype == 'Access'">
     <details
       id="disclosure-components"
-      :open="checkmenu || menutype == 'access'"
+      :open="((checkmenu || menutype == 'Access') && !prefix) || ($route.meta.parent == 'Doc' && prefix == 'Doc' && $route.meta.sub == head)"
     >
+  
       <summary class="group">
         <span>
-          <Icon :icon="icon" class="w-5 h-5 text-green-600" />
+          <Icon :icon="icon" class="w-5 h-5" :class="`${color}`" />
         </span>
         {{ head }}
       </summary>
       <ul>
-        <li v-for="(v, i) in menu" :key="i" class="bg-transparent m-0">
+        <li
+          v-for="(v, i) in menu"
+          :key="i + `${'aa'}`"
+          class="bg-transparent m-0"
+          v-if="prefix == 'Doc'"
+        >
+          <a
+            href="#"
+            class="flex gap-4 group hover:no-underline"
+            :class="
+              $route.name == `${prefix}${v.title}` ? 'active' : ''
+            "
+            @click="
+              this.menutype == 'Access' ? '' : changepage(`${prefix}${v.title}`)
+            "
+          >
+
+       
+            <span class="flex-1 text-1xl">
+              {{ v.title }}
+            </span>
+          </a>
+        </li>
+
+        <li v-for="(v, i) in menu" :key="i" class="bg-transparent m-0" v-else           :class="menutype == 'Access'?`  pointer-events-none`:''">
           <details
             v-if="
               v.menu &&
-              (menutype == 'access' ||
-                (menutype == 'menu' && v.access && v.access != 'none'))
+              (menutype == 'Access' ||
+                (menutype == 'Menu' && v.access && v.access != 'none'))
             "
             id="disclosure-components"
             :open="
-              menutype == 'access' ? true : checkmenu ? checkmenu[i] : false
+              menutype == 'Access' ? true : checkmenu ? checkmenu[i] : false
             "
           >
             <summary class="group">{{ v.title }}</summary>
@@ -30,25 +56,26 @@
                 v-for="(vv, ii) in v.menu"
                 :key="ii"
                 class="bg-transparent m-0"
+                :class="menutype == 'Access'?`  pointer-events-none`:''"
               >
                 <a
                   v-if="
-                    menutype == 'access' ||
-                    (menutype == 'menu' && vv.access && vv.access != 'none')
+                    menutype == 'Access' ||
+                    (menutype == 'Menu' && vv.access && vv.access != 'none')
                   "
                   href="#"
                   class="flex gap-4 group hover:no-underline"
                   :class="
-                    menutype == 'menu' && $route.name == vv.name ? 'active' : ''
+                    menutype == 'Menu' && $route.name == `${prefix?prefix:''}${vv.name}` ? 'active' : ''
                   "
-                  @click="this.menutype == 'access' ? '' : changepage(vv.name)"
+                  @click="this.menutype == 'Access' ? '' : changepage(vv.name)"
                 >
                   <span class="flex-1 text-1xl">
                     {{ vv.title }}
                     <select
-                      class="select select-bordered select-xs w-32 float-end max-w-xs"
+                      class="select select-bordered border-base-content select-xs w-32 float-end max-w-xs pointer-events-auto"
                       v-model="menuArray[vv.name]"
-                      v-if="menutype == 'access'"
+                      v-if="menutype == 'Access'"
                     >
                       <option selected value="none">None</option>
                       <option selected value="user">User</option>
@@ -63,23 +90,23 @@
           </details>
           <a
             v-else-if="
-              menutype == 'access' ||
-              (menutype == 'menu' && v.access && v.access != 'none')
+              menutype == 'Access' ||
+              (menutype == 'Menu' && v.access && v.access != 'none')
             "
             href="#"
             class="flex gap-4 group hover:no-underline"
             :class="
-              menutype != 'access' && $route.name == v.name ? 'active' : ''
+              menutype != 'Access' && $route.name == v.name ? 'active' : ''
             "
-            @click="this.menutype == 'access' ? '' : changepage(v.name)"
+            @click="this.menutype == 'Access' ? '' : changepage(v.name)"
           >
             <span class="flex-1 text-1xl">
               {{ v.title }}
 
               <select
-                class="select select-bordered select-xs w-32 float-end max-w-xs"
+                class="select select-bordered border-base-content select-xs w-32 float-end max-w-xs pointer-events-auto"
                 v-model="menuArray[v.name]"
-                v-if="menutype == 'access'"
+                v-if="menutype == 'Access'"
               >
                 <option selected value="none">None</option>
                 <option selected value="user">User</option>
@@ -97,6 +124,10 @@
 
 <script>
 export default {
+  emits: ["object_access"],
+  setup(props, ctx) {
+    // ctx.emit('submit')
+  },
   data() {
     return {
       menuArray: {},
@@ -105,7 +136,7 @@ export default {
       lastindex: 0,
     };
   },
-  props: ["menutype", "access", "head", "icon"],
+  props: ["menutype", "access", "head", "icon", "prefix", "color"],
   computed: {
     checkmenu() {
       let obj = null;
@@ -126,13 +157,20 @@ export default {
     },
   },
   created() {
-    this.menu = this.menus;
+    this.menu = JSON.parse(JSON.stringify(this.menus));
   },
   mounted() {
     this.$nextTick(() => {
+      // console.error(this.$store.getters["WH"])
+      // let tmp =  JSON.stringify(this.menus)
+
+      // this.$store.getters[this.head] = JSON.parse(tmp)
+      // this.$store.commit(this.head, JSON.parse(tmp));
       // console.log("AAAAAAAAAAAAAAAAAAA")
       this.menuArray = { ...this.access };
-      this.menutype == "access" ? this.settingFormat() : this.menuAccess();
+      // console.log(this.menuArray)
+      // console.error(this.menu)
+      this.menutype == "Access" ? this.settingFormat() : this.menuAccess();
     });
   },
   methods: {
@@ -152,18 +190,19 @@ export default {
     },
     menuAccess() {
       // console.log("dddddddddddddddd")
+      // console.log(this.menu)
       function lv2(vm, vv, value, key) {
         vv.menu.forEach((v, i) => {
+          // v.access = false
           // console.error(v.name,key,v.access)
-          if (v.name == key  && value && value != 'none') {
-            
-          // console.log(value)
+          if (v.name == key && value && value != "none") {
+            // console.log(value)
             v.access = value;
             vv.access = value;
             // console.error(v.name,key,v.access,v.access != "none",v.name == key,v.name == key && v.access != "none" && v.access)
             // console.log("HAVE ME NU")
             // vm.havemenu == false ? (vm.havemenu = value && value != 'none' ? true : false) : "";
-            vm.havemenu == false ? vm.havemenu = true : "";
+            vm.havemenu == false ? (vm.havemenu = true) : "";
             return;
           }
         });
@@ -171,22 +210,27 @@ export default {
       // console.error(this.menuArray)
       for (let key in this.menuArray) {
         let value = this.menuArray[key];
+        // console.log(value)
+        // console.log(this.menuArray)
+        // console.log(key)
         this.menu.forEach((v, i) => {
-          // console.log(value)
+          // v.access = false
+          // console.error(v.menu)
           if (v.menu) {
             lv2(this, v, value, key);
           } else {
             // console.log(v.access)
             // console.log(v.name,v.access != "none",v.access,v.access != "false")
-            if (v.name == key && value && value != 'none') {
+            if (v.name == key && value && value != "none") {
               // console.log(v.name ,key)
               // console.log(value)
               v.access = value;
-              this.havemenu == false ? this.havemenu = true : "";
+              this.havemenu == false ? (this.havemenu = true) : "";
             }
           }
         });
       }
+      // console.log(this.menu)
     },
     loopmenu(menu) {
       let obj = menu.find((v, i) => v.name == this.$route.name);

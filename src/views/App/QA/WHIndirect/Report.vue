@@ -5,8 +5,8 @@
       <template #view>
         <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2">
           <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-            <div class="md:card-body h-auto overflow-auto ">
-              COMING SOON
+            <div class="md:card-body h-auto overflow-auto">
+              <!-- COMING SOON -->
 
               <div id="chart">
                 <apexchart
@@ -17,16 +17,27 @@
                 ></apexchart>
               </div>
               <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
-              <div id="chart">
-        <apexchart type="pie" width="380" :options="chartOptions2" :series="series2"></apexchart>
-      </div>
-      <div id="chart">
-        <apexchart type="pie" width="380" :options="chartOptions2" :series="series2"></apexchart>
-      </div>
-    </div>
+                <div id="chart">
+                  <apexchart
+                    type="pie"
+                    width="380"
+                    :options="chartOptions2"
+                    :series="series2"
+                  ></apexchart>
+                </div>
+                <div id="chart">
+                  <apexchart
+                    type="pie"
+                    width="380"
+                    :options="chartOptions2"
+                    :series="series2"
+                  ></apexchart>
+                </div>
+              </div>
+              <AppModulePagesQAWHIndirectLogs />
               <!-- <div class="join mt-5 w-full md:justify-center lg:justify-end">
                 <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+                  :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
                     (q) => {
                       base.q = q;
@@ -55,36 +66,36 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(row, index) in base.rows" :key="row.code">
-                      <th>{{ index + 1 }}</th>
+                    <tr v-for="(v, i) in base.rows" :key="v.code">
+                      <th>{{ i + 1 }}</th>
                       <td>
-                        {{ row.en }}
+                        {{ v.en }}
                       </td>
 
                       <td>
-                        {{ row.packingList }}
+                        {{ v.packingList }}
                       </td>
                       <td>
-                        {{ row.shippingMark }}
+                        {{ v.shippingMark }}
                       </td>
                       <td>
-                        {{ row.shippingDate }}
+                        {{ v.shippingDate }}
                       </td>
                       <td>
-                        {{ row.created_at }}
+                        {{ v.created_at }}
                       </td>
                       <td>
-                        {{ row.created_by }}
+                        {{ v.created_by }}
                       </td>
                       <td>
-                        {{ row.status }}
+                        {{ v.status }}
                       </td>
 
                       <th class="text-right">
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >receive
                         </label>
                       </th>
@@ -130,29 +141,31 @@ import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageinati
 import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+
+import AppModulePagesQAWHIndirectLogs from "@/components/App/Module/Pages/QA/WHIndirect/Logs.vue";
 // import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
 let colors = [
-          "#E74645",
-          "#FB7756",
-          "#FACD60",
-          "#FDFA66",
-          "#1AC0C6",
-          "#454D66",
-          "#309975",
-          "#58B368",
-          "#DAD873",
-          "#EFEEB4",
-          "#F9B4AB",
-          "#FDEBD3",
-          "#264E70",
-          "#679186",
-          "#BBD4CE",
-          "#52489C",
-          "#4062BB",
-          "#59C3C3",
-          "#EBEBEB",
-          "#F45B69",
-        ];
+  "#E74645",
+  "#FB7756",
+  "#FACD60",
+  "#FDFA66",
+  "#1AC0C6",
+  "#454D66",
+  "#309975",
+  "#58B368",
+  "#DAD873",
+  "#EFEEB4",
+  "#F9B4AB",
+  "#FDEBD3",
+  "#264E70",
+  "#679186",
+  "#BBD4CE",
+  "#52489C",
+  "#4062BB",
+  "#59C3C3",
+  "#EBEBEB",
+  "#F45B69",
+];
 export default {
   name: "Department",
   components: {
@@ -162,31 +175,31 @@ export default {
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,
     // AppModuleGlobalShowImage,
+    AppModulePagesQAWHIndirectLogs,
   },
   data() {
     return {
-
-                
       series2: [44, 55, 13, 43, 22],
-          chartOptions2: {
-            chart: {
-              width: 380,
-              type: 'pie',
+      chartOptions2: {
+        chart: {
+          width: 380,
+          type: "pie",
+        },
+        labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+        responsive: [
+          {
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 200,
+              },
+              legend: {
+                position: "bottom",
+              },
             },
-            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
-            responsive: [{
-              breakpoint: 480,
-              options: {
-                chart: {
-                  width: 200
-                },
-                legend: {
-                  position: 'bottom'
-                }
-              }
-            }]
           },
-
+        ],
+      },
 
       series: [
         {
@@ -243,7 +256,7 @@ export default {
       },
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
+      
       category: {
         rows: [],
         page: 1,
@@ -294,8 +307,8 @@ export default {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
-      console.log("TOKEN");
-      console.log(this.$store.getters.user_token);
+      // console.log("token");
+      //console.log(this.$store.getters.user_token);
       return this.$store.getters.user_token;
     },
     user() {
@@ -381,7 +394,7 @@ export default {
       fetch(
         `${
           this.serviceUrl
-        }controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${this.base.page}${
+        }api/controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
         }${this.base.q ? `&q=${this.base.q}` : ""}`,
         {
@@ -394,7 +407,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             res.rows.forEach((v, i) => {
               res.rows[i].image = v.image ? JSON.parse(v.image) : [];
               res.rows[i].master = 0;
@@ -499,7 +515,7 @@ export default {
       return;
 
       let vm = this;
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/employee`, {
+      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, {
         method: this.base.controll == "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -528,7 +544,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             const promise_arr = [];
             console.log(this.base.current);
@@ -583,7 +602,7 @@ export default {
       );
       return callback({ rows: data, total: data.length });
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
@@ -701,7 +720,7 @@ export default {
         if (this.detail.controll == "edit") {
           obj["code"] = this.detail.form.code;
         }
-        fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email`, {
+        fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, {
           method: this.detail.controll == "create" ? "POST" : "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -711,7 +730,10 @@ export default {
         })
           .then((response) => response.json())
           .then((res) => {
-            if (res.success) {
+                     if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
               this.detail.modal = false;
 
               if (type == "static") {
@@ -736,7 +758,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -748,7 +770,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
@@ -763,13 +788,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      console.log(this.user_token);
+      //console.log(this.user_token);
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
+      
     });
   },
 };

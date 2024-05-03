@@ -10,142 +10,166 @@
           v-model="base.modal"
         />
         <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-6/12 max-w-xl">
+          <div class="modal-box relative w-10/12 lg:w-6/12 max-w-full">
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
               >✕
             </label>
-            <h3 class="text-lg font-bold">Request Item</h3>
-            <div class="card">
-              <div class="card-body">
-                <div class="form-control">
-                  <label class="label"
-                    ><span class="label-text">Short code</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Short code"
-                    class="input input-bordered input-disabled"
-                    required=""
-                    v-model="base.form.item_short_code"
-                    disabled
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label"
-                    ><span class="label-text">Item Description</span>
-                  </label>
+            <h3 class="text-lg font-bold">Request Doc</h3>
 
-                  <input
-                    type="text"
-                    placeholder="Short code"
-                    class="input input-bordered input-disabled"
-                    required=""
-                    v-model="base.form.item_short_code"
-                    disabled
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label"
-                    ><span class="label-text">Item Code</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Item Code"
-                    class="input input-bordered"
-                    required=""
-                    v-model="base.form.item_code"
-                    disabled
-                  />
-                </div>
-                <div class="grid grid-cols-2 w-full gap-4">
-                  <div class="flex-1 w-auto">
-                    <div class="form-control">
-                      <label class="label">
-                        <span class="label-text">Qty</span>
-                      </label>
-                      <input
-                        type="number"
-                        placeholder="Qty"
-                        class="input input-bordered"
-                        required=""
-                        min="1"
-                        max="5"
-                        v-model="base.form.unit"
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  <div class="flex-1 w-auto">
-                    <div class="form-control">
-                      <label class="label"
-                        ><span class="label-text">Unit</span></label
+            <div
+              class="bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full max-h-[60vh]"
+            >
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Title</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Title"
+                  class="input input-bordered border-base-content"
+                  v-model="base.form.title"
+                  disabled
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Description</span>
+                </label>
+
+                <textarea
+                  class="textarea textarea-bordered h-24"
+                  placeholder="Description"
+                  v-model="base.form.description"
+                  disabled
+                ></textarea>
+              </div>
+              <div class="form-control pt-4">
+                <div
+                  class="w-full overflow-auto min-h-[20vh] max-h-[20vh] border-2"
+                >
+                  <!-- <label class="label cursor-pointer">
+                    <span class="label-text">Email</span>
+                  </label> -->
+                  <table
+                    class="table table-xs table-pin-rows table-pin-cols table-zebra"
+                  >
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>ItemCode</th>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th
+                          class="text-right"
+                          v-if="base.form.status == 'pending'"
+                        >
+                          <label
+                            for="modal-detail"
+                            class="btn btn-primary modal-button btn-xs text-white"
+                            @click="detail_create()"
+                            >+ new
+                          </label>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        class="hover"
+                        v-for="(v, i) in detail.rows"
+                        :key="i"
                       >
-                      <input
-                        type="text"
-                        placeholder="Unit"
-                        class="input input-bordered w-full input-disabled"
-                        required=""
-                        v-model="base.form.uom"
-                        readonly
-                      />
-                    </div>
-                  </div>
+                        <th>
+                          {{ i + 1 }}
+                        </th>
+                        <td>
+                          {{ v.item }}
+                        </td>
+                        <td>
+                          <div class="flex items-center space-x-3">
+                            <div>
+                              <div class="font-bold">{{ v.title }}</div>
+                              <div class="text-sm">
+                                {{ v.ref_code }}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="font-bold">{{ v.qty }}</div>
+                        </td>
+
+                        <!-- <td>{{ v.price }}</td> -->
+                        <!-- <td>
+                            <a :href="v.link" target="_blank">
+                              <font-awesome-icon
+                                v-if="v.link"
+                                icon="fa-solid fa-globe"
+                                size="1x"
+                                class="btn btn-ghost modal-button btn-xs"
+                            /></a>
+                          </td> -->
+                        <th
+                          class="text-right"
+                          v-if="base.form.status == 'pending'"
+                        >
+                          <label
+                            for="modal-detail"
+                            class="btn btn-ghost modal-button btn-xs"
+                            @click="detail_edit(`${v.code}`)"
+                          >
+                            Edit
+                          </label>
+                          |
+                          <label
+                            for="modal-remove"
+                            class="btn btn-ghost modal-button btn-xs"
+                            @click="
+                              remove_item(
+                                `${v.code}`,
+                                'detail',
+                                'controllers/MYSQL/INTERNAL/QA/Indirect/request_item'
+                              )
+                            "
+                          >
+                            Remove
+                          </label>
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div class="form-control">
-                  <label class="label"
-                    ><span class="label-text">Status</span>
-                  </label>
-                  <label class="form-control w-full">
-                    <select
-                      class="select select-bordered"
-                      v-model="base.form.newStatus"
-                    >
-                      <option selected disabled value="">Select Option</option>
-                      <option value="pending" disabled>Request</option>
-                      <option
-                        value="approve"
-                        :disabled="base.form.status == 'pending' ? false : true"
-                      >
-                        Approve
-                      </option>
-                      <option
-                        value="reject"
-                        :disabled="base.form.status == 'pending' ? false : true"
-                      >
-                        Reject
-                      </option>
-                      <option
-                        value="cancel"
-                        :disabled="
-                          base.form.status == 'approve' ||
-                          base.form.status == 'reject'
-                            ? false
-                            : true
-                        "
-                      >
-                        Cancel
-                      </option>
-                    </select>
-                  </label>
-                </div>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Status</span>
+                </label>
+
+                <select
+                  class="select select-bordered border-base-content w-full"
+                  v-model="base.form.newStatus"
+                  :disabled="base.form.status == 'pending' ? false : true"
+                >
+                  <option disabled selected value="">Select Option</option>
+                  <option value="draft" disabled>Draft</option>
+                  <option value="pending" disabled>Request</option>
+                  <option value="approve">Approve</option>
+                  <option value="reject">Reject</option>
+                  <option value="close" disabled>Close</option>
+                </select>
               </div>
             </div>
 
             <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex my-4"
+              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
+              v-if="base.form.status == 'pending'"
             >
-              <div class="flex-1 form-control">
+              <div class="flex-1 form-control mt-6">
                 <label for="modal-base" class="btn btn-danger">Cancle</label>
               </div>
-              <div
-                class="flex-1 form-control"
-                :class="base.form.newStatus != base.form.status ? '' : 'hidden'"
-              >
-                <button class="btn btn-primary text-white" @click="base_save()">
-                  Confirm
-                </button>
+              <div class="flex-1 form-control mt-6" @click="base_save()">
+                <button class="btn btn-primary text-white">Confirm</button>
               </div>
             </div>
           </div>
@@ -167,7 +191,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh]">
               Are your sure for remove this item?
             </div>
 
@@ -188,279 +212,216 @@
             </div>
           </div>
         </div>
+
+        <!-- modal detail -->
+        <input
+          type="checkbox"
+          id="modal-detail"
+          class="modal-toggle"
+          v-model="detail.modal"
+        />
+        <div class="modal" v-if="detail.modal">
+          <div
+            class="modal-box relative w-10/12 lg:w-6/12 xl:w-4/12 max-w-full"
+          >
+            <label
+              for="modal-detail"
+              class="btn btn-sm btn-circle absolute right-2 top-2"
+              >✕</label
+            >
+            <h3 class="text-lg font-bold">Request Item</h3>
+            <div class="card-body overflow-auto max-h-[60vh]">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Item</span>
+                </label>
+                <AppModuleGlobalSelectSearch
+                  :placeholder="'Item'"
+                  :label="'title'"
+                  :code="'code'"
+                  :minChar="3"
+                  :delay="0.5"
+                  :limit="10"
+                  :customClass="`w-full input input-bordered border-base-content `"
+                  :current="detail.form.item"
+                  :refresh="refresh.item"
+                  :image="true"
+                  @updateValue="
+                    (obj) => {
+                      detail.form.item = obj ? obj.code : '';
+                      detail.form.ref_code = obj ? obj.ref_code : '';
+                      detail.form.title = obj ? obj.title : '';
+                      // base.form.item_short.code = obj.code;
+                    }
+                  "
+                  @stopRefresh="
+                    (obj) => {
+                      refresh.item_short_code = obj.value;
+                    }
+                  "
+                  :url="`${serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/item`"
+                  :param="`&total=1`"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Item Ref Code</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ref Code"
+                  class="input input-bordered border-base-content"
+                  v-model="detail.form.ref_code"
+                  :disabled="true"
+                />
+              </div>
+              <!-- <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Current Price</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Current Price"
+                  class="input input-bordered border-base-content"
+                  v-model="detail.form.current_price"
+                  :disabled="true"
+                />
+              </div> -->
+              <!-- <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Item Code</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Item Code"
+                  class="input input-bordered border-base-content"
+                  v-model="detail.form.item"
+                  :disabled="true"
+                />
+              </div> -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Amount</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Amount"
+                  class="input input-bordered border-base-content"
+                  v-model="detail.form.amount"
+                  :disabled="true"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Qty</span>
+                </label>
+                <input
+                  type="number"
+                  placeholder="Qty"
+                  class="input input-bordered border-base-content"
+                  v-model="detail.form.qty"
+                />
+              </div>
+            </div>
+            <div
+              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
+            >
+              <div class="flex-1 form-control mt-6">
+                <label for="modal-detail" class="btn btn-danger">Cancle</label>
+              </div>
+              <div class="flex-1 form-control mt-6">
+                <button
+                  class="btn btn-primary text-white"
+                  @click="detail_save('static')"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Open the modal using ID.showModal() method -->
+
+        <!-- The button to open modal -->
+
+        <!-- Put this part before </body> tag -->
+
+        <AppModuleGlobalShowImage :src="imageSrc" />
       </template>
       <template #view>
         <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2">
           <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
             <div class="card-body overflow-auto">
-              <div
-                class="contents lg:inline-flex lg:join my-5 w-full md:justify-center lg:justify-end"
-              >
-                <div class="contents sm:join md:join lg:join xl:join">
-                  <div class="join join-item">
-                    <button
-                      class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                      disabled
-                    >
-                      วันที่
-                    </button>
-                    <input
-                      type="date"
-                      placeholder="title"
-                      class="join-item input input-sm input-bordered"
-                      v-model="date.from"
-                      @change="change"
-                    />
-                    <button
-                      class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                      disabled
-                    >
-                      -
-                    </button>
-
-                    <input
-                      type="date"
-                      placeholder="title"
-                      class="join-item input input-sm input-bordered"
-                      v-model="date.to"
-                      @change="change"
-                    />
-                  </div>
-
-                  <!-- <button
-                  class="join-item btn btn-sm btn-primary  border-r-white"
-                  @click="exportExcel()"
-                >
-                  <Icon
-                    icon="mdi:file-excel-outline"
-                    class="h-5 w-5 text-white"
-                  />
-                </button> -->
-                  <AppModuleGlobalSearch
-                    :class="'join-item input input-sm input-bordered w-full max-w-xs'"
-                    @search="
-                      (q) => {
-                        base.q = q;
-                        base_search();
-                      }
-                    "
-                  />
-                </div>
-                <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button text-white mr-1"
-                  @click="exportExcel()"
-                >
-                  <Icon
-                    icon="mdi:file-excel-outline"
-                    class="h-5 w-5 text-white"
-                /></label>
-
-                <label
+              <div class="join mt-5 w-full md:justify-center lg:justify-end">
+                <AppModuleGlobalSearch
+                  :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
+                  @search="
+                    (q) => {
+                      base.q = q;
+                      base.page = 1;
+                      base_search();
+                    }
+                  "
+                />
+                <!-- <label
                   for="modal-base"
                   class="join-item btn-sm btn btn-primary modal-button text-white"
                   @click="base_create()"
                   >Create</label
-                >
+                > -->
               </div>
-              <div class="overflow-x-auto w-full max-h-[67.5vh]">
+              <div class="overflow-x-auto w-full max-h-[60vh]">
                 <table
                   class="table table-xs table-pin-rows table-pin-cols table-zebra"
                 >
                   <thead>
                     <tr>
-                      <th>Code</th>
-                      <td>Status</td>
-                      <td>Short Code</td>
-                      <td>Item Description</td>
-                      <td>Qty</td>
-                      <!-- <td>Pack Size</td> -->
-                      <td>Unit</td>
-
-                      <td>Requestion</td>
-                      <td>Approval</td>
-                      <td>Rejection</td>
-                      <td>Cancellation</td>
-
+                      <th>#</th>
+                      <!-- <td>รูป</td> -->
+                      <td>Status/Code</td>
+                      <td>Title</td>
+                      <td>Description</td>
+                      <!-- <td>สิทธิ์การใช้งาน</td> -->
+                      <!-- <td>วันที่</td> -->
                       <td>Creation</td>
                       <td>Updation</td>
-
                       <th class="text-right"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      v-for="(row, index) in base.rows"
-                      :key="row.code"
-                      :class="
-                        row.status == 'pending'
-                          ? 'text-blue-700'
-                          : row.status == 'reject'
-                          ? 'text-error'
-                          : row.status == 'approve'
-                          ? 'text-green-700'
-                          : row.status == 'cancel'
-                          ? 'text-gray-400 !bg-gray-100'
-                          : ''
-                      "
-                    >
-                      <th>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{ row.code }}
-                            </div>
-                            <div class="text-xs">( {{ row.id }} )</div>
-                          </div>
-                        </div>
-                      </th>
-                      <td>
-                        <span class="pr-2">{{
-                          row.status
-                            ? row.status == "pending"
-                              ? "Pending"
-                              : row.status == "approve"
-                              ? "Approve"
-                              : row.status == "reject"
-                              ? "Reject"
-                              : row.status == "cancel"
-                              ? "Cancel"
-                              : "-"
-                            : "-"
-                        }}</span>
-                      </td>
-                      <td>
-                        <span class="pr-2">{{ row.item_short_code }}</span>
-                      </td>
+                    <tr v-for="(v, i) in base.rows" :key="v.code">
+                      <th>{{ v.id }}</th>
                       <td>
                         <div class="flex items-center space-x-3">
                           <div>
-                            <div class="text-xs">
-                              {{ row.item_name }}
+                            <div>
+                              {{ v.status ? v.status : "draft" }}
                             </div>
-                            <div class="text-xs">( {{ row.item_code }} )</div>
+                            <div>
+                              {{ v.code }}
+                            </div>
                           </div>
                         </div>
                       </td>
-
-                      <!-- <td> 
-                        <span class="pr-2">{{ row.pack_size }}</span>
-                      </td> -->
-                      <td>
-                        <span class="pr-2">{{ row.unit }}</span>
-                      </td>
-                      <td>
-                        <span class="pr-2">{{ row.uom }}</span>
-                      </td>
-
+                      <td>{{ v.title }}</td>
+                      <td>{{ v.description }}</td>
                       <td>
                         <div class="flex items-center space-x-3">
                           <div>
                             <div class="text-xs">
                               {{
-                                row.requested_at &&
-                                $moment(row.requested_at).format("YYYY-MM-DD") >
+                                v.created_at &&
+                                $moment(v.created_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.requested_at
+                                  ? v.created_at
                                   : "-"
                               }}
                             </div>
-                            <div class="text-xs">
+                            <div class="text-xs opacity-30">
                               {{
-                                row.requested_fullname
-                                  ? row.requested_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                row.approved_at &&
-                                $moment(row.approved_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? row.approved_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs">
-                              {{
-                                row.approved_fullname
-                                  ? row.approved_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                row.rejected_at &&
-                                $moment(row.rejected_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? row.rejected_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs">
-                              {{
-                                row.rejected_fullname
-                                  ? row.rejected_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                row.canceled_at &&
-                                $moment(row.canceled_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? row.canceled_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs">
-                              {{
-                                row.canceled_fullname
-                                  ? row.canceled_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                row.created_at &&
-                                $moment(row.created_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? row.created_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs">
-                              {{
-                                row.created_fullname
-                                  ? row.created_fullname
+                                v.created_fullname
+                                  ? v.created_fullname
                                   : "-"
                               }}
                             </div>
@@ -472,65 +433,51 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.updated_at &&
-                                $moment(row.updated_at).format("YYYY-MM-DD") >
+                                v.updated_at &&
+                                $moment(v.updated_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.updated_at
+                                  ? v.updated_at
                                   : "-"
                               }}
                             </div>
-                            <div class="text-xs">
+                            <div class="text-xs opacity-30">
                               {{
-                                row.updated_fullname
-                                  ? row.updated_fullname
+                                v.updated_fullname
+                                  ? v.updated_fullname
                                   : "-"
                               }}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <!-- <th class="text-right" v-if="row.status=='pending'">
-                        <label
-                      
-                          class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="
-                            status_item(
-                              `approve`,
-                              `${row.code}`,
-                              'base',
-                              'controllers/MYSQL/INTERNAL/WH/shelf_request'
-                            )
-                          "
-                        >
-                          Approve
-                        </label>
 
-                        <label
-                          class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="
-                              status_item(
-                              `reject`,
-                              `${row.code}`,
-                              'base',
-                              'controllers/MYSQL/INTERNAL/WH/shelf_request'
-                            )
-                          "
-                          >Reject
-                        </label>
-                      </th> -->
                       <th class="text-right">
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
-                          >Detail
+                          @click="base_edit(`${v.code}`, `${i}`)"
+                        >
+                          {{ v.status == "pending" ? "Approve" : "Detail" }}
                         </label>
+
+                        <!-- <label
+                          for="modal-remove"
+                          class="join-item btn btn-ghost modal-button btn-xs"
+                          @click="
+                            remove_item(
+                              `${v.code}`,
+                              'base',
+                              'controllers/MYSQL/INTERNAL/QA/Indirect/request'
+                            )
+                          "
+                          >remove
+                        </label> -->
                       </th>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="w-full">
+              <div class="join w-full justify-center lg:justify-end">
                 <AppModuleGlobalPageination
                   :page="base.page"
                   :total="base.total"
@@ -565,26 +512,30 @@
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";
 import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
+import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
 
 export default {
   name: "Department",
   components: {
     AppLayout,
+    AppModuleGlobalUpload,
     AppModuleGlobalPageination,
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,
+    AppModuleGlobalShowImage,
   },
   data() {
     return {
-      date: {
-        from: "",
-        to: "",
+      loadimage: false,
+      options: {
+        penColor: "#c0f",
       },
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
+
       category: {
         rows: [],
         page: 1,
@@ -627,30 +578,7 @@ export default {
         controll: "",
         tb: "",
       },
-      imagerow: null,
-      item: {
-        rows: [],
-        total: 0,
-        page: 1,
-        row: null,
-        q: "",
-        next: false,
-        back: false,
-        loading: false,
-        modal: false,
-        form: {
-          name: "",
-          number: "",
-          size: "",
-          description: "",
-          category_id: "0",
-          store_id: "0",
-          recommend: "",
-          room: "",
-          imageLink: "",
-          image: [],
-        },
-      },
+      imageSrc: null,
     };
   },
   computed: {
@@ -658,16 +586,44 @@ export default {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
+      // console.log("token");
+      //console.log(this.$store.getters.user_token);
       return this.$store.getters.user_token;
-    },
-    user() {
-      return this.$store.getters.user;
     },
   },
   methods: {
+    error() {
+      this.loadimage = false;
+    },
+    loaded() {
+      this.loadimage = true;
+    },
+
     change() {
       this.base_search();
     },
+
+    undo() {
+      this.$refs.signaturePad.undoSignature();
+    },
+    save() {
+      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
+
+      alert("Open DevTools see the save data.");
+      console.log(isEmpty);
+      console.log(data);
+    },
+    // change() {
+    //   this.options = {
+    //     penColor: "#00f",
+    //   };
+    // },
+    // resume() {
+    //   this.options = {
+    //     penColor: "#c0f",
+    //   };
+    // },
+
     // base
     base_search() {
       this.base.loading = true;
@@ -684,12 +640,10 @@ export default {
       fetch(
         `${
           this.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf_request?total=1&page=${
+        }api/controllers/MYSQL/INTERNAL/QA/Indirect/request?total=1&action=pending&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }${this.date.from ? `&createFrom=${this.date.from}` : ""}${
-          this.date.to ? `&createTo=${this.date.to}` : ""
         }`,
         {
           method: "GET",
@@ -701,12 +655,15 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          // if (res.rows.length > 0) {
-          //   res.rows.forEach((v, i) => {
-          //     res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-          //     res.rows[i].master = 0;
-          //   });
-          // }
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+          }
           callback(
             res.success
               ? { rows: res.rows, total: res.total }
@@ -714,66 +671,69 @@ export default {
           );
         })
         .catch((error) => {
-          callback([]);
+          // callback([]);
+          // localStorage.removeItem("user_token");
+          // this.$router.push({name:"AppLogin"})
           console.error("Error:", error);
         });
     },
     base_create() {
       this.base.current = 0;
       this.base.form = {
-        code: "",
-        item_code: "",
-        item_name: "",
-        item_short_code: "",
-        pack_size: "",
-        unit: "",
-        uom: "",
-        status: "",
-        newStatus: "",
+        title: "",
+        description: "",
       };
-
       this.detail.rows = [];
       this.base.controll = "create";
     },
     base_edit(code, index) {
       this.base.form = { ...this.base.rows[index] };
-      this.base.form.newStatus = this.base.form.status;
       this.base.current = code;
+      this.base.form.newStatus = this.base.form.status;
       this.detail.rows = [];
       this.base.controll = "edit";
-      // this.detail_search();
+      this.detail_search();
       this.refresh = true;
     },
     base_save() {
       let vm = this;
+      !this.base.form.newStatus ? (this.base.form.newStatus = "draft") : "";
+      let obj = {
+        code: this.base.current,
+        rows: [
+          {
+            ...Object.assign({ ...this.base.form }),
+            status: this.base.form.newStatus,
+          },
+        ],
+      };
 
-      // let image = { ...this.base.form.image[0] };
-      // delete image.temp;
-
-      this.base.form.status = this.base.form.newStatus;
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf_request`, {
-        method: this.base.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({ ...this.base.form }),
-      })
+      fetch(
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/request`,
+        {
+          method: this.base.controll == "create" ? "POST" : "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.user_token}`,
+          },
+          body: JSON.stringify(obj),
+        }
+      )
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             const promise_arr = [];
             console.log(this.base.current);
             if (this.base.current == 0) {
-              this.base.current = res.row.code;
+              this.base.current = res.rows[0].code;
               let i = this.detail.rows.length;
               this.detail.controll = "create";
               for (i; i > 0; i--) {
-                this.detail.form = {
-                  code: this.detail.rows[i - 1]["code"],
-                  title: this.detail.rows[i - 1]["title"],
-                };
+                this.detail.form = { ...this.detail.rows[i - 1] };
                 promise_arr.push(
                   new Promise(async function (resolve, reject) {
                     let res = await vm.detail_save("dynamic");
@@ -796,92 +756,58 @@ export default {
           console.error("Error:", error);
         });
     },
+    // DETAIL
+    detail_search() {
+      this.detail.loading = true;
+      this.detail_get((res) => {
+        // console.log(res)
+        this.detail.rows = res.rows;
+        this.detail.total = res.total;
+        this.detail.next =
+          this.detail.page * this.detail.row >= this.detail.total
+            ? false
+            : true;
+        this.detail.back = this.detail.page > 1 ? true : false;
+        this.detail.loading = false;
 
-    status_item(status, code, controll, tb) {
-      fetch(`${this.serviceUrl}${tb}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({
-          code: code,
-          status: status,
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (res.success) {
-            // console.log(res);
-            // this.remove.modal = false;
-            this[`${controll}_search`]();
-          }
-          // callback(res.success ? res.rows : []);
-        })
-        .catch((error) => {
-          // callback([]);
-          console.error("Error:", error);
-        });
-    },
-    // REMOVE
-    remove_item(code, controll, tb) {
-      console.log(code);
-      this.remove.code = code;
-      this.remove.controll = controll;
-      this.remove.tb = tb;
-    },
-    confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({
-          code: this.remove.code,
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (res.success) {
-            // console.log(res);
-            this.remove.modal = false;
-            this[`${this.remove.controll}_search`]();
-          }
-          // callback(res.success ? res.rows : []);
-        })
-        .catch((error) => {
-          // callback([]);
-          console.error("Error:", error);
-        });
-    },
-
-    // Item
-    item_search(callback) {
-      this.item.loading = true;
-      this.item_get((res) => {
-        this.item.rows = res.rows;
-        this.item.total = res.total;
-        this.item.next =
-          this.item.page * this.item.row >= this.item.total ? false : true;
-        this.item.back = this.item.page > 1 ? true : false;
-        this.item.loading = false;
-        callback(res);
+        console.log(this.detail.rows);
       });
     },
-    item_get(callback) {
+    detail_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`,
+        `${
+          this.serviceUrl
+        }api/controllers/MYSQL/INTERNAL/QA/Indirect/request_item?total=1&page=${
+          this.detail.page
+        }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
+          this.detail.q ? `&q=${this.detail.q}` : ""
+        }${this.base.current ? `&doc=${this.base.current}` : ``}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.user_token}`,
           },
+          // body: JSON.stringify({
+          //     "uuid": localStorage.getItem('uuid'),
+          // }),
         }
       )
         .then((response) => response.json())
         .then((res) => {
+          // res.rows.forEach((v, i) => {
+          //   // res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+          //   // console.log(res.rows[i].image)
+          //   // res.rows[i].image.forEach((vv, ii) => {
+          //   //   if (ii == 0) {
+          //   //     res.rows[i].master = ii;
+          //   //   }
+          //   //   // console.log(vv);
+          //   //   if (vv.master) {
+          //   //     res.rows[i].master = ii;
+          //   //   }
+          //   // });
+          // });
           callback(
             res.success
               ? { rows: res.rows, total: res.total }
@@ -893,66 +819,168 @@ export default {
           console.error("Error:", error);
         });
     },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
-    });
-  },
-  watch: {
-    "base.form.item_short_code": function (val) {
-      if (this.base.controll == "create") {
-        this.base.form.item_code = "";
-        this.base.form.item_name = "";
-      }
-
-      if (val) {
-        this.item_search((res) => {
-          if (this.item.rows.length == 1) {
-            this.base.form.item_code = this.item.rows[0].item_code;
-            this.base.form.item_wh = this.item.rows[0].wh;
-          }
-        });
-      }
+    detail_create() {
+      // console.log("detail_create");
+      // this.clearimage();
+      this.detail.current = 0;
+      // console.log("callback");
+      // this.detail.rows = [];
+      this.detail.form = {
+        code: "",
+        // title: "",
+        // price: "",
+        // image: [],
+        // imageLink: "",
+        // color: "",
+        // color_code: "",
+        // link: "",
+      };
+      this.detail.controll = "create";
     },
-    "base.form.item_code": function (val) {
-      if (val) {
+    detail_edit(code) {
+      // console.log("detail_edit");
+      // this.clearimage();
+      // console.log(id,index);
+      // setTimeout(() => {
+      this.detail.current = code;
+      let index = this.detail.rows.findIndex(
+        (v) => v.code == this.detail.current
+      );
+      // this.detail.rows[index] = { ...this.detail.form };
+      this.detail.form = Object.assign({}, this.detail.rows[index]);
+      // this.detail.form.color = this.detail.form.color == "0" ? false : true;
+
+      // console.log(this.detail.form.image);
+      // this.detail.form.image.forEach((v, i) => {
+      //   // console.log(v);
+      //   this.detail.form.image[i] = Object.assign(
+      //     {},
+      //     this.detail.form.image[i]
+      //   );
+      // });
+
+      // console.log(this.detail.form);
+      // this.detail.form.image = JSON.parse(this.detail.form.image)
+
+      // }, 5000);
+
+      // this.base.form = this.base.rows[index]
+      // this.detail.current = index;
+      // this.detail_search();
+
+      this.detail.controll = "edit";
+    },
+    detail_save(type) {
+      // console.log(this.base.current);
+      // console.log(this.detail.controll);
+      if (!this.base.current) {
+        if (this.detail.controll == "create") {
+          this.detail.form.code = this.detail.rows.length;
+          this.detail.rows = [{ ...this.detail.form }].concat(this.detail.rows);
+          // this.detail.rows.push({ ...this.detail.form });
+          this.detail.modal = false;
+        } else {
+          //  this.detail.form.id = this.detail.rows.length
+          let index = this.detail.rows.findIndex(
+            (v) => v.code == this.detail.current
+          );
+          this.detail.rows[index] = { ...this.detail.form };
+
+          // this.detail.rows.push({ ...this.detail.form });
+          this.detail.modal = false;
+        }
+      } else {
+        // console.table(this.detail.form.image);
+        // let array_image = [];
+        // this.detail.form.image.forEach((v, i) => {
+        //   console.log(v);
+        //   if (v.temp) {
+        //     let image = { ...v };
+        //     delete image.temp;
+        //     array_image[i] = image;
+        //   } else {
+        //     array_image[i] = { ...v };
+        //   }
+        //   // console.log(this.detail.form.image[i])
+        // });
+        //  console.table(this.detail.form.image);
+        let obj = {
+          ...this.detail.form,
+        };
+        obj["doc"] = this.base.current;
+        console.log(obj);
+        if (this.detail.controll == "edit") {
+          obj["code"] = this.detail.form.code;
+        }
         fetch(
-          `${this.serviceUrl}controllers/SAP/${
-            this.base.form.item_wh ? this.base.form.item_wh : "UBA"
-          }/oitm?item_code=${val}`,
+          `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/request_item`,
           {
-            method: "GET",
+            method: this.detail.controll == "create" ? "POST" : "PUT",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${this.user_token}`,
             },
+            body: JSON.stringify({ rows: [obj] }),
           }
         )
           .then((response) => response.json())
           .then((res) => {
-            if (res.rows.length > 0) {
-              this.base.form.item_code = res.rows[0].ItemCode;
-              this.base.form.item_name = res.rows[0].ItemName;
-              this.base.form.uom = res.rows[0].UomCode;
+                     if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
+              this.detail.modal = false;
+
+              if (type == "static") {
+                this.detail_search();
+              }
+
+              // this.base_search();
             }
+            // callback(res.success ? res.rows : []);
           })
           .catch((error) => {
+            callback([]);
             console.error("Error:", error);
           });
       }
     },
+    // REMOVE
+    remove_item(code, controll, tb) {
+      this.remove.code = code;
+      this.remove.controll = controll;
+      this.remove.tb = tb;
+    },
+    confirm_remove() {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.user_token}`,
+        },
+        body: JSON.stringify({ rows: [{ code: this.remove.code }] }),
+      })
+        .then((response) => response.json())
+        .then((res) => {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
+            this.remove.modal = false;
+            this[`${this.remove.controll}_search`]();
+          }
+        })
+        .catch((error) => {
+          // callback([]);
+          console.error("Error:", error);
+        });
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      //console.log(this.user_token);
+      this.base_search();
+    });
   },
 };
 </script>
-<style scrop>
-tr,
-td {
-  white-space: nowrap;
-}
-</style>

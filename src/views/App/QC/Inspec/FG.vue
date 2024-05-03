@@ -10,7 +10,9 @@
           v-model="base.modal"
         />
         <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-6/12 max-w-5xl">
+          <div
+          class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen"
+        >
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
@@ -28,8 +30,7 @@
               />
               <div
                 role="tabpanel"
-                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full"
-                style="max-height: 60vh"
+                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full max-h-[60vh]"
               >
                 <div class="grid gap-4 md:grid-cols-1 grid-cols-1">
                   <AppModuleGlobalUpload
@@ -64,7 +65,7 @@
                       :minChar="3"
                       :delay="0.5"
                       :limit="10"
-                      :customClass="`input input-bordered ${
+                      :customClass="`input input-bordered border-base-content ${
                         checkbox == 'M' ? 'input-disabled' : ''
                       }`"
                       :disabled="checkbox == 'M' ? true : false"
@@ -81,7 +82,7 @@
                           refresh = obj.value;
                         }
                       "
-                      :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/company`"
+                      :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
                       :param="`&total=1`"
                     />
                   </div>
@@ -93,7 +94,7 @@
                       <span class="label-text">สาขา</span>
                     </label>
                     <!-- <select
-                      class="select select-bordered w-full max-w-xs"
+                      class="select select-bordered border-base-content w-full max-w-xs"
                       v-if="base.form.company_data"
                     >
                       <option disabled selected>Who shot first?</option>
@@ -107,7 +108,7 @@
                       :minChar="3"
                       :delay="0.5"
                       :limit="10"
-                      :customClass="`input input-bordered ${
+                      :customClass="`input input-bordered border-base-content ${
                         checkbox == 'M' ? 'input-disabled' : ''
                       }`"
                       :disabled="checkbox == 'M' ? true : false"
@@ -124,7 +125,7 @@
                           refresh = obj.value;
                         }
                       "
-                      :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/branch`"
+                      :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/branch`"
                       :param="`&total=1`"
                     />
                   </div>
@@ -135,7 +136,7 @@
                     <input
                       type="text"
                       placeholder="รหัสพนักงาน"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.uid"
                     />
                   </div>
@@ -149,7 +150,7 @@
                     <input
                       type="text"
                       placeholder="ชื่อ"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.firstname"
                     />
                   </div>
@@ -160,7 +161,7 @@
                     <input
                       type="text"
                       placeholder="นามสกุล"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.lastname"
                     />
                   </div>
@@ -176,7 +177,7 @@
                     :minChar="3"
                     :delay="0.5"
                     :limit="10"
-                    :customClass="`input input-bordered ${
+                    :customClass="`input input-bordered border-base-content ${
                       checkbox == 'M' ? 'input-disabled' : ''
                     }`"
                     :disabled="checkbox == 'M' ? true : false"
@@ -193,7 +194,7 @@
                         refresh = obj.value;
                       }
                     "
-                    :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/department`"
+                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/department`"
                     :param="`&total=1&wh=wh1&rac_list=1`"
                   />
                 </div>
@@ -204,7 +205,7 @@
                   <input
                     type="text"
                     placeholder="ตำแหน่ง"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     v-model="base.form.position"
                   />
                 </div>
@@ -220,7 +221,7 @@
                       :minChar="3"
                       :delay="0.5"
                       :limit="10"
-                      :customClass="`input input-bordered ${
+                      :customClass="`input input-bordered border-base-content ${
                         checkbox == 'M' ? 'input-disabled' : ''
                       }`"
                       :disabled="checkbox == 'M' ? true : false"
@@ -232,7 +233,7 @@
                           base.form.access_code = obj ? obj.code : '';
                         }
                       "
-                      :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/System/access`"
+                      :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/access`"
                       :param="`&total=1`"
                     />
                   </div>
@@ -245,7 +246,7 @@
                     <input
                       type="text"
                       placeholder="เบอร์โทรศัพท์"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.tel"
                     />
                   </div>
@@ -256,7 +257,7 @@
                     <input
                       type="date"
                       placeholder="วันเกิด"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.birthdate"
                     />
                   </div>
@@ -269,7 +270,7 @@
                     <input
                       type="date"
                       placeholder="วันที่เริ่มงาน"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.started_at"
                     />
                   </div>
@@ -280,7 +281,7 @@
                     <input
                       type="date"
                       placeholder="วันที่สิ้นสุดการทำงาน"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.leaves_at"
                     />
                   </div>
@@ -309,18 +310,18 @@
                       <span class="label-text">select2</span>
                     </label>
                     <select
-                      class="select select-bordered"
+                      class="select select-bordered border-base-content"
                       v-model="base.form.category_code"
                     >
                       <option disabled="disabled" selected="selected" value="0">
                         Choose store
                       </option>
                       <option
-                        v-for="(row, index) in category.rows"
-                        :key="index"
-                        :value="row.code"
+                        v-for="(v, i) in category.rows"
+                        :key="i"
+                        :value="v.code"
                       >
-                        {{ row.title }}
+                        {{ v.title }}
                       </option>
                     </select>
                   </div>
@@ -366,8 +367,8 @@
                       <tbody>
                         <tr
                           class="hover"
-                          v-for="(row, index) in detail.rows"
-                          :key="index"
+                          v-for="(v, i) in detail.rows"
+                          :key="i"
                         >
                           <th>
                             <!-- {{ base.form.email }} -->
@@ -382,14 +383,14 @@
                     /> -->
                               <input
                                 type="checkbox"
-                                :checked="row.code == base.form.email"
+                                :checked="v.code == base.form.email"
                                 class="checkbox"
                                 @click="
                                   () => {
                                     base.form.email =
-                                      base.form.email == row.code
+                                      base.form.email == v.code
                                         ? ''
-                                        : row.code;
+                                        : v.code;
                                   }
                                 "
                               />
@@ -399,19 +400,19 @@
                           <td>
                             <div class="flex items-center space-x-3">
                               <div>
-                                <div class="font-bold">{{ row.email }}</div>
+                                <div class="font-bold">{{ v.email }}</div>
                                 <div class="text-sm">
-                                  {{ row.code }}
+                                  {{ v.code }}
                                 </div>
                               </div>
                             </div>
                           </td>
 
-                          <!-- <td>{{ row.price }}</td> -->
+                          <!-- <td>{{ v.price }}</td> -->
                           <!-- <td>
-                            <a :href="row.link" target="_blank">
+                            <a :href="v.link" target="_blank">
                               <font-awesome-icon
-                                v-if="row.link"
+                                v-if="v.link"
                                 icon="fa-solid fa-globe"
                                 size="1x"
                                 class="btn btn-ghost modal-button btn-xs"
@@ -421,7 +422,7 @@
                             <label
                               for="modal-detail"
                               class="btn btn-link modal-button btn-xs"
-                              @click="detail_edit(`${row.code}`, `${index}`)"
+                              @click="detail_edit(`${v.code}`, `${i}`)"
                             >
                               แก้ไข
                             </label>
@@ -431,7 +432,7 @@
                               class="btn btn-ghost modal-button btn-xs"
                               @click="
                                 remove_item(
-                                  `${row.code}`,
+                                  `${v.code}`,
                                   'detail',
                                   'controllers/MYSQL/INTERNAL/HR/email'
                                 )
@@ -457,8 +458,7 @@
               />
               <div
                 role="tabpanel"
-                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full"
-                style="max-height: 60vh"
+                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full max-h-[60vh]"
               >
                 <div class="form-control">
                   <label class="label">
@@ -467,7 +467,7 @@
                   <input
                     type="text"
                     placeholder="Current Password"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     v-model="base.form.current_password"
                   />
                 </div>
@@ -479,7 +479,7 @@
                   <input
                     type="text"
                     placeholder="Password"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     v-model="base.form.new_password"
                   />
                 </div>
@@ -490,7 +490,7 @@
                   <input
                     type="text"
                     placeholder="Confirm Password"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     v-model="base.form.confirm_password"
                   />
                 </div>
@@ -504,8 +504,7 @@
               /> -->
               <!-- <div
                 role="tabpanel"
-                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full"
-                style="max-height: 60vh"
+                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full max-h-[60vh]"
               >
                 <ul class="menu px-4 py-0">
                   <MenuComponent
@@ -551,7 +550,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh] ">
               Are your sure for remove this item?
             </div>
 
@@ -588,7 +587,7 @@
               >✕</label
             >
             <h3 class="text-lg font-bold">Email</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh] ">
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">Email</span>
@@ -596,7 +595,7 @@
                 <input
                   type="email"
                   placeholder="Email"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.email"
                 />
               </div>
@@ -633,7 +632,7 @@
             <div class="card-body overflow-auto">
               <div class="join mt-5 w-full md:justify-center lg:justify-end">
                 <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+                  :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
                     (q) => {
                       base.q = q;
@@ -671,12 +670,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(row, index) in base.rows" :key="row.code">
-                      <th>{{ row.id }}</th>
+                    <tr v-for="(v, i) in base.rows" :key="v.code">
+                      <th>{{ v.id }}</th>
                       <td class="text-center">
                         <div
                           class="flex items-center gap-3"
-                          v-if="row.image.length > 0"
+                          v-if="v.image.length > 0"
                         >
                           <div class="avatar">
                             <div class="mask mask-square w-12 h-12">
@@ -687,13 +686,13 @@
                               >
                                 <img
                                   :src="`${
-                                    row.image[row.master ? row.master : 0].temp
-                                      ? tmpsLink
-                                      : row.imageLink
-                                      ? row.imageLink
-                                      : tmpsLink
+                                    v.image[v.master ? v.master : 0].temp
+                                      ? `${serviceUrl}tmps/`
+                                      : v.imageLink
+                                      ? v.imageLink
+                                      : `${serviceUrl}tmps/`
                                   }${
-                                    row.image[row.master ? row.master : 0].file
+                                    v.image[v.master ? v.master : 0].file
                                   }`"
                                   alt="Image"
                                 />
@@ -702,15 +701,15 @@
                           </div>
                           <div  class=" text-left">
                             <div class="font-bold">
-                              <span class="pr-2">{{ row.firstname }}</span>
-                              <span>{{ row.lastname }}</span>
+                              <span class="pr-2">{{ v.firstname }}</span>
+                              <span>{{ v.lastname }}</span>
                             </div>
 
                             <div class="text-sm">
-                              รหัสพนักงาน : {{ row.uid }}
+                              รหัสพนักงาน : {{ v.uid }}
                             </div>
                             <div class="text-xs">
-                              {{ row.code }}
+                              {{ v.code }}
                             </div>
                           </div>
                         </div>
@@ -722,14 +721,14 @@
                             @click="imagerow = row"
                           >
                             <img
-                              v-if="row.image.length > 0"
+                              v-if="v.image.length > 0"
                               :src="`${
-                                row.image[row.master ? row.master : 0].temp
-                                  ? tmpsLink
-                                  : row.imageLink
-                                  ? row.imageLink
-                                  : tmpsLink
-                              }${row.image[row.master ? row.master : 0].file}`"
+                                v.image[v.master ? v.master : 0].temp
+                                  ? `${serviceUrl}tmps/`
+                                  : v.imageLink
+                                  ? v.imageLink
+                                  : `${serviceUrl}tmps/`
+                              }${v.image[v.master ? v.master : 0].file}`"
                               alt="Image"
                             />
                           </label>
@@ -738,13 +737,13 @@
                       <!-- <td>
                         <div>
                           <div class="font-bold">
-                            <span class="pr-2">{{ row.firstname }}</span>
-                            <span>{{ row.lastname }}</span>
+                            <span class="pr-2">{{ v.firstname }}</span>
+                            <span>{{ v.lastname }}</span>
                           </div>
 
-                          <div class="text-sm">รหัสพนักงาน : {{ row.uid }}</div>
+                          <div class="text-sm">รหัสพนักงาน : {{ v.uid }}</div>
                           <div class="text-xs">
-                            {{ row.code }}
+                            {{ v.code }}
                           </div>
                         </div>
                       </td> -->
@@ -752,18 +751,18 @@
                         <div class="flex items-center space-x-3">
                           <div>
                             <div class="font-bold">
-                              {{ row.emailTitle ? row.emailTitle : "-" }}
+                              {{ v.emailTitle ? v.emailTitle : "-" }}
                             </div>
                             <div class="text-sm">
-                              tel : {{ row.tel ? row.tel : "-" }}
+                              tel : {{ v.tel ? v.tel : "-" }}
                             </div>
                             <div class="text-sm">
                               วันเกิด :
                               {{
-                                row.birthdate &&
-                                $moment(row.birthdate).format("YYYY-MM-DD") >
+                                v.birthdate &&
+                                $moment(v.birthdate).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? $moment(row.birthdate).format("YYYY-MM-DD")
+                                  ? $moment(v.birthdate).format("YYYY-MM-DD")
                                   : "-"
                               }}
                             </div>
@@ -774,17 +773,17 @@
                         <div class="flex items-center space-x-3">
                           <div>
                             <div class="font-bold">
-                              {{ row.position ? row.position : "-" }}
+                              {{ v.position ? v.position : "-" }}
                             </div>
                             <div class="text-sm">
-                              แผนก : {{ row.depTitle ? row.depTitle : "-" }}
+                              แผนก : {{ v.depTitle ? v.depTitle : "-" }}
                             </div>
                             <div class="text-sm">
                               สาขา :
-                              {{ row.branchTitle ? row.branchTitle : "-" }}
+                              {{ v.branchTitle ? v.branchTitle : "-" }}
                             </div>
                             <div class="text-sm">
-                              {{ row.companyTitle ? row.companyTitle : "-" }}
+                              {{ v.companyTitle ? v.companyTitle : "-" }}
                             </div>
                           </div>
                         </div>
@@ -793,7 +792,7 @@
                         <div class="flex items-center space-x-3">
                           <div>
                             <div class="font-bold">
-                              {{ row.accessTitle ? row.accessTitle : "-" }}
+                              {{ v.accessTitle ? v.accessTitle : "-" }}
                             </div>
                           </div>
                         </div>
@@ -804,20 +803,20 @@
                             <div class="text-sm">
                               เริ่มงาน :
                               {{
-                                row.started_at &&
-                                $moment(row.started_at).format("YYYY-MM-DD") >
+                                v.started_at &&
+                                $moment(v.started_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? $moment(row.started_at).format("YYYY-MM-DD")
+                                  ? $moment(v.started_at).format("YYYY-MM-DD")
                                   : "-"
                               }}
                             </div>
                             <div class="text-sm">
                               สิ้นสุด :
                               {{
-                                row.leaves_at &&
-                                $moment(row.leaves_at).format("YYYY-MM-DD") >
+                                v.leaves_at &&
+                                $moment(v.leaves_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? $moment(row.leaves_at).format("YYYY-MM-DD")
+                                  ? $moment(v.leaves_at).format("YYYY-MM-DD")
                                   : "-"
                               }}
                             </div>
@@ -829,17 +828,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.created_at &&
-                                $moment(row.created_at).format("YYYY-MM-DD") >
+                                v.created_at &&
+                                $moment(v.created_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.created_at
+                                  ? v.created_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs opacity-30">
                               {{
-                                row.created_fullname
-                                  ? row.created_fullname
+                                v.created_fullname
+                                  ? v.created_fullname
                                   : "-"
                               }}
                             </div>
@@ -851,17 +850,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.updated_at &&
-                                $moment(row.updated_at).format("YYYY-MM-DD") >
+                                v.updated_at &&
+                                $moment(v.updated_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.updated_at
+                                  ? v.updated_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs opacity-30">
                               {{
-                                row.updated_fullname
-                                  ? row.updated_fullname
+                                v.updated_fullname
+                                  ? v.updated_fullname
                                   : "-"
                               }}
                             </div>
@@ -873,7 +872,7 @@
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >edit
                         </label>
 
@@ -882,7 +881,7 @@
                           class="join-item btn btn-ghost modal-button btn-xs"
                           @click="
                             remove_item(
-                              `${row.code}`,
+                              `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/HR/employee'
                             )
@@ -948,7 +947,7 @@ export default {
     return {
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
+      
       category: {
         rows: [],
         page: 1,
@@ -1022,7 +1021,7 @@ export default {
       fetch(
         `${
           this.serviceUrl
-        }controllers/SAP/${this.wh}/QC/rm_inspec?total=1&page=${this.base.page}${
+        }api/controllers/SAP/${this.wh}/QC/rm_inspec?total=1&page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
         }${this.base.q ? `&q=${this.base.q}` : ""}`,
         {
@@ -1035,7 +1034,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             res.rows.forEach((v, i) => {
               res.rows[i].image = v.image ? JSON.parse(v.image) : [];
               res.rows[i].master = 0;
@@ -1108,7 +1110,7 @@ export default {
       } else {
         this.base.form.new_password = this.base.form.uid;
       }
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/employee`, {
+      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, {
         method: this.base.controll == "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -1137,7 +1139,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             const promise_arr = [];
             console.log(this.base.current);
@@ -1191,7 +1196,7 @@ export default {
     },
     detail_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
@@ -1321,7 +1326,7 @@ export default {
         if (this.detail.controll == "edit") {
           obj["code"] = this.detail.form.code;
         }
-        fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email`, {
+        fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, {
           method: this.detail.controll == "create" ? "POST" : "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -1331,7 +1336,10 @@ export default {
         })
           .then((response) => response.json())
           .then((res) => {
-            if (res.success) {
+                     if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
               this.detail.modal = false;
 
               if (type == "static") {
@@ -1356,7 +1364,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -1368,7 +1376,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
@@ -1384,11 +1395,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
+      
     });
   },
 };

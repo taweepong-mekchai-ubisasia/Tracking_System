@@ -1,7 +1,6 @@
 <template>
   <div
-    class="card-body overflow-auto"
-    style="max-height: inherit"
+    class="card-body overflow-auto max-h-[inherit]"
     :class="`${tab != 'forgot-password' ? 'hidden' : ''}`"
   >
     <div class="text-xl font-bold">Forgot password</div>
@@ -13,7 +12,7 @@
         <input
           type="text"
           placeholder="Email Address*"
-          class="input input-bordered"
+          class="input input-bordered border-base-content"
           v-model="temp.email"
         />
       </div>
@@ -86,9 +85,6 @@ export default {
     ServiceUrl() {
       return this.$store.getters.serviceUrl;
     },
-    isLogin() {
-      return this.$store.getters.isLogin;
-    },
   },
   methods: {
     forgotPassword() {
@@ -102,7 +98,7 @@ export default {
 
       vm.errorMsg = "";
 
-      fetch(`${vm.ServiceUrl}controllers/forgot-password`, {
+      fetch(`${vm.ServiceUrl}api/controllers/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,8 +120,11 @@ export default {
               vm.errorMsg = "";
             }
           }, 1000);
-          console.log(res);
-          if (res.success) {
+          // console.log(res);
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             vm.success = "Successfully send email reset password.";
             return;
           }

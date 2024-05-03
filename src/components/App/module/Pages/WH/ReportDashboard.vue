@@ -1,18 +1,17 @@
 <template>
-  <div class="Stock">
     <div
-      class="grid grid-cols-1 gap-6 px-4 py-2 lg:px-10 lg:py-5 xl:grid-cols-2"
+      class="grid grid-cols-1 lg:grid-cols-2 px-4 py-2 p-2 lg:p-4  "
     >
       <div class="col-span-2">
-        <div class="join mt-5 w-full justify-end">
+        <div class="join w-full justify-end">
           <button
-            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+            class="join-item btn btn-sm disabled:border-base-content disabled:bg-transparent disabled:text-base-content"
             disabled
           >
             จำนวน
           </button>
           <select
-            class="join-item select select-sm select-bordered w-auto max-w-xs"
+            class="join-item  select select-sm select-bordered border-base-content w-auto max-w-xs border-base-content"
             v-model="base.row"
           >
             <option selected value="5">5</option>
@@ -22,11 +21,11 @@
         </div>
       </div>
       <div class="col-span-2 grid xl:flex xl:flex-row gap-4">
-        <p class="card-title text-primary">Finished  Goods</p>
+        <div class="card-title text-primary">Finished  Goods</div>
       </div>
-      <div class="col-span-2 grid xl:flex xl:flex-row mb-8 gap-4">
+      <div class="col-span-2 grid xl:flex xl:flex-row gap-4 ">
         <div class="card-body overflow-auto pt-0 px-0 max-h-[60vh] shadow-md">
-          <p class="card-title p-4">TOP ON HAND FACTORY</p>
+          <div class="card-title p-4 ">TOP ON HAND FACTORY</div>
           <div class="chart-wrap">
             <div id="chart" v-if="options['wh1FG'].colors">
               <apexchart
@@ -41,7 +40,7 @@
           </div>
         </div>
         <div class="card-body overflow-auto pt-0 px-0 max-h-[60vh] shadow-md">
-          <p class="card-title p-4">TOP ON HAND EXTERNAL</p>
+          <div class="card-title p-4">TOP ON HAND EXTERNAL</div>
           <div class="chart-wrap">
             <div id="chart" v-if="options['wh2FG'].colors">
               <apexchart
@@ -58,11 +57,11 @@
       </div>
       <div class="col-span-2 divider"></div>
       <div class="col-span-2 grid xl:flex xl:flex-row gap-4">
-        <p class="card-title text-primary">Raw Material</p>
+        <div class="card-title text-primary">Raw Material</div>
       </div>
-      <div class="col-span-2 grid xl:flex xl:flex-row mb-8 gap-4">
+      <div class="col-span-2 grid xl:flex xl:flex-row gap-4">
         <div class="card-body overflow-auto pt-0 px-0 max-h-[60vh] shadow-md">
-          <p class="card-title p-4">TOP ON HAND FACTORY</p>
+          <div class="card-title p-4">TOP ON HAND FACTORY</div>
           <div class="chart-wrap">
             <div id="chart" v-if="options['wh1RP'].colors">
               <apexchart
@@ -77,7 +76,7 @@
           </div>
         </div>
         <div class="card-body overflow-auto pt-0 px-0 max-h-[60vh] shadow-md">
-          <p class="card-title p-4">TOP ON HAND EXTERNAL</p>
+          <div class="card-title p-4">TOP ON HAND EXTERNAL</div>
           <div class="chart-wrap">
             <div id="chart" v-if="options['wh2RP'].colors">
               <apexchart
@@ -93,12 +92,10 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 <script>
-// @ is an alias to /src
 export default {
-  name: "BinLocationReport",
+  name: "ReportDashboard",
   components: {},
   data() {
     return {
@@ -135,7 +132,7 @@ export default {
     };
   },
   computed: {
-    ServiceUrl() {
+    serviceUrl() {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
@@ -222,8 +219,8 @@ export default {
     base_get(firstchar, wh, callback) {
       fetch(
         `${
-          this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf?action=dashboard&page=${
+          this.serviceUrl
+        }api/controllers/MYSQL/INTERNAL/WH/shelf?action=dashboard&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""

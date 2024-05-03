@@ -94,8 +94,8 @@ export default {
         // lastname: this.profileUpdate.temp.lastname,
         // mobile: this.profileUpdate.temp.mobile,
         // roblox: this.profileUpdate.temp.roblox,
-        // rating: this.profileUpdate.temp.rating,
-        // coin: this.profileUpdate.temp.coin,
+  
+
         // type: this.profileUpdate.temp.type,
         // comment_feedback: this.profileUpdate.temp.comment_feedback,
 
@@ -104,7 +104,7 @@ export default {
       if (this.user.type == "email") {
         obj.image = [image];
       }
-      fetch(`${this.ServiceUrl}controllers/user`, {
+      fetch(`${this.serviceUrl}api/controllers/user`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -116,7 +116,10 @@ export default {
         .then((response) => response.json())
         .then((res) => {
           console.log(res.row);
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // alert("SUCCESS");
             if (localStorage.getItem("jwt")) {
               localStorage.setItem("jwt", res.jwt);
@@ -143,7 +146,7 @@ export default {
     // },
     getgamelist() {
       let vm = this;
-      fetch(`${this.ServiceUrl}controllers/game`, {
+      fetch(`${this.serviceUrl}api/controllers/game`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -205,9 +208,6 @@ export default {
       this.$refs.AppLayout.joinnows.checked = true;
       this.$refs.AppLayout.profile.checked = false;
     },
-    // removeStorage(){
-    //   localStorage.removeItem('game_type')
-    // }
     loadVideo(id) {
       let video = document.getElementsByClassName(`video-${id}`);
       // let video1 = document.getElementsByClassName("video-1");
@@ -287,31 +287,9 @@ export default {
         "showtokensshowtokensshowtokensshowtokensshowtokensshowtokensshowtokensshowtokens"
       );
       console.log(this.showtokens);
-      console.log(this.game_type);
-      if (this.showtokens && this.game_type) {
-        this.modal_tokens = val;
-        // this.$store.commit("game_type", null);
-      }
-    },
-    gamelist: function (val) {
-      this.image.forEach((v, i) => {
-        this.image[i].active = false;
-      });
 
-      if (val.total == 0) {
-        return;
-      }
-      // console.log(this.image)
-      // console.log(val)
-      val.rows.forEach((v, i) => {
-        let index = this.image.findIndex((va) => va.title == v.game_type);
-
-        if (index >= 0) {
-          // console.log(v,index);
-          this.image[index].active = true;
-        }
-      });
     },
+
   },
 };
 </script>

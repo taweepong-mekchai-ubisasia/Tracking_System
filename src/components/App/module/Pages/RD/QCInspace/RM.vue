@@ -26,7 +26,7 @@
               <input
                 type="text"
                 placeholder="Form No."
-                class="input input-sm input-bordered"
+                class="input input-sm input-bordered border-base-content"
                 v-model="date.from"
                 @change="change"
               />
@@ -35,7 +35,7 @@
               <input
                 type="text"
                 placeholder="To No."
-                class="input input-sm input-bordered"
+                class="input input-sm input-bordered border-base-content"
                 v-model="date.to"
                 @change="change"
               />
@@ -57,7 +57,7 @@
               <input
           type="date"
           placeholder="title"
-          class="input input-sm input-bordered"
+          class="input input-sm input-bordered border-base-content"
           v-model="date.from"
           @change="change"
         />
@@ -66,7 +66,7 @@
               <input
           type="date"
           placeholder="title"
-          class="input input-sm input-bordered"
+          class="input input-sm input-bordered border-base-content"
           v-model="date.to"
           @change="change"
         />
@@ -122,7 +122,7 @@
             :minChar="3"
             :delay="0.5"
             :limit="10"
-            :customClass="`input input-bordered input-sm join-item ${
+            :customClass="`input input-bordered border-base-content input-sm join-item ${
               checkbox == 'M' ? 'input-disabled' : ''
             }`"
             :disabled="checkbox == 'M' ? true : false"
@@ -139,7 +139,7 @@
                 refresh = obj.value;
               }
             "
-            :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/company`"
+            :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
             :param="`&total=1`"
           />
 
@@ -150,7 +150,7 @@
             :minChar="3"
             :delay="0.5"
             :limit="10"
-            :customClass="`input input-bordered input-sm join-item ${
+            :customClass="`input input-bordered border-base-content input-sm join-item ${
               checkbox == 'M' ? 'input-disabled' : ''
             }`"
             :disabled="checkbox == 'M' ? true : false"
@@ -167,7 +167,7 @@
                 refresh = obj.value;
               }
             "
-            :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/company`"
+            :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
             :param="`&total=1`"
           />
 
@@ -180,7 +180,7 @@
             สาขา
           </button>
           <select
-            class="join-item select select-sm select-bordered w-auto max-w-xs"
+            class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
             v-model="wh"
           >
             <option selected value="">ALL</option>
@@ -188,7 +188,7 @@
             <option value="wh2">External</option>
           </select>
           <AppModuleGlobalSearch
-            :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+            :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
             @search="
               (q) => {
                 base.q = q;
@@ -205,7 +205,7 @@
             สาขา
           </button>
           <select
-            class="join-item select select-sm select-bordered w-auto max-w-xs"
+            class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
             v-model="wh"
           >
             <option selected value="">ALL</option>
@@ -213,7 +213,7 @@
             <option value="wh2">External</option>
           </select>
           <!-- <AppModuleGlobalSearch
-            :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+            :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
             @search="
               (q) => {
                 base.q = q;
@@ -259,8 +259,8 @@
               <tbody>
                 <tr
                   class="hover"
-                  v-for="(row, index) in base.rows"
-                  :key="row.code"
+                  v-for="(v, i) in base.rows"
+                  :key="v.code"
                 >
                   <!-- <th>
                     <div class="flex items-center space-x-3">
@@ -268,61 +268,61 @@
                         <div
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          {{ row.rac }}-{{ row.bay }}-{{ row.level }}-{{
-                            row.pallet
+                          {{ v.rac }}-{{ v.bay }}-{{ v.level }}-{{
+                            v.pallet
                           }}
                         </div>
                         <div
                           class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          {{ row.id }}
+                          {{ v.id }}
                         </div>
                       </div>
                     </div>
                   </th> -->
                   <th>
-                    {{ row.U_ReceiptNO ? row.U_ReceiptNO : "-" }}
+                    {{ v.U_ReceiptNO ? v.U_ReceiptNO : "-" }}
                   </th>
                   <td>
                     {{
-                      row.U_DateRe.date
-                        ? $moment(row.U_DateRe.date).format("YYYY-MM-DD")
+                      v.U_DateRe.date
+                        ? $moment(v.U_DateRe.date).format("YYYY-MM-DD")
                         : "-"
                     }}
                   </td>
                   <td>
-                    {{ row.U_LotNo }}
+                    {{ v.U_LotNo }}
                   </td>
                   <td>
-                    {{ row.U_ItemNo }}
+                    {{ v.U_ItemNo }}
                   </td>
                   <td>
-                    {{ row.ItemName }}
+                    {{ v.ItemName }}
                   </td>
                   <td>
                     {{
-                      row.U_ExpireDate.date
-                        ? $moment(row.U_ExpireDate.date).format("YYYY-MM-DD")
+                      v.U_ExpireDate.date
+                        ? $moment(v.U_ExpireDate.date).format("YYYY-MM-DD")
                         : "-"
                     }}
                   </td>
                   <td>
-                    {{ row.U_SupName }}
+                    {{ v.U_SupName }}
                   </td>
                   <td>
-                    {{ row.U_SupLot }}
+                    {{ v.U_SupLot }}
                   </td>
                   <td>
-                    {{ row.U_ReAmount }}
+                    {{ v.U_ReAmount }}
                   </td>
                   <td>
-                    {{ row.U_Inspected }}
+                    {{ v.U_Inspected }}
                   </td>
                   <td>
-                    {{ row.U_Approve ? row.U_Approve : "-" }}
+                    {{ v.U_Approve ? v.U_Approve : "-" }}
                   </td>
                   <td>
-                    {{ row.ItemName }}
+                    {{ v.ItemName }}
                   </td>
                 </tr>
               </tbody>
@@ -382,7 +382,7 @@ export default {
       },
       wh: "",
       load: false,
-      tmpsLink: "",
+      
       category: {
         rows: [],
         page: 1,
@@ -425,7 +425,7 @@ export default {
     exportExcel() {
       return window.open(`${
         this.$store.state.serviceUrl
-      }controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
+      }api/controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
         this.base.page
       }${this.base.row ? `&rows=${this.base.row}` : ""}${
         this.base.q ? `&q=${this.base.q}` : ""
@@ -457,13 +457,13 @@ export default {
       fetch(
         `${
           this.$store.state.serviceUrl
-        }controllers/SAP/UBP/QC/rm_inspec?total=1&page=${this.base.page}${
+        }api/controllers/SAP/UBP/QC/rm_inspec?total=1&page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
         }${this.base.q ? `&q=${this.base.q}` : ""}${
           this.wh ? `&wh=${this.wh}` : ""
         }${this.date.from ? `&createFrom=${this.date.from}` : ""}${
           this.date.to ? `&createTo=${this.date.to}` : ""
-        }&transref=I&transref_type_null=1&sumQuantitys=1
+        }&transref=I&sumQuantitys=1
 
         `,
         {

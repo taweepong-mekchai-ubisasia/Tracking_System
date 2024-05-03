@@ -1,7 +1,6 @@
 <template>
   <div
-    class="card-body overflow-auto"
-    style="max-height: inherit"
+    class="card-body overflow-auto max-h-[inherit]"
     :class="`${tab != 'verify-email' ? 'hidden' : ''}`"
   >
     <Icon icon="fa6-solid:envelope-circle-check" class="text-5xl" />
@@ -112,7 +111,7 @@ export default {
 
       vm.errorMsg = "";
 
-      fetch(`${vm.ServiceUrl}controllers/verify-email`, {
+      fetch(`${vm.ServiceUrl}api/controllers/verify-email`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -132,10 +131,12 @@ export default {
               vm.errorMsg = "";
             }
           }, 1000);
-          console.log(res);
-          if (res.success) {
+          // console.log(res);
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             vm.success = "Successfully resend verify email.";
-            //   vm.$store.commit("isLogin", true);
             //   vm.$store.commit("user", res.user);
             //   vm.$store.commit("jwt", vm.jwt);
             //   console.log(vm.$route.query);
@@ -146,7 +147,6 @@ export default {
             //     vm.$emit("getgame");
             //   }
             // } else {
-            //   vm.$store.commit("isLogin", false);
             //   vm.$store.commit("jwt", false);
             //   localStorage.removeItem("jwt");
             return;
@@ -156,7 +156,6 @@ export default {
         .catch((error) => {
           vm.process = false;
           vm.errorMsg = res.errorMsg;
-          // vm.$store.commit("isLogin", false);
           // vm.$store.commit("jwt", false);
           // localStorage.removeItem("jwt");
           console.error("Error:", error);

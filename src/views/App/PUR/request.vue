@@ -10,14 +10,16 @@
           v-model="base.modal"
         />
         <div class="modal">
-          <div class="modal-box relative w-6/12 max-w-5xl">
+          <div
+          class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen"
+        >
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
               >✕
             </label>
             <h3 class="text-lg font-bold">Add new PO!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh] ">
               <!-- <div class="form-control">
                 <AppModuleGlobalUpload
                   v-if="base.modal"
@@ -57,7 +59,7 @@
                   :maxChar="1"
                   :delay="100"
                   :limit="10"
-                  :customClass="'input input-bordered  p-0'"
+                  :customClass="'input input-bordered border-base-content  p-0'"
                   @updateValue="
                     (obj) => {
                       base.form.po = obj.value;
@@ -74,7 +76,7 @@
                   <input
                     type="text"
                     placeholder="number"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     v-model="base.form.col1"
                   />
                 </div>
@@ -85,7 +87,7 @@
                   <input
                     type="text"
                     placeholder="Name"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     v-model="base.form.col2"
                   />
                 </div>
@@ -109,18 +111,18 @@
                     <span class="label-text">select1</span>
                   </label>
                   <!-- <select
-                    class="select select-bordered"
+                    class="select select-bordered border-base-content"
                     v-model="base.form.category_code"
                   >
                     <option disabled="disabled" selected="selected" value="0">
                       Choose category
                     </option>
                     <option
-                      v-for="(row, index) in category.rows"
-                      :key="index"
-                      :value="row.id"
+                      v-for="(v, i) in category.rows"
+                      :key="i"
+                      :value="v.id"
                     >
-                      {{ row.title }}
+                      {{ v.title }}
                     </option>
                   </select> -->
                   <AppModuleGlobalSelectSearch
@@ -129,7 +131,7 @@
                     :maxChar="1"
                     :delay="100"
                     :limit="10"
-                    :customClass="'input input-bordered  p-0'"
+                    :customClass="'input input-bordered border-base-content  p-0'"
                     @updateValue="
                       (obj) => {
                         base.form.col1 = obj.value;
@@ -143,18 +145,18 @@
                     <span class="label-text">select2</span>
                   </label>
                   <select
-                    class="select select-bordered"
+                    class="select select-bordered border-base-content"
                     v-model="base.form.category_code"
                   >
                     <option disabled="disabled" selected="selected" value="0">
                       Choose store
                     </option>
                     <option
-                      v-for="(row, index) in category.rows"
-                      :key="index"
-                      :value="row.code"
+                      v-for="(v, i) in category.rows"
+                      :key="i"
+                      :value="v.code"
                     >
-                      {{ row.title }}
+                      {{ v.title }}
                     </option>
                   </select>
                 </div>
@@ -195,23 +197,23 @@
                     <tbody>
                       <tr
                         class="hover"
-                        v-for="(row, index) in detail.rows"
-                        :key="index"
+                        v-for="(v, i) in detail.rows"
+                        :key="i"
                       >
                         <th>
                           <div class="flex items-center space-x-3">
                             <div class="avatar">
                               <div class="mask mask-squircle w-12 h-12">
                                 <img
-                                  v-if="row.image.length > 0"
+                                  v-if="v.image.length > 0"
                                   :src="`${
-                                    row.image[row.master ? row.master : 0].temp
-                                      ? tmpsLink
-                                      : row.imageLink
-                                      ? row.imageLink
-                                      : tmpsLink
+                                    v.image[v.master ? v.master : 0].temp
+                                      ? `${serviceUrl}tmps/`
+                                      : v.imageLink
+                                      ? v.imageLink
+                                      : `${serviceUrl}tmps/`
                                   }${
-                                    row.image[row.master ? row.master : 0].file
+                                    v.image[v.master ? v.master : 0].file
                                   }`"
                                   alt="Image"
                                 />
@@ -222,19 +224,19 @@
                         <td>
                           <div class="flex items-center space-x-3">
                             <div>
-                              <div class="font-bold">{{ row.title }}</div>
+                              <div class="font-bold">{{ v.title }}</div>
                               <div class="text-sm opacity-50">
-                                {{ row.code }}
+                                {{ v.code }}
                               </div>
                             </div>
                           </div>
                         </td>
                        
-                        <td>{{ row.price }}</td>
+                        <td>{{ v.price }}</td>
                         <td>
-                          <a :href="row.link" target="_blank">
+                          <a :href="v.link" target="_blank">
                             <font-awesome-icon
-                              v-if="row.link"
+                              v-if="v.link"
                               icon="fa-solid fa-globe"
                               size="1x"
                               class="btn btn-ghost modal-button btn-xs"
@@ -244,14 +246,14 @@
                           <label
                             for="modal-detail"
                             class="btn btn-ghost modal-button btn-xs"
-                            @click="detail_edit(`${row.code}`, `${index}`)"
+                            @click="detail_edit(`${v.code}`, `${i}`)"
                             >edit
                           </label>
                           |
                           <label
                             for="modal-remove"
                             class="btn btn-ghost modal-button btn-xs"
-                            @click="remove_item(`${row.code}`, 'detail','po_detail')"
+                            @click="remove_item(`${v.code}`, 'detail','po_detail')"
                             >remove
                           </label>
                         </th>
@@ -289,7 +291,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh] ">
               Are your sure for remove this item?
             </div>
 
@@ -322,7 +324,7 @@
               >✕</label
             >
             <h3 class="text-lg font-bold">Add Quantity!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh] ">
               <!-- <div class="form-control">
                 <AppModuleGlobalUpload
                   v-if="detail.modal"
@@ -359,7 +361,7 @@
                 <input
                   type="text"
                   placeholder="Title or name"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.title"
                 />
               </div>
@@ -371,7 +373,7 @@
                 <input
                   type="text"
                   placeholder="Code"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.code"
                 />
               </div>
@@ -383,7 +385,7 @@
                   <input
                     type="text"
                     placeholder="Price"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     v-model="detail.form.price"
                   />
                 </div>
@@ -437,7 +439,7 @@
             </div>
           </div>
           <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-            <div class="card-body overflow-auto" style="max-height: 70vh">
+            <div class="card-body overflow-auto max-h-[60vh]">
               <div class="overflow-x-auto w-full">
                 <table class="table table-normal w-full">
                   <thead>
@@ -452,17 +454,17 @@
                   <tbody>
                     <tr
                       class="hover"
-                      v-for="(row, index) in base.rows"
-                      :key="row.code"
+                      v-for="(v, i) in base.rows"
+                      :key="v.code"
                     >
                       <!-- <th>
                         <div class="flex items-center space-x-3">
                           <div class="avatar">
                             <div class="mask mask-squircle w-12 h-12">
                               <img
-                                v-if="row.image.length > 0"
-                                :src="`${row.imageLink}${
-                                  row.image[row.master ? row.master : 0].file
+                                v-if="v.image.length > 0"
+                                :src="`${v.imageLink}${
+                                  v.image[v.master ? v.master : 0].file
                                 }`"
                                 alt="Image"
                               />
@@ -473,39 +475,39 @@
                       <!-- <th>
                         <div class="flex items-center space-x-3">
                           <div>
-                            <div class="font-bold">{{ row.name }}</div>
+                            <div class="font-bold">{{ v.name }}</div>
                             <div class="text-sm opacity-50">
-                              code : {{ row.code }}
+                              code : {{ v.code }}
                             </div>
                             <div class="text-sm opacity-50">
-                              ref : {{ row.ref }}
+                              ref : {{ v.ref }}
                             </div>
                           </div>
                         </div>
                       </th>
                       <td class="crop">
-                       {{ row.code }}
+                       {{ v.code }}
                         <br />
                         <span class="badge badge-ghost badge-sm"
-                          >code : {{ row.code }}</span
+                          >code : {{ v.code }}</span
                         >
                       </td> -->
-                      <th>{{ row.id }}</th>
-                      <td>{{ row.code }}</td>
-                      <td>{{ row.ref }}</td>
-                      <td>{{ row.title }}</td>
+                      <th>{{ v.id }}</th>
+                      <td>{{ v.code }}</td>
+                      <td>{{ v.ref }}</td>
+                      <td>{{ v.title }}</td>
                       <th class="text-right">
                         <label
                           for="modal-base"
                           class="btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >edit
                         </label>
                         |
                         <label
                           for="modal-remove"
                           class="btn btn-ghost modal-button btn-xs"
-                          @click="remove_item(`${row.code}`, 'base','po')"
+                          @click="remove_item(`${v.code}`, 'base','po')"
                           >remove
                         </label>
                       </th>
@@ -559,7 +561,7 @@ export default {
   },
   data() {
     return {
-      tmpsLink: "",
+      
       category: {
         rows: [],
         page: 1,
@@ -680,7 +682,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // res.rows[0].image = res.rows[0].image
             //   ? JSON.parse(res.rows[0].image)
             //   : [];
@@ -765,7 +770,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             const promise_arr = [];
             console.log(this.base.current);
@@ -963,7 +971,10 @@ export default {
         })
           .then((response) => response.json())
           .then((res) => {
-            if (res.success) {
+                     if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
               this.detail.modal = false;
 
               if (type == "static") {
@@ -1007,7 +1018,10 @@ export default {
         })
           .then((response) => response.json())
           .then((res) => {
-            if (res.success) {
+                     if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
               // console.log(res);
               this.remove.modal = false;
             
@@ -1025,11 +1039,7 @@ export default {
   mounted() {
     this.base_search();
     //  mounted() {
-    this.tmpsLink = `${
-      window.location.origin == "http://localhost:8080"
-        ? `http://localhost/sub/`
-        : `https://url/`
-    }tmps/`;
+    
     // },
   },
 };

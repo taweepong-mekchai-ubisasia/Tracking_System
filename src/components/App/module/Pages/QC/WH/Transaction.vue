@@ -12,7 +12,7 @@
           <input
             type="date"
             placeholder="title"
-            class="join-item input input-sm input-bordered"
+            class="join-item input input-sm input-bordered border-base-content"
             v-model="date.from"
             @change="change"
           />
@@ -25,12 +25,12 @@
           <input
             type="date"
             placeholder="title"
-            class="join-item input input-sm input-bordered"
+            class="join-item input input-sm input-bordered border-base-content"
             v-model="date.to"
             @change="change"
           />
           <select
-            class="join-item select select-sm select-bordered w-auto max-w-xs"
+            class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
             v-model="transref"
           >
             <option selected value="">ALL</option>
@@ -53,7 +53,7 @@
             สาขา
           </button>
           <select
-            class="join-item select select-sm select-bordered w-auto max-w-xs"
+            class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
             v-model="wh"
           >
             <option selected value="">ALL</option>
@@ -61,7 +61,7 @@
             <option value="wh2">External</option>
           </select>
           <AppModuleGlobalSearch
-            :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+            :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
             @search="
               (q) => {
                 base.q = q;
@@ -102,8 +102,8 @@
               <tbody>
                 <tr
                   class="hover"
-                  v-for="(row, index) in base.rows"
-                  :key="row.code"
+                  v-for="(v, i) in base.rows"
+                  :key="v.code"
                 >
                   <th>
                     <div class="flex items-center space-x-3">
@@ -111,14 +111,14 @@
                         <div
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          {{ row.rac }}-{{ row.bay }}-{{ row.level }}-{{
-                            row.pallet
+                          {{ v.rac }}-{{ v.bay }}-{{ v.level }}-{{
+                            v.pallet
                           }}
                         </div>
                         <div
                           class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          ( {{ row.id }} )
+                          ( {{ v.id }} )
                         </div>
                       </div>
                     </div>
@@ -129,62 +129,62 @@
                         <div
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          {{ row.created_at ? row.created_at : "-" }}
+                          {{ v.created_at ? v.created_at : "-" }}
                         </div>
                         <div
                           class="text-opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
                         >
                           {{
-                            row.created_fullname ? row.created_fullname : "-"
+                            v.created_fullname ? v.created_fullname : "-"
                           }}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td>
-                    {{ row.code }}
+                    {{ v.code }}
                   </td>
                   <td>
-                    {{ row.ref }}
+                    {{ v.ref }}
                   </td>
                   <td>
-                    {{ row.ref2 }}
+                    {{ v.ref2 }}
                   </td>
                   <td>
                     {{
-                      row.ref && row.ref2
+                      v.ref && v.ref2
                         ? "Join"
-                        : row.transref == "I" && row.ref
+                        : v.transref == "I" && v.ref
                         ? "Move"
-                        : row.transref == "O" && row.ref
+                        : v.transref == "O" && v.ref
                         ? "Issue"
-                        : row.transref == "I" && !row.ref
+                        : v.transref == "I" && !v.ref
                         ? "In"
-                        : row.transref == "O" && !row.ref
+                        : v.transref == "O" && !v.ref
                         ? "Issue"
                         : "-"
                     }}
                   </td>
-                  <td>{{ row.item_short_code }}</td>
-                  <td>{{ row.item_name }}</td>
-                  <td>{{ row.batch }}</td>
+                  <td>{{ v.item_short_code }}</td>
+                  <td>{{ v.item_name }}</td>
+                  <td>{{ v.batch }}</td>
                   <td class="text-center">
-                    {{ new Intl.NumberFormat("th-TH").format(row.unit) }}
+                    {{ new Intl.NumberFormat("th-TH").format(v.unit) }}
                   </td>
                   <td class="text-center">
-                    {{ new Intl.NumberFormat("th-TH").format(row.pack_size) }}
+                    {{ new Intl.NumberFormat("th-TH").format(v.pack_size) }}
                   </td>
                   <td class="text-right">
-                    {{ new Intl.NumberFormat("th-TH").format(row.quantitys) }}
+                    {{ new Intl.NumberFormat("th-TH").format(v.quantitys) }}
                   </td>
-                  <td>{{ row.uom }}</td>
+                  <td>{{ v.uom }}</td>
                   <td>
                     <div class="flex items-center space-x-3">
                       <div>
                         <div
                           class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          {{ row.comments }}
+                          {{ v.comments }}
                         </div>
                       </div>
                     </div>
@@ -240,7 +240,7 @@ export default {
       transref: "",
       wh: "",
       load: false,
-      tmpsLink: "",
+      
       category: {
         rows: [],
         page: 1,
@@ -283,7 +283,7 @@ export default {
       return window.open(
         `${
           this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
+        }api/controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -311,7 +311,7 @@ export default {
       fetch(
         `${
           this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf?log=base&total=1&page=${
+        }api/controllers/MYSQL/INTERNAL/WH/shelf?log=base&total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""

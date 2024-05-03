@@ -6,13 +6,13 @@
       <div class="col-span-2">
         <div class="join mt-5 w-full justify-end">
           <button
-            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+            class="join-item btn btn-sm disabled:border-base-content disabled:bg-transparent disabled:text-base-content"
             disabled
           >
             จำนวน
           </button>
           <select
-            class="join-item select select-sm select-bordered w-auto max-w-xs"
+            class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
             v-model="base.row"
           >
             <option selected value="5">5</option>
@@ -223,7 +223,7 @@ export default {
       fetch(
         `${
           this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf?action=dashboard&page=${
+        }api/controllers/MYSQL/INTERNAL/WH/shelf?action=dashboard&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""

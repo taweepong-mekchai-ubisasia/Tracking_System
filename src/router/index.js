@@ -3,82 +3,26 @@ import { createRouter, createWebHistory } from "vue-router";
 import Index from "../views/App/Index.vue";
 import Login from "../views/App/Login.vue";
 import PageNotFound from "../views/PageNotFound.vue";
-/*-------------------------------------------------------------*/
-import ACBudgetGroup from "../views/App/AC/BudgetGroup.vue";
-import ACBudgetRequest from "../views/App/AC/BudgetRequest.vue";
-import ACBudgetRequestOverApprove from "../views/App/AC/BudgetRequestOverApprove.vue";
-import ACBudgetRequestReport from "../views/App/AC/BudgetRequestReport.vue";
+import News from "../views/App/News.vue";
 
-import ACCostCalculateDashboard from "../views/App/AC/CostCalculate/Dashboard.vue";
-import ACCostCalculateCostView from "../views/App/AC/CostCalculate/CostView.vue";
-import ACCostCalculateCostAdjust from "../views/App/AC/CostCalculate/CostAdjust.vue";
-import ACCostCalculateCostCustom from "../views/App/AC/CostCalculate/CostCustom.vue";
-import ACCostCalculateReport from "../views/App/AC/CostCalculate/Report.vue";
 /*-------------------------------------------------------------*/
-import HREmployee from "../views/App/HR/Employee.vue";
+import _DocRouter from "./_Doc";
 /*-------------------------------------------------------------*/
-import LMTransportationReport from "../views/App/LM/Transportation/Report.vue";
-import LMTransportationVita from "../views/App/LM/Transportation/Vita.vue";
-// import LMTransportationStockOnHand from "../views/App/LM/Transportation/StockOnHand.vue";
-
-import LMVitaReceive from "../views/App/LM/Vita/Receive.vue";
-import LMVitaPacking from "../views/App/LM/Vita/Packing.vue";
-import LMVitaReport from "../views/App/LM/Vita/Report.vue";
-import LMVitaStockOnHand from "../views/App/LM/Vita/StockOnHand.vue";
+import ACRouter from "../router/AC";
+import HRRouter from "../router/HR";
+import LMRouter from "../router/LM";
+import PDRouter from "../router/PD";
+import PURRouter from "../router/PUR";
+import QARouter from "../router/QA";
+import QCRouter from "../router/QC";
+import RDRouter from "../router/RD";
+import SuperDataRouter from "../router/SuperData";
+import TRRRouter from "../router/TRR";
+import WHRouter from "../router/WH";
 /*-------------------------------------------------------------*/
-import PDPORequest from "../views/App/PD/request.vue";
-import PDPOApprove from "../views/App/PD/approve.vue";
-import PDPOComplete from "../views/App/PD/complete.vue";
+import EventRouter from "../router/Event";
 /*-------------------------------------------------------------*/
-import PURPORequest_old from "../views/App/PUR/request.vue";
-import PURPOApprove_old from "../views/App/PUR/approve.vue";
-import PURPORecruitment_old from "../views/App/PUR/recruitment.vue";
-import PURPOOrder_old from "../views/App/PUR/order.vue";
-import PURPOFollow_old from "../views/App/PUR/follow.vue";
-import PURPOSupplier_old from "../views/App/PUR/supplier.vue";
-import PURPOReceive_old from "../views/App/PUR/receive.vue";
-
-import PURPRRequest from "../views/App/PUR/PR/Request.vue";
-import PURPRApprove from "../views/App/PUR/PR/Approve.vue";
-import PURPORequest from "../views/App/PUR/PO/Request.vue";
-import PURPOApprove from "../views/App/PUR/PO/Approve.vue";
-/*-------------------------------------------------------------*/
-import QAWHIndirectReport from "../views/App/QA/WHIndirect/Report.vue";
-import QAWHIndirectItem from "../views/App/QA/WHIndirect/Item.vue";
-import QAWHIndirectManage from "../views/App/QA/WHIndirect/Manage.vue";
-import QAWHIndirectRequest from "../views/App/QA/WHIndirect/Request.vue";
-import QAWHIndirectApprove from "../views/App/QA/WHIndirect/Approve.vue";
-/*-------------------------------------------------------------*/
-import QCInspecReport from "../views/App/QC/Inspec/Report.vue";
-import QCInspecRM from "../views/App/QC/Inspec/RM.vue";
-import QCInspecFG from "../views/App/QC/Inspec/FG.vue";
-import QCInspecPD from "../views/App/QC/Inspec/PD.vue";
-import QCInspecTrackeability from "../views/App/QC/Inspec/Trackeability.vue";
-
-import QCPickupRequest from "../views/App/QC/Pickup/Request.vue";
-import QCPickupApprove from "../views/App/QC/Pickup/Approve.vue";
-import QCWHManagement from "../views/App/QC/WH/Management.vue";
-import QCWHShortCode from "../views/App/QC/WH/ShortCode.vue";
-/*-------------------------------------------------------------*/
-import RDQCInspec from "../views/App/RD/QCInspec.vue";
-/*-------------------------------------------------------------*/
-import SuperDataMaterialRawMaterial from "../views/App/SuperData/Material/RawMaterial.vue";
-import SuperDataMaterialMasterFormula from "../views/App/SuperData/Material/MasterFormula.vue";
-import SuperDataMaterialProductCost from "../views/App/SuperData/Material/ProductCost.vue";
-/*-------------------------------------------------------------*/
-import WHBinLocationManagement from "../views/App/WH/BinLocation/Management.vue";
-import WHBinLocationShortCode from "../views/App/WH/BinLocation/ShortCode.vue";
-
-import WHItemRequest from "../views/App/WH/Item/Request.vue";
-import WHItemApprove from "../views/App/WH/Item/Approve.vue";
-
-import WHTracking from "../views/App/WH/Tracking.vue";
-/*-------------------------------------------------------------*/
-import SystemAccess from "../views/App/System/Access.vue";
-import SystemDepartment from "../views/App/System/Department.vue";
-import SystemBranch from "../views/App/System/Branch.vue";
-import SystemCompany from "../views/App/System/Company.vue";
-/*-------------------------------------------------------------*/
+import SystemRouter from "../router/System";
 const routes = [
   {
     path: "/404",
@@ -98,380 +42,60 @@ const routes = [
     props: { default: true, menu: true, type: "default" },
   },
   {
+    path: "/News",
+    name: "News",
+    component: News,
+    props: { default: true, menu: true, type: "default" },
+  },
+  {
     path: "/Login",
     name: "Login",
     component: Login,
     props: { default: true, menu: true, type: "default" },
   },
-  {
-    path: "/WH/BinLocation/Management",
-    name: "WHBinLocationManagement",
-    component: WHBinLocationManagement,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/WH/BinLocation/ShortCode",
-    name: "WHBinLocationShortCode",
-    component: WHBinLocationShortCode,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/WH/Item/Request",
-    name: "WHItemRequest",
-    component: WHItemRequest,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/WH/Item/Approve",
-    name: "WHItemApprove",
-    component: WHItemApprove,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/WH/Tracking",
-    name: "WHTracking",
-    component: WHTracking,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/LM/Transportation/Report",
-    name: "LMTransportationReport",
-    component: LMTransportationReport,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/LM/Transportation/Vita",
-    name: "LMTransportationVita",
-    component: LMTransportationVita,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/LM/Vita/Receive",
-    name: "LMVitaReceive",
-    component: LMVitaReceive,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/LM/Vita/Packing",
-    name: "LMVitaPacking",
-    component: LMVitaPacking,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/LM/Vita/Report",
-    name: "LMVitaReport",
-    component: LMVitaReport,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/LM/Vita/StockOnHand",
-    name: "LMVitaStockOnHand",
-    component: LMVitaStockOnHand,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-
-
-  {
-    path: "/HR/Employee",
-    name: "HREmployee",
-    component: HREmployee,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/System/Access",
-    name: "SystemAccess",
-    component: SystemAccess,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/System/Department",
-    name: "SystemDepartment",
-    component: SystemDepartment,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/System/Branch",
-    name: "SystemBranch",
-    component: SystemBranch,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/System/Company",
-    name: "SystemCompany",
-    component: SystemCompany,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/SuperData/Material/RawMaterial",
-    name: "SuperDataMaterialRawMaterial",
-    component: SuperDataMaterialRawMaterial,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/SuperData/Material/MasterFormula",
-    name: "SuperDataMaterialMasterFormula",
-    component: SuperDataMaterialMasterFormula,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/SuperData/Material/ProductCost",
-    name: "SuperDataMaterialProductCost",
-    component: SuperDataMaterialProductCost,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/AC/CostCalculate/Dashboard",
-    name: "ACCostCalculateDashboard",
-    component: ACCostCalculateDashboard,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/AC/CostCalculate/CostView",
-    name: "ACCostCalculateCostView",
-    component: ACCostCalculateCostView,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/AC/CostCalculate/CostAdjust",
-    name: "ACCostCalculateCostAdjust",
-    component: ACCostCalculateCostAdjust,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/AC/CostCalculate/Custom",
-    name: "ACCostCalculateCostCustom",
-    component: ACCostCalculateCostCustom,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/AC/CostCalculate/Report",
-    name: "ACCostCalculateReport",
-    component: ACCostCalculateReport,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/AC/BudgetGroup",
-    name: "ACBudgetGroup",
-    component: ACBudgetGroup,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/AC/BudgetRequest",
-    name: "ACBudgetRequest",
-    component: ACBudgetRequest,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/AC/BudgetRequestOverApprove",
-    name: "ACBudgetRequestOverApprove",
-    component: ACBudgetRequestOverApprove,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/AC/BudgetRequestReport",
-    name: "ACBudgetRequestReport",
-    component: ACBudgetRequestReport,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/RD/Request",
-    name: "RDQCInspec",
-    component: RDQCInspec,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PD/Request",
-    name: "PDPORequest",
-    component: PDPORequest,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PD/Approve",
-    name: "PDPOApprove",
-    component: PDPOApprove,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PD/Complete",
-    name: "PDPOComplete",
-    component: PDPOComplete,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/PUR/Request",
-    name: "PURPORequestOld",
-    component: PURPORequest_old,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PUR/Approve",
-    name: "PURPOApproveOld",
-    component: PURPOApprove_old,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PUR/Recruitment",
-    name: "PURPORecruitmentOld",
-    component: PURPORecruitment_old,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PUR/Order",
-    name: "PURPOOrderOld",
-    component: PURPOOrder_old,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PUR/Follow",
-    name: "PURPOFollowOld",
-    component: PURPOFollow_old,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PUR/Supplier",
-    name: "PURPOSupplierOld",
-    component: PURPOSupplier_old,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PUR/Receive",
-    name: "PURPOReceiveOld",
-    component: PURPOReceive_old,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/PUR/PR/Request",
-    name: "PURPRRequest",
-    component: PURPRRequest,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PUR/PR/Approve",
-    name: "PURPRApprove",
-    component: PURPRApprove,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/PUR/PO/Request",
-    name: "PURPORequest",
-    component: PURPORequest,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/PUR/PO/Approve",
-    name: "PURPOApprove",
-    component: PURPOApprove,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/QA/WHIndirect/Report",
-    name: "QAWHIndirectReport",
-    component: QAWHIndirectReport,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/QA/WHIndirect/Item",
-    name: "QAWHIndirectItem",
-    component: QAWHIndirectItem,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/QA/WHIndirect/Manage",
-    name: "QAWHIndirectManage",
-    component: QAWHIndirectManage,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/QA/WHIndirect/Request",
-    name: "QAWHIndirectRequest",
-    component: QAWHIndirectRequest,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/QA/WHIndirect/Approve",
-    name: "QAWHIndirectApprove",
-    component: QAWHIndirectApprove,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/QC/Pickup/Request",
-    name: "QCPickupRequest",
-    component: QCPickupRequest,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/QC/Pickup/Approve",
-    name: "QCPickupApprove",
-    component: QCPickupApprove,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/QC/WH/Management",
-    name: "QCWHManagement",
-    component: QCWHManagement,
-    props: { default: true, menu: true, type: "member" },
-  },
-  {
-    path: "/QC/WH/ShortCode",
-    name: "QCWHShortCode",
-    component: QCWHShortCode,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/QC/Inspec/Report",
-    name: "QCInspecReport",
-    component: QCInspecReport,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/QC/Inspec/RM",
-    name: "QCInspecRM",
-    component: QCInspecRM,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/QC/InspecFG",
-    name: "QCInspecFG",
-    component: QCInspecFG,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/QC/InspecPD",
-    name: "QCInspecPD",
-    component: QCInspecPD,
-    props: { default: true, menu: true, type: "member" },
-  },
-
-  {
-    path: "/QC/Inspec/Trackeability",
-    name: "QCInspecTrackeability",
-    component: QCInspecTrackeability,
-    props: { default: true, menu: true, type: "member" },
-  },
+  /*-------------------------------------------------------------*/
+  ..._DocRouter,
+  /*-------------------------------------------------------------*/
+  ...ACRouter,
+  ...HRRouter,
+  ...LMRouter,
+  ...PDRouter,
+  ...PURRouter,
+  ...QARouter,
+  ...QCRouter,
+  ...RDRouter,
+  ...SuperDataRouter,
+  ...TRRRouter,
+  ...WHRouter,
+  /*-------------------------------------------------------------*/
+  ...EventRouter,
+  /*-------------------------------------------------------------*/
+  ...SystemRouter,
 ];
 import store from "../store";
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
-let user = null;
+// let user = null;
+// console.log(user)
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    const token = localStorage.getItem("user_token");
+    if (token) {
+      // User is authenticated, proceed to the route
+      next();
+    } else {
+      // User is not authenticated, redirect to login
+      next("/login");
+    }
+  } else {
+    // Non-protected route, allow access
+    next();
+  }
+});
+
 router.afterEach(async (to, from) => {
   store.commit("user_token", localStorage.getItem("user_token"));
   store.commit(
@@ -480,58 +104,38 @@ router.afterEach(async (to, from) => {
   );
 
   if (to.name == "Login" && store.getters.user_token) {
-    
     return { name: "Dashboard" };
   }
 
   if (store.getters.user_token) {
-
-
-    if(store.getters.user){
-      let checkaccess = await canUserAccess(to);
-      if (checkaccess) {
-        if (to.name == "Dashboard") {
-          // console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
-          return true;
-        }
-        // console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
-        return true;
-      } else {
-        // console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
-        // console.log(to.name)
-
-        return router.push({ name: "Dashboard" });
-      }
-    }
-
-    await authentication();
-    let checkuser = await haveUser();
-    // console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
-    if (checkuser) {
+    if (store.getters.user) {
       if (to.name == "Dashboard") {
         return true;
       }
       let checkaccess = await canUserAccess(to);
       if (checkaccess) {
-        if (to.name == "Dashboard") {
-         
-          return true;
-        }
-        // console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
         return true;
       } else {
-        // console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
-        // console.log(to.name)
-
         return router.push({ name: "Dashboard" });
       }
     } else {
-      // console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
-      return router.push({ name: "Login" });
+      let auth = await authentication();
+      // let checkuser = await haveUser();
+      if (auth.status) {
+        if (to.name == "Dashboard") {
+          return true;
+        }
+        let checkaccess = await canUserAccess(to);
+        if (checkaccess.status) {
+          return true;
+        } else {
+          return router.push({ name: "Dashboard" });
+        }
+      } else {
+        return router.push({ name: "Login" });
+      }
     }
   } else {
-    // console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-    // console.log(to.name);
     if (to.name == "Login") {
       return true;
     }
@@ -539,48 +143,33 @@ router.afterEach(async (to, from) => {
   }
 });
 
-// router.afterEach(async (to, from) => {
-//   if (user) {
-//     store.commit("user", user);
+// function haveUser() {
+//   if (store.getters.user) {
+//     return true;
+//   } else {
+//     return false;
 //   }
-// });
-function haveUser() {
-  if (user) {
-    // console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    return true;
-  } else {
-    // console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-    return false;
-  }
-}
+// }
 function canUserAccess(to) {
-  if (!user.access) {
-    // console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
-    return false;
+  if (Object.keys(store.getters.user.access).length == 0) {
+    return { status: false };
   }
-  //   console.log(to.name)
-  //   console.log(user.access)
-  //   console.log(to.href.split("/")[1])
-  // console.log(to)
-  // console.log(user.access[to.href.split("/")[1]]);
-  if(!user.access[to.href.split("/")[1]]){
-    return true
+
+  if (!store.getters.user.access[to.href.split("/")[1]]) {
+    return { status: true };
   }
   if (
-    user.access[to.href.split("/")[1]][to.name] &&
-    user.access[to.href.split("/")[1]][to.name] != "none"
+    store.getters.user.access[to.href.split("/")[1]][to.name] &&
+    store.getters.user.access[to.href.split("/")[1]][to.name] != "none"
   ) {
-    // console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-    return true;
+    return { status: true };
   } else {
-    // console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
-    return false;
+    return { status: false };
   }
 }
 async function authentication() {
-  // store.commit("user", null);
   return await fetch(
-    `${store.getters.serviceUrl}controllers/MYSQL/INTERNAL/GLOBAL/auth`,
+    `${store.getters.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/auth`,
     {
       method: "GET",
       headers: {
@@ -591,21 +180,20 @@ async function authentication() {
   )
     .then((response) => response.json())
     .then((res) => {
-      if (res.success) {
-        store.commit("isLogin", true);
-        res.row.image ? JSON.parse(res.row.image) : [];
-        res.row.access = JSON.parse(res.row.access);
-        user = res.row;
-        store.commit("user", user);
-        store.commit("user_token", store.getters.user_token);
-        // console.error("USER TOKEN")
-      } else {
+      if (!res.success) {
         localStorage.removeItem("user_token");
+      } else {
+        res.row.image = res.row.image ? JSON.parse(res.row.image) : [];
+        res.row.access = res.row.access ? JSON.parse(res.row.access) : {};
+        store.commit("user", res.row);
+        store.commit("user_token", store.getters.user_token);
       }
+      return { status: res.success };
     })
     .catch((error) => {
       localStorage.removeItem("user_token");
-      console.log(error);
+      console.error(error);
+      return { status: false };
     });
 }
 export default router;

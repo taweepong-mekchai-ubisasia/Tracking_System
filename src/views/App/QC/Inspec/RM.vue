@@ -25,7 +25,7 @@
                     <input
                       type="text"
                       placeholder="Form No."
-                      class="input input-sm input-bordered"
+                      class="input input-sm input-bordered border-base-content"
                       v-model="search.receiptNo.from"
                     />
                   </div>
@@ -33,7 +33,7 @@
                     <input
                       type="text"
                       placeholder="To No."
-                      class="input input-sm input-bordered"
+                      class="input input-sm input-bordered border-base-content"
                       v-model="search.receiptNo.to"
                     />
                   </div>
@@ -54,7 +54,7 @@
                     <input
                       type="date"
                       placeholder="title"
-                      class="input input-sm input-bordered"
+                      class="input input-sm input-bordered border-base-content"
                       v-model="search.receiptDate.from"
                     />
                   </div>
@@ -62,7 +62,7 @@
                     <input
                       type="date"
                       placeholder="title"
-                      class="input input-sm input-bordered"
+                      class="input input-sm input-bordered border-base-content"
                       v-model="search.receiptDate.to"
                     />
                   </div>
@@ -83,7 +83,7 @@
                     <input
                       type="text"
                       placeholder="From Code"
-                      class="input input-sm input-bordered"
+                      class="input input-sm input-bordered border-base-content"
                       v-model="search.receiptDate.from"
                     />
                   </div>
@@ -91,7 +91,7 @@
                     <input
                       type="text"
                       placeholder="To Code"
-                      class="input input-sm input-bordered"
+                      class="input input-sm input-bordered border-base-content"
                       v-model="search.receiptDate.to"
                     />
                   </div>
@@ -112,7 +112,7 @@
                     <input
                       type="search"
                       placeholder="Search"
-                      class="input input-sm input-bordered"
+                      class="input input-sm input-bordered border-base-content"
                       v-model="base.q"
                     />
                   </div>
@@ -203,14 +203,14 @@
                   <input
                     type="text"
                     placeholder="From No."
-                    class="join-item input input-sm input-bordered"
+                    class="join-item input input-sm input-bordered border-base-content"
                     v-model="search.receiptNo.from"
                   />
 
                   <input
                     type="text"
                     placeholder="To No."
-                    class="join-item input input-sm input-bordered"
+                    class="join-item input input-sm input-bordered border-base-content"
                     v-model="search.receiptNo.to"
                   />
                 </div>
@@ -224,7 +224,7 @@
                   <input
                     type="date"
                     placeholder="title"
-                    class="join-item input input-sm input-bordered"
+                    class="join-item input input-sm input-bordered border-base-content"
                     v-model="search.receiptDate.from"
                   />
                   <button
@@ -236,7 +236,7 @@
                   <input
                     type="date"
                     placeholder="title"
-                    class="join-item input input-sm input-bordered"
+                    class="join-item input input-sm input-bordered border-base-content"
                     v-model="search.receiptDate.to"
                   />
                 </div>
@@ -258,7 +258,7 @@
                     :minChar="3"
                     :delay="0.5"
                     :limit="10"
-                    :customClass="`input input-bordered input-sm join-item ${
+                    :customClass="`input input-bordered border-base-content input-sm join-item ${
                       checkbox == 'M' ? 'input-disabled' : ''
                     }`"
                     :disabled="checkbox == 'M' ? true : false"
@@ -275,7 +275,7 @@
                         refresh = obj.value;
                       }
                     "
-                    :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/company`"
+                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
                     :param="`&total=1`"
                   />
                   <AppModuleGlobalSelectSearch
@@ -285,7 +285,7 @@
                     :minChar="3"
                     :delay="0.5"
                     :limit="10"
-                    :customClass="`input input-bordered input-sm join-item ${
+                    :customClass="`input input-bordered border-base-content input-sm join-item ${
                       checkbox == 'M' ? 'input-disabled' : ''
                     }`"
                     :disabled="checkbox == 'M' ? true : false"
@@ -302,19 +302,19 @@
                         refresh = obj.value;
                       }
                     "
-                    :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/company`"
+                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
                     :param="`&total=1`"
                   />
                   <!-- <input
                     type="text"
                     placeholder="From Code"
-                    class="join-item input input-sm input-bordered"
+                    class="join-item input input-sm input-bordered border-base-content"
                     v-model="search.itemcode.from"
                   />
                   <input
                     type="text"
                     placeholder="To Code"
-                    class="join-item input input-sm input-bordered"
+                    class="join-item input input-sm input-bordered border-base-content"
                     v-model="search.itemcode.to"
                   /> -->
                 </div>
@@ -330,7 +330,7 @@
                   สาขา
                 </button>
                 <select
-                  class="join-item select select-sm select-bordered w-auto max-w-xs"
+                  class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
                   v-model="wh"
                 >
                   <!-- <option selected value="">ALL</option> -->
@@ -338,7 +338,7 @@
                   <option value="UBP">UBP</option>
                 </select>
                 <AppModuleGlobalSearch
-                  :class="'hidden md:block join-item input input-sm input-bordered w-full max-w-xs'"
+                  :class="'hidden md:block join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
                     (q) => {
                       base.q = q;
@@ -397,50 +397,50 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(row, index) in base.rows" :key="row.DocEntry">
-                      <td>{{ row.U_ReceiptNO }}</td>
+                    <tr v-for="(v, i) in base.rows" :key="v.DocEntry">
+                      <td>{{ v.U_ReceiptNO }}</td>
                       <td>
                         {{
-                          row.U_DateRe
-                            ? $moment(row.U_DateRe.date).format("YYYY-MM-DD")
+                          v.U_DateRe
+                            ? $moment(v.U_DateRe.date).format("YYYY-MM-DD")
                             : "-"
                         }}
                       </td>
-                      <td>{{ row.U_LotNo }}</td>
-                      <td>{{ row.U_ItemNo }}</td>
-                      <td>{{ row.ItemName }}</td>
+                      <td>{{ v.U_LotNo }}</td>
+                      <td>{{ v.U_ItemNo }}</td>
+                      <td>{{ v.ItemName }}</td>
                       <td>
                         {{
-                          row.U_ExpireDate
-                            ? $moment(row.U_ExpireDate.date).format(
+                          v.U_ExpireDate
+                            ? $moment(v.U_ExpireDate.date).format(
                                 "YYYY-MM-DD"
                               )
                             : "-"
                         }}
                       </td>
-                      <td>{{ row.U_SupName }}</td>
-                      <td>{{ row.U_SupLot }}</td>
+                      <td>{{ v.U_SupName }}</td>
+                      <td>{{ v.U_SupLot }}</td>
                       <td class="text-right">
                         {{
                           new Intl.NumberFormat("th-TH", {
                             minimumFractionDigits: 2,
-                          }).format(row.U_ReAmount)
+                          }).format(v.U_ReAmount)
                         }}
                       </td>
-                      <td>{{ row.U_Inspected }}</td>
+                      <td>{{ v.U_Inspected }}</td>
                       <td>
-                        {{ row.U_Approve == null ? "-" : row.U_Approve }}
+                        {{ v.U_Approve == null ? "-" : v.U_Approve }}
                       </td>
                       <th>
                         <label
                           for="modal-base"
                           class="btn btn-link modal-button btn-xs"
-                          @click="base_edit(`${row.DocEntry}`, `${index}`)"
+                          @click="base_edit(`${v.DocEntry}`, `${i}`)"
                         >
                           Results
                         </label>
                       </th>
-                      <!-- <td>'+rowResult(x.item) }} <button class="btn btn-sm btn-success btnExportRow" docentry="{{ row.DocEntry }}"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</button></td> -->
+                      <!-- <td>'+rowResult(x.item) }} <button class="btn btn-sm btn-success btnExportRow" docentry="{{ v.DocEntry }}"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</button></td> -->
                     </tr>
                   </tbody>
                 </table>
@@ -514,7 +514,7 @@ export default {
       wh: "UBA",
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
+      
       category: {
         rows: [],
         page: 1,
@@ -589,7 +589,7 @@ export default {
     },
     base_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/SAP/UBP/QC/rm_inspec?total=1&page=${
+        `${this.serviceUrl}api/controllers/SAP/UBP/QC/rm_inspec?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -604,7 +604,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             res.rows.forEach((v, i) => {
               res.rows[i].image = v.image ? JSON.parse(v.image) : [];
               res.rows[i].master = 0;
@@ -677,7 +680,7 @@ export default {
       } else {
         this.base.form.new_password = this.base.form.uid;
       }
-      fetch(`${this.serviceUrl}controllers/SAP/UBP/QC/rm_inspec`, {
+      fetch(`${this.serviceUrl}api/controllers/SAP/UBP/QC/rm_inspec`, {
         method: this.base.controll == "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -706,7 +709,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             const promise_arr = [];
             console.log(this.base.current);
@@ -760,7 +766,7 @@ export default {
     },
     detail_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
@@ -890,7 +896,7 @@ export default {
         if (this.detail.controll == "edit") {
           obj["code"] = this.detail.form.code;
         }
-        fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email`, {
+        fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, {
           method: this.detail.controll == "create" ? "POST" : "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -900,7 +906,10 @@ export default {
         })
           .then((response) => response.json())
           .then((res) => {
-            if (res.success) {
+                     if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
               this.detail.modal = false;
 
               if (type == "static") {
@@ -925,7 +934,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -937,7 +946,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
@@ -954,11 +966,7 @@ export default {
     this.$nextTick(() => {
       this.wh = this.user.branchTitle;
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
+      
     });
   },
 };

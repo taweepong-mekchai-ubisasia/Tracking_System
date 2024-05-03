@@ -1,73 +1,90 @@
 <template>
-  <div v-if="total > row" class="w-full justify-center lg:text-right">
-    <div class="join hidden md:block">
-      <button
-        class="join-item btn text-secondary"
-        :disabled="!back || loading"
-        @click="category_back()"
-      >
-        «
-      </button>
-      <button
-        v-if="page > 3"
-        class="join-item btn text-secondary"
-        @click="category_index(1)"
-      >
-        {{ 1 }}
-      </button>
-      <div v-for="v in 3" :key="v" class="join join-item">
+  <div v-if="total > row" class="w-full justify-center md:text-right">
+
+    <div>
+      <div class="join hidden md:block">
         <button
-          v-if="page + (v - 4) >= 1"
-          :class="`join-item btn ${v > 1 ? 'text-secondary' : 'btn-disabled'}`"
-          @click="v > 1 ? category_index(page + (v - 4)) : ''"
+          class="join-item btn text-primary"
+          :disabled="!back"
+          @click="category_back()"
         >
-          {{ v > 1 ? page + (v - 4) : "..." }}
+          «
         </button>
-      </div>
-      <button
-        class="join-item btn btn-secondary btn-active text-white"
-        @click="category_index(page)"
-      >
-        {{ page }}
-      </button>
-      <div v-for="v in 3" :key="v" class="join join-item">
         <button
-          v-if="page + v <= maxpage"
-          :class="`join-item btn ${v != 3 ? 'text-secondary' : 'btn-disabled'}`"
-          @click="v != 3 ? category_index(page + v) : ''"
+          v-if="page > 3"
+          class="join-item btn text-primary"
+          @click="category_index(1)"
         >
-          {{ v != 3 ? page + v : "..." }}
+          {{ 1 }}
+        </button>
+        <div
+          v-for="v in 3"
+          :key="v"
+          class="join join-item"
+          :class="`${page + (v - 4) >= 1 ? '' : 'hidden'}`"
+        >
+          <button
+            :class="`join-item btn ${
+              v > 1 ? 'text-primary' : 'btn-disabled'
+            }`"
+            @click="v > 1 ? category_index(page + (v - 4)) : ''"
+          >
+            {{ v > 1 ? page + (v - 4) : "..." }}
+          </button>
+        </div>
+        <button
+          class="join-item btn btn-primary  btn-active  text-base-100"
+          @click="category_index(page)"
+        >
+          {{ page }}
+        </button>
+        <div
+          v-for="v in 3"
+          :key="v"
+          class="join join-item"
+          :class="`${page + v <= maxpage ? '' : 'hidden'}`"
+        >
+          <button
+            :class="`join-item btn ${
+              v != 3 ? 'text-primary' : 'btn-disabled'
+            }`"
+            @click="v != 3 ? category_index(page + v) : ''"
+          >
+            {{ v != 3 ? page + v : "..." }}
+          </button>
+        </div>
+
+        <button
+          v-if="page < maxpage - 2"
+          class="join-item btn text-primary"
+          @click="category_index(Math.ceil(total / row))"
+        >
+          {{ maxpage }}
+        </button>
+        <button
+          class="join-item btn text-primary"
+          :disabled="!next"
+          @click="category_next()"
+        >
+          »
         </button>
       </div>
 
-      <button
-        v-if="page < maxpage - 2"
-        class="join-item btn text-secondary"
-        @click="category_index(Math.ceil(total / row))"
-      >
-        {{ maxpage }}
-      </button>
-      <button
-        class="join-item btn text-secondary"
-        :disabled="!next || loading"
-        @click="category_next()"
-      >
-        »
-      </button>
-    </div>
-
-    <div class="mt-2">
-    <select
-      v-model="current"
-      class="select select-bordered select-sm w-full max-w-xs block md:hidden text-center"
-      @change="category_index(current)"
-    >
-      <option selected v-for="v in maxpage" :value="v" class="text-center">{{ v }}</option>
-      <!-- <option>Tiny Apple</option>
+      <div>
+        <select
+          v-model="current"
+          class="select select-primary select-bordered select-sm w-full block md:hidden text-center bg-primary text-white"
+          @change="category_index(current)"
+        >
+          <option selected v-for="v in maxpage" :value="v" class="text-center">
+            {{ v }}
+          </option>
+          <!-- <option>Tiny Apple</option>
   <option>Tiny Orange</option>
   <option>Tiny Tomato</option> -->
-    </select>
-  </div>
+        </select>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -80,6 +97,8 @@ export default {
       current: 1,
       maxpage: 0,
     };
+  },
+  components: {
   },
   created() {
     this.current = this.page;

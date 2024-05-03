@@ -1,6 +1,6 @@
 <template>
   <div
-  class="card-body overflow-auto" style="max-height: inherit;" 
+  class="card-body overflow-auto max-h-[inherit]"
     :class="`${tab != 'resetpassword' ? 'hidden' : ''}`"
   >
   
@@ -17,7 +17,7 @@
         <input
           type="password"
           placeholder="Current password"
-          class="input input-bordered"
+          class="input input-bordered border-base-content"
           v-model="temp.current_password"
         />
       </div> -->
@@ -28,7 +28,7 @@
         <!-- <input
           type="password"
           placeholder="New password"
-          class="input input-bordered"
+          class="input input-bordered border-base-content"
           :class="
             temp.password &&
             temp.confirm_password &&
@@ -42,7 +42,7 @@
           <input
             placeholder="Password*"
             :type="showpassword ? 'password' : 'text'"
-            class="input input-bordered text-md w-full"
+            class="input input-bordered border-base-content text-md w-full"
            :class="
               temp.password &&
               (temp.password.length < 8 ||
@@ -108,7 +108,7 @@
         <!-- <input
           type="password"
           placeholder="Confirm new Password"
-          class="input input-bordered"
+          class="input input-bordered border-base-content"
           :class="
             temp.password &&
             temp.confirm_password &&
@@ -122,7 +122,7 @@
           <input
             placeholder="Confirm Password*"
             :type="showconfirm_password ? 'password' : 'text'"
-            class="input input-bordered text-md w-full"
+            class="input input-bordered border-base-content text-md w-full"
             :class="
               temp.password &&
               temp.confirm_password &&
@@ -264,12 +264,6 @@ export default {
     ServiceUrl() {
       return this.$store.getters.serviceUrl;
     },
-    isLogin() {
-      return this.$store.getters.isLogin;
-    },
-    scrollTop() {
-      return this.$store.getters.scrollTop;
-    },
     jwt() {
       return this.$store.getters.jwt;
     },
@@ -286,7 +280,7 @@ export default {
         return;
       }
 
-      fetch(`${this.ServiceUrl}controllers/reset-password`, {
+      fetch(`${this.serviceUrl}api/controllers/reset-password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -301,7 +295,10 @@ export default {
         .then((response) => response.json())
         .then((res) => {
           // console.log(res);
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // alert("SUCCESS");
             this.$router.push({ query: {} });
             // jwt

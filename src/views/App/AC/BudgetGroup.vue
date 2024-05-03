@@ -10,14 +10,16 @@
           v-model="base.modal"
         />
         <div class="modal">
-          <div class="modal-box relative w-6/12 max-w-5xl">
+          <div
+          class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen"
+        >
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
               >✕
             </label>
             <h3 class="text-lg font-bold">Add new!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh]">
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">แผนก</span>
@@ -30,7 +32,7 @@
                     :minChar="3"
                     :delay="0.5"
                     :limit="10"
-                    :customClass="`input input-bordered ${
+                    :customClass="`input input-bordered border-base-content ${
                       checkbox == 'M' ? 'input-disabled' : ''
                     }`"
                     :disabled="checkbox == 'M' ? true : false"
@@ -47,7 +49,7 @@
                         refresh = obj.value;
                       }
                     "
-                    :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/department`"
+                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/department`"
                     :param="`&total=1&wh=wh1&rac_list=1`"
                   />
                 <!-- {{ base.form.department }} -->
@@ -59,7 +61,7 @@
                 <input
                   type="text"
                   placeholder="ชื่องบประมาณ"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="base.form.project"
                 />
               </div>
@@ -70,7 +72,7 @@
                 <input
                   type="number"
                   placeholder="จำนวนทุน"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="base.form.cost"
                 />
               </div>
@@ -115,7 +117,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh]">
               Are your sure for remove this item?
             </div>
 
@@ -165,7 +167,7 @@
             </div>
           </div>
           <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-            <div class="card-body overflow-auto" style="max-height: 70vh">
+            <div class="card-body overflow-auto max-h-[60vh]">
               <div class="overflow-x-auto w-full">
                 <table class="table table-normal w-full">
                   <thead>
@@ -184,94 +186,36 @@
                   <tbody>
                     <tr
                       class="hover"
-                      v-for="(row, index) in base.rows"
-                      :key="row.code"
+                      v-for="(v, i) in base.rows"
+                      :key="v.code"
                     >
-                      <!-- <th>
-                        <div class="flex items-center space-x-3">
-                          <div class="avatar">
-                            <div class="mask mask-squircle w-12 h-12">
-                              <img
-                                v-if="row.image.length > 0"
-                                :src="`${row.imageLink}${
-                                  row.image[row.master ? row.master : 0].file
-                                }`"
-                                alt="Image"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </th> -->
-                      <!-- <th>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="font-bold">{{ row.name }}</div>
-                            <div class="text-sm opacity-50">
-                              code : {{ row.code }}
-                            </div>
-                            <div class="text-sm opacity-50">
-                              ref : {{ row.ref }}
-                            </div>
-                          </div>
-                        </div>
-                      </th>
-                      <td class="crop">
-                       {{ row.code }}
-                        <br />
-                        <span class="badge badge-ghost badge-sm"
-                          >code : {{ row.code }}</span
-                        >
-                      </td> -->
-                      <!-- { -->
-                      <!-- "id": "13",
-    "code": "17062630925RlTg",
-    "department": "", -->
-                      <!-- "project": "111", -->
-                      <!-- "cost": "222", -->
-                      <!-- "detail": "333", -->
-                      <!-- "approved_at": null,
-    "approved_by": null,
-    "rejected_at": null,
-    "rejected_by": null,
-    "created_at": "2024-01-26 16:58:12",
-    "created_by": null,
-    "updated_at": null,
-    "updated_by": null,
-    "deleted_at": null,
-    "deleted_by": null,
-    "depTitle": null -->
-                      <!-- } -->
-
-                      <th>{{ row.id }}</th>
+                      <th>{{ v.id }}</th>
                       <th>
                         <div class="flex items-center space-x-3">
                           <div>
-                            <div class="font-bold">{{ row.project }}</div>
+                            <div class="font-bold">{{ v.project }}</div>
                             <div class="text-sm opacity-50">
-                              {{ row.code }}
+                              {{ v.code }}
                             </div>
-                            <!-- <div class="text-sm opacity-50">
-                              ref : {{ row.ref }}
-                            </div> -->
                           </div>
                         </div>
                       </th>
-                      <td>{{ row.depTitle }}</td>
-                      <td>{{ row.detail }}</td>
-                      <td>{{ row.cost }}</td>
+                      <td>{{ v.depTitle }}</td>
+                      <td>{{ v.detail }}</td>
+                      <td>{{ v.cost }}</td>
 
                       <th class="text-right">
                         <label
                           for="modal-base"
                           class="btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${index}`)"
                           >edit
                         </label>
                         |
                         <label
                           for="modal-remove"
                           class="btn btn-ghost modal-button btn-xs"
-                          @click="remove_item(`${row.code}`, 'base', 'po')"
+                          @click="remove_item(`${v.code}`, 'base', 'po')"
                           >remove
                         </label>
                       </th>
@@ -375,7 +319,7 @@ export default {
       fetch(
         `${
           this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/AC/BUDGET/group?page=${this.base.page}${
+        }api/controllers/MYSQL/INTERNAL/AC/BUDGET/group?page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
         }${this.base.q ? `&q=${this.base.q}` : ""}`,
         {
@@ -420,7 +364,7 @@ export default {
     },
     base_save() {
       fetch(
-        `${this.$store.state.serviceUrl}controllers/MYSQL/INTERNAL/AC/BUDGET/group`,
+        `${this.$store.state.serviceUrl}api/controllers/MYSQL/INTERNAL/AC/BUDGET/group`,
         {
           method: this.base.controll == "create" ? "POST" : "PUT",
           headers: {
@@ -437,7 +381,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             this.base_search();
           }
@@ -467,7 +414,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.remove.modal = false;
 
@@ -484,11 +434,7 @@ export default {
   mounted() {
     this.base_search();
     //  mounted() {
-    this.tmpsLink = `${
-      window.location.origin == "http://localhost:8080"
-        ? `http://localhost/sub/`
-        : `https://url/`
-    }tmps/`;
+    
     // },
   },
 };

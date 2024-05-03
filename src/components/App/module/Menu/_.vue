@@ -1,18 +1,25 @@
 <template>
   <li>
-    <details id="disclosure-components" open="">
+    <details
+      id="disclosure-components"
+      :open="($route.meta.parent == 'Doc' && prefix == 'Doc') || !prefix"
+    >
       <summary class="group">
         <span>
           <Icon
-            icon="icon-park-outline:list-one"
-            class="w-5 h-5 text-green-600"
+            :icon="icon"
+            class="w-5 h-5"
+            :class="`${color[0]}`"
           />
         </span>
-        Menu
+        {{ prefix ? prefix : menutype }}
+        
       </summary>
       <ul v-if="menuArray">
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['AC']"
           :head="'AC'"
@@ -20,6 +27,8 @@
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['HR']"
           :head="'HR'"
@@ -27,6 +36,8 @@
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['LM']"
           :head="'LM'"
@@ -34,6 +45,8 @@
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['PD']"
           :head="'PD'"
@@ -41,6 +54,8 @@
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['QA']"
           :head="'QA'"
@@ -48,6 +63,8 @@
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['QC']"
           :head="'QC'"
@@ -55,6 +72,8 @@
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['RD']"
           :head="'RD'"
@@ -62,33 +81,55 @@
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['PUR']"
           :head="'PUR'"
           :icon="'bx:purchase-tag-alt'"
         />
-       
-       
-       
+
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['SuperData']"
           :head="'SuperData'"
           :icon="'icon-park-outline:data'"
         />
-     
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
+          :access="menuArray['TRR']"
+          :head="'TRR'"
+          :icon="'ci:building-04'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['WH']"
           :head="'WH'"
           :icon="'bx:store-alt'"
         />
-      
-        <li></li>
+
         <AppModuleMenuTemplate
           :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
+          :access="menuArray['Event']"
+          :head="'Event'"
+          :icon="'fluent-emoji-high-contrast:star-struck'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
           @object_access="objectAccess"
           :access="menuArray['System']"
           :head="'System'"
@@ -105,8 +146,8 @@ export default {
   components: {
     AppModuleMenuTemplate,
   },
-  props: ["menutype", "access"],
-  computed:{
+  props: ["menutype", "access", "prefix", "color","icon"],
+  computed: {
     user() {
       return this.$store.getters.user;
     },
@@ -118,8 +159,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.menuArray = { ...this.access }
-        
+      this.menuArray = { ...this.access };
     });
   },
   methods: {

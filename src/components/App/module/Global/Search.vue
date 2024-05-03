@@ -2,7 +2,7 @@
   <!-- <div class="Search" :class="class"> -->
   <input
     type="search"
-    placeholder="ค้นหา"
+    placeholder="Search"
     ref="inputField"
     :class="class"
     @keyup="search"
@@ -30,7 +30,7 @@ export default {
   mounted() {},
   watch: {
     q: function (v) {
-      console.log(v);
+      // console.log(v);
       this.timeout ? clearTimeout(this.timeout) : "";
       this.timeout = setTimeout(() => {
         this.$emit("search", this.q);

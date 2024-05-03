@@ -20,7 +20,7 @@ export default {
   computed: {},
   methods: {},
   mounted() {
-    console.log("DSA")
+    // console.log("DSA")
   },
   beforeDestroy() {},
   watch: {},

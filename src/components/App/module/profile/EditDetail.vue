@@ -1,6 +1,6 @@
 <template>
   <div
- class="card-body overflow-auto" style="max-height: inherit;" 
+ class="card-body overflow-auto max-h-[inherit]"
     :class="`${tab != 'editdetail' ? 'hidden' : ''}`"
     v-if="temp"
   >
@@ -49,7 +49,7 @@
         <input
           type="text"
           placeholder="Firstname"
-          class="input input-bordered"
+          class="input input-bordered border-base-content"
           v-model="temp.firstname"
         />
       </div>
@@ -60,7 +60,7 @@
         <input
           type="text"
           placeholder="Lastname"
-          class="input input-bordered"
+          class="input input-bordered border-base-content"
           v-model="temp.lastname"
         />
       </div>
@@ -71,7 +71,7 @@
         <input
           type="tel"
           placeholder="Tel No."
-          class="input input-bordered"
+          class="input input-bordered border-base-content"
           v-model="temp.tel"
           @input="acceptNumber"
         />
@@ -141,9 +141,6 @@ export default {
     ServiceUrl() {
       return this.$store.getters.serviceUrl;
     },
-    isLogin() {
-      return this.$store.getters.isLogin;
-    },
     user() {
       return this.$store.getters.user;
     },
@@ -159,7 +156,7 @@ export default {
       this.temp.tel = !x[2] ? x[1] : x[1] + x[2] + x[3];
     },
     update() {
-      console.log("UPDATe");
+      // console.log("UPDATe");
       this.$emit("update_profile", this.temp);
     },
   },
@@ -172,7 +169,7 @@ export default {
           this.temp.imageLink =
             this.temp.image.length > 0
               ? this.temp.image[0].file
-                ? `${this.ServiceUrl}upload/user/`
+                ? `${this.serviceUrl}api/upload/user/`
                 : ""
               : "";
         }

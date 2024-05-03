@@ -64,7 +64,7 @@
                   <input
                     type="text"
                     placeholder="email"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                   />
                 </div>
                 <div class="form-control">
@@ -74,7 +74,7 @@
                   <input
                     type="text"
                     placeholder="password"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                   />
                 </div>
                 <div class="form-control grid mt-4 mb-4">
@@ -176,7 +176,7 @@
                   <input
                     type="text"
                     placeholder="email"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                   />
                 </div>
                 <div class="form-control">
@@ -186,7 +186,7 @@
                   <input
                     type="text"
                     placeholder="password"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                   />
                 </div>
                 <div class="form-control">
@@ -196,7 +196,7 @@
                   <input
                     type="text"
                     placeholder="password"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                   />
                 </div>
                 <div class="form-control grid mt-4 mb-4">
@@ -266,7 +266,7 @@ export default {
   computed: {},
   methods: {
     login() {
-      this.$store.commit("testLogin", true);
+      // this.$store.commit("testLogin", true);
       this.$router.push({ name: `Home` });
     },
   },

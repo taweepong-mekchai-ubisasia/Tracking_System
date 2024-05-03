@@ -32,7 +32,7 @@
                   :minChar="3"
                   :delay="0.5"
                   :limit="10"
-                  :customClass="`input input-bordered ${
+                  :customClass="`input input-bordered border-base-content ${
                     checkbox == 'M' ? 'input-disabled' : ''
                   }`"
                   :disabled="checkbox == 'M' ? true : false"
@@ -48,12 +48,12 @@
                       refresh = obj.value;
                     }
                   "
-                  :url="`${this.serviceUrl}controllers/SAP/UBA/oitm`"
+                  :url="`${this.serviceUrl}api/controllers/SAP/UBA/oitm`"
                   :param="`&total=1&wh=wh1&rac_list=1`"
                 /> -->
 
                 <select
-                  class="select select-bordered select-sm w-full lg:max-w-xs join-item"
+                  class="select select-bordered border-base-content select-sm w-full lg:max-w-xs join-item"
                   v-model="seelct"
                 >
                   <option disabled selected value="0">เลือกรายการ</option>
@@ -262,7 +262,7 @@ export default {
     getList(itemCode, callback) {
       let vm = this;
       fetch(
-        `${this.ServiceUrl}controllers/tracking?DBType=mysqli&rows=20&total=1&itemCode=${itemCode}&transRef=I&quantitys=1&warehouse=wh1`,
+        `${this.serviceUrl}api/controllers/tracking?DBType=mysqli&rows=20&total=1&itemCode=${itemCode}&transRef=I&quantitys=1&warehouse=wh1`,
         {
           method: "GET",
           headers: {

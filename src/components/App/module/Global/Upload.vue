@@ -41,7 +41,7 @@
 
       <div
         :class="!image.length > 0 || multiple ? 'hidden' : ''"
-        class="indicator mx-auto items-center justify-center w-full min-h-min border-2 border-gray-300 border-dashed rounded-lg"
+        class="indicator mx-auto items-center justify-center w-full min-h-min border-2 border-base-content border-dashed rounded-lg"
       >
         <span
           class="indicator-item badge cursor-pointer py-3"
@@ -54,7 +54,7 @@
           <img
           class="  max-h-44 object-cover bg-cover"
             v-if="image.length > 0"
-            :src="`${image[0].temp ? tmpsLink : imageLink}${image[0].file}`"
+            :src="`${image[0].temp ? `${serviceUrl}tmps/` : imageLink}${image[0].file}`"
             :alt="`${image[0].file}`"
           />
         </div>
@@ -82,31 +82,31 @@
       `"
     >
       <!-- <div class="flex-0 w-full aspect-video mx-auto"> -->
-      <div v-for="(row, index) in image" :key="index" class="indicator mx-auto">
+      <div v-for="(v, i) in image" :key="index" class="indicator mx-auto">
         <span
           class="indicator-item badge cursor-pointer py-3"
-          @click="removeimage(index)"
+          @click="removeimage(i)"
           >x</span
         >
         <!-- <span class="indicator-item indicator-start badge badge-secondary"></span> -->
         <span
           class="indicator-item indicator-center indicator-middle badge badge-secondary"
-          v-if="row.master"
+          v-if="v.master"
         >
           main
         </span>
         <div
           class="grid w-16 h-16 card-bordered p-1 place-items-center cursor-pointer overflow-hidden"
-          @click="setMaster(index)"
+          @click="setMaster(i)"
         >
-        {{ tmpsLink }}
+        {{ `${serviceUrl}tmps/` }}
         {{ imageLink }}
           <img
        
           class="  max-h-44 object-cover bg-cover"
-            v-if="row.file"
-            :src="`${row.temp ? tmpsLink : imageLink}${row.file}`"
-            :alt="`${row.file}`"
+            v-if="v.file"
+            :src="`${v.temp ? `${serviceUrl}tmps/` : imageLink}${v.file}`"
+            :alt="`${v.file}`"
           />
         </div>
       </div>
@@ -120,7 +120,7 @@ export default {
   props: ["imageLink", "image", "multiple", "id"],
   data() {
     return {
-      tmpsLink: "",
+      
     };
   },
   computed: {
@@ -138,10 +138,10 @@ export default {
       for (let i = 0; i < fileField.files.length; i++) {
         let file = fileField.files[i];
         formData.append("image[" + i + "]", file);
-        console.log(file);
+        // console.log(file);
       }
       formData.append("userid", "1");
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/GLOBAL/upload`, {
+      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/upload`, {
         method: "POST",
         body: formData,
       })
@@ -152,20 +152,20 @@ export default {
           result.forEach((v, i) => {
             console.error(v);
             if (v.upload.success) {
-              console.log("AAAA");
+              // console.log("AAAA");
               image.push({
                 file: `${v.log.row.current_file}.${v.log.row.ext}`,
                 master: false,
                 temp: true,
               });
-              console.log(image);
+              // console.log(image);
             } else {
-              console.log("nnnnnn");
+              // console.log("nnnnnn");
               console.log("Error:", v);
             }
           });
 
-          console.log(image);
+          // console.log(image);
           this.$emit("respone", {
             image: image,
           });
@@ -198,7 +198,6 @@ export default {
     },
   },
   mounted() {
-    this.tmpsLink = `${this.serviceImage}tmps/`;
-  },
+      },
 };
 </script>

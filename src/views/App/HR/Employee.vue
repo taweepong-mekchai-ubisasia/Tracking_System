@@ -1,968 +1,816 @@
 <template>
-  <div class="Department">
-    <AppLayout>
-      <template #modal>
-        <!-- modal base -->
-        <input
-          type="checkbox"
-          id="modal-base"
-          class="modal-toggle"
-          v-model="base.modal"
-        />
-        <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-10/12 lg:w-6/12 max-w-5xl">
-            <label
-              for="modal-base"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-              >✕
-            </label>
-            <h3 class="text-lg font-bold">Employee</h3>
-
-            <div role="tablist" class="tabs tabs-lifted">
-              <input
-                type="radio"
-                name="my_tabs_2"
-                role="tab"
-                class="tab"
-                aria-label="Information"
-                checked
-              />
-              <div
-                role="tabpanel"
-                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full"
-                style="max-height: 60vh"
-              >
-                <div class="grid gap-4 md:grid-cols-1 grid-cols-1">
-                  <AppModuleGlobalUpload
-                    :imageLink="`${base.form.imageLink}employee/${base.form.code}/`"
-                    :image="base.form.image"
-                    :id="'base'"
-                    :multiple="false"
-                    @respone="
-                      (res) => {
-                        let length = base.form.image.length
-                          ? base.form.image.length
-                          : 0;
-                        base.form.image = base.form.image.concat(res.image);
-                      }
-                    "
-                    @resetdata="
-                      (res) => {
-                        base.form.image = [...res.image];
-                      }
-                    "
-                  />
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">ลายเซ็นต์</span>
-                    </label>
-                    <!-- {{ loadimage }} -->
-                    <VueSignaturePad
-                      id="signature"
-                      width="100%"
-                      height="100px"
-                      :scaleToDevicePixelRatio="true"
-                   :class="`${!loadimage?'':'hidden'}`"
-                    />
-                    <div class=" h-20 bg-cover w-fit border-2 self-center
-                    "
-                    :class="`${loadimage?'':'hidden'} `"
-                    >  <img
-                    
-                    :class="`h-[inherit]`"
-                       :src="`${base.form.imageLink}signature/${base.form.uid}.signature.png`"
-                       alt="Image"
-                       @error="error"
-                       @load="loaded"
-                     /></div>
-                  
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">บริษัท</span>
-                    </label>
-
-                    <AppModuleGlobalSelectSearch
-                      :placeholder="'บริษัท'"
-                      :label="'title'"
-                      :code="'code'"
-                      :minChar="3"
-                      :delay="0.5"
-                      :limit="10"
-                      :customClass="`input input-bordered ${
-                        checkbox == 'M' ? 'input-disabled' : ''
-                      }`"
-                      :disabled="checkbox == 'M' ? true : false"
-                      :current="base.form.company"
-                      :refresh="refresh"
-                      @updateValue="
-                        (obj) => {
-                          base.form.company_data = obj;
-                          base.form.company = obj.code;
-                        }
-                      "
-                      @stopRefresh="
-                        (obj) => {
-                          refresh = obj.value;
-                        }
-                      "
-                      :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/company`"
-                      :param="`&total=1`"
-                      :image="false"
-                    />
-                  </div>
-                </div>
-
-                <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">สาขา</span>
-                    </label>
-                    <!-- <select
-                      class="select select-bordered w-full max-w-xs"
-                      v-if="base.form.company_data"
-                    >
-                      <option disabled selected>Who shot first?</option>
-                      <option>Han Solo</option>
-                      <option>Greedo</option>
-                    </select> -->
-                    <AppModuleGlobalSelectSearch
-                      :placeholder="'สาขา'"
-                      :label="'title'"
-                      :code="'code'"
-                      :minChar="3"
-                      :delay="0.5"
-                      :limit="10"
-                      :customClass="`input input-bordered ${
-                        checkbox == 'M' ? 'input-disabled' : ''
-                      }`"
-                      :disabled="checkbox == 'M' ? true : false"
-                      :current="base.form.branch"
-                      :refresh="refresh"
-                      @updateValue="
-                        (obj) => {
-                          base.form.branch_data = obj;
-                          base.form.branch = obj.code;
-                        }
-                      "
-                      @stopRefresh="
-                        (obj) => {
-                          refresh = obj.value;
-                        }
-                      "
-                      :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/branch`"
-                      :param="`&total=1`" :image="false"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">รหัสพนักงาน</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="รหัสพนักงาน"
-                      class="input input-bordered"
-                      v-model="base.form.uid"
-                    />
-                  </div>
-                </div>
-
-                <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">ชื่อ</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ชื่อ"
-                      class="input input-bordered"
-                      v-model="base.form.firstname"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">นามสกุล</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="นามสกุล"
-                      class="input input-bordered"
-                      v-model="base.form.lastname"
-                    />
-                  </div>
-                </div>
+  <AppLayout>
+    <template #modal>
+      <!-- modal base -->
+      <input
+        type="checkbox"
+        id="modal-base"
+        class="modal-toggle"
+        v-model="base.modal"
+      />
+      <div class="modal" v-if="base.modal">
+        <div
+          class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen"
+        >
+          <label
+            for="modal-base"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+            >✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">EMPLOYEE</h3>
+          <div class="divider my-1"></div>
+          <div role="tablist" class="tabs tabs-lifted">
+            <input
+              type="radio"
+              name="my_tabs_2"
+              role="tab"
+              class="tab"
+              aria-label="Information"
+              checked
+            />
+            <div
+              role="tabpanel"
+              class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full max-h-[60vh]"
+            >
+              <div class="grid gap-4 md:grid-cols-1 grid-cols-1">
+                <AppModuleGlobalUpload
+                  :imageLink="`${base.form.imageLink}employee/${base.form.code}/`"
+                  :image="base.form.image"
+                  :id="'base'"
+                  :multiple="false"
+                  @respone="
+                    (res) => {
+                      base.form.image = base.form.image.concat(res.image);
+                    }
+                  "
+                  @resetdata="
+                    (res) => {
+                      base.form.image = [...res.image];
+                    }
+                  "
+                />
                 <div class="form-control">
                   <label class="label">
-                    <span class="label-text">แผนก</span>
+                    <span class="label-text">Company</span>
                   </label>
                   <AppModuleGlobalSelectSearch
-                    :placeholder="'แผนก'"
+                    :placeholder="'Company'"
                     :label="'title'"
                     :code="'code'"
                     :minChar="3"
                     :delay="0.5"
                     :limit="10"
-                    :customClass="`input input-bordered ${
-                      checkbox == 'M' ? 'input-disabled' : ''
-                    }`"
-                    :disabled="checkbox == 'M' ? true : false"
-                    :current="base.form.department"
-                    :refresh="refresh"
+                    :customClass="`input input-bordered border-base-content`"
+                    :current="base.form.company"
                     @updateValue="
                       (obj) => {
-                        base.form.department_data = obj;
-                        base.form.department = obj.code;
+                        base.form.company_data = obj;
+                        base.form.company = obj.code;
                       }
                     "
-                    @stopRefresh="
+                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
+                    :param="`&total=1`"
+                    :image="false"
+                  />
+                </div>
+              </div>
+              <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Branch</span>
+                  </label>
+                  <AppModuleGlobalSelectSearch
+                    :placeholder="'Branch'"
+                    :label="'title'"
+                    :code="'code'"
+                    :minChar="3"
+                    :delay="0.5"
+                    :limit="10"
+                    :customClass="`input input-bordered border-base-content`"
+                    :current="base.form.branch"
+                    @updateValue="
                       (obj) => {
-                        refresh = obj.value;
+                        base.form.branch_data = obj;
+                        base.form.branch = obj.code;
                       }
                     "
-                    :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/department`"
-                    :param="`&total=1&wh=wh1&rac_list=1`" :image="false"
+                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/branch`"
+                    :param="`&total=1`"
+                    :image="false"
                   />
                 </div>
                 <div class="form-control">
                   <label class="label">
-                    <span class="label-text">ตำแหน่ง</span>
+                    <span class="label-text">Emp Code</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="ตำแหน่ง"
-                    class="input input-bordered"
-                    v-model="base.form.position"
+                    placeholder="Emp Code"
+                    class="input input-bordered border-base-content"
+                    v-model="base.form.uid"
                   />
                 </div>
-                <div class="grid gap-4 md:grid-cols-1 grid-cols-1">
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">สิทธิ์การใช้งาน</span>
-                    </label>
-                    <AppModuleGlobalSelectSearch
-                      :placeholder="'สิทธิ์การใช้งาน'"
-                      :label="'title'"
-                      :code="'code'"
-                      :minChar="3"
-                      :delay="0.5"
-                      :limit="10"
-                      :customClass="`input input-bordered ${
-                        checkbox == 'M' ? 'input-disabled' : ''
-                      }`"
-                      :disabled="checkbox == 'M' ? true : false"
-                      :current="base.form.access_code"
-                      :refresh="refresh"
-                      @updateValue="
-                        (obj) => {
-                          base.form.access_data = obj;
-                          base.form.access_code = obj ? obj.code : '';
-                        }
-                      "
-                      :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/System/access`"
-                      :param="`&total=1`" :image="false"
-                    />
-                  </div>
-                </div>
-                <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">เบอร์โทรศัพท์</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="เบอร์โทรศัพท์"
-                      class="input input-bordered"
-                      v-model="base.form.tel"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">วันเกิด</span>
-                    </label>
-                    <input
-                      type="date"
-                      placeholder="วันเกิด"
-                      class="input input-bordered"
-                      v-model="base.form.birthdate"
-                    />
-                  </div>
-                </div>
-                <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">วันที่เริ่มงาน</span>
-                    </label>
-                    <input
-                      type="date"
-                      placeholder="วันที่เริ่มงาน"
-                      class="input input-bordered"
-                      v-model="base.form.started_at"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">วันที่สิ้นสุดการทำงาน</span>
-                    </label>
-                    <input
-                      type="date"
-                      placeholder="วันที่สิ้นสุดการทำงาน"
-                      class="input input-bordered"
-                      v-model="base.form.leaves_at"
-                    />
-                  </div>
-                </div>
-                <!-- <div class="form-control">
+              </div>
+              <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
+                <div class="form-control">
                   <label class="label">
-                    <span class="label-text">textarray</span>
+                    <span class="label-text">Firstname</span>
                   </label>
-
-                  <textarea
-                    class="textarea textarea-bordered"
-                    placeholder="Description"
-                    v-model="base.form.textarea"
-                    cols="5"
-                    rows="1"
-                  ></textarea>
-                </div> -->
-                <!-- <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">select1</span>
-                    </label>
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text">select2</span>
-                    </label>
-                    <select
-                      class="select select-bordered"
-                      v-model="base.form.category_code"
-                    >
-                      <option disabled="disabled" selected="selected" value="0">
-                        Choose store
-                      </option>
-                      <option
-                        v-for="(row, index) in category.rows"
-                        :key="index"
-                        :value="row.code"
-                      >
-                        {{ row.title }}
-                      </option>
-                    </select>
-                  </div>
-                </div> -->
-
-                <!-- <div class="form-control">
+                  <input
+                    type="text"
+                    placeholder="Firstname"
+                    class="input input-bordered border-base-content"
+                    v-model="base.form.firstname"
+                  />
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Lastname</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Lastname"
+                    class="input input-bordered border-base-content"
+                    v-model="base.form.lastname"
+                  />
+                </div>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Department</span>
+                </label>
+                <AppModuleGlobalSelectSearch
+                  :placeholder="'Department'"
+                  :label="'title'"
+                  :code="'code'"
+                  :minChar="3"
+                  :delay="0.5"
+                  :limit="10"
+                  :customClass="`input input-bordered border-base-content`"
+                  :current="base.form.department"
+                  @updateValue="
+                    (obj) => {
+                      base.form.department_data = obj;
+                      base.form.department = obj.code;
+                    }
+                  "
+                  :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/department`"
+                  :param="`&total=1&wh=wh1&rac_list=1`"
+                  :image="false"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Position</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Position"
+                  class="input input-bordered border-base-content"
+                  v-model="base.form.position"
+                />
+              </div>
+              <div class="grid gap-4 md:grid-cols-1 grid-cols-1">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Access</span>
+                  </label>
+                  <AppModuleGlobalSelectSearch
+                    :placeholder="'Access'"
+                    :label="'title'"
+                    :code="'code'"
+                    :minChar="3"
+                    :delay="0.5"
+                    :limit="10"
+                    :customClass="`input input-bordered border-base-content`"
+                    :current="base.form.access_code"
+                    @updateValue="
+                      (obj) => {
+                        base.form.access_data = obj;
+                        base.form.access_code = obj ? obj.code : '';
+                      }
+                    "
+                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/access`"
+                    :param="`&total=1`"
+                    :image="false"
+                  />
+                </div>
+              </div>
+              <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Tel</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Tel"
+                    class="input input-bordered border-base-content"
+                    v-model="base.form.tel"
+                  />
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Birthday</span>
+                  </label>
+                  <input
+                    type="date"
+                    placeholder="Birthday"
+                    class="input input-bordered border-base-content"
+                    v-model="base.form.birthdate"
+                  />
+                </div>
+              </div>
+              <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Work Start Date</span>
+                  </label>
+                  <input
+                    type="date"
+                    placeholder="Work Start Date"
+                    class="input input-bordered border-base-content"
+                    v-model="base.form.started_at"
+                  />
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">End Of Work Date</span>
+                  </label>
+                  <input
+                    type="date"
+                    placeholder="End Of Work Date"
+                    class="input input-bordered border-base-content"
+                    v-model="base.form.leaves_at"
+                  />
+                </div>
+              </div>
+              <div class="form-control pt-4">
+                <div class="w-full overflow-auto">
                   <label class="label cursor-pointer">
-                    <span class="label-text">checkbox</span>
-                    <input
-                      type="checkbox"
-                      class="toggle"
-                      checked
-                      v-model="base.form.recommend"
-                    />
+                    <span class="label-text">Email</span>
                   </label>
-                </div> -->
-                <div class="form-control pt-4">
-                  <div class="w-full overflow-auto">
-                    <label class="label cursor-pointer">
-                      <span class="label-text">Email</span>
-                    </label>
-                    <table
-                      class="table table-xs table-pin-rows table-pin-cols table-zebra"
-                    >
-                      <thead>
-                        <tr>
-                          <th>Active</th>
-                          <th>Email</th>
-                          <!-- <th>Color</th>
-
-                        <th>Price</th>
-                        <th>Link</th> -->
-                          <th class="text-right">
-                            <label
-                              for="modal-detail"
-                              class="btn btn-primary modal-button btn-xs text-white"
-                              @click="detail_create()"
-                              >+ new
-                            </label>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          class="hover"
-                          v-for="(row, index) in detail.rows"
-                          :key="index"
-                        >
-                          <th>
-                            <!-- {{ base.form.email }} -->
-                            <div class="flex items-center space-x-3">
-                              <!-- <label class="label cursor-pointer">
-                    <span class="label-text"></span> -->
-                              <!-- <input
-                      type="checkbox"
-                      class="toggle"
-                      checked
-                      
-                    /> -->
-                              <input
-                                type="checkbox"
-                                :checked="row.code == base.form.email"
-                                class="checkbox"
-                                @click="
-                                  () => {
-                                    base.form.email =
-                                      base.form.email == row.code
-                                        ? ''
-                                        : row.code;
-                                  }
-                                "
-                              />
-                              <!-- </label> -->
-                            </div>
-                          </th>
-                          <td>
-                            <div class="flex items-center space-x-3">
-                              <div>
-                                <div class="font-bold">{{ row.email }}</div>
-                                <div class="text-sm">
-                                  {{ row.code }}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-
-                          <!-- <td>{{ row.price }}</td> -->
-                          <!-- <td>
-                            <a :href="row.link" target="_blank">
-                              <font-awesome-icon
-                                v-if="row.link"
-                                icon="fa-solid fa-globe"
-                                size="1x"
-                                class="btn btn-ghost modal-button btn-xs"
-                            /></a>
-                          </td> -->
-                          <th class="text-right">
-                            <label
-                              for="modal-detail"
-                              class="btn btn-link modal-button btn-xs"
-                              @click="detail_edit(`${row.code}`)"
+                  <table
+                    class="table table-xs table-pin-rows table-pin-cols table-zebra"
+                  >
+                    <thead>
+                      <tr>
+                        <th v-if="removing">
+                          <input
+                            type="checkbox"
+                            class="checkbox checkbox-sm"
+                            id="my-checkbox"
+                            ref="removeingList"
+                            @click="
+                              () => {
+                                $refs.removeingList.indeterminate = false;
+                                if ($refs.removeingList.checked) {
+                                  detail.rows = detail.rows.map((v) => {
+                                    v.remove = true;
+                                    return v;
+                                  });
+                                } else {
+                                  detail.rows = detail.rows.map((v) => {
+                                    v.remove = false;
+                                    return v;
+                                  });
+                                }
+                              }
+                            "
+                          />
+                        </th>
+                        <th>#</th>
+                        <td>Code</td>
+                        <td>Email</td>
+                        <th class="text-right">
+                          <div v-if="!removing">
+                            <button
+                              class="btn btn-xs btn-primary text-white mr-1"
+                              :class="base.controll != 'create' ? 'mr-1' : ''"
+                              @click="detail_add_row()"
                             >
-                              แก้ไข 
-                            </label>
-                            |
+                              <Icon icon="el:file-new" />
+                            </button>
+                            <button
+                              v-if="base.controll != 'create'"
+                              class="btn btn-xs btn-error text-white"
+                              @click="removing = true"
+                            >
+                              <Icon icon="icomoon-free:bin" />
+                            </button>
+                          </div>
+                          <div v-else>
                             <label
                               for="modal-remove"
-                              class="btn btn-ghost modal-button btn-xs"
+                              class="btn btn-xs btn-error text-white mr-1"
                               @click="
-                                remove_item(
-                                  `${row.code}`,
+                                removeAllSelect(
                                   'detail',
                                   'controllers/MYSQL/INTERNAL/HR/email'
                                 )
                               "
                             >
-                              ลบ
+                              <Icon icon="ic:outline-check" />
                             </label>
-                          </th>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                            <button
+                              class="btn btn-xs btn-warning btn-primary text-white mr-1"
+                              @click="
+                                () => {
+                                  removing = false;
+                                  this.detail.rows.map(
+                                    (v) => (v['remove'] = false)
+                                  );
+                                }
+                              "
+                            >
+                              <Icon icon="ic:twotone-close" />
+                            </button>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        class="hover"
+                        v-for="(v, i) in detail.rows"
+                        :key="i"
+                        :class="`${v.removed || v.remove ? 'disabled' : ''}`"
+                      >
+                        <th v-if="removing">
+                          <div class="flex items-center space-x-3">
+                            <input
+                              type="checkbox"
+                              class="checkbox checkbox-sm"
+                              :checked="v.remove"
+                              @click="
+                                () => {
+                                  v.remove = !v.remove;
+                                  let remove = detail.rows.filter(
+                                    (v) => v.remove
+                                  );
+                                  if (remove.length == 0) {
+                                    $refs.removeingList.checked = false;
+                                    $refs.removeingList.indeterminate = false;
+                                  } else if (
+                                    remove.length == detail.rows.length
+                                  ) {
+                                    $refs.removeingList.checked = true;
+                                    $refs.removeingList.indeterminate = false;
+                                  } else {
+                                    $refs.removeingList.checked = false;
+                                    $refs.removeingList.indeterminate = true;
+                                  }
+                                }
+                              "
+                            />
+                          </div>
+                        </th>
+                        <th>
+                          <div class="flex items-center space-x-3">
+                            <input
+                              :disabled="!v.id || removing"
+                              type="checkbox"
+                              :checked="v.code == base.form.email"
+                              class="checkbox checkbox-sm"
+                              @click="
+                                () => {
+                                  base.form.email =
+                                    base.form.email == v.code ? '' : v.code;
+                                }
+                              "
+                            />
+                          </div>
+                        </th>
+                        <td>
+                          <div class="text-sm" v-if="!v.new">
+                            <span
+                              v-if="v.edit"
+                              class="badge badge-sm badge-warning text-white"
+                            >
+                              Edit
+                            </span>
+                            <span>{{ v.code ? v.code : "-" }}</span>
+                          </div>
+                          <span
+                            v-else
+                            class="badge badge-sm badge-primary text-white"
+                          >
+                            N<span class="hidden md:block">ew</span>
+                          </span>
+                        </td>
+                        <td>
+                          <!-- <div class="flex items-center space-x-3"> -->
+                          <!-- <div> -->
+                          <!-- <div class="font-bold"> -->
+                          <input
+                            class="input input-xs input-bordered border-base-content join-item w-full"
+                            placeholder="Email"
+                            v-model="v.email"
+                            @keyup="
+                              () => {
+                                v.new ? '' : (v.edit = true);
+                              }
+                            "
+                            :disabled="removing"
+                          />
+                          <!-- </div> -->
+                          <!-- </div> -->
+                          <!-- </div> -->
+                        </td>
+                        <th class="text-right">
+                          <label
+                            v-if="!removing && v.id"
+                            for="modal-remove"
+                            class="btn btn-link no-underline text-error modal-button btn-xs"
+                            @click="
+                              remove_item(
+                                `${v.code}`,
+                                'detail',
+                                'controllers/MYSQL/INTERNAL/HR/email'
+                              )
+                            "
+                          >
+                            Remove
+                          </label>
+                          <button
+                            v-if="!removing && !v.id"
+                            class="btn btn-link no-underline text-error modal-button btn-xs"
+                            @click="detail.rows.splice(index, 1)"
+                          >
+                            Drop
+                          </button>
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <!-- </div> -->
               </div>
-              <input
-                type="radio"
-                name="my_tabs_2"
-                role="tab"
-                class="tab"
-                aria-label="Password"
-                v-if="base.controll != 'create'"
-              />
-              <div
-                role="tabpanel"
-                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full"
-                style="max-height: 60vh"
-              >
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Current Password</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Current Password"
-                    class="input input-bordered"
-                    v-model="base.form.current_password"
-                  />
-                </div>
+            </div>
+            <input
+              type="radio"
+              name="my_tabs_2"
+              role="tab"
+              class="tab"
+              aria-label="Update Password"
+              v-if="base.controll != 'create'"
+            />
+            <div
+              role="tabpanel"
+              class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full max-h-[60vh]"
+            >
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">New Password</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Password"
+                  class="input input-bordered border-base-content"
+                  v-model="base.form.new_password"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-base" class="btn btn-danger">Cancle</label>
+            </div>
+            <div class="flex-1 form-control mt-6" @click="base_save()">
+              <button class="btn btn-primary text-white">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal remove -->
+      <input
+        type="checkbox"
+        id="modal-remove"
+        class="modal-toggle"
+        v-model="remove.modal"
+      />
+      <div class="modal">
+        <div class="modal-box relative">
+          <label
+            for="modal-remove"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-error">REMOVE ITEM</h3>
+          <div class="divider mt-1"></div>
+          <div class="card-body overflow-auto max-h-[60vh]">
+            Are your sure for remove this item?
+          </div>
 
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Password</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Password"
-                    class="input input-bordered"
-                    v-model="base.form.new_password"
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Confirm Password</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Confirm Password"
-                    class="input input-bordered"
-                    v-model="base.form.confirm_password"
-                  />
-                </div>
-              </div>
-              <!-- <input
-                type="radio"
-                name="my_tabs_2"
-                role="tab"
-                class="tab"
-                aria-label="Signature"
-                v-if="base.controll != 'create'"
-              />
+          <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-remove" class="btn btn-danger">Cancle</label>
+            </div>
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-error text-white"
+                @click="confirm_remove()"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <AppModuleGlobalShowImage :src="imageSrc" />
+    </template>
+    <template #view>
+      <div class="grid grid-cols-1 gap-6">
+        <div class="card shadow-lg bg-base-100">
+          <div class="card-body overflow-auto p-2 lg:p-4">
+            <div>
               <div
-                role="tabpanel"
-                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full"
-                style="max-height: 60vh"
+                v-if="base.loading"
+                class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-base-100 bg-opacity-50 top-0 left-0"
               >
-          
-              </div> -->
-              <!-- <input
-                type="radio"
-                name="my_tabs_2"
-                role="tab"
-                class="tab"
-                aria-label="Access"
-              /> -->
-              <!-- <div
-                role="tabpanel"
-                class="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full"
-                style="max-height: 60vh"
-              >
-                <ul class="menu px-4 py-0">
-                  <MenuComponent
-                    v-if="base.modal"
-                    :menutype="'access'"
-                    :access="base.form.access"
-                    @object_access="
-                      (obj) => {
-                        base.form.access = obj;
+                <!-- <AppModuleGlobalLoadingText
+                  :class="`p-4 py-12 text-3xl text-center`"
+                /> -->
+              </div>
+              <div :class="`${base.loading ? 'blur-sm' : ''}`">
+                <div class="join w-full justify-center md:justify-end">
+                  <AppModuleGlobalSearch
+                    :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
+                    @search="
+                      (q) => {
+                        base.q = q;
+                        base.page = 1;
+                        base_search();
                       }
                     "
                   />
-                </ul>
-              </div> -->
-            </div>
-
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancle</label>
-              </div>
-              <div class="flex-1 form-control mt-6" @click="base_save()">
-                <button class="btn btn-primary text-white">Confirm</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- modal remove -->
-        <input
-          type="checkbox"
-          id="modal-remove"
-          class="modal-toggle"
-          v-model="remove.modal"
-        />
-        <div class="modal">
-          <div class="modal-box relative">
-            <label
-              for="modal-remove"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-            >
-              ✕
-            </label>
-            <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              Are your sure for remove this item?
-            </div>
-
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancle</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-error text-white"
-                  @click="confirm_remove()"
+                  <label
+                    for="modal-base"
+                    class="join-item btn-sm btn btn-primary modal-button text-white"
+                    @click="base_create()"
+                    >Create</label
+                  >
+                </div>
+                <div
+                  class="overflow-x-auto w-full max-h-[60vh] min-h-[60vh] my-4"
                 >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- modal detail -->
-        <input
-          type="checkbox"
-          id="modal-detail"
-          class="modal-toggle"
-          v-model="detail.modal"
-        />
-        <div class="modal" v-if="detail.modal">
-          <div class="modal-box relative">
-            <label
-              for="modal-detail"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-              >✕</label
-            >
-            <h3 class="text-lg font-bold">Email</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Email</span>
-                </label>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  class="input input-bordered"
-                  v-model="detail.form.email"
-                />
-              </div>
-            </div>
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-detail" class="btn btn-danger">Cancle</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-primary text-white"
-                  @click="detail_save('static')"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Open the modal using ID.showModal() method -->
-
-        <!-- The button to open modal -->
-
-        <!-- Put this part before </body> tag -->
-
-        <AppModuleGlobalShowImage :src="imageSrc" />
-      </template>
-      <template #view>
-        <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2">
-          <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-            <div class="card-body overflow-auto">
-              <div class="join mt-5 w-full md:justify-center lg:justify-end">
-                <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered w-full max-w-xs'"
-                  @search="
-                    (q) => {
-                      base.q = q;
-                      base.page = 1;
-                      base_search();
-                    }
-                  "
-                />
-                <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button text-white"
-                  @click="base_create()"
-                  >Create</label
-                >
-              </div>
-              <div class="overflow-x-auto w-full max-h-[60vh]">
-                <table
-                  class="table table-xs table-pin-rows table-pin-cols table-zebra"
-                >
-                  <thead>
-                    <tr>
-                      <th>id</th>
-                      <!-- <td>รูป</td> -->
-                      <td>ข้อมูลผู้พนักงาน</td>
-                      <td>ติดต่อ</td>
-                      <td>ตำแหน่ง</td>
-                      <td>สิทธิ์การใช้งาน</td>
-                      <td>วันที่</td>
-                      <td>บันทึก</td>
-                      <td>แก้ไข</td>
-                      <th class="text-right"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(row, index) in base.rows" :key="row.code">
-                      <th>{{ row.id }}</th>
-                      <td class="text-center">
-                        <div class="flex items-center gap-3">
-                          <div class="avatar">
-                            <div class="mask mask-square w-12 h-12">
+                  <div v-if="!base.loading && base.rows.length == 0">
+                    <AppModuleGlobalEmptyData
+                      :class="`p-4 py-12 text-3xl text-center`"
+                    />
+                  </div>
+                  <table
+                    v-else
+                    class="table table-xs table-pin-rows table-pin-cols table-zebra"
+                  >
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <td></td>
+                        <td>Code</td>
+                        <td>Information</td>
+                        <td>Contact</td>
+                        <td>Position</td>
+                        <td>Access</td>
+                        <td>Date</td>
+                        <td>Creation</td>
+                        <td>Updation</td>
+                        <th class="text-right"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(v, i) in base.rows" :key="v.code">
+                        <th>
+                          {{ v.id }}
+                        </th>
+                        <td>
+                          <div class="avatar static">
+                            <div class="w-12 h-12">
                               <label
                                 for="modal_showImage"
                                 class="btn btn-link p-0"
+                                v-if="v.image.length > 0"
                                 @click="
-                                  row.image.length > 0 ? (imageSrc = `${
-                                    row.image[row.master ? row.master : 0].temp
-                                      ? tmpsLink
-                                      : row.imageLink
-                                      ? `${row.imageLink}employee/${row.code}/`
-                                      : tmpsLink
-                                  }${
-                                    row.image[row.master ? row.master : 0].file
-                                  }`) : ''
+                                  v.image.length > 0
+                                    ? (imageSrc = `${
+                                        v.image[v.master ? v.master : 0].temp
+                                          ? `${serviceUrl}tmps/`
+                                          : v.imageLink
+                                          ? `${v.imageLink}employee/${v.code}/`
+                                          : `${serviceUrl}tmps/`
+                                      }${
+                                        v.image[v.master ? v.master : 0].file
+                                      }`)
+                                    : ''
                                 "
                               >
                                 <img
-                                  v-if="row.image.length > 0"
                                   :src="`${
-                                    row.image[row.master ? row.master : 0].temp
-                                      ? tmpsLink
-                                      : row.imageLink
-                                      ? `${row.imageLink}employee/${row.code}/`
-                                      : tmpsLink
-                                  }${
-                                    row.image[row.master ? row.master : 0].file
-                                  }`"
+                                    v.image[v.master ? v.master : 0].temp
+                                      ? `${serviceUrl}tmps/`
+                                      : v.imageLink
+                                      ? `${v.imageLink}employee/${v.code}/`
+                                      : `${serviceUrl}tmps/`
+                                  }${v.image[v.master ? v.master : 0].file}`"
                                   alt="Image"
-                                  style="    object-fit: contain;"
+                                  style="object-fit: contain"
                                 />
                               </label>
+                              <img
+                                class="max-h-44 object-cover bg-cover"
+                                v-else
+                                :src="`${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=web/emptyProfile.png&s=10`"
+                                alt="Image"
+                              />
                             </div>
                           </div>
-                          <div class="text-left">
-                            <div class="font-bold">
-                              <span class="pr-2">{{ row.firstname }}</span>
-                              <span>{{ row.lastname }}</span>
-                            </div>
+                        </td>
+                        <td>
+                          {{ v.code }}
+                        </td>
+                        <td class="text-center">
+                          <div class="flex items-center gap-3">
+                            <div class="text-left">
+                              <div
+                                class="font-bold"
+                                v-if="v.lastname || v.lastname"
+                              >
+                                <span class="pr-2" v-if="v.firstname">{{
+                                  v.firstname
+                                }}</span>
+                                <span v-if="v.lastname">{{ v.lastname }}</span>
+                              </div>
 
-                            <div class="text-sm">
-                              รหัสพนักงาน : {{ row.uid }}
-                            </div>
-                            <div class="text-xs">
-                              {{ row.code }}
+                              <div class="font-bold" v-else>-</div>
+
+                              <div class="text-sm">
+                                UID : {{ v.uid ? v.uid : "-" }}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </td>
+                        <td>
+                          <div class="flex items-center space-x-3">
+                            <div>
+                              <div class="font-bold">
+                                {{ v.emailTitle ? v.emailTitle : "-" }}
+                              </div>
+                              <div class="text-sm">
+                                Tel : {{ v.tel ? v.tel : "-" }}
+                              </div>
+                              <div class="text-sm">
+                                Birthday :
+                                {{
+                                  v.birthdate &&
+                                  $moment(v.birthdate).format("YYYY-MM-DD") >
+                                    "2000"
+                                    ? $moment(v.birthdate).format("YYYY-MM-DD")
+                                    : "-"
+                                }}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="flex items-center space-x-3">
+                            <div>
+                              <div class="font-bold">
+                                {{ v.position ? v.position : "-" }}
+                              </div>
+                              <div class="text-sm">
+                                Department : {{ v.depTitle ? v.depTitle : "-" }}
+                              </div>
+                              <div class="text-sm">
+                                Branch :
+                                {{ v.branchTitle ? v.branchTitle : "-" }}
+                              </div>
+                              <div class="text-sm">
+                                {{ v.companyTitle ? v.companyTitle : "-" }}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="flex items-center space-x-3">
+                            <div>
+                              <div class="font-bold">
+                                {{ v.accessTitle ? v.accessTitle : "-" }}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="flex items-center space-x-3">
+                            <div>
+                              <div class="text-sm">
+                                Start :
+                                {{
+                                  v.started_at &&
+                                  $moment(v.started_at).format("YYYY-MM-DD") >
+                                    "2000"
+                                    ? $moment(v.started_at).format("YYYY-MM-DD")
+                                    : "-"
+                                }}
+                              </div>
+                              <div class="text-sm">
+                                End :
+                                {{
+                                  v.leaves_at &&
+                                  $moment(v.leaves_at).format("YYYY-MM-DD") >
+                                    "2000"
+                                    ? $moment(v.leaves_at).format("YYYY-MM-DD")
+                                    : "-"
+                                }}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="flex items-center space-x-3">
+                            <div>
+                              <div class="text-xs">
+                                {{
+                                  v.created_at &&
+                                  $moment(v.created_at).format("YYYY-MM-DD") >
+                                    "2000"
+                                    ? v.created_at
+                                    : "-"
+                                }}
+                              </div>
+                              <div class="text-xs">
+                                {{
+                                  v.created_fullname ? v.created_fullname : "-"
+                                }}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="flex items-center space-x-3">
+                            <div>
+                              <div class="text-xs">
+                                {{
+                                  v.updated_at &&
+                                  $moment(v.updated_at).format("YYYY-MM-DD") >
+                                    "2000"
+                                    ? v.updated_at
+                                    : "-"
+                                }}
+                              </div>
+                              <div class="text-xs">
+                                {{
+                                  v.updated_fullname ? v.updated_fullname : "-"
+                                }}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
 
-                        <!-- <div class="avatar w-auto">
+                        <th class="text-right">
                           <label
-                            for="modal_showImage"
-                            class="btn btn-link p-0"
-                            @click="imageSrc = row"
-                          >
-                            <img
-                              v-if="row.image.length > 0"
-                              :src="`${
-                                row.image[row.master ? row.master : 0].temp
-                                  ? tmpsLink
-                                  : row.imageLink
-                                  ? row.imageLink
-                                  : tmpsLink
-                              }${row.image[row.master ? row.master : 0].file}`"
-                              alt="Image"
-                            />
+                            for="modal-base"
+                            class="join-item btn btn-link text-warning no-underline modal-button btn-xs"
+                            @click="base_edit(`${v.code}`, `${i}`)"
+                            >Edit
                           </label>
-                        </div> -->
-                      </td>
-                      <!-- <td>
-                        <div>
-                          <div class="font-bold">
-                            <span class="pr-2">{{ row.firstname }}</span>
-                            <span>{{ row.lastname }}</span>
-                          </div>
 
-                          <div class="text-sm">รหัสพนักงาน : {{ row.uid }}</div>
-                          <div class="text-xs">
-                            {{ row.code }}
-                          </div>
-                        </div>
-                      </td> -->
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="font-bold">
-                              {{ row.emailTitle ? row.emailTitle : "-" }}
-                            </div>
-                            <div class="text-sm">
-                              tel : {{ row.tel ? row.tel : "-" }}
-                            </div>
-                            <div class="text-sm">
-                              วันเกิด :
-                              {{
-                                row.birthdate &&
-                                $moment(row.birthdate).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? $moment(row.birthdate).format("YYYY-MM-DD")
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="font-bold">
-                              {{ row.position ? row.position : "-" }}
-                            </div>
-                            <div class="text-sm">
-                              แผนก : {{ row.depTitle ? row.depTitle : "-" }}
-                            </div>
-                            <div class="text-sm">
-                              สาขา :
-                              {{ row.branchTitle ? row.branchTitle : "-" }}
-                            </div>
-                            <div class="text-sm">
-                              {{ row.companyTitle ? row.companyTitle : "-" }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="font-bold">
-                              {{ row.accessTitle ? row.accessTitle : "-" }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-sm">
-                              เริ่มงาน :
-                              {{
-                                row.started_at &&
-                                $moment(row.started_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? $moment(row.started_at).format("YYYY-MM-DD")
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-sm">
-                              สิ้นสุด :
-                              {{
-                                row.leaves_at &&
-                                $moment(row.leaves_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? $moment(row.leaves_at).format("YYYY-MM-DD")
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                row.created_at &&
-                                $moment(row.created_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? row.created_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs opacity-30">
-                              {{
-                                row.created_fullname
-                                  ? row.created_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                row.updated_at &&
-                                $moment(row.updated_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? row.updated_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs opacity-30">
-                              {{
-                                row.updated_fullname
-                                  ? row.updated_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      <th class="text-right">
-                        <label
-                          for="modal-base"
-                          class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
-                          >edit
-                        </label>
-
-                        <label
-                          for="modal-remove"
-                          class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="
-                            remove_item(
-                              `${row.code}`,
-                              'base',
-                              'controllers/MYSQL/INTERNAL/HR/employee'
-                            )
-                          "
-                          >remove
-                        </label>
-                      </th>
-                    </tr>
-                  </tbody>
-                </table>
+                          <label
+                            for="modal-remove"
+                            class="join-item btn btn-link text-error no-underline modal-button btn-xs"
+                            @click="
+                              remove_item(
+                                `${v.code}`,
+                                'base',
+                                'controllers/MYSQL/INTERNAL/HR/employee'
+                              )
+                            "
+                            >Remove
+                          </label>
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <div class="join w-full justify-center lg:justify-end">
-                <AppModuleGlobalPageination
-                  :page="base.page"
-                  :total="base.total"
-                  :row="base.row"
-                  :back="base.back"
-                  :next="base.next"
-                  :loading="base.loading"
-                  @search="
-                    (res) => {
-                      base.page = res.page;
-                      this.base_search();
-                    }
-                  "
-                />
-              </div>
+              <AppModuleGlobalPageination
+                :page="base.page"
+                :total="base.total"
+                :row="base.row"
+                :back="base.back"
+                :next="base.next"
+                :loading="base.loading"
+                @search="
+                  (res) => {
+                    base.page = res.page;
+                    base_search();
+                  }
+                "
+              />
             </div>
           </div>
         </div>
-      </template>
-    </AppLayout>
-  </div>
+      </div>
+    </template>
+  </AppLayout>
 </template>
 <style>
 .crop {
@@ -980,9 +828,12 @@ import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
+
+import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
 
 export default {
-  name: "Department",
+  name: "Employee",
   components: {
     AppLayout,
     AppModuleGlobalUpload,
@@ -990,22 +841,13 @@ export default {
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,
     AppModuleGlobalShowImage,
+    AppModuleGlobalLoadingText,
+    AppModuleGlobalEmptyData,
   },
   data() {
     return {
-      loadimage: false,
-      options: {
-        penColor: "#c0f",
-      },
-      checkbox: "",
-      refresh: false,
-      tmpsLink: "",
-      category: {
-        rows: [],
-        page: 1,
-        row: 9999,
-        q: "",
-      },
+      temp: [],
+      removing: false,
       base: {
         rows: [],
         total: 0,
@@ -1050,44 +892,10 @@ export default {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
-      console.log("TOKEN")
-      console.log(this.$store.getters.user_token)
       return this.$store.getters.user_token;
     },
   },
   methods: {
-    error() {
-      this.loadimage = false;
-    },
-    loaded() {
-      this.loadimage = true;
-    },
-
-    change() {
-      this.base_search();
-    },
-
-    undo() {
-      this.$refs.signaturePad.undoSignature();
-    },
-    save() {
-      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
-
-      alert("Open DevTools see the save data.");
-      console.log(isEmpty);
-      console.log(data);
-    },
-    // change() {
-    //   this.options = {
-    //     penColor: "#00f",
-    //   };
-    // },
-    // resume() {
-    //   this.options = {
-    //     penColor: "#c0f",
-    //   };
-    // },
-
     // base
     base_search() {
       this.base.loading = true;
@@ -1104,9 +912,11 @@ export default {
       fetch(
         `${
           this.serviceUrl
-        }controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${this.base.page}${
-          this.base.row ? `&rows=${this.base.row}` : ""
-        }${this.base.q ? `&q=${this.base.q}` : ""}`,
+        }api/controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${
+          this.base.page
+        }${this.base.row ? `&rows=${this.base.row}` : ""}${
+          this.base.q ? `&q=${this.base.q}` : ""
+        }`,
         {
           method: "GET",
           headers: {
@@ -1117,7 +927,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             res.rows.forEach((v, i) => {
               res.rows[i].image = v.image ? JSON.parse(v.image) : [];
               res.rows[i].master = 0;
@@ -1130,37 +943,14 @@ export default {
           );
         })
         .catch((error) => {
-          // callback([]);
-          // localStorage.removeItem("user_token");
-          // this.$router.push({name:"AppLogin"})
           console.error("Error:", error);
         });
     },
     base_create() {
+      this.removing = false;
       this.base.current = 0;
       this.base.form = {
-        uid: "",
-        firstname: "",
-        lastname: "",
-        current_password: "",
-        new_password: "",
-        confirm_password: "",
-        email: "",
-        tel: "",
-        birthdate: "",
-        department: "",
-        branch: "",
-        company: "",
-        position: "",
-        started_at: "",
-        leaves_at: "",
-        title: "",
-        link: "",
-        type: "",
-        // imageLink_empty: "",
-        // image_empty: [],
-        // imageLink_active: "",
-        // image_active: [],
+        code: "",
         imageLink: "",
         image: [],
       };
@@ -1168,90 +958,61 @@ export default {
       this.base.controll = "create";
     },
     base_edit(code, index) {
+      this.removing = false;
       this.base.form = { ...this.base.rows[index] };
       this.base.current = code;
       this.detail.rows = [];
       this.base.controll = "edit";
       this.detail_search();
-      this.refresh = true;
     },
     base_save() {
       let vm = this;
-
       let image = this.base.form.image[0]
         ? { ...this.base.form.image[0] }
         : null;
       image ? delete image.temp : "";
-      // console.log(this.base.form)
-      if (this.base.controll != "create") {
-        if (
-          !this.base.form.current_password ||
-          !this.base.form.new_password ||
-          !this.base.form.confirm_password
-        ) {
-          // console.log("ASD")
-        }
-      } else {
+      if (this.base.controll == "create") {
         this.base.form.new_password = this.base.form.uid;
       }
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/employee`, {
+      let obj = {
+        code: this.base.current,
+        rows: [
+          {
+            ...Object.assign(
+              { ...this.base.form },
+              {
+                image: image ? [image] : [],
+              }
+            ),
+          },
+        ],
+      };
+      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, {
         method: this.base.controll == "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${this.user_token}`,
         },
-        body: JSON.stringify({
-          code: this.base.current,
-          uid: this.base.form.uid,
-          firstname: this.base.form.firstname,
-          lastname: this.base.form.lastname,
-          current_password: this.base.form.current_password,
-          password: this.base.form.new_password,
-          confirm_password: this.base.form.confirm_password,
-          email: this.base.form.email,
-          tel: this.base.form.tel,
-          birthdate: this.base.form.birthdate,
-          department: this.base.form.department,
-          branch: this.base.form.branch,
-          company: this.base.form.company,
-          position: this.base.form.position,
-          started_at: this.base.form.started_at,
-          leaves_at: this.base.form.leaves_at,
-          access_code: this.base.form.access_code,
-          image: image ? [image] : "",
-        }),
+        body: JSON.stringify(obj),
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
-            this.base.modal = false;
-            const promise_arr = [];
-            console.log(this.base.current);
-            if (this.base.current == 0) {
-              this.base.current = res.row.code;
-              let i = this.detail.rows.length;
-              this.detail.controll = "create";
-              for (i; i > 0; i--) {
-                this.detail.form = {
-                  code: this.detail.rows[i - 1]["code"],
-                  title: this.detail.rows[i - 1]["title"],
-                };
-                promise_arr.push(
-                  new Promise(async function (resolve, reject) {
-                    let res = await vm.detail_save("dynamic");
-                    await resolve(res);
-                    return;
-                  })
-                );
-              }
-            }
+          if (!res.success) {
+          } else {
+            this.base.current == 0
+              ? (this.base.current = res.rows[0].code)
+              : "";
+            this.detail.controll = "create";
+            const detail = new Promise(
+              async (resolve, reject) => await resolve(vm.detail_save())
+            );
 
-            Promise.all(promise_arr)
-              .then((res) => {
-                // console.log(res);
-                vm.base_search();
-              })
-              .catch((err) => console.error(err));
+            detail.then((res) => {
+              this.base.modal = false;
+              this.base.page = 1;
+              this.detail.page = 1;
+              this.base_search();
+            });
           }
         })
         .catch((error) => {
@@ -1262,7 +1023,6 @@ export default {
     detail_search() {
       this.detail.loading = true;
       this.detail_get((res) => {
-        // console.log(res)
         this.detail.rows = res.rows;
         this.detail.total = res.total;
         this.detail.next =
@@ -1271,13 +1031,13 @@ export default {
             : true;
         this.detail.back = this.detail.page > 1 ? true : false;
         this.detail.loading = false;
-
-        console.log(this.detail.rows);
       });
     },
     detail_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
+        `${
+          this.serviceUrl
+        }api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
@@ -1288,26 +1048,10 @@ export default {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.user_token}`,
           },
-          // body: JSON.stringify({
-          //     "uuid": localStorage.getItem('uuid'),
-          // }),
         }
       )
         .then((response) => response.json())
         .then((res) => {
-          // res.rows.forEach((v, i) => {
-          //   // res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-          //   // console.log(res.rows[i].image)
-          //   // res.rows[i].image.forEach((vv, ii) => {
-          //   //   if (ii == 0) {
-          //   //     res.rows[i].master = ii;
-          //   //   }
-          //   //   // console.log(vv);
-          //   //   if (vv.master) {
-          //   //     res.rows[i].master = ii;
-          //   //   }
-          //   // });
-          // });
           callback(
             res.success
               ? { rows: res.rows, total: res.total }
@@ -1319,206 +1063,129 @@ export default {
           console.error("Error:", error);
         });
     },
+    detail_add_row() {
+      this.detail.form = {
+        code: this.$moment().format("YYYYMMDD") + this.detail.rows.length,
+        new: true,
+      };
+      this.detail.rows.unshift(this.detail.form);
+    },
     detail_create() {
-      // console.log("detail_create");
-      // this.clearimage();
       this.detail.current = 0;
-      // console.log("callback");
-      // this.detail.rows = [];
       this.detail.form = {
         code: "",
-        title: "",
-        price: "",
-        image: [],
-        imageLink: "",
-        color: "",
-        color_code: "",
-        link: "",
       };
       this.detail.controll = "create";
     },
     detail_edit(code) {
-      // console.log("detail_edit");
-      // this.clearimage();
-      // console.log(id,index);
-      // setTimeout(() => {
       this.detail.current = code;
       let index = this.detail.rows.findIndex(
-            (v) => v.code == this.detail.current
-          );
-          // this.detail.rows[index] = { ...this.detail.form };
+        (v) => v.code == this.detail.current
+      );
       this.detail.form = Object.assign({}, this.detail.rows[index]);
-      // this.detail.form.color = this.detail.form.color == "0" ? false : true;
-
-      // console.log(this.detail.form.image);
-      // this.detail.form.image.forEach((v, i) => {
-      //   // console.log(v);
-      //   this.detail.form.image[i] = Object.assign(
-      //     {},
-      //     this.detail.form.image[i]
-      //   );
-      // });
-
-      // console.log(this.detail.form);
-      // this.detail.form.image = JSON.parse(this.detail.form.image)
-
-      // }, 5000);
-
-      // this.base.form = this.base.rows[index]
-      // this.detail.current = index;
-      // this.detail_search();
-
       this.detail.controll = "edit";
     },
-    detail_save(type) {
-      console.log(this.base.current)
-      console.log(this.detail.controll)
-      if (!this.base.current) {
-        if (this.detail.controll == "create") {
-          this.detail.form.code = this.detail.rows.length;
-          this.detail.rows = [{ ...this.detail.form }].concat(this.detail.rows);
-          // this.detail.rows.push({ ...this.detail.form });
-          this.detail.modal = false;
-        } else {
-          //  this.detail.form.id = this.detail.rows.length
-          let index = this.detail.rows.findIndex(
-            (v) => v.code == this.detail.current
-          );
-          this.detail.rows[index] = { ...this.detail.form };
+    detail_save() {
+      let rows = this.detail.rows.map((v) =>
+        Object.assign({}, v, { emp: this.base.current })
+      );
+      if (rows.length == 0) {
+        return;
+      }
 
-          // this.detail.rows.push({ ...this.detail.form });
-          this.detail.modal = false;
+      let object = {
+        POST: rows.filter((v) => v.new),
+        PUT: rows.filter((v) => v.edit),
+      };
+
+      console.log(object);
+      for (let key in object) {
+        if (object[key].length == 0) {
+          continue;
         }
-      } else {
-        // console.table(this.detail.form.image);
-        // let array_image = [];
-        // this.detail.form.image.forEach((v, i) => {
-        //   console.log(v);
-        //   if (v.temp) {
-        //     let image = { ...v };
-        //     delete image.temp;
-        //     array_image[i] = image;
-        //   } else {
-        //     array_image[i] = { ...v };
-        //   }
-        //   // console.log(this.detail.form.image[i])
-        // });
-        //  console.table(this.detail.form.image);
-        let obj = {
-          emp: this.base.current,
-          code: this.detail.form.code,
-          email: this.detail.form.email,
-        };
-        console.log(obj);
-        if (this.detail.controll == "edit") {
-          obj["code"] = this.detail.form.code;
-        }
-        fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email`, {
-          method: this.detail.controll == "create" ? "POST" : "PUT",
+        fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, {
+          method: key,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.user_token}`,
           },
-          body: JSON.stringify(obj),
+          body: JSON.stringify({ rows: object[key] }),
         })
           .then((response) => response.json())
           .then((res) => {
-            if (res.success) {
-              this.detail.modal = false;
-
-              if (type == "static") {
-                this.detail_search();
-              }
-
-              // this.base_search();
+            if (!res.success) {
+            } else {
             }
-            // callback(res.success ? res.rows : []);
           })
           .catch((error) => {
-            callback([]);
             console.error("Error:", error);
           });
       }
     },
     // REMOVE
+    removeAllSelect(controll, tb) {
+      // this.removing = false;
+      let rows = this.detail.rows.filter((v) => v["remove"]);
+
+      // console.log(code);
+      this.remove.rows = rows;
+      this.remove.controll = controll;
+      this.remove.tb = tb;
+    },
     remove_item(code, controll, tb) {
-      console.log(code);
+      // console.log(code);
       this.remove.code = code;
       this.remove.controll = controll;
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${this.user_token}`,
         },
         body: JSON.stringify({
-          code: this.remove.code,
+          rows: this.remove.rows
+            ? this.remove.rows
+            : [{ code: this.remove.code }],
         }),
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
-            // console.log(res);
+          if (!res.success) {
+          } else {
+            let index = this.detail.rows.findIndex(
+              (v) => v.code == this.remove.code
+            );
+            this.remove.rows
+              ? (this.remove.rows = [])
+              : (this.detail.rows[index]["removed"] = true);
             this.remove.modal = false;
-            this[`${this.remove.controll}_search`]();
+            this.removing = false;
+            this.remove.controll == "detail"
+              ? ""
+              : this[`${this.remove.controll}_search`]();
           }
-          // callback(res.success ? res.rows : []);
         })
         .catch((error) => {
-          // callback([]);
           console.error("Error:", error);
         });
     },
   },
   mounted() {
     this.$nextTick(() => {
-      console.log(this.user_token)
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
     });
   },
 };
 </script>
-<style scrop>
-tr,
-td {
-  white-space: nowrap;
-}
-/* 
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
 
-#signature {
-  border: double 3px transparent;
-  border-radius: 5px;
-  background-image: linear-gradient(white, white),
-    radial-gradient(circle at top left, #000000, #000000);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-}
-
-.container {
-  width: "100%";
-  padding: 8px 16px;
-}
-
-.buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 8px;
+<style>
+tr.disabled {
+  pointer-events: none;
+  opacity: 0.3;
+  text-decoration: line-through;
+  text-decoration-color: red;
 }
 </style>

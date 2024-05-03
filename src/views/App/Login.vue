@@ -1,5 +1,5 @@
 <template>
-  <div class="Login" data-theme="emerald">
+  <div class="Login" :data-theme="theme">
     <div class="lg:hero min-h-screen lg:bg-base-200">
       <div class="lg:hero-content text-center">
         <div class="w-full lg:max-w-2xl">
@@ -23,7 +23,7 @@
                 Verify your access
               </p>
 
-              <div class="alert shadow-lg alert-error" v-if="errorMsg">
+              <div class="alert shadow-lg py-2  alert-error text-white" v-if="errorMsg">
                 <div>
                   <span class="text-xs">{{ errorMsg }}</span>
                 </div>
@@ -36,7 +36,7 @@
                 <input
                   type="text"
                   placeholder="Username"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="authen.form.username"
                   @keyup.enter="authentication()"
                 />
@@ -48,13 +48,16 @@
                 <input
                   type="password"
                   placeholder="password"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="authen.form.password"
                   @keyup.enter="authentication()"
                 />
               </div>
               <div class="form-control mt-10">
-                <button class="btn btn-primary" @click="authentication()">
+                <button
+                  class="btn btn-primary text-white"
+                  @click="authentication()"
+                >
                   Login
                 </button>
               </div>
@@ -128,8 +131,11 @@ export default {
     // HelloWorld,
   },
   computed: {
-    ServiceUrl() {
+    serviceUrl() {
       return this.$store.getters.serviceUrl;
+    },
+    theme() {
+      return this.$store.getters.theme;
     },
   },
   data() {
@@ -150,31 +156,37 @@ export default {
         this.errorMsg = `Username/Password require`;
         return;
       }
-      fetch(
-        `${this.$store.state.serviceUrl}controllers/MYSQL/INTERNAL/GLOBAL/auth`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            admin: true,
-            username: this.authen.form.username,
-            password: this.authen.form.password,
-          }),
-        }
-      )
+      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/auth`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          admin: true,
+          username: this.authen.form.username,
+          password: this.authen.form.password,
+        }),
+      })
         .then((response) => response.json())
         .then((res) => {
           // console.log(res)
-          if (res.success) {
-            localStorage.setItem("user_token", res.jwt);
-            this.$router.push({ name: "Dashboard" });
-          } else {
+          if (!res.success) {
             localStorage.removeItem("user_token");
             this.errorMsg = res.errorMsg
               ? res.errorMsg
               : `Incorrect username or password, please try again.`;
+          } else {
+            localStorage.setItem("user_token", res.jwt);
+
+            res.row.image ? JSON.parse(res.row.image) : [];
+            res.row.access = JSON.parse(res.row.access);
+            // user = res.row;
+            this.$store.commit("user", res.row);
+            localStorage.setItem("userDataTemp", JSON.stringify(res.row));
+            // this.$store.commit("user_token", store.getters.user_token);
+            // console.error("USER TOKEN")
+
+            this.$router.push({ name: "Dashboard" });
           }
           // callback(res.success ? res.rows : []);
         })

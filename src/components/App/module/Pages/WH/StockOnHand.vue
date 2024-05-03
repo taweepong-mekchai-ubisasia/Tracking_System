@@ -1,74 +1,78 @@
 <template>
-  <div class="Stock">
-    <div class="grid grid-cols-4 gap-6 lg:px-10 lg:py-5 xl:grid-cols-4">
-      <div class="card col-span-4 row-span-4 bg-transparent">
-        <div class="join mt-5 w-full md:justify-center lg:justify-end">
-          <button
-            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-            disabled
-          >
-            วันที่
-          </button>
-          <input
-            type="date"
-            placeholder="title"
-            class="join-item input input-sm input-bordered"
-            v-model="date.from"
-            @change="change"
-          />
-          <button
-            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-            disabled
-          >
-            -
-          </button>
-          <input
-            type="date"
-            placeholder="title"
-            class="join-item input input-sm input-bordered"
-            v-model="date.to"
-            @change="change"
-          />
-          <button
-            class="join-item btn btn-sm btn-primary"
-            @click="exportExcel()"
-          >
-            <Icon icon="mdi:file-excel-outline" class="h-5 w-5 text-white" />
-          </button>
-        </div>
-        <div class="join mt-5 w-full md:justify-center lg:justify-end">
-          <button
-            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-            disabled
-          >
-            สาขา
-          </button>
-          <select
-            class="join-item select select-sm select-bordered w-auto max-w-xs"
-            v-model="wh"
-          >
-            <option selected value="">ALL</option>
-            <option value="wh1">Factory</option>
-            <option value="wh2">External</option>
-          </select>
-          <AppModuleGlobalSearch
-            :class="'join-item input input-sm input-bordered w-full max-w-xs'"
-            @search="
-              (q) => {
-                base.q = q;
-                base_search();
-              }
-            "
-          />
-        </div>
+  <div class="grid grid-cols-1 gap-6 p-2 lg:p-4">
+    <div class="card bg-transparent">
+      <div class="join w-full md:justify-center lg:justify-end">
+        <button
+          class="join-item btn btn-sm disabled:border-base-content disabled:bg-transparent disabled:text-base-content"
+          disabled
+        >
+          วันที่
+        </button>
+        <input
+          type="date"
+          placeholder="title"
+          class="join-item input input-sm input-bordered border-base-content"
+          v-model="date.from"
+          @change="change"
+        />
+        <button
+          class="join-item btn btn-sm disabled:border-base-content disabled:bg-transparent disabled:text-base-content"
+          disabled
+        >
+          -
+        </button>
+        <input
+          type="date"
+          placeholder="title"
+          class="join-item input input-sm input-bordered border-base-content"
+          v-model="date.to"
+          @change="change"
+        />
+        <button class="join-item btn btn-sm btn-accent" @click="exportExcel()">
+          <Icon icon="mdi:file-excel-outline" class="h-5 w-5 text-white" />
+        </button>
       </div>
-
-      <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-        <div class="card-body overflow-auto pt-0 max-h-[60vh]">
-          <div v-if="base.loading" class="overflow-x-auto mt-10 text-center">
-            <span class="loading loading-spinner loading-lg"></span>
-          </div>
-          <div class="overflow-x-auto w-full" v-else>
+      <div class="join mt-5 w-full md:justify-center lg:justify-end">
+        <button
+          class="join-item btn btn-sm disabled:border-base-content disabled:bg-transparent disabled:text-base-content"
+          disabled
+        >
+          สาขา
+        </button>
+        <select
+          class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
+          v-model="wh"
+        >
+          <option selected value="">ALL</option>
+          <option value="wh1">Factory</option>
+          <option value="wh2">External</option>
+        </select>
+        <AppModuleGlobalSearch
+          :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
+          @search="
+            (q) => {
+              base.page = 1;
+              base.q = q;
+              base_search();
+            }
+          "
+        />
+      </div>
+    </div>
+    <div class="card shadow-lg bg-base-100">
+      <div
+        class="card-body overflow-hidden pt-0 max-h-[60vh] w-full min-h-[60vh] p-2 lg:p-4"
+      >
+        <div
+          v-if="base.loading"
+          class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-white bg-opacity-50 top-0 left-0"
+        >
+          <AppModuleGlobalLoadingText
+            :class="`p-4 py-12 text-3xl text-center`"
+          />
+        </div>
+        <div :class="`${base.loading ? 'blur-sm' : ''}`">
+          <div class="overflow-x-auto w-full max-h-[48vh] min-h-[48vh]">
             <table
               class="table table-xs table-pin-rows table-pin-cols table-zebra"
             >
@@ -114,8 +118,8 @@
               <tbody>
                 <tr
                   class="hover"
-                  v-for="(row, index) in base.rows"
-                  :key="row.code"
+                  v-for="(v, i) in base.rows"
+                  :key="v.code"
                 >
                   <th>
                     <div class="flex items-center space-x-3">
@@ -123,14 +127,14 @@
                         <div
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          {{ row.rac }}-{{ row.bay }}-{{ row.level }}-{{
-                            row.pallet
+                          {{ v.rac }}-{{ v.bay }}-{{ v.level }}-{{
+                            v.pallet
                           }}
                         </div>
                         <div
                           class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          {{ row.id }}
+                          {{ v.id }}
                         </div>
                       </div>
                     </div>
@@ -141,13 +145,13 @@
                         <div
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          {{ row.created_at ? row.created_at : "-" }}
+                          {{ v.created_at ? v.created_at : "-" }}
                         </div>
                         <div
                           class="text-opacity-20 overflow-hidden text-ellipsis whitespace-nowrap"
                         >
                           {{
-                            row.created_fullname ? row.created_fullname : "-"
+                            v.created_fullname ? v.created_fullname : "-"
                           }}
                         </div>
                       </div>
@@ -159,39 +163,39 @@
                         <div
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
-                          {{ row.updated_at ? row.updated_at : "-" }}
+                          {{ v.updated_at ? v.updated_at : "-" }}
                         </div>
                         <div
                           class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
                         >
                           {{
-                            row.updated_fullname ? row.updated_fullname : "-"
+                            v.updated_fullname ? v.updated_fullname : "-"
                           }}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td>{{ row.item_short_code }}</td>
-                  <td>{{ row.item_name }}</td>
-                  <td>{{ row.batch }}</td>
+                  <td>{{ v.item_short_code }}</td>
+                  <td>{{ v.item_name }}</td>
+                  <td>{{ v.batch }}</td>
                   <td class="text-center">
-                    {{ new Intl.NumberFormat("th-TH").format(row.unit) }}
+                    {{ new Intl.NumberFormat("th-TH").format(v.unit) }}
                   </td>
                   <td class="text-center">
-                    {{ new Intl.NumberFormat("th-TH").format(row.pack_size) }}
+                    {{ new Intl.NumberFormat("th-TH").format(v.pack_size) }}
                   </td>
                   <td class="text-right">
-                    {{ new Intl.NumberFormat("th-TH").format(row.quantitys) }}
+                    {{ new Intl.NumberFormat("th-TH").format(v.quantitys) }}
                   </td>
-                  <td>{{ row.uom }}</td>
-                  <td>{{ row.shelf_life ? row.shelf_life : "-" }}</td>
+                  <td>{{ v.uom }}</td>
+                  <td>{{ v.shelf_life ? v.shelf_life : "-" }}</td>
                   <td
                     class="bg-yellow-100"
                     :class="`${
                       parseInt(
-                        row.receive_date
-                          ? $moment(row.receive_date)
-                              .add(parseInt(row.shelf_life) + 1, 'days')
+                        v.receive_date && v.shelf_life
+                          ? $moment(v.receive_date)
+                              .add(parseInt(v.shelf_life) + 1, 'days')
                               .diff($moment(new Date()), 'days')
                           : '0'
                       ) <= 30
@@ -205,8 +209,8 @@
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
                           {{
-                            row.receive_date
-                              ? $moment(row.receive_date).format("YYYY-MM-DD")
+                            v.receive_date && v.shelf_life
+                              ? $moment(v.receive_date).format("YYYY-MM-DD")
                               : "-"
                           }}
                         </div>
@@ -217,9 +221,9 @@
                     class="bg-yellow-100"
                     :class="`${
                       parseInt(
-                        row.receive_date
-                          ? $moment(row.receive_date)
-                              .add(parseInt(row.shelf_life) + 1, 'days')
+                        v.receive_date && v.shelf_life
+                          ? $moment(v.receive_date)
+                              .add(parseInt(v.shelf_life) + 1, 'days')
                               .diff($moment(new Date()), 'days')
                           : '0'
                       ) <= 30
@@ -234,9 +238,9 @@
                         >
                           Expire
                           {{
-                            row.receive_date
-                              ? $moment(row.receive_date)
-                                  .add(parseInt(row.shelf_life), "days")
+                            v.receive_date && v.shelf_life
+                              ? $moment(v.receive_date)
+                                  .add(parseInt(v.shelf_life), "days")
                                   .format("YYYY-MM-DD")
                               : "-"
                           }}
@@ -248,9 +252,9 @@
                     class="bg-yellow-100"
                     :class="`${
                       parseInt(
-                        row.receive_date
-                          ? $moment(row.receive_date)
-                              .add(parseInt(row.shelf_life) + 1, 'days')
+                        v.receive_date && v.shelf_life
+                          ? $moment(v.receive_date)
+                              .add(parseInt(v.shelf_life) + 1, 'days')
                               .diff($moment(new Date()), 'days')
                           : '0'
                       ) <= 30
@@ -265,9 +269,9 @@
                         >
                           Life
                           {{
-                            row.receive_date
-                              ? $moment(row.receive_date)
-                                  .add(parseInt(row.shelf_life), "days")
+                            v.receive_date && v.shelf_life
+                              ? $moment(v.receive_date)
+                                  .add(parseInt(v.shelf_life), "days")
                                   .diff($moment(new Date()), "days")
                               : "0"
                           }}
@@ -280,9 +284,9 @@
                     class="bg-yellow-100"
                     :class="`${
                       parseInt(
-                        row.receive_date
-                          ? $moment(row.receive_date)
-                              .add(parseInt(row.shelf_life) + 1, 'days')
+                        v.receive_date && v.shelf_life
+                          ? $moment(v.receive_date)
+                              .add(parseInt(v.shelf_life) + 1, 'days')
                               .diff($moment(new Date()), 'days')
                           : '0'
                       ) <= 30
@@ -296,11 +300,11 @@
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
                           {{
-                            row.receive_date
+                            v.receive_date && v.shelf_life
                               ? $moment
                                   .duration(
-                                    $moment(row.receive_date)
-                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                    $moment(v.receive_date)
+                                      .add(parseInt(v.shelf_life) + 1, "days")
                                       .diff($moment(new Date()), "days"),
                                     "days"
                                   )
@@ -308,11 +312,11 @@
                               : "0"
                           }}Y
                           {{
-                            row.receive_date
+                            v.receive_date && v.shelf_life
                               ? $moment
                                   .duration(
-                                    $moment(row.receive_date)
-                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                    $moment(v.receive_date)
+                                      .add(parseInt(v.shelf_life) + 1, "days")
                                       .diff($moment(new Date()), "days"),
                                     "days"
                                   )
@@ -320,11 +324,11 @@
                               : "0"
                           }}M
                           {{
-                            row.receive_date
+                            v.receive_date && v.shelf_life
                               ? $moment
                                   .duration(
-                                    $moment(row.receive_date)
-                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                    $moment(v.receive_date)
+                                      .add(parseInt(v.shelf_life) + 1, "days")
                                       .diff($moment(new Date()), "days"),
                                     "days"
                                   )
@@ -341,9 +345,9 @@
                     class="bg-cyan-100"
                     :class="`${
                       parseInt(
-                        row.manufacturing_date
-                          ? $moment(row.manufacturing_date)
-                              .add(parseInt(row.shelf_life) + 1, 'days')
+                        v.manufacturing_date && v.shelf_life
+                          ? $moment(v.manufacturing_date)
+                              .add(parseInt(v.shelf_life) + 1, 'days')
                               .diff($moment(new Date()), 'days')
                           : '0'
                       ) <= 30
@@ -357,8 +361,8 @@
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
                           {{
-                            row.manufacturing_date
-                              ? $moment(row.manufacturing_date).format(
+                            v.manufacturing_date && v.shelf_life
+                              ? $moment(v.manufacturing_date).format(
                                   "YYYY-MM-DD"
                                 )
                               : "-"
@@ -371,9 +375,9 @@
                     class="bg-cyan-100"
                     :class="`${
                       parseInt(
-                        row.manufacturing_date
-                          ? $moment(row.manufacturing_date)
-                              .add(parseInt(row.shelf_life) + 1, 'days')
+                        v.manufacturing_date && v.shelf_life
+                          ? $moment(v.manufacturing_date)
+                              .add(parseInt(v.shelf_life) + 1, 'days')
                               .diff($moment(new Date()), 'days')
                           : '0'
                       ) <= 30
@@ -388,9 +392,9 @@
                         >
                           Expire
                           {{
-                            row.manufacturing_date
-                              ? $moment(row.manufacturing_date)
-                                  .add(parseInt(row.shelf_life), "days")
+                            v.manufacturing_date && v.shelf_life
+                              ? $moment(v.manufacturing_date)
+                                  .add(parseInt(v.shelf_life), "days")
                                   .format("YYYY-MM-DD")
                               : "-"
                           }}
@@ -402,9 +406,9 @@
                     class="bg-cyan-100"
                     :class="`${
                       parseInt(
-                        row.manufacturing_date
-                          ? $moment(row.manufacturing_date)
-                              .add(parseInt(row.shelf_life) + 1, 'days')
+                        v.manufacturing_date && v.shelf_life
+                          ? $moment(v.manufacturing_date)
+                              .add(parseInt(v.shelf_life) + 1, 'days')
                               .diff($moment(new Date()), 'days')
                           : '0'
                       ) <= 30
@@ -419,9 +423,9 @@
                         >
                           Life
                           {{
-                            row.manufacturing_date
-                              ? $moment(row.manufacturing_date)
-                                  .add(parseInt(row.shelf_life), "days")
+                            v.manufacturing_date && v.shelf_life
+                              ? $moment(v.manufacturing_date)
+                                  .add(parseInt(v.shelf_life), "days")
                                   .diff($moment(new Date()), "days")
                               : "0"
                           }}
@@ -434,9 +438,9 @@
                     class="bg-cyan-100"
                     :class="`${
                       parseInt(
-                        row.manufacturing_date
-                          ? $moment(row.manufacturing_date)
-                              .add(parseInt(row.shelf_life) + 1, 'days')
+                        v.manufacturing_date && v.shelf_life
+                          ? $moment(v.manufacturing_date)
+                              .add(parseInt(v.shelf_life) + 1, 'days')
                               .diff($moment(new Date()), 'days')
                           : '0'
                       ) <= 30
@@ -450,11 +454,11 @@
                           class="overflow-hidden text-ellipsis whitespace-nowrap"
                         >
                           {{
-                            row.manufacturing_date
+                            v.manufacturing_date && v.shelf_life
                               ? $moment
                                   .duration(
-                                    $moment(row.manufacturing_date)
-                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                    $moment(v.manufacturing_date)
+                                      .add(parseInt(v.shelf_life) + 1, "days")
                                       .diff($moment(new Date()), "days"),
                                     "days"
                                   )
@@ -462,11 +466,11 @@
                               : "0"
                           }}Y
                           {{
-                            row.manufacturing_date
+                            v.manufacturing_date && v.shelf_life
                               ? $moment
                                   .duration(
-                                    $moment(row.manufacturing_date)
-                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                    $moment(v.manufacturing_date)
+                                      .add(parseInt(v.shelf_life) + 1, "days")
                                       .diff($moment(new Date()), "days"),
                                     "days"
                                   )
@@ -474,11 +478,11 @@
                               : "0"
                           }}M
                           {{
-                            row.manufacturing_date
+                            v.manufacturing_date && v.shelf_life
                               ? $moment
                                   .duration(
-                                    $moment(row.manufacturing_date)
-                                      .add(parseInt(row.shelf_life) + 1, "days")
+                                    $moment(v.manufacturing_date)
+                                      .add(parseInt(v.shelf_life) + 1, "days")
                                       .diff($moment(new Date()), "days"),
                                     "days"
                                   )
@@ -520,23 +524,16 @@
     </div>
   </div>
 </template>
-<style>
-.crop {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 1px;
-}
-</style>
 <script>
-// @ is an alias to /src
 import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
 export default {
-  name: "BinLocationReport",
+  name: "StockOnHand",
   components: {
     AppModuleGlobalPageination,
     AppModuleGlobalSearch,
+    AppModuleGlobalLoadingText,
   },
   data() {
     return {
@@ -545,14 +542,6 @@ export default {
         to: "",
       },
       wh: "",
-      load: false,
-      tmpsLink: "",
-      category: {
-        rows: [],
-        page: 1,
-        row: 9999,
-        q: "",
-      },
       base: {
         rows: [],
         quantitys_total: 0,
@@ -578,7 +567,7 @@ export default {
     };
   },
   computed: {
-    ServiceUrl() {
+    serviceUrl() {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
@@ -588,8 +577,8 @@ export default {
   methods: {
     exportExcel() {
       return window.open(`${
-        this.$store.state.serviceUrl
-      }controllers/MYSQL/INTERNAL/WH/exports?type=stockOnHand&total=1&page=${
+        this.serviceUrl
+      }api/controllers/MYSQL/INTERNAL/WH/exports?type=stockOnHand&total=1&page=${
         this.base.page
       }${this.base.row ? `&rows=${this.base.row}` : ""}${
         this.base.q ? `&q=${this.base.q}` : ""
@@ -597,23 +586,7 @@ export default {
         this.date.from ? `&createFrom=${this.date.from}` : ""
       }${
         this.date.to ? `&createTo=${this.date.to}` : ""
-      }&transref=I&transref_type_null=1&sumQuantitys=1
-
-        `);
-
-    //     exportExcel() {
-    //   return window.open(
-    //     `${
-    //       this.$store.state.serviceUrl
-    //     }controllers/MYSQL/INTERNAL/WH/exports?type=transaction&total=1&page=${
-    //       this.base.page
-    //     }${this.base.row ? `&rows=${this.base.row}` : ""}${
-    //       this.base.q ? `&q=${this.base.q}` : ""
-    //     }${this.wh ? `&wh=${this.wh}` : ""}${
-    //       this.transref ? `&transref=${this.transref}` : ""
-    //     }`
-    //   );
-    // },
+      }&transref=I&transref_type_null=1&sumQuantitys=1`);
     },
     change() {
       this.base_search();
@@ -634,12 +607,14 @@ export default {
     base_get(callback) {
       fetch(
         `${
-          this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf?total=1&page=${this.base.page}${
-          this.base.row ? `&rows=${this.base.row}` : ""
-        }${this.base.q ? `&q=${this.base.q}` : ""}${
-          this.wh ? `&wh=${this.wh}` : ""
-        }${this.date.from ? `&createFrom=${this.date.from}` : ""}${
+          this.serviceUrl
+        }api/controllers/MYSQL/INTERNAL/WH/shelf?total=1&page=${
+          this.base.page
+        }${this.base.row ? `&rows=${this.base.row}` : ""}${
+          this.base.q ? `&q=${this.base.q}` : ""
+        }${this.wh ? `&wh=${this.wh}` : ""}${
+          this.date.from ? `&createFrom=${this.date.from}` : ""
+        }${
           this.date.to ? `&createTo=${this.date.to}` : ""
         }&transref=I&transref_type_null=1&sumQuantitys=1
 
@@ -671,14 +646,9 @@ export default {
   },
   watch: {
     wh: function (v) {
+      this.base.page = 1;
       this.base_search();
     },
   },
 };
 </script>
-<style>
-tr,
-td {
-  white-space: nowrap;
-}
-</style>

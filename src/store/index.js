@@ -3,49 +3,16 @@ import { createStore } from "vuex";
 export default createStore({
   state() {
     return {
-      fnScan:true,
+      theme: "ubis",
       user_token: false,
-
-      test: {
-        login: false,
-        posting: false,
-      },
       serviceUrl: `${
         window.location.origin == "http://localhost:8081"
-          ? "http://localhost:8080/kay/rewrite_demo/services/api/"
-          : //  `http://localhost:8080/kay/rewrite_demo/services/api/` :
-            // `${window.location.origin}/services/api/`
-            `http://192.168.11.1/services/api/`
-      }`,
-      serviceImage: `${
-        window.location.origin == "http://localhost:8081"
           ? "http://localhost:8080/kay/rewrite_demo/services/"
-          : //  `http://localhost:8080/kay/rewrite_demo/services/` :
-            // `${window.location.origin}/services/`
-            `http://192.168.11.1/services/`
+          : `http://192.168.11.1/services/`
       }`,
-      // serviceUrl: `https://publicly-quality-javelin.ngrok-free.app/dev/rewrite_demo/services/api/`
-      // `${
-      //   window.location.origin == 'http://localhost:8081' ?
-      //   `https://publicly-quality-javelin.ngrok-free.app/dev/rewrite_demo/services/api/` :
-      //       //  `http://localhost:8080/kay/rewrite_demo/services/api/` :
-      //   `${location.host==='invirtualevent.com'?'https://invirtualevent.com/posting/aroca/':'http://poster-demo.atwebpages.com/service/'}`
-      // }`
-      isLogin: null,
-      admin_isLogin: null,
-      scrollTop: 0,
-
       jwt: null,
       user: null,
-      rating: null,
-      survey: null,
-      coin: 0,
-      veridated: false,
-      gamelist: null,
-      admin: null,
-      game_type: null,
-      // Vue3GoogleOauth:null,
-      // gAuth:null
+
       language: "th",
       menu: {
         AC: [
@@ -120,51 +87,24 @@ export default createStore({
             access: false,
           },
         ],
-        WH: [
-          {
-            title: "Item",
-            access: false,
-            menu: [
-              {
-                title: "Request",
-                name: "WHItemRequest",
-                access: false,
-              },
-              {
-                title: "Approve",
-                name: "WHItemApprove",
-                access: false,
-              },
-            ],
-          },
-          {
-            title: "Bin Location",
-            access: false,
-            menu: [
-              {
-                title: "Factory&External",
-                name: "WHBinLocationManagement",
-                access: false,
-              },
-              {
-                title: "Short Code",
-                name: "WHBinLocationShortCode",
-                access: false,
-              },
-            ],
-          },
-          {
-            title: "Tracking",
-            name: "WHTracking",
-            access: false,
-          },
-        ],
         LM: [
           // {
           //   title: "",
           //   name: "LMShipping",
           //   access: false,
           // },
+
+          {
+            title: "Maps",
+            access: false,
+            menu: [
+              {
+                title: "Example",
+                name: "LMMapsExample",
+                access: false,
+              },
+            ],
+          },
           {
             title: "Transportation",
             access: false,
@@ -248,10 +188,11 @@ export default createStore({
                 access: false,
               },
               {
-                title: "Manage",
-                name: "QAWHIndirectManage",
+                title: "Receive",
+                name: "QAWHIndirectReceive",
                 access: false,
               },
+
               {
                 title: "Request",
                 name: "QAWHIndirectRequest",
@@ -262,9 +203,20 @@ export default createStore({
                 name: "QAWHIndirectApprove",
                 access: false,
               },
+
+              {
+                title: "Issue",
+                name: "QAWHIndirectIssue",
+                access: false,
+              },
+
+              {
+                title: "Manage",
+                name: "QAWHIndirectManage",
+                access: false,
+              },
             ],
           },
-          
         ],
         QC: [
           // {
@@ -294,12 +246,12 @@ export default createStore({
             menu: [
               {
                 title: "Management",
-                name: "QCWHManagement",
+                name: "QCWHRetainManagement",
                 access: false,
               },
               {
                 title: "Short Code",
-                name: "QCWHShortCode",
+                name: "QCWHRetainShortCode",
                 access: false,
               },
             ],
@@ -441,6 +393,86 @@ export default createStore({
             ],
           },
         ],
+        TRR: [
+          {
+            title: "Visitor",
+            name: "TRRVisitor",
+            access: false,
+          },
+
+          {
+            title: "Automate Ticket",
+            access: false,
+            menu: [
+              {
+                title: "Report",
+                name: "TRRAutomateTicketReport",
+                access: false,
+              },
+              {
+                title: "Timestamp",
+                name: "TRRAutomateTicketTimestamp",
+                access: false,
+              },
+              {
+                title: "History",
+                name: "TRRAutomateTicketHistory",
+                access: false,
+              },
+            ],
+          },
+        ],
+        WH: [
+          {
+            title: "Item",
+            access: false,
+            menu: [
+              {
+                title: "Request",
+                name: "WHItemRequest",
+                access: false,
+              },
+              {
+                title: "Approve",
+                name: "WHItemApprove",
+                access: false,
+              },
+            ],
+          },
+          {
+            title: "Bin Location",
+            access: false,
+            menu: [
+              {
+                title: "Check Rac",
+                name: "WHBinLocationCheckRac",
+                access: false,
+              },
+              {
+                title: "Factory&External",
+                name: "WHBinLocationManagement",
+                access: false,
+              },
+              {
+                title: "Short Code",
+                name: "WHBinLocationShortCode",
+                access: false,
+              },
+            ],
+          },
+          {
+            title: "Tracking",
+            name: "WHTracking",
+            access: false,
+          },
+        ],
+        Event: [
+          {
+            title: "Coupon",
+            name: "EventCoupon",
+            access: false,
+          },
+        ],
         System: [
           {
             title: "Access",
@@ -460,6 +492,16 @@ export default createStore({
           {
             title: "Company",
             name: "SystemCompany",
+            access: false,
+          },
+          {
+            title: "News",
+            name: "SystemNews",
+            access: false,
+          },
+          {
+            title: "Short",
+            name: "SystemShort",
             access: false,
           },
         ],
@@ -568,7 +610,7 @@ export default createStore({
 
       transpotationVita: [
         {
-          code : "12345",
+          code: "12345",
           quantation: "quantation ex.",
           packing: "packing ex.",
           shipping: "shipping ex.",
@@ -580,13 +622,14 @@ export default createStore({
           updated_by: "",
           deleted_at: "",
           deleted_by: "",
-          status: "pending",received_at:"2020-01-02",
+          status: "pending",
+          received_at: "2020-01-02",
         },
       ],
       transpotationVitaItem: [
         {
-          code:'123213',
-          transpotation_code : "12345",
+          code: "123213",
+          transpotation_code: "12345",
           product: "product_1234",
           lot: "lotNumber_1234",
           quantity: "111",
@@ -599,12 +642,11 @@ export default createStore({
           updated_by: "tets",
           deleted_at: "2020-01-02",
           deleted_by: "tets",
-          received_at:"2020-01-02",
+          received_at: "2020-01-02",
         },
         {
-          
-          code:'321321',
-          transpotation_code : "12345",
+          code: "321321",
+          transpotation_code: "12345",
           product: "product_1234",
           lot: "lotNumber_1234",
           quantity: "111",
@@ -616,11 +658,12 @@ export default createStore({
           updated_at: "2020-01-02",
           updated_by: "tets",
           deleted_at: "2020-01-02",
-          deleted_by: "tets",       received_at:"2020-01-02",
+          deleted_by: "tets",
+          received_at: "2020-01-02",
         },
         {
-          code:'23opet',
-          transpotation_code : "12345",
+          code: "23opet",
+          transpotation_code: "12345",
           product: "product_1234",
           lot: "lotNumber_1234",
           quantity: "111",
@@ -632,12 +675,46 @@ export default createStore({
           updated_at: "2020-01-02",
           updated_by: "tets",
           deleted_at: "2020-01-02",
-          deleted_by: "tets",       received_at:"2020-01-02",
+          deleted_by: "tets",
+          received_at: "2020-01-02",
         },
-      ]
+      ],
+
+      colors: [
+        "#ff6178",
+        "#f5ef30",
+        "#ff61a3",
+        "#26e7a6",
+        "#fe9e3b",
+        "#26a0fc",
+        "#8b75d7",
+        "#E74645",
+        "#FB7756",
+        "#FACD60",
+        "#FDFA66",
+        "#1AC0C6",
+        "#454D66",
+        "#309975",
+        "#58B368",
+        "#DAD873",
+        "#EFEEB4",
+        "#F9B4AB",
+        "#FDEBD3",
+        "#264E70",
+        "#679186",
+        "#BBD4CE",
+        "#52489C",
+        "#4062BB",
+        "#59C3C3",
+        "#EBEBEB",
+        "#F45B69",
+      ],
     };
   },
   getters: {
+    theme(state) {
+      return state.theme;
+    },
     transpotation(state) {
       return state.transpotation;
     },
@@ -656,26 +733,20 @@ export default createStore({
     menu(state) {
       return state.menu;
     },
-    HR(state) {
-      return state.menu.HR;
-    },
     AC(state) {
       return state.menu.AC;
     },
-    WH(state) {
-      return state.menu.WH;
+    HR(state) {
+      return state.menu.HR;
     },
     LM(state) {
       return state.menu.LM;
     },
-    PUR(state) {
-      return state.menu.PUR;
-    },
     PD(state) {
       return state.menu.PD;
     },
-    RD(state) {
-      return state.menu.RD;
+    PUR(state) {
+      return state.menu.PUR;
     },
     QA(state) {
       return state.menu.QA;
@@ -683,11 +754,23 @@ export default createStore({
     QC(state) {
       return state.menu.QC;
     },
-    System(state) {
-      return state.menu.System;
+    RD(state) {
+      return state.menu.RD;
     },
     SuperData(state) {
       return state.menu.SuperData;
+    },
+    TRR(state) {
+      return state.menu.TRR;
+    },
+    WH(state) {
+      return state.menu.WH;
+    },
+    Event(state) {
+      return state.menu.Event;
+    },
+    System(state) {
+      return state.menu.System;
     },
     test(state) {
       return state.menu.test;
@@ -695,87 +778,27 @@ export default createStore({
     user_token(state) {
       return state.user_token;
     },
-
-    testLogin(state) {
-      // console.log(state)
-      return state.test.login;
-    },
-    testPosting(state) {
-      // console.log(state)
-      return state.test.posting;
-    },
-    // gAuth(state) {
-    //   // console.log(state)
-    //   return state.gAuth
-    // },
-    // Vue3GoogleOauth(state) {
-    //   // console.log(state)
-    //   return state.Vue3GoogleOauth
-    // },
     serviceUrl(state) {
-      // console.log(state)
       return state.serviceUrl;
     },
-    serviceImage(state) {
-      // console.log(state)
-      return state.serviceImage;
-    },
-
-    isLogin(state) {
-      // console.log(state)
-      return state.isLogin;
-    },
-    admin_isLogin(state) {
-      // console.log(state)
-      return state.admin_isLogin;
-    },
-    scrollTop(state) {
-      // console.log(state)
-      return state.scrollTop;
-    },
     jwt(state) {
-      // console.log(state)
       return state.jwt;
     },
     user(state) {
-      // console.log(state)
       return state.user;
     },
-    rating(state) {
-      // console.log(state)
-      return state.rating;
-    },
-    survey(state) {
-      // console.log(state)
-      return state.survey;
-    },
-    coin(state) {
-      // console.log(state)
-      return state.coin;
-    },
-    admin(state) {
-      // console.log(state)
-      return state.admin;
-    },
-    veridated(state) {
-      // console.log(state)
-      return state.veridated;
-    },
-    gamelist(state) {
-      // console.log(state)
-      return state.gamelist;
-    },
-    game_type(state) {
-      // console.log(state)
-      return state.game_type;
-    },
-    fnScan(state) {
-      // console.log(state)
-      return state.fnScan;
+    colors(state) {
+      return state.colors;
     },
   },
   mutations: {
-    
+    theme(state, data) {
+      return (state.theme = data);
+    },
+
+    menu(state, data) {
+      return (state.menu = data);
+    },
     transpotationVita(state, data) {
       return (state.transpotationVita = data);
     },
@@ -794,70 +817,11 @@ export default createStore({
     user_token(state, data) {
       return (state.user_token = data);
     },
-    testLogin(state, data) {
-      // console.log(state)
-      return (state.test.login = data);
-    },
-    testPosting(state, data) {
-      // console.log(state)
-      return (state.test.posting = data);
-    },
-    gAuth(state, data) {
-      // console.log(state)
-      return (state.gAuth = data);
-    },
-    // Vue3GoogleOauth(state, data) {
-    //   // console.log(state)
-    //   return state.Vue3GoogleOauth = data
-    // },
-
-    admin_isLogin(state, data) {
-      // console.log(state)
-      return (state.admin_isLogin = data);
-    },
-    isLogin(state, data) {
-      // console.log(state)
-      return (state.isLogin = data);
-    },
-    scrollTop(state, data) {
-      // console.log(state)
-      return (state.scrollTop = data);
-    },
     jwt(state, data) {
-      // console.log(state)
       return (state.jwt = data);
     },
     user(state, data) {
-      // console.log(state)
       return (state.user = data);
-    },
-    rating(state, data) {
-      // console.log(state)
-      return (state.rating = data);
-    },
-    survey(state, data) {
-      // console.log(state)
-      return (state.survey = data);
-    },
-    coin(state, data) {
-      // console.log(state)
-      return (state.coin = data);
-    },
-    admin(state, data) {
-      // console.log(state)
-      return (state.admin = data);
-    },
-    veridated(state, data) {
-      // console.log(state)
-      return (state.veridated = data);
-    },
-    gamelist(state, data) {
-      // console.log(state)
-      return (state.gamelist = data);
-    },
-    game_type(state, data) {
-      // console.log(state)
-      return (state.game_type = data);
     },
   },
   actions: {},

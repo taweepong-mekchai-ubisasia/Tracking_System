@@ -15,7 +15,7 @@
           ✕
         </label>
         <h3 class="text-lg font-bold">Remove Item!{{ modal }}</h3>
-        <div class="card-body overflow-auto" style="max-height: 60vh">
+        <div class="card-body overflow-auto max-h-[60vh]" >
           Are your sure for remove this item?
         </div>
 
@@ -56,7 +56,7 @@ export default {
         return;
       }
 
-      fetch(`${this.$store.state.serviceUrl}controllers/${this.controll}`, {
+      fetch(`${this.$store.state.serviceUrl}api/controllers/${this.controll}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +67,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.modal = false;
             this.$emit("response", {});

@@ -29,7 +29,7 @@
                       <input
                         type="text"
                         placeholder="rac"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required
                         v-model="layout.form.rac"
                       />
@@ -43,7 +43,7 @@
                       <input
                         type="number"
                         placeholder="bay"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required
                         v-model="layout.form.bay"
                         min="2"
@@ -61,7 +61,7 @@
                       <input
                         type="number"
                         placeholder="levels"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required
                         v-model="layout.form.levels"
                         min="1"
@@ -77,7 +77,7 @@
                       <input
                         type="number"
                         placeholder="pallets"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required
                         v-model="layout.form.pallets"
                         min="1"
@@ -93,7 +93,7 @@
                       <input
                         type="number"
                         placeholder="x"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required
                         v-model="layout.form.x"
                         min="1"
@@ -109,7 +109,7 @@
                       <input
                         type="number"
                         placeholder="y"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required
                         v-model="layout.form.y"
                         min="1"
@@ -125,7 +125,7 @@
                       <input
                         type="number"
                         placeholder="width"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required
                         v-model="layout.form.width"
                         min="1"
@@ -141,7 +141,7 @@
                       <input
                         type="number"
                         placeholder="height"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required
                         v-model="layout.form.height"
                         min="1"
@@ -536,7 +536,7 @@ export default {
       fetch(
         `${
           this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/layout?wh=${this.wh}&transref=I&page=${
+        }api/controllers/MYSQL/INTERNAL/WH/layout?wh=${this.wh}&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -551,7 +551,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             res.rows.map((v) => {
               v.isActive = false;
               v.x = parseInt(v.x);
@@ -592,7 +595,7 @@ export default {
     base_save() {
       let vm = this;
       fetch(
-        `${this.$store.state.serviceUrl}controllers/MYSQL/INTERNAL/WH/layout`,
+        `${this.$store.state.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout`,
         {
           method: this.base.controll == "create" ? "POST" : "PUT",
           headers: {
@@ -606,7 +609,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             vm.base_search((res) => {});
           }
@@ -634,7 +640,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
           }
@@ -660,7 +669,7 @@ export default {
       fetch(
         `${
           this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf?action=count&transref=I&transref_type_null=1&wh=${
+        }api/controllers/MYSQL/INTERNAL/WH/shelf?action=count&transref=I&transref_type_null=1&wh=${
           this.wh
         }&total=1&page=${this.rac.page}${
           this.rac.row ? `&rows=${this.rac.row}` : ""

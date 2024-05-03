@@ -12,7 +12,7 @@ icon.value = require(`@/assets/img/favicon-32x32.png`)
 export default {
   name: "app",
   computed: {
-    ServiceUrl() {
+    serviceUrl() {
       return this.$store.getters.serviceUrl;
     },
     user() {
@@ -26,7 +26,22 @@ export default {
     return {};
   },
   methods: {},
-  mounted() {},
+  mounted() {
+    this.$nextTick(() => {
+      // this.$store.commit(
+      //   "language",
+      //   localStorage.getItem("language")
+      //     ? localStorage.getItem("language")
+      //     : "th"
+      // );
+      this.$store.commit(
+        "theme",
+        localStorage.getItem("theme")
+          ? localStorage.getItem("theme")
+          : "th"
+      );
+    });
+  },
   created() {},
   watch: {},
 };
@@ -56,11 +71,14 @@ html,
 }
 
 body {
+  // overflow:hidden
   /* background-color: red; */
   height: 100dvh;
   --tw-bg-opacity: 1;
-  background-color: var(--fallback-b2, oklch(var(--b2) / 1));
-  background-color: var(--fallback-b2, oklch(var(--b2) / var(--tw-bg-opacity)));
+  // background-color: var(--fallback-b2, oklch(var(--b2) / 1));
+  background-color: 
+var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)))
+  
 }
 [data-theme="ubis"] .menu li > *:not(ul):not(.menu-title):not(details):active,
 .menu li > *:not(ul):not(.menu-title):not(details).active,
@@ -179,5 +197,20 @@ nav {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #a4a4a4;
+}
+select:active,select:hover,select:focus,
+input:active,input:hover,input:focus{
+  outline-width: 0px !important;
+}
+
+tr,
+td {
+  white-space: nowrap;
+}
+.crop {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 1px;
 }
 </style>

@@ -322,7 +322,7 @@
                         <h2 class="card-title">เลือกการจัดการ</h2>
                       </label>
                       <select
-                        class="select select-bordered w-full"
+                        class="select select-bordered border-base-content w-full"
                         v-model="checkbox"
                       >
                         <option disabled selected value="">เลือกรายการ</option>
@@ -346,7 +346,7 @@
                         ><span class="label-text">RACK-BAY</span></label
                       >
                       <select
-                        class="select select-bordered w-full"
+                        class="select select-bordered border-base-content w-full"
                         v-model="detail.form.rac_data"
                       >
                         <option disabled selected value="">...</option>
@@ -363,7 +363,7 @@
                       >
                       <select
                         v-if="detail.form.rac_data"
-                        class="select select-bordered w-full"
+                        class="select select-bordered border-base-content w-full"
                         v-model="detail.form.level"
                       >
                         <option disabled selected value="">...</option>
@@ -378,7 +378,7 @@
 
                       <select
                         v-else
-                        class="select select-bordered w-full select-disabled"
+                        class="select select-bordered border-base-content w-full select-disabled"
                         disabled
                       >
                         <option disabled selected value="">...</option>
@@ -392,7 +392,7 @@
                       >
                       <select
                         v-if="detail.form.rac_data"
-                        class="select select-bordered w-full"
+                        class="select select-bordered border-base-content w-full"
                         v-model="detail.form.pallet"
                       >
                         <option disabled selected value="">...</option>
@@ -406,7 +406,7 @@
 
                       <select
                         v-else
-                        class="select select-bordered w-full select-disabled"
+                        class="select select-bordered border-base-content w-full select-disabled"
                         disabled
                       >
                         <option disabled selected value="">...</option>
@@ -434,7 +434,7 @@
                         :minChar="3"
                         :delay="0.5"
                         :limit="10"
-                        :customClass="`input input-bordered ${
+                        :customClass="`input input-bordered border-base-content ${
                           checkbox == 'M' ? 'input-disabled' : ''
                         }`"
                         :disabled="checkbox == 'M' ? true : false"
@@ -452,14 +452,14 @@
                             refresh.item_short_code = obj.value;
                           }
                         "
-                        :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort`"
+                        :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`"
                         :param="`&total=1&wh=${user.branchTitle}&action=groupby-code`"
                       />
                       <input
                         v-else
                         type="text"
                         placeholder="Short code"
-                        class="input input-bordered input-disabled"
+                        class="input input-bordered border-base-content input-disabled"
                         required=""
                         v-model="detail.form.item_short_code"
                         disabled
@@ -476,7 +476,7 @@
                       <input
                         type="text"
                         placeholder="Lot Number"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         v-model="detail.form.batch"
                         :disabled="
@@ -494,7 +494,7 @@
                       </label>
 
                       <select
-                        class="select select-bordered w-full"
+                        class="select select-bordered border-base-content w-full"
                         v-model="detail.form.item_code"
                       >
                         <option disabled selected value="">เลือกรายการ</option>
@@ -517,7 +517,7 @@
                       <input
                         type="text"
                         placeholder="Item Code"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         v-model="detail.form.item_code"
                         disabled
@@ -532,7 +532,7 @@
                       <input
                         type="text"
                         placeholder="Shelf life"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         v-model="detail.form.shelf_life"
                         disabled
@@ -549,7 +549,7 @@
                       <input
                         type="date"
                         placeholder="title"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         v-model="detail.form.receive_date"
                         :disabled="detail.controll == 'edit' && checkbox != 'E'"
@@ -564,7 +564,7 @@
                       <input
                         type="date"
                         placeholder="title"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         v-model="detail.form.manufacturing_date"
                         :disabled="detail.controll == 'edit' && checkbox != 'E'"
@@ -582,7 +582,7 @@
                       <input
                         type="number"
                         placeholder="Qty"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         min="1"
                         max="5"
@@ -597,7 +597,7 @@
                       ><input
                         type="number"
                         placeholder="Pack Size"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         min="1"
                         max="5"
@@ -613,7 +613,7 @@
                       ><input
                         type="number"
                         placeholder="Quantity"
-                        class="input input-bordered input-disabled"
+                        class="input input-bordered border-base-content input-disabled"
                         required=""
                         min="1"
                         max="5"
@@ -630,7 +630,7 @@
                       <input
                         type="text"
                         placeholder="Unit"
-                        class="input input-bordered w-full input-disabled"
+                        class="input input-bordered border-base-content w-full input-disabled"
                         required=""
                         v-model="detail.form.uom"
                         readonly
@@ -987,7 +987,7 @@ export default {
       //   "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
       // );
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.form.code}&transref=I&transref_type_null=1`,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.form.code}&transref=I&transref_type_null=1`,
         {
           method: "GET",
           headers: {
@@ -1084,7 +1084,7 @@ export default {
         this.detail.form.rac_layout = this.detail.form.rac_data.code;
       }
       this.detail.form.transref = this.checkbox ? this.checkbox : "I";
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf`, {
+      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf`, {
         method: this.detail.controll == "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -1094,7 +1094,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.modal.detail = false;
             this.detail_search();
             this.layout[this.detail.form.wh] = true;
@@ -1119,7 +1122,7 @@ export default {
     },
     rac_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=wh1&rac_list=1`,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=wh1&rac_list=1`,
         {
           method: "GET",
           headers: {
@@ -1130,7 +1133,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // res.rows.forEach((v, i) => {
             //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
             //   res.rows[i].master = 0;
@@ -1162,7 +1168,7 @@ export default {
     },
     bay_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=wh1&bay_list=1&rac=${this.detail.form.rac}`,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=wh1&bay_list=1&rac=${this.detail.form.rac}`,
         {
           method: "GET",
           headers: {
@@ -1173,7 +1179,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // res.rows.forEach((v, i) => {
             //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
             //   res.rows[i].master = 0;
@@ -1206,7 +1215,7 @@ export default {
     },
     item_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&rac=${this.detail.form.rac}&wh=${this.user.branchTitle}&short_code=${this.detail.form.item_short_code}`,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&rac=${this.detail.form.rac}&wh=${this.user.branchTitle}&short_code=${this.detail.form.item_short_code}`,
         {
           method: "GET",
           headers: {
@@ -1217,7 +1226,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // res.rows.forEach((v, i) => {
             //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
             //   res.rows[i].master = 0;
@@ -1293,7 +1305,7 @@ export default {
     "detail.form.item_code": function (val) {
       if (val) {
         fetch(
-          `${this.serviceUrl}controllers/SAP/${
+          `${this.serviceUrl}api/controllers/SAP/${
             this.detail.form.item_wh ? this.detail.form.item_wh : "UBA"
           }/oitm?item_code=${val}`,
           {
@@ -1306,7 +1318,10 @@ export default {
         )
           .then((response) => response.json())
           .then((res) => {
-            if (res.rows.length > 0) {
+                     if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
               this.detail.form.item_code = res.rows[0].ItemCode;
               this.detail.form.item_name = res.rows[0].ItemName;
               this.detail.form.shelf_life = res.rows[0].U_Agin;

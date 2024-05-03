@@ -26,7 +26,7 @@
                   <input
                     type="text"
                     placeholder="Short code"
-                    class="input input-bordered input-disabled"
+                    class="input input-bordered border-base-content input-disabled"
                     required=""
                     v-model="base.form.item_short_code"
                     disabled
@@ -40,7 +40,7 @@
                   <input
                     type="text"
                     placeholder="Short code"
-                    class="input input-bordered input-disabled"
+                    class="input input-bordered border-base-content input-disabled"
                     required=""
                     v-model="base.form.item_short_code"
                     disabled
@@ -53,7 +53,7 @@
                   <input
                     type="text"
                     placeholder="Item Code"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     required=""
                     v-model="base.form.item_code"
                     disabled
@@ -68,7 +68,7 @@
                       <input
                         type="number"
                         placeholder="Qty"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         min="1"
                         max="5"
@@ -85,7 +85,7 @@
                       <input
                         type="text"
                         placeholder="Unit"
-                        class="input input-bordered w-full input-disabled"
+                        class="input input-bordered border-base-content w-full input-disabled"
                         required=""
                         v-model="base.form.uom"
                         readonly
@@ -99,7 +99,7 @@
                   </label>
                   <label class="form-control w-full">
                     <select
-                      class="select select-bordered"
+                      class="select select-bordered border-base-content"
                       v-model="base.form.newStatus"
                     >
                       <option selected disabled value="">Select Option</option>
@@ -167,7 +167,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh]">
               Are your sure for remove this item?
             </div>
 
@@ -207,7 +207,7 @@
                     <input
                       type="date"
                       placeholder="title"
-                      class="join-item input input-sm input-bordered"
+                      class="join-item input input-sm input-bordered border-base-content"
                       v-model="date.from"
                       @change="change"
                     />
@@ -221,7 +221,7 @@
                     <input
                       type="date"
                       placeholder="title"
-                      class="join-item input input-sm input-bordered"
+                      class="join-item input input-sm input-bordered border-base-content"
                       v-model="date.to"
                       @change="change"
                     />
@@ -237,7 +237,7 @@
                   />
                 </button> -->
                   <AppModuleGlobalSearch
-                    :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+                    :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                     @search="
                       (q) => {
                         base.q = q;
@@ -323,384 +323,363 @@
                               >
                               <div class="col-12 pt-3" id="calingArea">
                                 <!-- <div class="table-responsive"> -->
-                                  <!-- <div class="overflow-x-auto"> -->
-                                    <table class="table table-xs">
-                                      <thead class="bg-primary text-light">
-                                        <tr>
-                                          <th>No.</th>
-                                          <th>Item Code</th>
-                                          <th>Decription</th>
-                                          <th class="text-end">Quantity</th>
-                                          <th>Unit</th>
-                                          <th class="text-end">
-                                            Price/Unit (บาท)
-                                          </th>
-                                          <th class="text-end">AVG.(บาท)</th>
-                                          <th class="text-end">Diff.(บาท)</th>
-                                          <th class="text-end">Amount(บาท)</th>
-                                          <th class="text-center">
-                                            Date of Purchase
-                                          </th>
-                                          <th>Supplier Name</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr class="align-middle" id="0">
-                                          <td>
-                                            <i
-                                              class="bi bi-x-circle text-danger pointer btnDelRow"
-                                            ></i>
-                                            1
-                                          </td>
-                                          <td>RSVBUCE</td>
-                                          <td>BUCE</td>
-                                          <td class="text-end">
-                                            <span style="display: none"
-                                              >67.75</span
-                                            ><input
-                                              type="number"
-                                              class="form-control form-control-sm cal"
-                                              name="qty"
-                                              value="67.75"
-                                              style="width: 100px"
+                                <!-- <div class="overflow-x-auto"> -->
+                                <table class="table table-xs">
+                                  <thead class="bg-primary text-light">
+                                    <tr>
+                                      <th>No.</th>
+                                      <th>Item Code</th>
+                                      <th>Decription</th>
+                                      <th class="text-end">Quantity</th>
+                                      <th>Unit</th>
+                                      <th class="text-end">Price/Unit (บาท)</th>
+                                      <th class="text-end">AVG.(บาท)</th>
+                                      <th class="text-end">Diff.(บาท)</th>
+                                      <th class="text-end">Amount(บาท)</th>
+                                      <th class="text-center">
+                                        Date of Purchase
+                                      </th>
+                                      <th>Supplier Name</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr class="align-middle" id="0">
+                                      <td>
+                                        <i
+                                          class="bi bi-x-circle text-danger pointer btnDelRow"
+                                        ></i>
+                                        1
+                                      </td>
+                                      <td>RSVBUCE</td>
+                                      <td>BUCE</td>
+                                      <td class="text-end">
+                                        <span style="display: none">67.75</span
+                                        ><input
+                                          type="number"
+                                          class="form-control form-control-sm cal"
+                                          name="qty"
+                                          value="67.75"
+                                          style="width: 100px"
+                                        />
+                                      </td>
+                                      <td>Kg.</td>
+                                      <td class="text-end">
+                                        <span style="display: none">51.50</span
+                                        ><input
+                                          type="number"
+                                          class="form-control form-control-sm cal"
+                                          name="price"
+                                          value="51.50"
+                                          style="width: 100px"
+                                        />
+                                      </td>
+                                      <td class="text-end">48.73</td>
+                                      <td class="text-end">2.77</td>
+                                      <td class="text-end">3,489.13</td>
+                                      <td class="text-center">29-02-2024</td>
+                                      <td>บริษัท เอซ โกลบอล เคม จำกัด</td>
+                                    </tr>
+                                    <tr class="align-middle" id="1">
+                                      <td>
+                                        <i
+                                          class="bi bi-x-circle text-danger pointer btnDelRow"
+                                        ></i>
+                                        2
+                                      </td>
+                                      <td>RSVDIXYL</td>
+                                      <td>DIXYL</td>
+                                      <td class="text-end">
+                                        <span style="display: none">32.25</span
+                                        ><input
+                                          type="number"
+                                          class="form-control form-control-sm cal"
+                                          name="qty"
+                                          value="32.25"
+                                          style="width: 100px"
+                                        />
+                                      </td>
+                                      <td>Kg.</td>
+                                      <td class="text-end">
+                                        <span style="display: none">35.50</span
+                                        ><input
+                                          type="number"
+                                          class="form-control form-control-sm cal"
+                                          name="price"
+                                          value="35.50"
+                                          style="width: 100px"
+                                        />
+                                      </td>
+                                      <td class="text-end">35.56</td>
+                                      <td class="text-end">-0.06</td>
+                                      <td class="text-end">1,144.88</td>
+                                      <td class="text-center">06-03-2024</td>
+                                      <td>
+                                        บริษัท เอเซีย แปซิฟิค ปิโตรเคมิคอล จำกัด
+                                      </td>
+                                    </tr>
+                                    <tr class="align-middle" id="2">
+                                      <td>
+                                        <i
+                                          class="bi bi-x-circle text-danger pointer btnDelRow"
+                                        ></i>
+                                        3
+                                      </td>
+                                      <td>OHB-001</td>
+                                      <td>ค่าใช้จ่ายในการผลิต - บางปู</td>
+                                      <td class="text-end">
+                                        <span style="display: none">98.00</span
+                                        ><input
+                                          type="number"
+                                          class="form-control form-control-sm cal"
+                                          name="qty"
+                                          value="98.00"
+                                          style="width: 100px"
+                                        />
+                                      </td>
+                                      <td>-</td>
+                                      <td class="text-end">
+                                        <span style="display: none">4.95</span
+                                        ><input
+                                          type="number"
+                                          class="form-control form-control-sm cal"
+                                          name="price"
+                                          value="4.95"
+                                          style="width: 100px"
+                                        />
+                                      </td>
+                                      <td class="text-end">4.95</td>
+                                      <td class="text-end">0.00</td>
+                                      <td class="text-end">485.10</td>
+                                      <td class="text-center">-</td>
+                                      <td>-</td>
+                                    </tr>
+                                    <tr class="align-middle" id="3">
+                                      <td>
+                                        <i
+                                          class="bi bi-x-circle text-danger pointer btnDelRow"
+                                        ></i>
+                                        4
+                                      </td>
+                                      <td>DLB-001</td>
+                                      <td>ค่าแรงทางตรง-บางปู</td>
+                                      <td class="text-end">
+                                        <span style="display: none">98.00</span
+                                        ><input
+                                          type="number"
+                                          class="form-control form-control-sm cal"
+                                          name="qty"
+                                          value="98.00"
+                                          style="width: 100px"
+                                        />
+                                      </td>
+                                      <td>-</td>
+                                      <td class="text-end">
+                                        <span style="display: none">1.72</span
+                                        ><input
+                                          type="number"
+                                          class="form-control form-control-sm cal"
+                                          name="price"
+                                          value="1.72"
+                                          style="width: 100px"
+                                        />
+                                      </td>
+                                      <td class="text-end">1.72</td>
+                                      <td class="text-end">0.00</td>
+                                      <td class="text-end">168.56</td>
+                                      <td class="text-center">-</td>
+                                      <td>-</td>
+                                    </tr>
+                                    <tr class="align-middle">
+                                      <td colspan="11">
+                                        <span
+                                          class="fw-bold text-success pointer btnAddRow"
+                                          ><i class="bi bi-plus-circle"></i> Add
+                                          Row</span
+                                        >
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot class="fw-bold">
+                                    <tr>
+                                      <td></td>
+                                      <td></td>
+                                      <td>Batch Size (BOM)</td>
+                                      <td
+                                        class="text-end text-primary"
+                                        id="batchSize"
+                                      >
+                                        100.00
+                                      </td>
+                                      <td>Kg.</td>
+                                      <td class="text-end text-primary"></td>
+                                      <td></td>
+                                      <td></td>
+                                      <td
+                                        class="text-end text-primary"
+                                        id="amount"
+                                      >
+                                        0.00
+                                      </td>
+                                      <td>บาท</td>
+                                      <td></td>
+                                    </tr>
+                                    <tr>
+                                      <td></td>
+                                      <td></td>
+                                      <td>Quantity of RM</td>
+                                      <td
+                                        class="text-end text-primary"
+                                        id="quantityOfRm"
+                                      >
+                                        100.00
+                                      </td>
+                                      <td>Kg.</td>
+                                      <td>AVG</td>
+                                      <td
+                                        class="text-end text-primary"
+                                        id="average"
+                                      >
+                                        59.33
+                                      </td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                    </tr>
+                                    <tr>
+                                      <td></td>
+                                      <td></td>
+                                      <td>Loss 2%</td>
+                                      <td
+                                        class="text-end text-primary"
+                                        id="loss"
+                                      >
+                                        2.00
+                                      </td>
+                                      <td>Kg.</td>
+                                      <td>Current Cost</td>
+                                      <td
+                                        class="text-end text-primary"
+                                        id="currentCost"
+                                      >
+                                        0.00
+                                      </td>
+                                      <td>ราคาต่อ 1 กิโลกรัม</td>
+                                      <td>
+                                        Margin 30% (<span class="text-primary"
+                                          >0.00</span
+                                        >)
+                                        <i
+                                          class="bi bi-info-circle"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-html="true"
+                                          title=""
+                                          data-bs-original-title="Margin: <i>Current Cost / 0.70</i>"
+                                          aria-label="Margin: <i>Current Cost / 0.70</i>"
+                                        ></i>
+                                      </td>
+                                      <td>
+                                        Margin 35% (<span class="text-primary"
+                                          >0.00</span
+                                        >)
+                                        <i
+                                          class="bi bi-info-circle"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-html="true"
+                                          title=""
+                                          data-bs-original-title="Margin: <i>Current Cost / 0.65</i>"
+                                          aria-label="Margin: <i>Current Cost / 0.65</i>"
+                                        ></i>
+                                      </td>
+                                      <td></td>
+                                    </tr>
+                                    <tr>
+                                      <td></td>
+                                      <td></td>
+                                      <td>Net Quantity of Output</td>
+                                      <td
+                                        class="text-end text-primary"
+                                        id="netQuantityOfOutput"
+                                      >
+                                        98.00
+                                      </td>
+                                      <td>Kg.</td>
+                                      <td>Diff</td>
+                                      <td
+                                        class="text-end text-primary"
+                                        id="diff"
+                                      >
+                                        59.33
+                                      </td>
+                                      <td>
+                                        <i
+                                          class="bi bi-info-circle"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-html="true"
+                                          title=""
+                                          data-bs-original-title="Diff: <i>AVG - Current Cost</i>"
+                                          aria-label="Diff: <i>AVG - Current Cost</i>"
+                                        ></i>
+                                      </td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                    </tr>
+                                    <tr>
+                                      <td colspan="11">
+                                        <div class="p-3 text-success">
+                                          <h6>เลือกข้อมูลที่นำมาคำนวณต้นทุน</h6>
+                                          <div
+                                            class="form-check form-switch form-check-inline"
+                                          >
+                                            <input
+                                              class="form-check-input pointer filter"
+                                              type="checkbox"
+                                              id="calRM"
+                                              name="calRM"
                                             />
-                                          </td>
-                                          <td>Kg.</td>
-                                          <td class="text-end">
-                                            <span style="display: none"
-                                              >51.50</span
-                                            ><input
-                                              type="number"
-                                              class="form-control form-control-sm cal"
-                                              name="price"
-                                              value="51.50"
-                                              style="width: 100px"
-                                            />
-                                          </td>
-                                          <td class="text-end">48.73</td>
-                                          <td class="text-end">2.77</td>
-                                          <td class="text-end">3,489.13</td>
-                                          <td class="text-center">
-                                            29-02-2024
-                                          </td>
-                                          <td>บริษัท เอซ โกลบอล เคม จำกัด</td>
-                                        </tr>
-                                        <tr class="align-middle" id="1">
-                                          <td>
-                                            <i
-                                              class="bi bi-x-circle text-danger pointer btnDelRow"
-                                            ></i>
-                                            2
-                                          </td>
-                                          <td>RSVDIXYL</td>
-                                          <td>DIXYL</td>
-                                          <td class="text-end">
-                                            <span style="display: none"
-                                              >32.25</span
-                                            ><input
-                                              type="number"
-                                              class="form-control form-control-sm cal"
-                                              name="qty"
-                                              value="32.25"
-                                              style="width: 100px"
-                                            />
-                                          </td>
-                                          <td>Kg.</td>
-                                          <td class="text-end">
-                                            <span style="display: none"
-                                              >35.50</span
-                                            ><input
-                                              type="number"
-                                              class="form-control form-control-sm cal"
-                                              name="price"
-                                              value="35.50"
-                                              style="width: 100px"
-                                            />
-                                          </td>
-                                          <td class="text-end">35.56</td>
-                                          <td class="text-end">-0.06</td>
-                                          <td class="text-end">1,144.88</td>
-                                          <td class="text-center">
-                                            06-03-2024
-                                          </td>
-                                          <td>
-                                            บริษัท เอเซีย แปซิฟิค ปิโตรเคมิคอล
-                                            จำกัด
-                                          </td>
-                                        </tr>
-                                        <tr class="align-middle" id="2">
-                                          <td>
-                                            <i
-                                              class="bi bi-x-circle text-danger pointer btnDelRow"
-                                            ></i>
-                                            3
-                                          </td>
-                                          <td>OHB-001</td>
-                                          <td>ค่าใช้จ่ายในการผลิต - บางปู</td>
-                                          <td class="text-end">
-                                            <span style="display: none"
-                                              >98.00</span
-                                            ><input
-                                              type="number"
-                                              class="form-control form-control-sm cal"
-                                              name="qty"
-                                              value="98.00"
-                                              style="width: 100px"
-                                            />
-                                          </td>
-                                          <td>-</td>
-                                          <td class="text-end">
-                                            <span style="display: none"
-                                              >4.95</span
-                                            ><input
-                                              type="number"
-                                              class="form-control form-control-sm cal"
-                                              name="price"
-                                              value="4.95"
-                                              style="width: 100px"
-                                            />
-                                          </td>
-                                          <td class="text-end">4.95</td>
-                                          <td class="text-end">0.00</td>
-                                          <td class="text-end">485.10</td>
-                                          <td class="text-center">-</td>
-                                          <td>-</td>
-                                        </tr>
-                                        <tr class="align-middle" id="3">
-                                          <td>
-                                            <i
-                                              class="bi bi-x-circle text-danger pointer btnDelRow"
-                                            ></i>
-                                            4
-                                          </td>
-                                          <td>DLB-001</td>
-                                          <td>ค่าแรงทางตรง-บางปู</td>
-                                          <td class="text-end">
-                                            <span style="display: none"
-                                              >98.00</span
-                                            ><input
-                                              type="number"
-                                              class="form-control form-control-sm cal"
-                                              name="qty"
-                                              value="98.00"
-                                              style="width: 100px"
-                                            />
-                                          </td>
-                                          <td>-</td>
-                                          <td class="text-end">
-                                            <span style="display: none"
-                                              >1.72</span
-                                            ><input
-                                              type="number"
-                                              class="form-control form-control-sm cal"
-                                              name="price"
-                                              value="1.72"
-                                              style="width: 100px"
-                                            />
-                                          </td>
-                                          <td class="text-end">1.72</td>
-                                          <td class="text-end">0.00</td>
-                                          <td class="text-end">168.56</td>
-                                          <td class="text-center">-</td>
-                                          <td>-</td>
-                                        </tr>
-                                        <tr class="align-middle">
-                                          <td colspan="11">
-                                            <span
-                                              class="fw-bold text-success pointer btnAddRow"
-                                              ><i class="bi bi-plus-circle"></i>
-                                              Add Row</span
+                                            <label
+                                              class="form-check-label pointer filter"
+                                              for="calRM"
+                                              >Raw Materials</label
                                             >
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      <tfoot class="fw-bold">
-                                        <tr>
-                                          <td></td>
-                                          <td></td>
-                                          <td>Batch Size (BOM)</td>
-                                          <td
-                                            class="text-end text-primary"
-                                            id="batchSize"
+                                          </div>
+                                          <div
+                                            class="form-check form-switch form-check-inline"
                                           >
-                                            100.00
-                                          </td>
-                                          <td>Kg.</td>
-                                          <td
-                                            class="text-end text-primary"
-                                          ></td>
-                                          <td></td>
-                                          <td></td>
-                                          <td
-                                            class="text-end text-primary"
-                                            id="amount"
+                                            <input
+                                              class="form-check-input pointer filter"
+                                              type="checkbox"
+                                              id="calDLOH"
+                                              name="calDLOH"
+                                            />
+                                            <label
+                                              class="form-check-label pointer filter"
+                                              for="calDLOH"
+                                              >DL&amp;OH</label
+                                            >
+                                          </div>
+                                          <div
+                                            class="form-check form-switch form-check-inline"
                                           >
-                                            0.00
-                                          </td>
-                                          <td>บาท</td>
-                                          <td></td>
-                                        </tr>
-                                        <tr>
-                                          <td></td>
-                                          <td></td>
-                                          <td>Quantity of RM</td>
-                                          <td
-                                            class="text-end text-primary"
-                                            id="quantityOfRm"
-                                          >
-                                            100.00
-                                          </td>
-                                          <td>Kg.</td>
-                                          <td>AVG</td>
-                                          <td
-                                            class="text-end text-primary"
-                                            id="average"
-                                          >
-                                            59.33
-                                          </td>
-                                          <td></td>
-                                          <td></td>
-                                          <td></td>
-                                          <td></td>
-                                        </tr>
-                                        <tr>
-                                          <td></td>
-                                          <td></td>
-                                          <td>Loss 2%</td>
-                                          <td
-                                            class="text-end text-primary"
-                                            id="loss"
-                                          >
-                                            2.00
-                                          </td>
-                                          <td>Kg.</td>
-                                          <td>Current Cost</td>
-                                          <td
-                                            class="text-end text-primary"
-                                            id="currentCost"
-                                          >
-                                            0.00
-                                          </td>
-                                          <td>ราคาต่อ 1 กิโลกรัม</td>
-                                          <td>
-                                            Margin 30% (<span
-                                              class="text-primary"
-                                              >0.00</span
-                                            >)
-                                            <i
-                                              class="bi bi-info-circle"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-html="true"
-                                              title=""
-                                              data-bs-original-title="Margin: <i>Current Cost / 0.70</i>"
-                                              aria-label="Margin: <i>Current Cost / 0.70</i>"
-                                            ></i>
-                                          </td>
-                                          <td>
-                                            Margin 35% (<span
-                                              class="text-primary"
-                                              >0.00</span
-                                            >)
-                                            <i
-                                              class="bi bi-info-circle"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-html="true"
-                                              title=""
-                                              data-bs-original-title="Margin: <i>Current Cost / 0.65</i>"
-                                              aria-label="Margin: <i>Current Cost / 0.65</i>"
-                                            ></i>
-                                          </td>
-                                          <td></td>
-                                        </tr>
-                                        <tr>
-                                          <td></td>
-                                          <td></td>
-                                          <td>Net Quantity of Output</td>
-                                          <td
-                                            class="text-end text-primary"
-                                            id="netQuantityOfOutput"
-                                          >
-                                            98.00
-                                          </td>
-                                          <td>Kg.</td>
-                                          <td>Diff</td>
-                                          <td
-                                            class="text-end text-primary"
-                                            id="diff"
-                                          >
-                                            59.33
-                                          </td>
-                                          <td>
-                                            <i
-                                              class="bi bi-info-circle"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-html="true"
-                                              title=""
-                                              data-bs-original-title="Diff: <i>AVG - Current Cost</i>"
-                                              aria-label="Diff: <i>AVG - Current Cost</i>"
-                                            ></i>
-                                          </td>
-                                          <td></td>
-                                          <td></td>
-                                          <td></td>
-                                        </tr>
-                                        <tr>
-                                          <td colspan="11">
-                                            <div class="p-3 text-success">
-                                              <h6>
-                                                เลือกข้อมูลที่นำมาคำนวณต้นทุน
-                                              </h6>
-                                              <div
-                                                class="form-check form-switch form-check-inline"
-                                              >
-                                                <input
-                                                  class="form-check-input pointer filter"
-                                                  type="checkbox"
-                                                  id="calRM"
-                                                  name="calRM"
-                                                />
-                                                <label
-                                                  class="form-check-label pointer filter"
-                                                  for="calRM"
-                                                  >Raw Materials</label
-                                                >
-                                              </div>
-                                              <div
-                                                class="form-check form-switch form-check-inline"
-                                              >
-                                                <input
-                                                  class="form-check-input pointer filter"
-                                                  type="checkbox"
-                                                  id="calDLOH"
-                                                  name="calDLOH"
-                                                />
-                                                <label
-                                                  class="form-check-label pointer filter"
-                                                  for="calDLOH"
-                                                  >DL&amp;OH</label
-                                                >
-                                              </div>
-                                              <div
-                                                class="form-check form-switch form-check-inline"
-                                              >
-                                                <input
-                                                  class="form-check-input pointer filter"
-                                                  type="checkbox"
-                                                  id="calPK"
-                                                  name="calPK"
-                                                />
-                                                <label
-                                                  class="form-check-label pointer filter"
-                                                  for="calPK"
-                                                  >Packaging</label
-                                                >
-                                              </div>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      </tfoot>
-                                    </table>
-                                  <!-- </div> -->
+                                            <input
+                                              class="form-check-input pointer filter"
+                                              type="checkbox"
+                                              id="calPK"
+                                              name="calPK"
+                                            />
+                                            <label
+                                              class="form-check-label pointer filter"
+                                              for="calPK"
+                                              >Packaging</label
+                                            >
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                                <!-- </div> -->
                                 <!-- </div> -->
                               </div>
                             </div>
@@ -918,16 +897,16 @@
                   </thead>
                   <tbody>
                     <tr
-                      v-for="(row, index) in base.rows"
-                      :key="row.code"
+                      v-for="(v, i) in base.rows"
+                      :key="v.code"
                       :class="
-                        row.status == 'pending'
+                        v.status == 'pending'
                           ? 'text-blue-700'
-                          : row.status == 'reject'
+                          : v.status == 'reject'
                           ? 'text-error'
-                          : row.status == 'approve'
+                          : v.status == 'approve'
                           ? 'text-green-700'
-                          : row.status == 'cancel'
+                          : v.status == 'cancel'
                           ? 'text-gray-400 !bg-gray-100'
                           : ''
                       "
@@ -936,45 +915,45 @@
                         <div class="flex items-center space-x-3">
                           <div>
                             <div class="text-xs">
-                              {{ row.code }}
+                              {{ v.code }}
                             </div>
-                            <div class="text-xs">( {{ row.id }} )</div>
+                            <div class="text-xs">( {{ v.id }} )</div>
                           </div>
                         </div>
                       </th>
                       <td>
                         <span class="pr-2">{{
-                          row.status
-                            ? row.status == "pending"
+                          v.status
+                            ? v.status == "pending"
                               ? "Pending"
-                              : row.status == "approve"
+                              : v.status == "approve"
                               ? "Approve"
-                              : row.status == "reject"
+                              : v.status == "reject"
                               ? "Reject"
-                              : row.status == "cancel"
+                              : v.status == "cancel"
                               ? "Cancel"
                               : "-"
                             : "-"
                         }}</span>
                       </td>
                       <td>
-                        <span class="pr-2">{{ row.item_short_code }}</span>
+                        <span class="pr-2">{{ v.item_short_code }}</span>
                       </td>
                       <td>
                         <div class="flex items-center space-x-3">
                           <div>
                             <div class="text-xs">
-                              {{ row.item_name }}
+                              {{ v.item_name }}
                             </div>
-                            <div class="text-xs">( {{ row.item_code }} )</div>
+                            <div class="text-xs">( {{ v.item_code }} )</div>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <span class="pr-2">{{ row.unit }}</span>
+                        <span class="pr-2">{{ v.unit }}</span>
                       </td>
                       <td>
-                        <span class="pr-2">{{ row.uom }}</span>
+                        <span class="pr-2">{{ v.uom }}</span>
                       </td>
 
                       <td>
@@ -982,40 +961,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.requested_at &&
-                                $moment(row.requested_at).format("YYYY-MM-DD") >
+                                v.requested_at &&
+                                $moment(v.requested_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.requested_at
+                                  ? v.requested_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.requested_fullname
-                                  ? row.requested_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                row.approved_at &&
-                                $moment(row.approved_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? row.approved_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs">
-                              {{
-                                row.approved_fullname
-                                  ? row.approved_fullname
+                                v.requested_fullname
+                                  ? v.requested_fullname
                                   : "-"
                               }}
                             </div>
@@ -1028,17 +984,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.rejected_at &&
-                                $moment(row.rejected_at).format("YYYY-MM-DD") >
+                                v.approved_at &&
+                                $moment(v.approved_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.rejected_at
+                                  ? v.approved_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.rejected_fullname
-                                  ? row.rejected_fullname
+                                v.approved_fullname
+                                  ? v.approved_fullname
                                   : "-"
                               }}
                             </div>
@@ -1051,17 +1007,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.canceled_at &&
-                                $moment(row.canceled_at).format("YYYY-MM-DD") >
+                                v.rejected_at &&
+                                $moment(v.rejected_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.canceled_at
+                                  ? v.rejected_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.canceled_fullname
-                                  ? row.canceled_fullname
+                                v.rejected_fullname
+                                  ? v.rejected_fullname
                                   : "-"
                               }}
                             </div>
@@ -1074,17 +1030,40 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.created_at &&
-                                $moment(row.created_at).format("YYYY-MM-DD") >
+                                v.canceled_at &&
+                                $moment(v.canceled_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.created_at
+                                  ? v.canceled_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.created_fullname
-                                  ? row.created_fullname
+                                v.canceled_fullname
+                                  ? v.canceled_fullname
+                                  : "-"
+                              }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div class="text-xs">
+                              {{
+                                v.created_at &&
+                                $moment(v.created_at).format("YYYY-MM-DD") >
+                                  "2000"
+                                  ? v.created_at
+                                  : "-"
+                              }}
+                            </div>
+                            <div class="text-xs">
+                              {{
+                                v.created_fullname
+                                  ? v.created_fullname
                                   : "-"
                               }}
                             </div>
@@ -1096,17 +1075,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.updated_at &&
-                                $moment(row.updated_at).format("YYYY-MM-DD") >
+                                v.updated_at &&
+                                $moment(v.updated_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.updated_at
+                                  ? v.updated_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.updated_fullname
-                                  ? row.updated_fullname
+                                v.updated_fullname
+                                  ? v.updated_fullname
                                   : "-"
                               }}
                             </div>
@@ -1118,7 +1097,7 @@
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >Detail
                         </label>
                       </th>
@@ -1181,7 +1160,7 @@ export default {
       },
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
+
       category: {
         rows: [],
         page: 1,
@@ -1281,7 +1260,7 @@ export default {
       fetch(
         `${
           this.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf_request?total=1&page=${
+        }api/controllers/MYSQL/INTERNAL/WH/shelf_request?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -1298,7 +1277,11 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          // if (res.rows.length > 0) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
+          }
           //   res.rows.forEach((v, i) => {
           //     res.rows[i].image = v.image ? JSON.parse(v.image) : [];
           //     res.rows[i].master = 0;
@@ -1348,17 +1331,23 @@ export default {
       // delete image.temp;
 
       this.base.form.status = this.base.form.newStatus;
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf_request`, {
-        method: this.base.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({ ...this.base.form }),
-      })
+      fetch(
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf_request`,
+        {
+          method: this.base.controll == "create" ? "POST" : "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.user_token}`,
+          },
+          body: JSON.stringify({ ...this.base.form }),
+        }
+      )
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             const promise_arr = [];
             console.log(this.base.current);
@@ -1395,7 +1384,7 @@ export default {
     },
 
     status_item(status, code, controll, tb) {
-      fetch(`${this.serviceUrl}${tb}`, {
+      fetch(`${this.serviceUrl}api/${tb}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -1408,7 +1397,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             // this.remove.modal = false;
             this[`${controll}_search`]();
@@ -1428,7 +1420,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -1440,7 +1432,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
@@ -1468,7 +1463,7 @@ export default {
     },
     item_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`,
         {
           method: "GET",
           headers: {
@@ -1494,11 +1489,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
     });
   },
   watch: {
@@ -1520,7 +1510,7 @@ export default {
     "base.form.item_code": function (val) {
       if (val) {
         fetch(
-          `${this.serviceUrl}controllers/SAP/${
+          `${this.serviceUrl}api/controllers/SAP/${
             this.base.form.item_wh ? this.base.form.item_wh : "UBA"
           }/oitm?item_code=${val}`,
           {
@@ -1533,7 +1523,10 @@ export default {
         )
           .then((response) => response.json())
           .then((res) => {
-            if (res.rows.length > 0) {
+            if (!res.success) {
+              localStorage.removeItem("user_token");
+              this.$router.push({ name: `Login` });
+            } else {
               this.base.form.item_code = res.rows[0].ItemCode;
               this.base.form.item_name = res.rows[0].ItemName;
               this.base.form.uom = res.rows[0].UomCode;

@@ -29,7 +29,7 @@
                       <input
                         type="text"
                         placeholder="rac"
-                        class="input input-bordered"
+                        class="input input-bordered "
                         required
                         v-model="layout.form.rac"
                       />
@@ -43,7 +43,7 @@
                       <input
                         type="number"
                         placeholder="bay"
-                        class="input input-bordered"
+                        class="input input-bordered "
                         required
                         v-model="layout.form.bay"
                         min="2"
@@ -61,7 +61,7 @@
                       <input
                         type="number"
                         placeholder="levels"
-                        class="input input-bordered"
+                        class="input input-bordered "
                         required
                         v-model="layout.form.levels"
                         min="1"
@@ -77,7 +77,7 @@
                       <input
                         type="number"
                         placeholder="pallets"
-                        class="input input-bordered"
+                        class="input input-bordered "
                         required
                         v-model="layout.form.pallets"
                         min="1"
@@ -93,7 +93,7 @@
                       <input
                         type="number"
                         placeholder="x"
-                        class="input input-bordered"
+                        class="input input-bordered "
                         required
                         v-model="layout.form.x"
                         min="1"
@@ -109,7 +109,7 @@
                       <input
                         type="number"
                         placeholder="y"
-                        class="input input-bordered"
+                        class="input input-bordered "
                         required
                         v-model="layout.form.y"
                         min="1"
@@ -125,7 +125,7 @@
                       <input
                         type="number"
                         placeholder="width"
-                        class="input input-bordered"
+                        class="input input-bordered "
                         required
                         v-model="layout.form.width"
                         min="1"
@@ -141,7 +141,7 @@
                       <input
                         type="number"
                         placeholder="height"
-                        class="input input-bordered"
+                        class="input input-bordered "
                         required
                         v-model="layout.form.height"
                         min="1"
@@ -213,7 +213,6 @@
               width: 'max-content',
               height: 'max-content',
             }"
-            v-if="base.rows.length > 0"
           >
             <draggable-resizable-vue
               v-for="(v, i) in base.rows"
@@ -249,7 +248,7 @@
                         !layouts.data[`${v.code}-${index}`] ||
                         layouts.data[`${v.code}-${index}`] < v.pallets
                       "
-                      class="flex"
+                      class="flex  text-black"
                     >
                       L{{ index }}
 
@@ -277,7 +276,7 @@
                   "
                 >
                   <span
-                    class="text-xs overflow-hidden w-full"
+                    class="text-xs overflow-hidden w-full text-black"
                     :class="`${v.rotate ? 'text-center' : ''}`"
                     style="word-wrap: break-word"
                   >
@@ -299,7 +298,7 @@
         <div
           class="btn btn-square text-opacity-50 max-w-xs join-item text-center text-xs p-0 text-primary font-black"
         >
-          {{ scale.toFixed(1) }} 
+          {{ scale.toFixed(1) }}
         </div>
         <button
           class="btn btn-square join-item"
@@ -307,9 +306,8 @@
         >
           <Icon icon="typcn:minus-outline" class="h-5 w-5 text-primary" />
         </button>
-   
+
         <button
-        
           class="btn btn-square btn-primary join-item"
           @click="editLayout()"
           v-if="!edit && user.access.WH.WHBinLocationManagement == 'superadmin'"
@@ -338,15 +336,13 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import DraggableResizableVue from "draggable-resizable-vue3";
 export default {
   name: "RacLayoutModule",
   components: {
     DraggableResizableVue,
   },
-
-  computed:{
+  computed: {
     user() {
       return this.$store.getters.user;
     },
@@ -454,7 +450,7 @@ export default {
     };
   },
   computed: {
-    ServiceUrl() {
+    serviceUrl() {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
@@ -544,7 +540,7 @@ export default {
       fetch(
         `${
           this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/layout?wh=${this.wh}&transref=I&page=${
+        }api/controllers/MYSQL/INTERNAL/WH/layout?wh=${this.wh}&transref=I&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -559,7 +555,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             res.rows.map((v) => {
               v.isActive = false;
               v.x = parseInt(v.x);
@@ -600,7 +599,7 @@ export default {
     base_save() {
       let vm = this;
       fetch(
-        `${this.$store.state.serviceUrl}controllers/MYSQL/INTERNAL/WH/layout`,
+        `${this.$store.state.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout`,
         {
           method: this.base.controll == "create" ? "POST" : "PUT",
           headers: {
@@ -614,9 +613,15 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
-            vm.base_search((res) => {});
+            this.base.rows = [];
+            setTimeout(() => {
+              vm.base_search((res) => {});
+            }, 1000);
           }
         })
         .catch((error) => {
@@ -630,7 +635,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.$store.state.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.$store.state.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -642,9 +647,16 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.remove.modal = false;
-            this[`${this.remove.controll}_search`]();
+            this.base.rows = [];
+            setTimeout(() => {
+              this[`${this.remove.controll}_search`]((res) => {});
+            }, 1000);
+            
           }
         })
         .catch((error) => {
@@ -668,7 +680,7 @@ export default {
       fetch(
         `${
           this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf?action=count&transref=I&transref_type_null=1&wh=${
+        }api/controllers/MYSQL/INTERNAL/WH/shelf?action=count&transref=I&transref_type_null=1&wh=${
           this.wh
         }&total=1&page=${this.rac.page}${
           this.rac.row ? `&rows=${this.rac.row}` : ""

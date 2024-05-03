@@ -1,317 +1,286 @@
 <template>
-  <div class="ShortCode">
-    <AppLayout>
-      <template #modal>
-        <!-- modal base -->
-        <input
-          type="checkbox"
-          id="modal-base"
-          class="modal-toggle"
-          v-model="base.modal"
-        />
-        <div class="modal">
-          <div class="modal-box relative w-6/12 max-w-5xl">
-            <label
-              for="modal-base"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-              >✕
-            </label>
-            <h3 class="text-lg font-bold">Short Code</h3>
-            <!-- {{ base.form }} -->
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Branch</span>
-                </label>
-                <!-- <input
-                  type="text"
-                  placeholder="wh"
-                  class="input input-bordered"
-                  v-model="base.form.wh"
-                /> -->
-                <select
-                  class="join-item select select-bordered w-auto"
-                  v-model="base.form.wh"
-                >
-                  <!-- <option selected value="">ALL</option> -->
-                  <option value="UBA">UBA</option>
-                  <option value="UBP">UBP</option>
-                </select>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Short Code</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Short Code"
-                  class="input input-bordered"
-                  v-model="base.form.short_code"
-                />
-              </div>
-              <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">รูปแบบข้อมูล</span>
-                  </label>
-                  <select
-                class="join-item select select-bordered w-auto"
+  <AppLayout>
+    <template #modal>
+      <!-- modal base -->
+      <input
+        type="checkbox"
+        id="modal-base"
+        class="modal-toggle"
+        v-model="base.modal"
+      />
+      <div class="modal">
+        <div
+          class="modal-box relative w-11/12 md:w-6/12 lg:w-6/12 xl:w-4/12 max-w-5xl p-2 lg:p-4 max-h-screen"
+        >
+          <label
+            for="modal-base"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+            >✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">SHORT CODE</h3>
+          <div class="divider my-1"></div>
+          <div class="card-body overflow-auto max-h-[60vh] p-2 lg:p-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Short Code</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Short Code"
+                class="input input-bordered border-base-content"
+                v-model="base.form.short_code"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Data format</span>
+              </label>
+              <select
+                class="join-item select select-bordered border-base-content w-auto"
                 v-model="selectType"
               >
-                <option selected value="">เลือกรายการ</option>
-                <option value="1">เลือกจาก SAP</option>
-                <option value="2">สร้างใหม่</option>
+                <option selected value="" disabled>Select Option</option>
+                <option value="1">SAP</option>
+                <option value="2">Rebuild</option>
               </select>
-                </div>
-           
-              <div v-if="selectType == '2'">
-                <div class="form-control">
+            </div>
+
+            <div v-if="selectType == '2'">
+              <div class="form-control">
                 <label class="label">
                   <span class="label-text">Item Name</span>
                 </label>
                 <input
                   type="text"
                   placeholder="Item Name"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="base.form.item_name"
                 />
               </div>
-              </div>
-              <div v-if="selectType == '1'">
-                <div class="form-control">
-                  <!-- {{ base.form }} -->
-                  <label class="label">
-                    <span class="label-text">Item Name</span>
-                  </label>
-                  <!-- {{ base.form.wh }} -->
-                  <div v-if="base.controll == 'create'">
-                    <AppModuleGlobalSelectSearch
-                      v-if="base.form.wh == 'UBA' && base.modal"
-                      :placeholder="'Item Name'"
-                      :label="'ItemName'"
-                      :code="'ItemCode'"
-                      :minChar="3"
-                      :delay="0.5"
-                      :limit="10"
-                      :customClass="`input input-bordered `"
-                      :current="base.form.item_code"
-                      :refresh="refresh"
-                      @updateValue="
-                        (obj) => {
-                          base.form.item_code = obj.ItemCode;
-                          base.form.item_name = obj.ItemName;
-                        }
-                      "
-                      @stopRefresh="
-                        (obj) => {
-                          refresh = obj.value;
-                        }
-                      "
-                      :url="`${this.serviceUrl}controllers/SAP/UBA/oitm`"
-                      :param="`&total=1`"
-                    />
-                    <AppModuleGlobalSelectSearch
-                      v-if="base.form.wh == 'UBP' && base.modal"
-                      :placeholder="'Item Name'"
-                      :label="'ItemName'"
-                      :code="'ItemCode'"
-                      :minChar="3"
-                      :delay="0.5"
-                      :limit="10"
-                      :customClass="`input input-bordered `"
-                      :current="base.form.item_code"
-                      :refresh="refresh"
-                      @updateValue="
-                        (obj) => {
-                          base.form.item_code = obj.ItemCode;
-                          base.form.item_name = obj.ItemName;
-                        }
-                      "
-                      @stopRefresh="
-                        (obj) => {
-                          refresh = obj.value;
-                        }
-                      "
-                      :url="`${this.serviceUrl}controllers/SAP/UBP/oitm`"
-                      :param="`&total=1`"
-                    />
-                  </div>
-                  <input
-                    v-else
-                    type="text"
-                    placeholder="item_name"
-                    class="input input-bordered"
-                    v-model="base.form.item_name"
-                    :disabled="true"
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Item Code</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="item_code"
-                    class="input input-bordered input-disabled"
-                    v-model="base.form.item_code"
-                    readonly
-                  />
-                </div>
-              </div>
-              <!-- <div class="form-control">
+            </div>
+            <div v-if="selectType == '1'">
+              <div class="form-control">
                 <label class="label">
-                  <span class="label-text">รหัสอ้างอิง</span>
+                  <span class="label-text">Branch</span>
+                </label>
+                <select
+                  class="join-item select select-bordered border-base-content w-auto"
+                  v-model="base.form.wh"
+                >
+                  <option value="UBA">UBA</option>
+                  <option value="UBP">UBP</option>
+                </select>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Item Name</span>
+                </label>
+                <div v-if="base.controll == 'create'">
+                  <AppModuleGlobalSelectSearch
+                    v-if="base.form.wh == 'UBA' && base.modal"
+                    :placeholder="'Item Name'"
+                    :label="'ItemName'"
+                    :code="'ItemCode'"
+                    :minChar="3"
+                    :delay="0.5"
+                    :limit="10"
+                    :customClass="`input input-bordered border-base-content `"
+                    :current="base.form.item_code"
+                    @updateValue="
+                      (obj) => {
+                        base.form.item_code = obj.ItemCode;
+                        base.form.item_name = obj.ItemName;
+                      }
+                    "
+                    :url="`${this.serviceUrl}api/controllers/SAP/UBA/oitm`"
+                    :param="`&total=1`"
+                  />
+                  <AppModuleGlobalSelectSearch
+                    v-if="base.form.wh == 'UBP' && base.modal"
+                    :placeholder="'Item Name'"
+                    :label="'ItemName'"
+                    :code="'ItemCode'"
+                    :minChar="3"
+                    :delay="0.5"
+                    :limit="10"
+                    :customClass="`input input-bordered border-base-content `"
+                    :current="base.form.item_code"
+                    @updateValue="
+                      (obj) => {
+                        base.form.item_code = obj.ItemCode;
+                        base.form.item_name = obj.ItemName;
+                      }
+                    "
+                    :url="`${this.serviceUrl}api/controllers/SAP/UBP/oitm`"
+                    :param="`&total=1`"
+                  />
+                </div>
+                <input
+                  v-else
+                  type="text"
+                  placeholder="item_name"
+                  class="input input-bordered border-base-content"
+                  v-model="base.form.item_name"
+                  :disabled="true"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Item Code</span>
                 </label>
                 <input
                   type="text"
-                  placeholder="รหัสอ้างอิง"
-                  class="input input-bordered"
-                  v-model="base.form.ref"
+                  placeholder="item_code"
+                  class="input input-bordered border-base-content input-disabled"
+                  v-model="base.form.item_code"
+                  readonly
                 />
-              </div> -->
-            </div>
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancle</label>
-              </div>
-              <div class="flex-1 form-control mt-6" @click="base_save()">
-                <button class="btn btn-primary text-white">Confirm</button>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- modal remove -->
-        <input
-          type="checkbox"
-          id="modal-remove"
-          class="modal-toggle"
-          v-model="remove.modal"
-        />
-        <div class="modal">
-          <div class="modal-box relative">
-            <label
-              for="modal-remove"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-            >
-              ✕
-            </label>
-            <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              Are your sure for remove this item?
+          <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-base" class="btn btn-danger">Cancle</label>
             </div>
-
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancle</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-error text-white"
-                  @click="confirm_remove()"
-                >
-                  Confirm
-                </button>
-              </div>
+            <div class="flex-1 form-control mt-6" @click="base_save()">
+              <button class="btn btn-primary text-white">Confirm</button>
             </div>
           </div>
         </div>
-      </template>
-      <template #view v-if="user">
-        <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2">
-          <div class="card shadow-lg bg-base-100">
-            <div class="card-body overflow-auto grid grid-cols-1 gap-6">
-              <div class="join w-full justify-center lg:justify-end">
-                <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered w-full max-w-xs'"
-                  @search="
-                    (q) => {
-                      base.q = q;
-                      base_search();
-                    }
-                  "
+      </div>
+
+      <!-- modal remove -->
+      <input
+        type="checkbox"
+        id="modal-remove"
+        class="modal-toggle"
+        v-model="remove.modal"
+      />
+      <div class="modal">
+        <div class="modal-box relative">
+          <label
+            for="modal-remove"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-error">REMOVE ITEM</h3>
+          <div class="divider mt-1"></div>
+          <div class="card-body overflow-auto max-h-[60vh]">
+            Are your sure for remove this item?
+          </div>
+
+          <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-remove" class="btn btn-danger">Cancle</label>
+            </div>
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-error text-white"
+                @click="confirm_remove()"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template #view>
+      <div class="grid grid-cols-1 gap-6">
+        <div class="card shadow-lg bg-base-100">
+          <div class="card-body overflow-auto p-2 lg:p-4">
+            <div>
+              <div
+                v-if="base.loading"
+                class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-white bg-opacity-50 top-0 left-0"
+              >
+                <AppModuleGlobalLoadingText
+                  :class="`p-4 py-12 text-3xl text-center`"
                 />
-                <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary text-white modal-button"
-                  @click="base_create()"
-                  >Create</label
-                >
               </div>
-              <div class="overflow-x-auto w-full max-h-[60vh]">
-                <table
-                  class="table table-xs table-pin-rows table-pin-cols table-zebra"
+              <div :class="`${base.loading ? 'blur-sm' : ''}`">
+                <div class="join w-full justify-center md:justify-end">
+                  <AppModuleGlobalSearch
+                    :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
+                    @search="
+                      (q) => {
+                        base.q = q;
+                        base.page = 1;
+                        base_search();
+                      }
+                    "
+                  />
+                  <label
+                    for="modal-base"
+                    class="join-item btn-sm btn btn-primary text-white modal-button"
+                    @click="base_create()"
+                    >Create</label
+                  >
+                </div>
+                <div
+                  class="overflow-x-auto w-full max-h-[60vh] min-h-[60vh] my-4"
                 >
-                  <thead>
-                    <tr>
-                      <th>Code</th>
-                      <td>Short Code</td>
-                      <td>Item</td>
-                      <td>WH</td>
-                      <th class="text-right"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      class="hover"
-                      v-for="(row, index) in base.rows"
-                      :key="row.code"
-                    >
-                      <th>
-                        <div class="flex items-center space-x-3">
+                  <table
+                    class="table table-xs table-pin-rows table-pin-cols table-zebra"
+                  >
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <td>Code</td>
+                        <td>Short Code</td>
+                        <td>Item</td>
+                        <td>WH</td>
+                        <th class="text-right"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        class="hover"
+                        v-for="(v, i) in base.rows"
+                        :key="v.code"
+                      >
+                        <th>
+                          {{ v.id }}
+                        </th>
+                        <td>
+                          {{ v.code }}
+                        </td>
+                        <td>{{ v.short_code }}</td>
+                        <td>
                           <div>
-                            <div
-                              class="overflow-hidden text-ellipsis whitespace-nowrap"
-                            >
-                              {{ row.code }}
-                            </div>
-                            <div
-                              class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
-                            >
-                              {{ row.id }}
-                            </div>
+                            {{ v.item_code }}
                           </div>
-                        </div>
-                      </th>
-                      <td>{{ row.short_code }}</td>
-                      <td>
-                        <div>
-                          {{ row.item_code }}
-                        </div>
-                        <div>
-                          {{ row.item_name }}
-                        </div>
-                      </td>
-                      <td>{{ row.wh }}</td>
-                      <th class="text-right">
-                        <!-- <label
+                          <div>
+                            {{ v.item_name }}
+                          </div>
+                        </td>
+                        <td>{{ v.wh ? `SAP ( ${v.wh} )` : "Renew" }}</td>
+                        <th class="text-right">
+                          <!-- <label
                           for="modal-base"
-                          class="btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          class="btn  btn-link no-underline modal-button btn-xs"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >Detail
                         </label>
                         | -->
-                        <label
-                          for="modal-remove"
-                          class="btn btn-ghost modal-button btn-xs"
-                          @click="
-                            remove_item(
-                              `${row.code}`,
-                              'base',
-                              'controllers/MYSQL/INTERNAL/WH/shelfshort'
-                            )
-                          "
-                          >Remove
-                        </label>
-                      </th>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="join w-full justify-center lg:justify-end">
+                          <label
+                            for="modal-remove"
+                            class="btn btn-link text-error no-underline modal-button btn-xs"
+                            @click="
+                              remove_item(
+                                `${v.code}`,
+                                'base',
+                                'controllers/MYSQL/INTERNAL/WH/shelfshort'
+                              )
+                            "
+                            >Remove
+                          </label>
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
                 <AppModuleGlobalPageination
                   :page="base.page"
                   :total="base.total"
@@ -322,7 +291,7 @@
                   @search="
                     (res) => {
                       base.page = res.page;
-                      this.base_search();
+                      base_search();
                     }
                   "
                 />
@@ -330,44 +299,28 @@
             </div>
           </div>
         </div>
-      </template>
-    </AppLayout>
-  </div>
+      </div>
+    </template>
+  </AppLayout>
 </template>
-<style>
-.crop {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 1px;
-}
-</style>
 <script>
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";
 import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
-import AdminmodulewebUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
 export default {
   name: "ShortCode",
   components: {
     AppLayout,
-    AdminmodulewebUpload,
     AppModuleGlobalPageination,
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,
+    AppModuleGlobalLoadingText,
   },
   data() {
     return {
-      refresh: false,
-      tmpsLink: "",
-      category: {
-        rows: [],
-        page: 1,
-        row: 9999,
-        q: "",
-      },
       base: {
         rows: [],
         total: 0,
@@ -380,7 +333,6 @@ export default {
         modal: false,
         form: {
           title: "",
-          // ref: "",
         },
       },
       remove: {
@@ -389,7 +341,7 @@ export default {
         controll: "",
         tb: "",
       },
-      selectType:''
+      selectType: "",
     };
   },
   computed: {
@@ -404,8 +356,13 @@ export default {
     },
   },
   methods: {
-    change() {
-      this.base_search();
+    exportExcel() {
+      return window.open(`${
+        this.serviceUrl
+      }api/controllers/MYSQL/INTERNAL/GLOBAL/exports?db=shelf&total=1
+      ${this.base.q ? `&q=${this.base.q}` : ""}${
+        this.date.from ? `&createFrom=${this.date.from}` : ""
+      }${this.date.to ? `&createTo=${this.date.to}` : ""}`);
     },
     // base
     base_search() {
@@ -423,7 +380,7 @@ export default {
       fetch(
         `${
           this.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&page=${
+        }api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -438,12 +395,6 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
-            // res.rows.forEach((v, i) => {
-            //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            //   res.rows[i].master = 0;
-            // });
-          }
           callback(
             res.success
               ? { rows: res.rows, total: res.total }
@@ -459,45 +410,42 @@ export default {
       this.base.current = 0;
       this.base.form = {
         title: "",
-        // ref: "",
-        wh: "UBA",
+        wh: "",
       };
+      this.selectType = "";
       this.base.controll = "create";
-      this.selectType = ''
     },
     base_edit(code, index) {
       this.base.form = { ...this.base.rows[index] };
-      this.base.form.category_code = this.base.form.category_code
-        ? this.base.form.category_code
-        : "0";
-      this.base.form.recommend = this.base.form.recommend == "1" ? true : false;
       this.base.current = code;
       this.base.controll = "edit";
     },
     base_save() {
-      let vm = this;
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort`, {
+      let obj = {
+        code: this.base.current,
+        rows: [
+          {
+            ...Object.assign({ ...this.base.form }),
+          },
+        ],
+      };
+      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`, {
         method: this.base.controll == "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${this.user_token}`,
         },
-        body: JSON.stringify({
-          code: this.base.current,
-
-          short_code: this.base.form.short_code,
-          item_name: this.base.form.item_name,
-          item_code: this.base.form.item_code,
-          wh: this.base.form.wh,
-
-          // ref: this.base.form.ref,
-        }),
+        body: JSON.stringify(obj),
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
-            vm.base_search();
+            this.base.page = 1;
+            this.base_search();
           }
         })
         .catch((error) => {
@@ -511,19 +459,20 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${this.user_token}`,
         },
-        body: JSON.stringify({
-          code: this.remove.code,
-        }),
+        body: JSON.stringify({ rows: [{ code: this.remove.code }] }),
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
           }
@@ -538,26 +487,6 @@ export default {
       this.base_search();
     });
   },
-  watch: {
-    user: function (val) {
-      if (!val) {
-        return;
-      }
-      !this.user.access["WH"]
-        ? this.$router.push({ name: `404` })
-        : !this.user.access["WH"][this.$route.name]
-        ? this.$router.push({ name: `404` })
-        : "";
-    },
-    // changeWH:function(val){
-    //   // console.log(val)
-    //   if(val){
-    //     console.log(val)
-    //     this.changeWH = !this.changeWH
-    //   }
-
-    //   // console.log(val)
-    // }
-  },
+  watch: {},
 };
 </script>

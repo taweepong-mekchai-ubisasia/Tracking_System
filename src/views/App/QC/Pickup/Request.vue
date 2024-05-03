@@ -10,7 +10,9 @@
           v-model="base.modal"
         />
         <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-6/12 max-w-5xl">
+          <div
+          class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen"
+        >
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
@@ -32,7 +34,7 @@
                     :minChar="3"
                     :delay="0.5"
                     :limit="10"
-                    :customClass="`input input-bordered ${
+                    :customClass="`input input-bordered border-base-content ${
                       checkbox == 'M' ? 'input-disabled' : ''
                     }`"
                     :disabled="checkbox == 'M' ? true : false"
@@ -50,14 +52,14 @@
                         refresh.item_short_code = obj.value;
                       }
                     "
-                    :url="`${serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort`"
+                    :url="`${serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`"
                     :param="`&total=1&wh=${user.branchTitle}&action=groupby-code`"
                   />
                   <input
                     v-else
                     type="text"
                     placeholder="Short code"
-                    class="input input-bordered input-disabled"
+                    class="input input-bordered border-base-content input-disabled"
                     required=""
                     v-model="base.form.item_short_code"
                     disabled
@@ -70,7 +72,7 @@
 
                   <select
                     v-if="base.controll == 'create'"
-                    class="select select-bordered w-full"
+                    class="select select-bordered border-base-content w-full"
                     v-model="base.form.item_code"
                   >
                     <option disabled selected value="">Select Option</option>
@@ -83,7 +85,7 @@
                     v-else
                     type="text"
                     placeholder="Short code"
-                    class="input input-bordered input-disabled"
+                    class="input input-bordered border-base-content input-disabled"
                     required=""
                     v-model="base.form.item_short_code"
                     disabled
@@ -96,7 +98,7 @@
                   <input
                     type="text"
                     placeholder="Item Code"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     required=""
                     v-model="base.form.item_code"
                     disabled
@@ -111,7 +113,7 @@
                       <input
                         type="number"
                         placeholder="Qty"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         min="1"
                         max="5"
@@ -128,7 +130,7 @@
                       <input
                         type="text"
                         placeholder="Unit"
-                        class="input input-bordered w-full input-disabled"
+                        class="input input-bordered border-base-content w-full input-disabled"
                         required=""
                         v-model="base.form.uom"
                         readonly
@@ -143,7 +145,7 @@
                   </label>
                   <label class="form-control w-full">
                     <select
-                      class="select select-bordered"
+                      class="select select-bordered border-base-content"
                       v-model="base.form.newStatus"
                       :disabled="
                         base.form.status == 'cancel' ||
@@ -239,7 +241,7 @@
                           class="join-item btn btn-ghost modal-button btn-xs"
                           @click="
                             remove_item(
-                              `${row.code}`,
+                              `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/WH/shelf_request'
                             )
@@ -267,7 +269,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh] ">
               Are your sure for remove this item?
             </div>
 
@@ -307,7 +309,7 @@
                     <input
                       type="date"
                       placeholder="title"
-                      class="join-item input input-sm input-bordered"
+                      class="join-item input input-sm input-bordered border-base-content"
                       v-model="date.from"
                       @change="change"
                     />
@@ -321,7 +323,7 @@
                     <input
                       type="date"
                       placeholder="title"
-                      class="join-item input input-sm input-bordered"
+                      class="join-item input input-sm input-bordered border-base-content"
                       v-model="date.to"
                       @change="change"
                     />
@@ -337,7 +339,7 @@
                   />
                 </button> -->
                   <AppModuleGlobalSearch
-                    :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+                    :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                     @search="
                       (q) => {
                         base.q = q;
@@ -366,7 +368,7 @@
 
               <!-- <div class="join mt-5 w-full md:justify-center lg:justify-end">
                 <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+                  :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
                     (q) => {
                       base.q = q;
@@ -404,16 +406,16 @@
                   </thead>
                   <tbody>
                     <tr
-                      v-for="(row, index) in base.rows"
-                      :key="row.code"
+                      v-for="(v, i) in base.rows"
+                      :key="v.code"
                       :class="
-                        row.status == 'pending'
+                        v.status == 'pending'
                           ? 'text-blue-700'
-                          : row.status == 'reject'
+                          : v.status == 'reject'
                           ? 'text-error'
-                          : row.status == 'approve'
+                          : v.status == 'approve'
                           ? 'text-green-700'
-                          : row.status == 'cancel'
+                          : v.status == 'cancel'
                           ? 'text-gray-400 !bg-gray-100'
                           : ''
                       "
@@ -422,49 +424,49 @@
                         <div class="flex items-center space-x-3">
                           <div>
                             <div class="text-xs">
-                              {{ row.code }}
+                              {{ v.code }}
                             </div>
-                            <div class="text-xs">( {{ row.id }} )</div>
+                            <div class="text-xs">( {{ v.id }} )</div>
                           </div>
                         </div>
                       </th>
                       <td>
                         <span class="pr-2">{{
-                          row.status
-                            ? row.status == "pending"
+                          v.status
+                            ? v.status == "pending"
                               ? "Pending"
-                              : row.status == "approve"
+                              : v.status == "approve"
                               ? "Approve"
-                              : row.status == "reject"
+                              : v.status == "reject"
                               ? "Reject"
-                              : row.status == "cancel"
+                              : v.status == "cancel"
                               ? "Cancel"
                               : "-"
                             : "-"
                         }}</span>
                       </td>
                       <td>
-                        <span class="pr-2">{{ row.item_short_code }}</span>
+                        <span class="pr-2">{{ v.item_short_code }}</span>
                       </td>
                       <td>
                         <div class="flex items-center space-x-3">
                           <div>
                             <div class="text-xs">
-                              {{ row.item_name }}
+                              {{ v.item_name }}
                             </div>
-                            <div class="text-xs">( {{ row.item_code }} )</div>
+                            <div class="text-xs">( {{ v.item_code }} )</div>
                           </div>
                         </div>
                       </td>
 
                       <!-- <td> 
-                        <span class="pr-2">{{ row.pack_size }}</span>
+                        <span class="pr-2">{{ v.pack_size }}</span>
                       </td> -->
                       <td>
-                        <span class="pr-2">{{ row.unit }}</span>
+                        <span class="pr-2">{{ v.unit }}</span>
                       </td>
                       <td>
-                        <span class="pr-2">{{ row.uom }}</span>
+                        <span class="pr-2">{{ v.uom }}</span>
                       </td>
 
                       <td>
@@ -472,17 +474,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.requested_at &&
-                                $moment(row.requested_at).format("YYYY-MM-DD") >
+                                v.requested_at &&
+                                $moment(v.requested_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.requested_at
+                                  ? v.requested_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.requested_fullname
-                                  ? row.requested_fullname
+                                v.requested_fullname
+                                  ? v.requested_fullname
                                   : "-"
                               }}
                             </div>
@@ -495,17 +497,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.approved_at &&
-                                $moment(row.approved_at).format("YYYY-MM-DD") >
+                                v.approved_at &&
+                                $moment(v.approved_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.approved_at
+                                  ? v.approved_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.approved_fullname
-                                  ? row.approved_fullname
+                                v.approved_fullname
+                                  ? v.approved_fullname
                                   : "-"
                               }}
                             </div>
@@ -518,17 +520,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.rejected_at &&
-                                $moment(row.rejected_at).format("YYYY-MM-DD") >
+                                v.rejected_at &&
+                                $moment(v.rejected_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.rejected_at
+                                  ? v.rejected_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.rejected_fullname
-                                  ? row.rejected_fullname
+                                v.rejected_fullname
+                                  ? v.rejected_fullname
                                   : "-"
                               }}
                             </div>
@@ -541,17 +543,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.canceled_at &&
-                                $moment(row.canceled_at).format("YYYY-MM-DD") >
+                                v.canceled_at &&
+                                $moment(v.canceled_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.canceled_at
+                                  ? v.canceled_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.canceled_fullname
-                                  ? row.canceled_fullname
+                                v.canceled_fullname
+                                  ? v.canceled_fullname
                                   : "-"
                               }}
                             </div>
@@ -564,17 +566,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.created_at &&
-                                $moment(row.created_at).format("YYYY-MM-DD") >
+                                v.created_at &&
+                                $moment(v.created_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.created_at
+                                  ? v.created_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.created_fullname
-                                  ? row.created_fullname
+                                v.created_fullname
+                                  ? v.created_fullname
                                   : "-"
                               }}
                             </div>
@@ -586,17 +588,17 @@
                           <div>
                             <div class="text-xs">
                               {{
-                                row.updated_at &&
-                                $moment(row.updated_at).format("YYYY-MM-DD") >
+                                v.updated_at &&
+                                $moment(v.updated_at).format("YYYY-MM-DD") >
                                   "2000"
-                                  ? row.updated_at
+                                  ? v.updated_at
                                   : "-"
                               }}
                             </div>
                             <div class="text-xs">
                               {{
-                                row.updated_fullname
-                                  ? row.updated_fullname
+                                v.updated_fullname
+                                  ? v.updated_fullname
                                   : "-"
                               }}
                             </div>
@@ -604,11 +606,11 @@
                         </div>
                       </td>
 
-                      <!-- <th class="text-right" v-if="!row.status">
+                      <!-- <th class="text-right" v-if="!v.status">
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >รายละเอียด
                         </label>
                         <label
@@ -616,7 +618,7 @@
                           @click="
                             status_item(
                               `pending`,
-                              `${row.code}`,
+                              `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/WH/shelf_request'
                             )
@@ -626,7 +628,7 @@
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >Edit
                         </label>
                         <label
@@ -634,7 +636,7 @@
                           class="join-item btn btn-ghost modal-button btn-xs"
                           @click="
                             remove_item(
-                              `${row.code}`,
+                              `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/WH/shelf_request'
                             )
@@ -642,13 +644,13 @@
                           >Remove
                         </label>
                       </th>
-                      <th class="text-right" v-if="row.status == 'reject'">
+                      <th class="text-right" v-if="v.status == 'reject'">
                         <label
                           for="modal-remove"
                           class="join-item btn btn-ghost modal-button btn-xs"
                           @click="
                             remove_item(
-                              `${row.code}`,
+                              `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/WH/shelf_request'
                             )
@@ -658,7 +660,7 @@
                       </th>
                       <th
                         class="text-right"
-                        v-else-if="row.status == 'pending'"
+                        v-else-if="v.status == 'pending'"
                       >
                         <label
                           for="modal-remove"
@@ -666,7 +668,7 @@
                           @click="
                             status_item(
                               `cancel`,
-                              `${row.code}`,
+                              `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/WH/shelf_request'
                             )
@@ -679,7 +681,7 @@
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >Detail
                         </label>
                       </th>
@@ -741,7 +743,7 @@ export default {
       },
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
+      
       category: {
         rows: [],
         page: 1,
@@ -825,7 +827,7 @@ export default {
     exportExcel() {
       return window.open(`${
         this.$store.state.serviceUrl
-      }controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
+      }api/controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
         this.base.page
       }${this.base.row ? `&rows=${this.base.row}` : ""}${
         this.base.q ? `&q=${this.base.q}` : ""
@@ -856,7 +858,7 @@ export default {
       fetch(
         `${
           this.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf_request?total=1&page=${
+        }api/controllers/MYSQL/INTERNAL/WH/shelf_request?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -914,7 +916,7 @@ export default {
       // delete image.temp;
       this.base.form.status = this.base.form.newStatus;
       console.log(this.base.form.status);
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf_request`, {
+      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf_request`, {
         method: this.base.controll == "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -924,7 +926,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             const promise_arr = [];
             console.log(this.base.current);
@@ -961,7 +966,7 @@ export default {
     },
 
     status_item(status, code, controll, tb) {
-      fetch(`${this.serviceUrl}${tb}`, {
+      fetch(`${this.serviceUrl}api/${tb}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -974,7 +979,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             // this.remove.modal = false;
             this[`${controll}_search`]();
@@ -994,7 +1002,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -1006,7 +1014,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.remove.modal = false;
             this.base.modal = false;
@@ -1035,7 +1046,7 @@ export default {
     },
     item_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`,
         {
           method: "GET",
           headers: {
@@ -1061,11 +1072,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
+      
     });
   },
   watch: {
@@ -1087,7 +1094,7 @@ export default {
     "base.form.item_code": function (val) {
       if (val) {
         fetch(
-          `${this.serviceUrl}controllers/SAP/${
+          `${this.serviceUrl}api/controllers/SAP/${
             this.base.form.item_wh ? this.base.form.item_wh : "UBA"
           }/oitm?item_code=${val}`,
           {
@@ -1100,7 +1107,10 @@ export default {
         )
           .then((response) => response.json())
           .then((res) => {
-            if (res.rows.length > 0) {
+                     if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
               this.base.form.item_code = res.rows[0].ItemCode;
               this.base.form.item_name = res.rows[0].ItemName;
               this.base.form.uom = res.rows[0].UomCode;

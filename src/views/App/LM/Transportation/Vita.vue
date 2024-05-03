@@ -10,7 +10,7 @@
           v-model="base.modal"
         />
         <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-10/12 lg:w-6/12 max-w-5xl">
+          <div class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen">
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
@@ -27,7 +27,7 @@
                     <input
                       type="text"
                       placeholder="EN"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.en"
                     />
                   </div>
@@ -38,7 +38,7 @@
                     <input
                       type="text"
                       placeholder="packingList"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.packingList"
                     />
                   </div>
@@ -52,7 +52,7 @@
                     <input
                       type="text"
                       placeholder="Shipping Mark"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.shippingMark"
                     />
                   </div>
@@ -63,7 +63,7 @@
                     <input
                       type="date"
                       placeholder="Shipping Date"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       v-model="base.form.shippingDate"
                     />
                   </div>
@@ -101,39 +101,39 @@
                         <tbody>
                           <tr
                             class="hover"
-                            v-for="(row, index) in detail.rows"
-                            :key="index"
+                            v-for="(v, i) in detail.rows"
+                            :key="i"
                           >
                             <th>
-                              {{ index + 1 }}
+                              {{ i + 1 }}
                             </th>
 
                             <td>
-                              {{ row.product }}
+                              {{ v.product }}
                             </td>
 
                             <td>
-                              {{ row.lotNumber }}
+                              {{ v.lotNumber }}
                             </td>
                             <td>
-                              {{ row.packing }}
+                              {{ v.packing }}
                             </td>
                             <td>
-                              {{ row.quantity }}
-                            </td>
-
-                            <td>
-                              {{ row.mfg }}
+                              {{ v.quantity }}
                             </td>
 
                             <td>
-                              {{ row.exp }}
+                              {{ v.mfg }}
+                            </td>
+
+                            <td>
+                              {{ v.exp }}
                             </td>
                             <th class="text-right">
                               <label
                                 for="modal-detail"
                                 class="btn btn-ghost modal-button btn-xs"
-                                @click="detail_edit(`${row.code}`, `${index}`)"
+                                @click="detail_edit(`${v.code}`, `${i}`)"
                               >
                                 แก้ไข
                               </label>
@@ -143,7 +143,7 @@
                                 class="btn btn-ghost modal-button btn-xs"
                                 @click="
                                   remove_item(
-                                    `${row.code}`,
+                                    `${v.code}`,
                                     'detail',
                                     'controllers/MYSQL/INTERNAL/HR/email'
                                   )
@@ -167,7 +167,7 @@
                     <input
                       type="text"
                       placeholder="วันที่เริ่มงาน"
-                      class="input input-bordered"
+                      class="input input-bordered border-base-content"
                       disabled
                       :value="`${user.firstname} ${user.lastname}`"
                     />
@@ -178,7 +178,7 @@
                     </label>
 
                     <label class="form-control w-full max-w-xs">
-                      <select class="select select-bordered" v-model="base.form.status">
+                      <select class="select select-bordered border-base-content" v-model="base.form.status">
                         <option disabled selected value="">เลือกรายการ</option>
                         <option value="pending">เตรียมจัดส่ง</option>
                         <option value="shipping">จัดส่งแล้ว</option>
@@ -217,7 +217,7 @@
               >✕</label
             >
             <h3 class="text-lg font-bold">Product</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh] ">
               <!-- <div class="form-control">
                 <label class="label"
                   ><span class="label-text">Short code</span>
@@ -230,7 +230,7 @@
                   :minChar="3"
                   :delay="0.5"
                   :limit="10"
-                  :customClass="`input input-bordered`"
+                  :customClass="`input input-bordered border-base-content`"
                   :disabled="checkbox == 'M' ? true : false"
                   :current="base.form.item_short_code"
                   :refresh="refresh.item_short_code"
@@ -245,7 +245,7 @@
                       refresh.item_short_code = obj.value;
                     }
                   "
-                  :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort`"
+                  :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`"
                   :param="`&total=1&wh=${user.branchTitle}&action=groupby-code`"
                 />
               </div> -->
@@ -263,7 +263,7 @@
                   :minChar="3"
                   :delay="0.5"
                   :limit="10"
-                  :customClass="`input input-bordered`"
+                  :customClass="`input input-bordered border-base-content`"
                   :current="detail.form.product_code"
                   :refresh="refresh"
                   @updateValue="
@@ -279,12 +279,12 @@
                   "
                   :url="
                     base.form.wh == 'UBA'
-                      ? `${serviceUrl}controllers/SAP/UBA/oitm`
-                      : `${serviceUrl}controllers/SAP/UBP/oitm`
+                      ? `${serviceUrl}api/controllers/SAP/UBA/oitm`
+                      : `${serviceUrl}api/controllers/SAP/UBP/oitm`
                   "
                   :param="`&total=1&wh=wh1&rac_list=1`"
                 />
-                <!-- :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelf`"
+                <!-- :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf`"
                       :param="`&total=1&action=count&transref=I&transref_type_null=1&wh=UBA&total=1`" -->
 
                 <!-- <AppModuleGlobalSelectSearch
@@ -294,7 +294,7 @@
                       :minChar="3"
                       :delay="0.5"
                       :limit="10"
-                      :customClass="`input input-bordered ${
+                      :customClass="`input input-bordered border-base-content ${
                         checkbox == 'M' ? 'input-disabled' : ''
                       }`"
                       :disabled="checkbox == 'M' ? true : false"
@@ -311,13 +311,13 @@
                           refresh = obj.value;
                         }
                       "
-                      :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/company`"
+                      :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
                       :param="`&total=1`"
                     /> -->
                 <!-- <input
                   type="text"
                   placeholder="Product"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.product"
                 /> -->
               </div>
@@ -329,7 +329,7 @@
                 <input
                   type="text"
                   placeholder="Lot Number"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.lotNumber"
                 />
               </div>
@@ -342,7 +342,7 @@
                 <input
                   type="number"
                   placeholder="Packing"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.packing"
                 />
               </div>
@@ -353,7 +353,7 @@
                 <input
                   type="number"
                   placeholder="Quantity"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.quantity"
                 />
               </div>
@@ -365,7 +365,7 @@
                 <input
                   type="date"
                   placeholder="MFG"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.mfg"
                 />
               </div>
@@ -376,7 +376,7 @@
                 <input
                   type="date"
                   placeholder="EXP"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.exp"
                 />
               </div>
@@ -387,7 +387,7 @@
                 <input
                   type="email"
                   placeholder="Email"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.email"
                 />
               </div>
@@ -433,7 +433,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh] ">
               Are your sure for remove this item?
             </div>
 
@@ -470,7 +470,7 @@
             <div class="card-body overflow-auto">
               <div class="join mt-5 w-full md:justify-center lg:justify-end">
                 <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+                  :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
                     (q) => {
                       base.q = q;
@@ -505,36 +505,36 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(row, index) in base.rows" :key="row.code">
-                      <th>{{ index + 1 }}</th>
+                    <tr v-for="(v, i) in base.rows" :key="v.code">
+                      <th>{{ i + 1 }}</th>
                       <td>
-                        {{ row.en }}
+                        {{ v.en }}
                       </td>
 
                       <td>
-                        {{ row.packingList }}
+                        {{ v.packingList }}
                       </td>
                       <td>
-                        {{ row.shippingMark }}
+                        {{ v.shippingMark }}
                       </td>
                       <td>
-                        {{ row.shippingDate }}
+                        {{ v.shippingDate }}
                       </td>
                       <td>
-                        {{ row.created_at }}
+                        {{ v.created_at }}
                       </td>
                       <td>
-                        {{ row.created_by }}
+                        {{ v.created_by }}
                       </td>
                       <td>
-                        {{ row.status }}
+                        {{ v.status }}
                       </td>
 
                       <th class="text-right">
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >edit
                         </label>
 
@@ -543,7 +543,7 @@
                           class="join-item btn btn-ghost modal-button btn-xs"
                           @click="
                             remove_item(
-                              `${row.code}`,
+                              `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/HR/employee'
                             )
@@ -613,7 +613,7 @@ export default {
       },
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
+      
       category: {
         rows: [],
         page: 1,
@@ -664,8 +664,8 @@ export default {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
-      console.log("TOKEN");
-      console.log(this.$store.getters.user_token);
+      // console.log("token");
+      //console.log(this.$store.getters.user_token);
       return this.$store.getters.user_token;
     },
     user() {
@@ -745,7 +745,7 @@ export default {
       fetch(
         `${
           this.serviceUrl
-        }controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${this.base.page}${
+        }api/controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
         }${this.base.q ? `&q=${this.base.q}` : ""}`,
         {
@@ -758,7 +758,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             res.rows.forEach((v, i) => {
               res.rows[i].image = v.image ? JSON.parse(v.image) : [];
               res.rows[i].master = 0;
@@ -868,7 +871,7 @@ export default {
       return;
 
       let vm = this;
-      fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/employee`, {
+      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, {
         method: this.base.controll == "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -897,7 +900,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             const promise_arr = [];
             console.log(this.base.current);
@@ -952,7 +958,7 @@ export default {
       );
       return callback({ rows: data, total: data.length });
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
@@ -1089,7 +1095,7 @@ if (type == "static") {
         if (this.detail.controll == "edit") {
           obj["code"] = this.detail.form.code;
         }
-        fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email`, {
+        fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, {
           method: this.detail.controll == "create" ? "POST" : "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -1099,7 +1105,10 @@ if (type == "static") {
         })
           .then((response) => response.json())
           .then((res) => {
-            if (res.success) {
+                     if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
               this.detail.modal = false;
 
               if (type == "static") {
@@ -1124,7 +1133,7 @@ if (type == "static") {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -1136,7 +1145,10 @@ if (type == "static") {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
@@ -1151,13 +1163,9 @@ if (type == "static") {
   },
   mounted() {
     this.$nextTick(() => {
-      console.log(this.user_token);
+      //console.log(this.user_token);
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
+      
     });
   },
 };

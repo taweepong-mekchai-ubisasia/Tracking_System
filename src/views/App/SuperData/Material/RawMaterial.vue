@@ -26,7 +26,7 @@
                   <input
                     type="text"
                     placeholder="Short code"
-                    class="input input-bordered input-disabled"
+                    class="input input-bordered border-base-content input-disabled"
                     required=""
                     v-model="base.form.item_short_code"
                     disabled
@@ -40,7 +40,7 @@
                   <input
                     type="text"
                     placeholder="Short code"
-                    class="input input-bordered input-disabled"
+                    class="input input-bordered border-base-content input-disabled"
                     required=""
                     v-model="base.form.item_short_code"
                     disabled
@@ -53,7 +53,7 @@
                   <input
                     type="text"
                     placeholder="Item Code"
-                    class="input input-bordered"
+                    class="input input-bordered border-base-content"
                     required=""
                     v-model="base.form.item_code"
                     disabled
@@ -68,7 +68,7 @@
                       <input
                         type="number"
                         placeholder="Qty"
-                        class="input input-bordered"
+                        class="input input-bordered border-base-content"
                         required=""
                         min="1"
                         max="5"
@@ -85,7 +85,7 @@
                       <input
                         type="text"
                         placeholder="Unit"
-                        class="input input-bordered w-full input-disabled"
+                        class="input input-bordered border-base-content w-full input-disabled"
                         required=""
                         v-model="base.form.uom"
                         readonly
@@ -99,7 +99,7 @@
                   </label>
                   <label class="form-control w-full">
                     <select
-                      class="select select-bordered"
+                      class="select select-bordered border-base-content"
                       v-model="base.form.newStatus"
                     >
                       <option selected disabled value="">Select Option</option>
@@ -167,7 +167,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh]">
               Are your sure for remove this item?
             </div>
 
@@ -207,7 +207,7 @@
                     <input
                       type="date"
                       placeholder="title"
-                      class="join-item input input-sm input-bordered"
+                      class="join-item input input-sm input-bordered border-base-content"
                       v-model="date.from"
                       @change="change"
                     />
@@ -221,7 +221,7 @@
                     <input
                       type="date"
                       placeholder="title"
-                      class="join-item input input-sm input-bordered"
+                      class="join-item input input-sm input-bordered border-base-content"
                       v-model="date.to"
                       @change="change"
                     />
@@ -237,7 +237,7 @@
                     />
                   </button> -->
                   <AppModuleGlobalSearch
-                    :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+                    :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                     @search="
                       (q) => {
                         base.q = q;
@@ -285,7 +285,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(row, index) in base.rows" :key="row.code">
+                    <tr v-for="(v, i) in base.rows" :key="v.code">
                       <!-- {
     "oid": "a66cce16-516e-40b2-840e-846a11e5f176",
     "edit_seq": "23",
@@ -306,42 +306,42 @@
     "file_expire": ""
 } -->
                       <th>
-                        {{ row.spec_num }}
+                        {{ v.spec_num }}
                       </th>
                       <td>
-                        {{ row.itemcode }}
+                        {{ v.itemcode }}
                       </td>
                       <td>
-                        {{ row.chemical_name }}
+                        {{ v.chemical_name }}
                       </td>
                       <td>
-                        {{ row.vendor }}
-                      </td>
-
-                      <td>
-                        {{ row.menufa }}
-                      </td>
-                      <td>
-                        {{ row.shelf_life }}
-                      </td>
-                      <td>
-                        {{ row.rm_product_group }}
-                      </td>
-                      <td>
-                        {{ row.rm_function }}
+                        {{ v.vendor }}
                       </td>
 
                       <td>
-                        {{ row.status_rm ? "Active" : "Inactive" }}
+                        {{ v.menufa }}
                       </td>
                       <td>
-                        {{ row.file }}
+                        {{ v.shelf_life }}
+                      </td>
+                      <td>
+                        {{ v.rm_product_group }}
+                      </td>
+                      <td>
+                        {{ v.rm_function }}
+                      </td>
+
+                      <td>
+                        {{ v.status_rm ? "Active" : "Inactive" }}
+                      </td>
+                      <td>
+                        {{ v.file }}
                       </td>
                       <td>
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >View
                         </label>
                       </td>
@@ -350,7 +350,7 @@
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >Detail
                         </label>
                       </th> -->
@@ -412,7 +412,7 @@ export default {
       },
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
+
       category: {
         rows: [],
         page: 1,
@@ -510,7 +510,9 @@ export default {
     },
     base_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/POSTGRE/SUNFIX/MT_ItemRM?total=1&page=${
+        `${
+          this.serviceUrl
+        }api/controllers/POSTGRE/SUNFIX/MT_ItemRM?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -527,7 +529,11 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          // if (res.rows.length > 0) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
+          }
           //   res.rows.forEach((v, i) => {
           //     res.rows[i].image = v.image ? JSON.parse(v.image) : [];
           //     res.rows[i].master = 0;
@@ -577,7 +583,7 @@ export default {
       // delete image.temp;
 
       this.base.form.status = this.base.form.newStatus;
-      fetch(`${this.serviceUrl}controllers/POSTGRE/SUNFIX/MT_ItemRM`, {
+      fetch(`${this.serviceUrl}api/controllers/POSTGRE/SUNFIX/MT_ItemRM`, {
         method: this.base.controll == "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -587,7 +593,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             this.base.modal = false;
             const promise_arr = [];
             console.log(this.base.current);
@@ -624,7 +633,7 @@ export default {
     },
 
     status_item(status, code, controll, tb) {
-      fetch(`${this.serviceUrl}${tb}`, {
+      fetch(`${this.serviceUrl}api/${tb}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -637,7 +646,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             // this.remove.modal = false;
             this[`${controll}_search`]();
@@ -657,7 +669,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -669,7 +681,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
@@ -697,7 +712,7 @@ export default {
     },
     item_get(callback) {
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`,
         {
           method: "GET",
           headers: {
@@ -723,11 +738,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
     });
   },
   watch: {
@@ -749,7 +759,7 @@ export default {
     "base.form.item_code": function (val) {
       if (val) {
         fetch(
-          `${this.serviceUrl}controllers/SAP/${
+          `${this.serviceUrl}api/controllers/SAP/${
             this.base.form.item_wh ? this.base.form.item_wh : "UBA"
           }/oitm?item_code=${val}`,
           {
@@ -762,7 +772,10 @@ export default {
         )
           .then((response) => response.json())
           .then((res) => {
-            if (res.rows.length > 0) {
+            if (!res.success) {
+              localStorage.removeItem("user_token");
+              this.$router.push({ name: `Login` });
+            } else {
               this.base.form.item_code = res.rows[0].ItemCode;
               this.base.form.item_name = res.rows[0].ItemName;
               this.base.form.uom = res.rows[0].UomCode;

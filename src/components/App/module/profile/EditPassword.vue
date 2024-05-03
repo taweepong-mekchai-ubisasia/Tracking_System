@@ -1,7 +1,6 @@
 <template>
   <div
-    class="card-body overflow-auto"
-    style="max-height: inherit"
+    class="card-body overflow-auto max-h-[inherit]"
     :class="`${tab != 'editpassword' ? 'hidden' : ''}`"
   >
     <div class="form-control" :class="errorMsg ? '' : 'hidden'">
@@ -25,7 +24,7 @@
           <input
             placeholder="Current password*"
             :type="showcurrentpassword ? 'password' : 'text'"
-            class="input input-bordered text-md w-full"
+            class="input input-bordered border-base-content text-md w-full"
             v-model="temp.current_password"
           />
           <div
@@ -59,7 +58,7 @@
           <input
             placeholder="Password*"
             :type="showpassword ? 'password' : 'text'"
-            class="input input-bordered text-md w-full"
+            class="input input-bordered border-base-content text-md w-full"
             :class="
               temp.password &&
               (temp.password.length < 4 ||
@@ -113,7 +112,7 @@
           <input
             placeholder="Confirm Password*"
             :type="showconfirmpassword ? 'password' : 'text'"
-            class="input input-bordered text-md w-full"
+            class="input input-bordered border-base-content text-md w-full"
             :class="
               temp.password &&
               temp.confirm_password &&
@@ -217,12 +216,6 @@ export default {
     ServiceUrl() {
       return this.$store.getters.serviceUrl;
     },
-    isLogin() {
-      return this.$store.getters.isLogin;
-    },
-    scrollTop() {
-      return this.$store.getters.scrollTop;
-    },
     jwt() {
       return this.$store.getters.jwt;
     },
@@ -239,7 +232,7 @@ export default {
         return;
       }
 
-      fetch(`${this.ServiceUrl}controllers/user`, {
+      fetch(`${this.serviceUrl}api/controllers/user`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -253,7 +246,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+                   if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             if (localStorage.getItem("jwt")) {
               localStorage.setItem("jwt", res.jwt);
             }

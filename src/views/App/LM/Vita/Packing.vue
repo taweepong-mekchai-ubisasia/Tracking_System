@@ -10,7 +10,9 @@
           v-model="base.modal"
         />
         <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-6/12 max-w-5xl">
+          <div
+            class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen"
+          >
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
@@ -28,7 +30,7 @@
                 <input
                   type="text"
                   placeholder="Quantation"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="base.form.quantation"
                 />
               </div>
@@ -41,7 +43,7 @@
                 <input
                   type="text"
                   placeholder="Packing List"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="base.form.packing"
                 />
               </div>
@@ -56,7 +58,7 @@
                 <input
                   type="text"
                   placeholder="Shipping Mark"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="base.form.shipping"
                 />
               </div>
@@ -67,7 +69,7 @@
                 <input
                   type="date"
                   placeholder="Sending Date"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="base.form.sending"
                 />
               </div>
@@ -79,7 +81,7 @@
               <input
                 type="text"
                 placeholder="Customer"
-                class="input input-bordered"
+                class="input input-bordered border-base-content"
                 v-model="base.form.customer"
               />
             </div>
@@ -94,7 +96,7 @@
                               :minChar="3"
                               :delay="0.5"
                               :limit="10"
-                              :customClass="`input input-bordered ${
+                              :customClass="`input input-bordered border-base-content ${
                               checkbox == 'M' ? 'input-disabled' : ''
                               }`"
                               :disabled="checkbox == 'M' ? true : false"
@@ -111,7 +113,7 @@
                                   refresh = obj.value;
                               }
                               "
-                              :url="`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/department`"
+                              :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/department`"
                               :param="`&total=1&wh=wh1&rac_list=1`"
                           />
                       </div> -->
@@ -143,52 +145,52 @@
                   <tbody>
                     <tr
                       class="hover"
-                      v-for="(row, index) in detail.rows"
-                      :key="index"
+                      v-for="(v, i) in detail.rows"
+                      :key="i"
                     >
                       <!-- <th>
                                               <div class="flex items-center space-x-3">
                                                   <input
                                                       type="checkbox"
-                                                      :checked="row.code == base.form.email"
+                                                      :checked="v.code == base.form.email"
                                                       class="checkbox"
                                                       @click="
                                                       () => {
                                                           base.form.email =
-                                                          base.form.email == row.code
+                                                          base.form.email == v.code
                                                               ? ''
-                                                              : row.code;
+                                                              : v.code;
                                                       }
                                                       "
                                                   />
                                               </div>
                                           </th> -->
                       <td>
-                        {{ index + 1 }}
+                        {{ i + 1 }}
                       </td>
                       <td>
-                        {{ row.product }}
+                        {{ v.product }}
                       </td>
                       <td>
-                        {{ row.lot }}
+                        {{ v.lot }}
                       </td>
                       <td>
-                        {{ row.packing }}
+                        {{ v.packing }}
                       </td>
                       <td>
-                        {{ row.quantity }}
+                        {{ v.quantity }}
                       </td>
                       <td>
-                        {{ row.mfg }}
+                        {{ v.mfg }}
                       </td>
                       <td>
-                        {{ row.exp }}
+                        {{ v.exp }}
                       </td>
                       <th class="text-right">
                         <label
                           for="modal-detail"
                           class="btn btn-ghost modal-button btn-xs"
-                          @click="detail_edit(`${row.code}`, `${index}`)"
+                          @click="detail_edit(`${v.code}`, `${i}`)"
                         >
                           แก้ไข
                         </label>
@@ -198,7 +200,7 @@
                           class="btn btn-ghost modal-button btn-xs"
                           @click="
                             remove_item(
-                              `${row.code}`,
+                              `${v.code}`,
                               'detail',
                               'controllers/MYSQL/INTERNAL/HR/email'
                             )
@@ -220,7 +222,7 @@
                 <input
                   type="text"
                   placeholder="ชื่อผู้ทำรายการ"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   disabled="true"
                   :value="`${user.firstname} ${user.lastname}`"
                 />
@@ -230,7 +232,7 @@
                   <span class="label-text">Status :</span>
                 </label>
                 <select
-                  class="select select-bordered"
+                  class="select select-bordered border-base-content"
                   v-model="base.form.status"
                 >
                   <option value="pending">เตรียมจัดส่ง</option>
@@ -267,7 +269,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh]">
               Are your sure for remove this item?
             </div>
 
@@ -304,7 +306,7 @@
               >✕</label
             >
 
-            <div class="card-body overflow-auto" style="max-height: 60vh">
+            <div class="card-body overflow-auto max-h-[60vh]">
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">Product</span>
@@ -312,7 +314,7 @@
                 <!-- <input
                               type="text"
                               placeholder="Product"
-                              class="input input-bordered"
+                              class="input input-bordered border-base-content"
                               v-model="detail.form.product"
                               /> -->
 
@@ -323,7 +325,7 @@
                   :minChar="3"
                   :delay="0.5"
                   :limit="10"
-                  :customClass="`input input-bordered ${
+                  :customClass="`input input-bordered border-base-content ${
                     checkbox == 'M' ? 'input-disabled' : ''
                   }`"
                   :disabled="checkbox == 'M' ? true : false"
@@ -339,7 +341,7 @@
                       refresh = obj.value;
                     }
                   "
-                  :url="`${this.serviceUrl}controllers/SAP/UBP/oitm`"
+                  :url="`${this.serviceUrl}api/controllers/SAP/UBP/oitm`"
                   :param="`&page=1&rows=10&total=1`"
                 />
               </div>
@@ -351,7 +353,7 @@
                 <input
                   type="text"
                   placeholder="Lot Number"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.lot"
                 />
               </div>
@@ -362,7 +364,7 @@
                 <input
                   type="number"
                   placeholder="Packing"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.packing"
                 />
               </div>
@@ -373,7 +375,7 @@
                 <input
                   type="number"
                   placeholder="Quantity"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.quantity"
                 />
               </div>
@@ -384,7 +386,7 @@
                 <input
                   type="date"
                   placeholder="MFG"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.mfg"
                 />
               </div>
@@ -395,7 +397,7 @@
                 <input
                   type="date"
                   placeholder="EXP"
-                  class="input input-bordered"
+                  class="input input-bordered border-base-content"
                   v-model="detail.form.exp"
                 />
               </div>
@@ -432,7 +434,7 @@
             <div class="card-body overflow-auto">
               <div class="join mt-5 w-full md:justify-center lg:justify-end">
                 <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+                  :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
                     (q) => {
                       base.q = q;
@@ -443,13 +445,13 @@
                 <!-- <input
                               type="text"
                               placeholder="Quantation"
-                              class="input input-sm input-bordered"
+                              class="input input-sm input-bordered border-base-content"
                               v-model="quantation"
                               />
                               <input
                               type="text"
                               placeholder="Packing List"
-                              class="input input-sm input-bordered"
+                              class="input input-sm input-bordered border-base-content"
                               v-model="packing"
                               /> -->
                 <label
@@ -477,20 +479,20 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(row, index) in base.rows">
-                      <th>{{ index + 1 }}</th>
-                      <td>{{ row.quantation }}</td>
-                      <td>{{ row.packing }}</td>
-                      <td>{{ row.shipping }}</td>
-                      <td>{{ row.sending }}</td>
-                      <td>{{ row.customer }}</td>
-                      <td>{{ row.created_by }}</td>
-                      <td>{{ row.status }}</td>
+                    <tr v-for="(v, i) in base.rows">
+                      <th>{{ i + 1 }}</th>
+                      <td>{{ v.quantation }}</td>
+                      <td>{{ v.packing }}</td>
+                      <td>{{ v.shipping }}</td>
+                      <td>{{ v.sending }}</td>
+                      <td>{{ v.customer }}</td>
+                      <td>{{ v.created_by }}</td>
+                      <td>{{ v.status }}</td>
                       <th class="text-right">
                         <label
                           for="modal-base"
                           class="join-item btn btn-ghost modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          @click="base_edit(`${v.code}`, `${i}`)"
                           >edit
                         </label>
 
@@ -499,7 +501,7 @@
                           class="join-item btn btn-ghost modal-button btn-xs"
                           @click="
                             remove_item(
-                              `${row.code}`,
+                              `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/HR/employee'
                             )
@@ -510,13 +512,13 @@
                       <!-- <td>
                                       <div>
                                       <div class="font-bold">
-                                          <span class="pr-2">{{ row.code }}</span>
-                                          <span>{{ row.code }}</span>
+                                          <span class="pr-2">{{ v.code }}</span>
+                                          <span>{{ v.code }}</span>
                                       </div>
           
-                                      <div class="text-sm">รหัสพนักงาน : {{ row.code }}</div>
+                                      <div class="text-sm">รหัสพนักงาน : {{ v.code }}</div>
                                       <div class="text-xs">
-                                          {{ row.code }}
+                                          {{ v.code }}
                                       </div>
                                       </div>
                                   </td> -->
@@ -524,18 +526,18 @@
                                       <div class="flex items-center space-x-3">
                                       <div>
                                           <div class="font-bold">
-                                          {{ row.emailTitle ? row.emailTitle : "-" }}
+                                          {{ v.emailTitle ? v.emailTitle : "-" }}
                                           </div>
                                           <div class="text-sm">
-                                          tel : {{ row.tel ? row.tel : "-" }}
+                                          tel : {{ v.tel ? v.tel : "-" }}
                                           </div>
                                           <div class="text-sm">
                                           วันเกิด :
                                           {{
-                                              row.birthdate &&
-                                              $moment(row.birthdate).format("YYYY-MM-DD") >
+                                              v.birthdate &&
+                                              $moment(v.birthdate).format("YYYY-MM-DD") >
                                               "2000"
-                                              ? $moment(row.birthdate).format("YYYY-MM-DD")
+                                              ? $moment(v.birthdate).format("YYYY-MM-DD")
                                               : "-"
                                           }}
                                           </div>
@@ -546,17 +548,17 @@
                                       <div class="flex items-center space-x-3">
                                       <div>
                                           <div class="font-bold">
-                                          {{ row.position ? row.position : "-" }}
+                                          {{ v.position ? v.position : "-" }}
                                           </div>
                                           <div class="text-sm">
-                                          แผนก : {{ row.depTitle ? row.depTitle : "-" }}
+                                          แผนก : {{ v.depTitle ? v.depTitle : "-" }}
                                           </div>
                                           <div class="text-sm">
                                           สาขา :
-                                          {{ row.branchTitle ? row.branchTitle : "-" }}
+                                          {{ v.branchTitle ? v.branchTitle : "-" }}
                                           </div>
                                           <div class="text-sm">
-                                          {{ row.companyTitle ? row.companyTitle : "-" }}
+                                          {{ v.companyTitle ? v.companyTitle : "-" }}
                                           </div>
                                       </div>
                                       </div>
@@ -565,7 +567,7 @@
                                       <div class="flex items-center space-x-3">
                                       <div>
                                           <div class="font-bold">
-                                          {{ row.accessTitle ? row.accessTitle : "-" }}
+                                          {{ v.accessTitle ? v.accessTitle : "-" }}
                                           </div>
                                       
                                       </div>
@@ -577,20 +579,20 @@
                                           <div class="text-sm">
                                           เริ่มงาน :
                                           {{
-                                              row.started_at &&
-                                              $moment(row.started_at).format("YYYY-MM-DD") >
+                                              v.started_at &&
+                                              $moment(v.started_at).format("YYYY-MM-DD") >
                                               "2000"
-                                              ? $moment(row.started_at).format("YYYY-MM-DD")
+                                              ? $moment(v.started_at).format("YYYY-MM-DD")
                                               : "-"
                                           }}
                                           </div>
                                           <div class="text-sm">
                                           สิ้นสุด :
                                           {{
-                                              row.leaves_at &&
-                                              $moment(row.leaves_at).format("YYYY-MM-DD") >
+                                              v.leaves_at &&
+                                              $moment(v.leaves_at).format("YYYY-MM-DD") >
                                               "2000"
-                                              ? $moment(row.leaves_at).format("YYYY-MM-DD")
+                                              ? $moment(v.leaves_at).format("YYYY-MM-DD")
                                               : "-"
                                           }}
                                           </div>
@@ -602,17 +604,17 @@
                                       <div>
                                           <div class="text-xs">
                                           {{
-                                              row.created_at &&
-                                              $moment(row.created_at).format("YYYY-MM-DD") >
+                                              v.created_at &&
+                                              $moment(v.created_at).format("YYYY-MM-DD") >
                                               "2000"
-                                              ? row.created_at
+                                              ? v.created_at
                                               : "-"
                                           }}
                                           </div>
                                           <div class="text-xs opacity-30">
                                           {{
-                                              row.created_fullname
-                                              ? row.created_fullname
+                                              v.created_fullname
+                                              ? v.created_fullname
                                               : "-"
                                           }}
                                           </div>
@@ -624,17 +626,17 @@
                                       <div>
                                           <div class="text-xs">
                                           {{
-                                              row.updated_at &&
-                                              $moment(row.updated_at).format("YYYY-MM-DD") >
+                                              v.updated_at &&
+                                              $moment(v.updated_at).format("YYYY-MM-DD") >
                                               "2000"
-                                              ? row.updated_at
+                                              ? v.updated_at
                                               : "-"
                                           }}
                                           </div>
                                           <div class="text-xs opacity-30">
                                           {{
-                                              row.updated_fullname
-                                              ? row.updated_fullname
+                                              v.updated_fullname
+                                              ? v.updated_fullname
                                               : "-"
                                           }}
                                           </div>
@@ -646,7 +648,7 @@
                                       <label
                                       for="modal-base"
                                       class="join-item btn btn-ghost modal-button btn-xs"
-                                      @click="base_edit(`${row.code}`, `${index}`)"
+                                      @click="base_edit(`${v.code}`, `${i}`)"
                                       >edit
                                       </label>
           
@@ -655,7 +657,7 @@
                                       class="join-item btn btn-ghost modal-button btn-xs"
                                       @click="
                                           remove_item(
-                                          `${row.code}`,
+                                          `${v.code}`,
                                           'base',
                                           'controllers/MYSQL/INTERNAL/HR/employee'
                                           )
@@ -723,7 +725,7 @@ export default {
       packing: "",
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
+
       category: {
         rows: [],
         page: 1,
@@ -827,9 +829,11 @@ export default {
       fetch(
         `${
           this.serviceUrl
-        }controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${this.base.page}${
-          this.base.row ? `&rows=${this.base.row}` : ""
-        }${this.base.q ? `&q=${this.base.q}` : ""}`,
+        }api/controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${
+          this.base.page
+        }${this.base.row ? `&rows=${this.base.row}` : ""}${
+          this.base.q ? `&q=${this.base.q}` : ""
+        }`,
         {
           method: "GET",
           headers: {
@@ -840,7 +844,10 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.rows.length > 0) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             res.rows.forEach((v, i) => {
               // res.rows[i].image = v.image ? JSON.parse(v.image) : [];
               res.rows[i].master = 0;
@@ -965,7 +972,7 @@ export default {
       // } else {
       // this.base.form.new_password = this.base.form.uid;
       // }
-      // fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/employee`, {
+      // fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, {
       // method: this.base.controll == "create" ? "POST" : "PUT",
       // headers: {
       // "Content-Type": "application/json",
@@ -994,7 +1001,10 @@ export default {
       // })
       // .then((response) => response.json())
       // .then((res) => {
-      // if (res.success) {
+      //      if (!res.success) {
+      //   localStorage.removeItem("user_token");
+      //   this.$router.push({ name: `Login` });
+      // } else {
       // this.base.modal = false;
       // const promise_arr = [];
       // console.log(this.base.current);
@@ -1050,7 +1060,9 @@ export default {
       return callback({ rows: data, total: data.length });
 
       fetch(
-        `${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
+        `${
+          this.serviceUrl
+        }api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
@@ -1203,7 +1215,7 @@ export default {
         if (this.detail.controll == "edit") {
           obj["code"] = this.detail.form.code;
         }
-        fetch(`${this.serviceUrl}controllers/MYSQL/INTERNAL/HR/email`, {
+        fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, {
           method: this.detail.controll == "create" ? "POST" : "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -1213,7 +1225,10 @@ export default {
         })
           .then((response) => response.json())
           .then((res) => {
-            if (res.success) {
+            if (!res.success) {
+              localStorage.removeItem("user_token");
+              this.$router.push({ name: `Login` });
+            } else {
               this.detail.modal = false;
               //
               if (type == "static") {
@@ -1238,7 +1253,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -1250,7 +1265,10 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (res.success) {
+          if (!res.success) {
+            localStorage.removeItem("user_token");
+            this.$router.push({ name: `Login` });
+          } else {
             // console.log(res);
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
@@ -1266,11 +1284,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:8081"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
     });
   },
 };

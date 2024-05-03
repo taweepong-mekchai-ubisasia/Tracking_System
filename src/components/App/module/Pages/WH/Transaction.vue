@@ -1,235 +1,233 @@
 <template>
-  <div class="Stock">
-    <div class="grid grid-cols-4 gap-6 lg:px-10 lg:py-5 xl:grid-cols-4">
-      <div class="card col-span-4 row-span-4 bg-transparent">
-        <div class="join mt-5 w-full md:justify-center lg:justify-end">
-          <button
-            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-            disabled
-          >
-            วันที่
-          </button>
-          <input
-            type="date"
-            placeholder="title"
-            class="join-item input input-sm input-bordered"
-            v-model="date.from"
-            @change="change"
-          />
-          <button
-            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-            disabled
-          >
-            -
-          </button>
-          <input
-            type="date"
-            placeholder="title"
-            class="join-item input input-sm input-bordered"
-            v-model="date.to"
-            @change="change"
-          />
-          <select
-            class="join-item select select-sm select-bordered w-auto max-w-xs"
-            v-model="transref"
-          >
-            <option selected value="">ALL</option>
-            <option value="I">In</option>
-            <option value="O">Issue</option>
-            <option value="M">Move</option>
-          </select>
-          <button
-            class="join-item btn btn-sm btn-primary"
-            @click="exportExcel()"
-          >
-            <Icon icon="mdi:file-excel-outline" class="h-5 w-5 text-white" />
-          </button>
-        </div>
-        <div class="join mt-5 w-full md:justify-center lg:justify-end">
-          <button
-            class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-            disabled
-          >
-            สาขา
-          </button>
-          <select
-            class="join-item select select-sm select-bordered w-auto max-w-xs"
-            v-model="wh"
-          >
-            <option selected value="">ALL</option>
-            <option value="wh1">Factory</option>
-            <option value="wh2">External</option>
-          </select>
-          <AppModuleGlobalSearch
-            :class="'join-item input input-sm input-bordered w-full max-w-xs'"
-            @search="
-              (q) => {
-                base.q = q;
-                base_search();
-              }
-            "
-          />
-        </div>
+  <div class="grid grid-cols-1 gap-6 p-2 lg:p-4">
+    <div class="card bg-transparent">
+      <div class="join w-full md:justify-center lg:justify-end">
+        <button
+          class="join-item btn btn-sm disabled:border-base-content disabled:bg-transparent disabled:text-base-content"
+          disabled
+        >
+          วันที่
+        </button>
+        <input
+          type="date"
+          placeholder="title"
+          class="join-item input input-sm input-bordered border-base-content"
+          v-model="date.from"
+          @change="change"
+        />
+        <button
+          class="join-item btn btn-sm disabled:border-base-content disabled:bg-transparent disabled:text-base-content"
+          disabled
+        >
+          -
+        </button>
+        <input
+          type="date"
+          placeholder="title"
+          class="join-item input input-sm input-bordered border-base-content"
+          v-model="date.to"
+          @change="change"
+        />
+        <select
+          class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
+          v-model="transref"
+        >
+          <option selected value="">ALL</option>
+          <option value="I">In</option>
+          <option value="O">Issue</option>
+          <option value="M">Move</option>
+        </select>
+        <button class="join-item btn btn-sm btn-accent" @click="exportExcel()">
+          <Icon icon="mdi:file-excel-outline" class="h-5 w-5 text-white" />
+        </button>
       </div>
+      <div class="join mt-5 w-full md:justify-center lg:justify-end">
+        <button
+          class="join-item btn btn-sm disabled:border-base-content disabled:bg-transparent disabled:text-base-content"
+          disabled
+        >
+          สาขา
+        </button>
+        <select
+          class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
+          v-model="wh"
+        >
+          <option selected value="">ALL</option>
+          <option value="wh1">Factory</option>
+          <option value="wh2">External</option>
+        </select>
+        <AppModuleGlobalSearch
+          :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
+          @search="
+            (q) => {
+              base.q = q;
+              base.page = 1;
+              base_search();
+            }
+          "
+        />
+      </div>
+    </div>
 
-      <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-        <div class="card-body overflow-auto pt-0 max-h-[60vh]">
-          <div v-if="base.loading" class="overflow-x-auto mt-10 text-center">
-            <span class="loading loading-spinner loading-lg"></span>
-          </div>
-          <div class="overflow-x-auto w-full" v-else>
-            <table
-              class="table table-xs table-pin-rows table-pin-cols table-zebra"
-            >
-              <thead>
-                <tr>
-                  <th>Rack</th>
-
-                  <td>Date Time</td>
-                  <td>Code</td>
-                  <td>Ref</td>    <td>Ref2</td>
-                  <td>Transaction</td>
-                  <td>Short Code</td>
-                  <td>Item Name</td>
-                  <td>Lot No.</td>
-                  <td>Qty</td>
-                  <td>Pack Size</td>
-                  <td>Total Quantity</td>
-                  <td>Unit</td>
-                  <td>Comments</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  class="hover"
-                  v-for="(row, index) in base.rows"
-                  :key="row.code"
-                >
-                  <th>
-                    <div class="flex items-center space-x-3">
-                      <div>
-                        <div
-                          class="overflow-hidden text-ellipsis whitespace-nowrap"
-                        >
-                          {{ row.rac }}-{{ row.bay }}-{{ row.level }}-{{
-                            row.pallet
-                          }}
-                        </div>
-                        <div
-                          class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
-                        >
-                          ( {{ row.id }} )
-                        </div>
-                      </div>
-                    </div>
-                  </th>
-                  <td>
-                    <div class="flex items-center space-x-3">
-                      <div>
-                        <div
-                          class="overflow-hidden text-ellipsis whitespace-nowrap"
-                        >
-                          {{ row.created_at ? row.created_at : "-" }}
-                        </div>
-                        <div
-                          class="text-opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
-                        >
-                          {{
-                            row.created_fullname ? row.created_fullname : "-"
-                          }}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    {{ row.code }}
-                  </td>
-                  <td>
-                    {{ row.ref }}
-                  </td>
-                  <td>
-                    {{ row.ref2 }}
-                  </td>
-                  <td>
-                    {{
-                      row.ref && row.ref2
-                        ? "Join"
-                        : row.transref == "I" && row.ref
-                        ? "Move"
-                        : row.transref == "O" && row.ref
-                        ? "Issue"
-                        : row.transref == "I" && !row.ref
-                        ? "In"
-                        : row.transref == "O" && !row.ref
-                        ? "Issue"
-                        : "-"
-                    }}
-                  </td>
-                  <td>{{ row.item_short_code }}</td>
-                  <td>{{ row.item_name }}</td>
-                  <td>{{ row.batch }}</td>
-                  <td class="text-center">
-                    {{ new Intl.NumberFormat("th-TH").format(row.unit) }}
-                  </td>
-                  <td class="text-center">
-                    {{ new Intl.NumberFormat("th-TH").format(row.pack_size) }}
-                  </td>
-                  <td class="text-right">
-                    {{ new Intl.NumberFormat("th-TH").format(row.quantitys) }}
-                  </td>
-                  <td>{{ row.uom }}</td>
-                  <td>
-                    <div class="flex items-center space-x-3">
-                      <div>
-                        <div
-                          class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
-                        >
-                          {{ row.comments }}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <AppModuleGlobalPageination
-            v-if="!base.loading"
-            :page="base.page"
-            :total="base.total"
-            :row="base.row"
-            :back="base.back"
-            :next="base.next"
-            :loading="base.loading"
-            @search="
-              (res) => {
-                base.page = res.page;
-                this.base_search();
-              }
-            "
+    <div class="card shadow-lg bg-base-100">
+      <div
+        class="card-body overflow-auto pt-0 max-h-[60vh] w-full min-h-[60vh] p-2 lg:p-4"
+      >
+        <div
+          v-if="base.loading"
+          class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-white bg-opacity-50 top-0 left-0"
+        >
+          <AppModuleGlobalLoadingText
+            :class="`p-4 py-12 text-3xl text-center`"
           />
         </div>
+        <div
+          class="overflow-x-auto w-full"
+          :class="`${base.loading ? 'blur-sm' : ''}`"
+        >
+          <table
+            class="table table-xs table-pin-rows table-pin-cols table-zebra"
+          >
+            <thead>
+              <tr>
+                <th>Rack</th>
+
+                <td>Date Time</td>
+                <td>Code</td>
+                <td>Ref</td>
+                <td>Ref2</td>
+                <td>Transaction</td>
+                <td>Short Code</td>
+                <td>Item Name</td>
+                <td>Lot No.</td>
+                <td>Qty</td>
+                <td>Pack Size</td>
+                <td>Total Quantity</td>
+                <td>Unit</td>
+                <td>Comments</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="hover"
+                v-for="(v, i) in base.rows"
+                :key="v.code"
+              >
+                <th>
+                  <div class="flex items-center space-x-3">
+                    <div>
+                      <div
+                        class="overflow-hidden text-ellipsis whitespace-nowrap"
+                      >
+                        {{ v.rac }}-{{ v.bay }}-{{ v.level }}-{{
+                          v.pallet
+                        }}
+                      </div>
+                      <div
+                        class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
+                      >
+                        ( {{ v.id }} )
+                      </div>
+                    </div>
+                  </div>
+                </th>
+                <td>
+                  <div class="flex items-center space-x-3">
+                    <div>
+                      <div
+                        class="overflow-hidden text-ellipsis whitespace-nowrap"
+                      >
+                        {{ v.created_at ? v.created_at : "-" }}
+                      </div>
+                      <div
+                        class="text-opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
+                      >
+                        {{ v.created_fullname ? v.created_fullname : "-" }}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  {{ v.code }}
+                </td>
+                <td>
+                  {{ v.ref }}
+                </td>
+                <td>
+                  {{ v.ref2 }}
+                </td>
+                <td>
+                  {{
+                    v.ref && v.ref2
+                      ? "Join"
+                      : v.transref == "I" && v.ref
+                      ? "Move"
+                      : v.transref == "O" && v.ref
+                      ? "Issue"
+                      : v.transref == "I" && !v.ref
+                      ? "In"
+                      : v.transref == "O" && !v.ref
+                      ? "Issue"
+                      : "-"
+                  }}
+                </td>
+                <td>{{ v.item_short_code }}</td>
+                <td>{{ v.item_name }}</td>
+                <td>{{ v.batch }}</td>
+                <td class="text-center">
+                  {{ new Intl.NumberFormat("th-TH").format(v.unit) }}
+                </td>
+                <td class="text-center">
+                  {{ new Intl.NumberFormat("th-TH").format(v.pack_size) }}
+                </td>
+                <td class="text-right">
+                  {{ new Intl.NumberFormat("th-TH").format(v.quantitys) }}
+                </td>
+                <td>{{ v.uom }}</td>
+                <td>
+                  <div class="flex items-center space-x-3">
+                    <div>
+                      <div
+                        class="opacity-50 overflow-hidden text-ellipsis whitespace-nowrap"
+                      >
+                        {{ v.comments }}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <AppModuleGlobalPageination
+          v-if="!base.loading"
+          :page="base.page"
+          :total="base.total"
+          :row="base.row"
+          :back="base.back"
+          :next="base.next"
+          :loading="base.loading"
+          @search="
+            (res) => {
+              base.page = res.page;
+              this.base_search();
+            }
+          "
+        />
       </div>
     </div>
   </div>
 </template>
-<style>
-.crop {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 1px;
-}
-</style>
 <script>
-// @ is an alias to /src
 import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
 export default {
-  name: "BinLocationReport",
+  name: "Transaction",
   components: {
     AppModuleGlobalPageination,
     AppModuleGlobalSearch,
+    AppModuleGlobalLoadingText,
   },
   data() {
     return {
@@ -239,14 +237,6 @@ export default {
       },
       transref: "",
       wh: "",
-      load: false,
-      tmpsLink: "",
-      category: {
-        rows: [],
-        page: 1,
-        row: 9999,
-        q: "",
-      },
       base: {
         rows: [],
         total: 0,
@@ -271,7 +261,7 @@ export default {
     };
   },
   computed: {
-    ServiceUrl() {
+    serviceUrl() {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
@@ -282,8 +272,8 @@ export default {
     exportExcel() {
       return window.open(
         `${
-          this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/exports?type=transaction&total=1&page=${
+          this.serviceUrl
+        }api/controllers/MYSQL/INTERNAL/WH/exports?type=transaction&total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -310,8 +300,8 @@ export default {
     base_get(callback) {
       fetch(
         `${
-          this.$store.state.serviceUrl
-        }controllers/MYSQL/INTERNAL/WH/shelf?log=base&total=1&page=${
+          this.serviceUrl
+        }api/controllers/MYSQL/INTERNAL/WH/shelf?log=base&total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
