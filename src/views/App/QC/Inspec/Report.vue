@@ -634,11 +634,12 @@
                 <AppModuleGlobalSearch
                   :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
-                    (q) => {
-                      base.q = q;
-                      base_search();
-                    }
-                  "
+                          (q) => {
+                            base.page = 1;
+                            base.q = q;
+                            typeof base.q == 'string' ? base_search() : '';
+                          }
+                        "
                 />
                 <label
                   for="modal-base"
@@ -683,10 +684,10 @@
                                 <img
                                   :src="`${
                                     v.image[v.master ? v.master : 0].temp
-                                      ? `${serviceUrl}tmps/`
+                                      ? `${serviceUrl}tmps/image/`
                                       : v.imageLink
                                       ? v.imageLink
-                                      : `${serviceUrl}tmps/`
+                                      : `${serviceUrl}tmps/image/`
                                   }${
                                     v.image[v.master ? v.master : 0].file
                                   }`"
@@ -720,10 +721,10 @@
                               v-if="v.image.length > 0"
                               :src="`${
                                 v.image[v.master ? v.master : 0].temp
-                                  ? `${serviceUrl}tmps/`
+                                  ? `${serviceUrl}tmps/image/`
                                   : v.imageLink
                                   ? v.imageLink
-                                  : `${serviceUrl}tmps/`
+                                  : `${serviceUrl}tmps/image/`
                               }${v.image[v.master ? v.master : 0].file}`"
                               alt="Image"
                             />

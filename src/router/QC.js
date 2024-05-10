@@ -3,7 +3,7 @@ import QCInspecRM from "../views/App/QC/Inspec/RM.vue";
 import QCInspecFG from "../views/App/QC/Inspec/FG.vue";
 import QCInspecPD from "../views/App/QC/Inspec/PD.vue";
 import QCInspecTrackeability from "../views/App/QC/Inspec/Trackeability.vue";
-
+//---------------------------------
 import QCPickupRequest from "../views/App/QC/Pickup/Request.vue";
 import QCPickupApprove from "../views/App/QC/Pickup/Approve.vue";
 import QCWHRetainManagement from "../views/App/QC/WHRetain/Management.vue";

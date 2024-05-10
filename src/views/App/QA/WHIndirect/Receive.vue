@@ -41,10 +41,10 @@
                                 base.form.image[
                                   base.form.master ? base.form.master : 0
                                 ].temp
-                                  ? `${serviceUrl}tmps/`
+                                  ? `${serviceUrl}tmps/image/`
                                   : base.form.imageLink
                                   ? `${base.form.imageLink}QAIndirectItem/${base.form.code}/`
-                                  : `${serviceUrl}tmps/`
+                                  : `${serviceUrl}tmps/image/`
                               }${
                                 base.form.image[
                                   base.form.master ? base.form.master : 0
@@ -59,10 +59,10 @@
                             base.form.image[
                               base.form.master ? base.form.master : 0
                             ].temp
-                              ? `${serviceUrl}tmps/`
+                              ? `${serviceUrl}tmps/image/`
                               : base.form.imageLink
                               ? `${base.form.imageLink}QAIndirectItem/${base.form.code}/`
-                              : `${serviceUrl}tmps/`
+                              : `${serviceUrl}tmps/image/`
                           }${
                             base.form.image[
                               base.form.master ? base.form.master : 0
@@ -351,9 +351,9 @@
                   :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
                     (q) => {
-                      base.q = q;
                       base.page = 1;
-                      base_search();
+                      base.q = q;
+                      typeof base.q == 'string' ? base_search() : '';
                     }
                   "
                 />
@@ -396,10 +396,10 @@
                                   v.image.length > 0
                                     ? (imageSrc = `${
                                         v.image[v.master ? v.master : 0].temp
-                                          ? `${serviceUrl}tmps/`
+                                          ? `${serviceUrl}tmps/image/`
                                           : v.imageLink
                                           ? `${v.imageLink}QAIndirectItem/${v.code}/`
-                                          : `${serviceUrl}tmps/`
+                                          : `${serviceUrl}tmps/image/`
                                       }${
                                         v.image[v.master ? v.master : 0].file
                                       }`)
@@ -410,14 +410,17 @@
                                   v-if="v.image.length > 0"
                                   :src="`${
                                     v.image[v.master ? v.master : 0].temp
-                                      ? `${serviceUrl}tmps/`
+                                      ? `${serviceUrl}tmps/image/`
                                       : v.imageLink
                                       ? `${v.imageLink}QAIndirectItem/${v.code}/`
-                                      : `${serviceUrl}tmps/`
+                                      : `${serviceUrl}tmps/image/`
                                   }${v.image[v.master ? v.master : 0].file}`"
                                   alt="Image"
                                   style="object-fit: contain"
-                                />   <img
+                                />
+                                <img
+                                  width="auto"
+                                  height="auto"
                                   class="max-h-44 object-cover bg-cover"
                                   v-else
                                   :src="`${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=web/emptyImage.jpg&s=10`"
@@ -449,10 +452,10 @@
                               v-if="v.image.length > 0"
                               :src="`${
                                 v.image[v.master ? v.master : 0].temp
-                                  ? `${serviceUrl}tmps/`
+                                  ? `${serviceUrl}tmps/image/`
                                   : v.imageLink
                                   ? v.imageLink
-                                  : `${serviceUrl}tmps/`
+                                  : `${serviceUrl}tmps/image/`
                               }${v.image[v.master ? v.master : 0].file}`"
                               alt="Image"
                             />
@@ -793,7 +796,7 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
+          if (!res.success) {
             localStorage.removeItem("user_token");
             this.$router.push({ name: `Login` });
           } else {
@@ -856,7 +859,7 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
+          if (!res.success) {
             localStorage.removeItem("user_token");
             this.$router.push({ name: `Login` });
           } else {
@@ -952,7 +955,7 @@ export default {
       )
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
+          if (!res.success) {
             localStorage.removeItem("user_token");
             this.$router.push({ name: `Login` });
           } else {
@@ -1014,7 +1017,7 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
+          if (!res.success) {
             localStorage.removeItem("user_token");
             this.$router.push({ name: `Login` });
           } else {

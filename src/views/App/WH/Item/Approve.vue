@@ -203,7 +203,7 @@
                           (q) => {
                             base.page = 1;
                             base.q = q;
-                            base_search();
+                            typeof base.q == 'string' ? base_search() : '';
                           }
                         "
                       />

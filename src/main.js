@@ -4,6 +4,8 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import './assets/index.css'
+
+
 // import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -40,9 +42,11 @@ import { Icon } from '@iconify/vue';
 import { VueSignaturePad } from "vue-signature-pad";
 
 // const app = createApp(App);
+import { setupCalendar } from 'v-calendar';
 
+// Use calendar defaults (optional)
 // app
-const app = createApp(App).use(store).use(router).use(momentPlugin).use(VueApexCharts)
+const app = createApp(App).use(store).use(router).use(momentPlugin).use(VueApexCharts).use(setupCalendar, {})
 
 // .use(GAuth, { clientId: '594749811693-j8rrlliai8tkj81gh65vi5f3tgd02seq.apps.googleusercontent.com', scope: 'email',plugin_name:'UBIS', prompt: 'consent', fetch_basic_profile: false })
 

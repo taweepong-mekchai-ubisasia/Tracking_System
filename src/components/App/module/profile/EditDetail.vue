@@ -38,7 +38,7 @@
               ring ring-primary ring-offset-base-100 ring-offset-2
             "
           >
-            <img :src="`${user.image}`" />
+            <img alt="User Profile" :src="`${user.image}`" />
           </div>
         </div>
       </div>

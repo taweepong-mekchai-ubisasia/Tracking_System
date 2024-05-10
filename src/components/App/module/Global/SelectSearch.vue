@@ -40,25 +40,25 @@
               :class="`${v[code] == current ? 'active' : ''}`"
               @click="() => rets"
             >
-              <img
-                v-if="image && v.image.length > 0"
-                :src="`${
-                  v.image[v.master ? v.master : 0].temp
-                    ? `${serviceUrl}tmps/`
-                    : `${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=QAIndirectItem/${
-                        v.code
-                      }/${v.image[v.master ? v.master : 0].file}&s=10`
-                }`"
-                alt="Image"
-                style="object-fit: contain"
-                class="w-5 h-5"
-              />
-              <img
-                class="w-5 h-5 object-cover bg-cover"
-                v-else
-                :src="`https://mexicana.cultura.gob.mx/work/models/repositorio/img/empty.jpg`"
-                alt="Image"
-              />
+              <span v-if="image">
+                <img
+                  v-if="image && v.image.length > 0"
+                  :src="`${
+                    v.image[v.master ? v.master : 0].temp
+                      ? `${serviceUrl}tmps/image/`
+                      : `${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=QAIndirectItem/${
+                          v.code
+                        }/${v.image[v.master ? v.master : 0].file}&s=10`
+                  }`"
+                  alt="Image"
+                  style="object-fit: contain"
+                  class="w-5 h-5" />
+                <img
+                  class="w-5 h-5 object-cover bg-cover"
+                  v-else
+                  :src="`https://mexicana.cultura.gob.mx/work/models/repositorio/img/empty.jpg`"
+                  alt="Image"
+              /></span>
               {{ v[label] }}
             </a>
           </li>
@@ -70,7 +70,7 @@
       v-model="current"
       :placeholder="placeholder"
       :filter-results="false"
-      :min-chars="maxChar ? maxChar : 2"
+      :min-chars="minChar ? minChar : 2"
       :resolve-on-load="false"
       :delay="delay ? delay : 100"
       :searchable="true"
@@ -90,23 +90,48 @@
 export default {
   name: "Search",
   components: {},
-  props: [
-    "placeholder",
-    "customClass",
-    "subCustomClass",
-    "label",
-    "code",
-    "text",
-
-    "maxChar",
-    "delay",
-    "limit",
-    "url",
-    "current",
-    "param",
-    "disabled",
-    "image",
-  ],
+  props: {
+    placeholder: {
+      // type: String,
+      default: "Input ...",
+    },
+    customClass: {
+      default: "",
+    },
+    subCustomClass: {
+      default: "",
+    },
+    label: {
+      default: "title",
+    },
+    code: {
+      default: "code",
+    },
+    minChar: {
+      default: 0,
+    },
+    delay: {
+      default: 0.5,
+    },
+    limit: {
+      default: 10,
+    },
+    url: {
+      default: "",
+    },
+    current: {
+      default: null,
+    },
+    param: {
+      default: "",
+    },
+    disabled: {
+      default: false,
+    },
+    image: {
+      default: false,
+    },
+  },
   data() {
     return {
       old: 0,
@@ -181,9 +206,9 @@ export default {
     },
     search() {
       // console.log(this.base.current[this.label].length)
-      // console.log(this.maxChar)
+      // console.log(this.minChar)
       if (this.base.current[this.label] != "") {
-        if (this.base.current[this.label].length >= this.maxChar) {
+        if (this.base.current[this.label].length >= this.minChar) {
           return;
         }
       }

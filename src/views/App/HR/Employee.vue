@@ -43,6 +43,38 @@
                       base.form.image = base.form.image.concat(res.image);
                     }
                   "
+                  @uploaded="
+                    (res) => {
+                      let index = base.form.image.findIndex(
+                        (v) => v.r == res.r
+                      );
+                      base.form.image[index] = res.row;
+                    }
+                  "
+                  @stream="
+                    (res) => {
+                      let index = base.form.image.findIndex(
+                        (v) => v.r == res.r
+                      );
+                      base.form.image[index].loading = res.loading;
+                    }
+                  "
+                  @error="
+                    (res) => {
+                      let index = base.form.image.findIndex(
+                        (v) => v.r == res.r
+                      );
+                      base.form.image[index].error = true;
+                    }
+                  "
+                  @again="
+                    (res) => {
+                      let index = base.form.image.findIndex(
+                        (v) => v.r == res.image.r
+                      );
+                      base.form.image[index] = res.image;
+                    }
+                  "
                   @resetdata="
                     (res) => {
                       base.form.image = [...res.image];
@@ -57,9 +89,6 @@
                     :placeholder="'Company'"
                     :label="'title'"
                     :code="'code'"
-                    :minChar="3"
-                    :delay="0.5"
-                    :limit="10"
                     :customClass="`input input-bordered border-base-content`"
                     :current="base.form.company"
                     @updateValue="
@@ -70,7 +99,6 @@
                     "
                     :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
                     :param="`&total=1`"
-                    :image="false"
                   />
                 </div>
               </div>
@@ -527,9 +555,9 @@
                 v-if="base.loading"
                 class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-base-100 bg-opacity-50 top-0 left-0"
               >
-                <!-- <AppModuleGlobalLoadingText
+                <AppModuleGlobalLoadingText
                   :class="`p-4 py-12 text-3xl text-center`"
-                /> -->
+                />
               </div>
               <div :class="`${base.loading ? 'blur-sm' : ''}`">
                 <div class="join w-full justify-center md:justify-end">
@@ -537,9 +565,9 @@
                     :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                     @search="
                       (q) => {
-                        base.q = q;
                         base.page = 1;
-                        base_search();
+                        base.q = q;
+                        typeof base.q == 'string' ? base_search() : '';
                       }
                     "
                   />
@@ -593,29 +621,37 @@
                                   v.image.length > 0
                                     ? (imageSrc = `${
                                         v.image[v.master ? v.master : 0].temp
-                                          ? `${serviceUrl}tmps/`
+                                          ? `${serviceUrl}tmps/image/`
                                           : v.imageLink
                                           ? `${v.imageLink}employee/${v.code}/`
-                                          : `${serviceUrl}tmps/`
+                                          : `${serviceUrl}tmps/image/`
                                       }${
                                         v.image[v.master ? v.master : 0].file
                                       }`)
                                     : ''
                                 "
                               >
+                                <!-- {{v.image}} -->
                                 <img
                                   :src="`${
                                     v.image[v.master ? v.master : 0].temp
-                                      ? `${serviceUrl}tmps/`
+                                      ? `${serviceUrl}tmps/image/`
                                       : v.imageLink
                                       ? `${v.imageLink}employee/${v.code}/`
-                                      : `${serviceUrl}tmps/`
+                                      : `${serviceUrl}tmps/image/`
                                   }${v.image[v.master ? v.master : 0].file}`"
                                   alt="Image"
                                   style="object-fit: contain"
+                                  @error="
+                                    (e) => {
+                                      e.target.src = `${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=web/emptyProfile.png&s=10`;
+                                    }
+                                  "
                                 />
                               </label>
                               <img
+                                width="auto"
+                                height="auto"
                                 class="max-h-44 object-cover bg-cover"
                                 v-else
                                 :src="`${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=web/emptyProfile.png&s=10`"
@@ -783,7 +819,7 @@
                                 'controllers/MYSQL/INTERNAL/HR/employee'
                               )
                             "
-                            >Remove
+                            >Remove {{ v.code}}
                           </label>
                         </th>
                       </tr>
@@ -1158,9 +1194,12 @@ export default {
             let index = this.detail.rows.findIndex(
               (v) => v.code == this.remove.code
             );
+            console.log(this.remove.rows ? "a" : "b");
             this.remove.rows
               ? (this.remove.rows = [])
-              : (this.detail.rows[index]["removed"] = true);
+              : index >= 0
+              ? (this.detail.rows[index]["removed"] = true)
+              : "";
             this.remove.modal = false;
             this.removing = false;
             this.remove.controll == "detail"

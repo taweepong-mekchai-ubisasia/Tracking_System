@@ -1,7 +1,7 @@
 import LMTransportationReport from "../views/App/LM/Transportation/Report.vue";
 import LMTransportationVita from "../views/App/LM/Transportation/Vita.vue";
 // import LMTransportationStockOnHand from "../views/App/LM/Transportation/StockOnHand.vue";
-
+//---------------------------------
 import LMVitaReceive from "../views/App/LM/Vita/Receive.vue";
 import LMVitaPacking from "../views/App/LM/Vita/Packing.vue";
 import LMVitaReport from "../views/App/LM/Vita/Report.vue";

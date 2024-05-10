@@ -44,12 +44,16 @@
                 class="grid card-bordered p-1 place-items-center overflow-hidden"
               >
                 <img
+                width="auto"
+            height="auto"
                   class="max-h-44 object-cover bg-cover"
                   v-if="image.length > 0"
                   :src="`${user.imageLink}/employee/${user.code}/${image[0].file}`"
                   alt="Image"
                 />
                 <img
+                width="auto"
+            height="auto"
                   class="max-h-44 object-cover bg-cover"
                   v-else
                   :src="`${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=web/emptyProfile.png&s=10`"
