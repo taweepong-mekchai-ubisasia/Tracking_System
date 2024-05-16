@@ -927,8 +927,8 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.base_search();
-      this.detail_search();
+      // this.base_search();
+      // this.detail_search();
       this.timerID = setInterval(this.updateTime, 1000);
       this.updateTime();
     });

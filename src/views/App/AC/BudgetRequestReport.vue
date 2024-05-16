@@ -204,10 +204,10 @@
                                   v-if="v.image.length > 0"
                                   :src="`${
                                     v.image[v.master ? v.master : 0].temp
-                                      ? `${serviceUrl}tmps/`
+                                      ? `${serviceUrl}tmps/image/`
                                       : v.imageLink
                                       ? v.imageLink
-                                      : `${serviceUrl}tmps/`
+                                      : `${serviceUrl}tmps/image/`
                                   }${v.image[v.master ? v.master : 0].file}`"
                                   alt="Image"
                                 />

@@ -1,8 +1,9 @@
 <template>
   <section>
     <div
-      class="prevent-select pointer-events-none font-extrabold text-primary loading-custom loading_-custom "
+      class="prevent-select pointer-events-none font-extrabold text-primary loading-custom loading_-custom"
       :class="class"
+      v-if="type == 'text'"
     >
       <span>L</span>
       <span>O</span>
@@ -12,13 +13,28 @@
       <span>N</span>
       <span>G</span>
     </div>
+    <div
+      class="prevent-select pointer-events-none font-extrabold text-primary loading-custom loading_-custom"
+      :class="class"
+      v-if="type == 'percent'"
+    >
+      <progress
+        class="progress progress-success w-56"
+        :value="percent"
+        max="100"
+      ></progress>
+    </div>
   </section>
 </template>
 
 <script>
 export default {
   name: "LoadingText",
-  props: ["class"],
+  props: {
+    class: null,
+    percent: 0,
+    type: "text",
+  },
 };
 </script>
 

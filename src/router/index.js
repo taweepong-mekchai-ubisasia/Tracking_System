@@ -19,10 +19,14 @@ import RDRouter from "../router/RD";
 import SuperDataRouter from "../router/SuperData";
 import TRRRouter from "../router/TRR";
 import WHRouter from "../router/WH";
+import WHMRouter from "../router/WHM";
 /*-------------------------------------------------------------*/
 import EventRouter from "../router/Event";
 /*-------------------------------------------------------------*/
 import SystemRouter from "../router/System";
+/*-------------------------------------------------------------*/
+import DocumentAlertRouter from "../router/DocumentAlert";
+
 const routes = [
   {
     path: "/404",
@@ -67,12 +71,16 @@ const routes = [
   ...SuperDataRouter,
   ...TRRRouter,
   ...WHRouter,
+  ...WHMRouter,
   /*-------------------------------------------------------------*/
   ...EventRouter,
   /*-------------------------------------------------------------*/
   ...SystemRouter,
+  /*-------------------------------------------------------------*/
+  ...DocumentAlertRouter,
 ];
 import store from "../store";
+// console.log(store.getters.menu.HR)
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,

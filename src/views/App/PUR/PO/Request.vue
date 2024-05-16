@@ -341,11 +341,12 @@
                   <AppModuleGlobalSearch
                     :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                     @search="
-                      (q) => {
-                        base.q = q;
-                        base_search();
-                      }
-                    "
+                          (q) => {
+                            base.page = 1;
+                            base.q = q;
+                            typeof base.q == 'string' ? base_search() : '';
+                          }
+                        "
                   />
                 </div>
                 <label
@@ -370,11 +371,12 @@
                 <AppModuleGlobalSearch
                   :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
-                    (q) => {
-                      base.q = q;
-                      base_search();
-                    }
-                  "
+                          (q) => {
+                            base.page = 1;
+                            base.q = q;
+                            typeof base.q == 'string' ? base_search() : '';
+                          }
+                        "
                 />
                 <label
                   for="modal-base"

@@ -326,7 +326,7 @@
                   class="btn btn-ghost"
                   aria-label="Language"
                 >
-                  <svg
+                  <!-- <svg
                     class="h-5 w-5 fill-current"
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -350,7 +350,10 @@
                     <path
                       d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"
                     ></path>
-                  </svg>
+                  </svg> -->
+                  <Icon icon="material-symbols:language"    class="h-5 w-5 fill-current" />
+                  <Icon icon="ph:caret-down-bold"    class="hidden h-3 w-3 fill-current opacity-60 sm:inline-block" />
+                  <!-- <iconify-icon icon="ri:arrow-drop-down-line"></iconify-icon> -->
                 </div>
                 <div
                   tabindex="0"
@@ -456,6 +459,7 @@
               </button>
               <button
                 class="btn btn-ghost text-white opacity-50"
+                aria-label="Logout"
                 @click="Logout()"
               >
                 <Icon icon="wpf:shutdown" class="w-4 h-4 stroke-current" />
@@ -473,7 +477,7 @@
                 <ul>
                   <!-- <li v-if="$route.name != 'Dashboard'" class="font-bold">Home</li> -->
                   <li v-if="$route.name != 'Dashboard'">
-                    <a @click="changepage('Dashboard')">Home</a>
+                    <a href="#" @click="changepage('Dashboard')">Home</a>
                   </li>
                   <!-- <li v-if="$route.name != 'Dashboard'"><a>Documents</a></li> -->
                   <li

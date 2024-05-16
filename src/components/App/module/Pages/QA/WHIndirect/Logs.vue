@@ -41,11 +41,12 @@
                   <AppModuleGlobalSearch
                     :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                     @search="
-                      (q) => {
-                        base.q = q;
-                        base_search();
-                      }
-                    "
+                          (q) => {
+                            base.page = 1;
+                            base.q = q;
+                            typeof base.q == 'string' ? base_search() : '';
+                          }
+                        "
                   />
                 </div>
                 <label
@@ -228,14 +229,6 @@
 
   </div>
 </template>
-<style>
-.crop {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 1px;
-}
-</style>
 <script>
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";

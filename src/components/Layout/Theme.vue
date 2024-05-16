@@ -4,7 +4,7 @@
     class="dropdown dropdown-end hidden [@supports(color:oklch(0_0_0))]:block"
   >
     <div tabindex="0" role="button" class="btn btn-ghost">
-      <svg
+      <!-- <svg
         width="20"
         height="20"
         xmlns="http://www.w3.org/2000/svg"
@@ -18,9 +18,11 @@
           stroke-width="2"
           d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
         ></path>
-      </svg>
+      </svg> -->
+      <Icon icon="material-symbols:style-outline" class="h-5 w-5 stroke-current md:hidden"/>
       <span class="hidden font-normal md:inline">Theme</span>
-      <svg
+      <Icon icon="ph:caret-down-bold"    class="hidden h-3 w-3 fill-current opacity-60 sm:inline-block" />
+      <!-- <svg
         width="12px"
         height="12px"
         class="hidden h-2 w-2 fill-current opacity-60 sm:inline-block"
@@ -30,7 +32,7 @@
         <path
           d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"
         ></path>
-      </svg>
+      </svg> -->
     </div>
     <div
       tabindex="0"

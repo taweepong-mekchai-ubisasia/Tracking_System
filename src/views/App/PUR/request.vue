@@ -20,34 +20,7 @@
             </label>
             <h3 class="text-lg font-bold">Add new PO!</h3>
             <div class="card-body overflow-auto max-h-[60vh] ">
-              <!-- <div class="form-control">
-                <AppModuleGlobalUpload
-                  v-if="base.modal"
-                  :imageLink="base.form.imageLink"
-                  :image="base.form.image"
-                  :id="'base'"
-                  :multiple="false"
-                  @respone="
-                    (res) => {
-                      let length = base.form.image.length
-                        ? base.form.image.length
-                        : 0;
-                      base.form.image = base.form.image.concat(res.image);
-                    }
-                  "
-                  @resetdata="
-                    (res) => {
-                      base.form.image = [...res.image];
-                    }
-                  "
-                />
-                <label class="label">
-                  <span class="label-text text-red-500"></span>
-                  <span class="label-text-alt text-red-500 font-bold"
-                    >* note</span
-                  >
-                </label>
-              </div> -->
+           
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">รายการใบสั่งผลิต</span>
@@ -208,10 +181,10 @@
                                   v-if="v.image.length > 0"
                                   :src="`${
                                     v.image[v.master ? v.master : 0].temp
-                                      ? `${serviceUrl}tmps/`
+                                      ? `${serviceUrl}tmps/image/`
                                       : v.imageLink
                                       ? v.imageLink
-                                      : `${serviceUrl}tmps/`
+                                      : `${serviceUrl}tmps/image/`
                                   }${
                                     v.image[v.master ? v.master : 0].file
                                   }`"
@@ -325,34 +298,7 @@
             >
             <h3 class="text-lg font-bold">Add Quantity!</h3>
             <div class="card-body overflow-auto max-h-[60vh] ">
-              <!-- <div class="form-control">
-                <AppModuleGlobalUpload
-                  v-if="detail.modal"
-                  :imageLink="detail.form.imageLink"
-                  :image="detail.form.image"
-                  :multiple="true"
-                  :id="'detail'"
-                  @respone="
-                    (res) => {
-                      let length = detail.form.image.length
-                        ? detail.form.image.length
-                        : 0;
-                      detail.form.image = detail.form.image.concat(res.image);
-                    }
-                  "
-                  @resetdata="
-                    (res) => {
-                      detail.form.image = [...res.image];
-                    }
-                  "
-                />
-                <label class="label">
-                  <span class="label-text text-red-500"></span>
-                  <span class="label-text-alt text-red-500 font-bold"
-                    >* รูปนี้จะแสดงผลในช่องรายละเอียดสินค้า</span
-                  >
-                </label>
-              </div> -->
+              
 
               <div class="form-control">
                 <label class="label">
@@ -548,14 +494,12 @@
 // @ is an alias to /src
 
 import AppLayout from "@/components/App/layout.vue";
-import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 export default {
   name: "PO",
   components: {
     AppLayout,
-    AppModuleGlobalUpload,
     AppModuleGlobalPageination,
     AppModuleGlobalSelectSearch,
   },

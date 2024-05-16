@@ -539,7 +539,7 @@ export default {
     base_get(callback) {
       fetch(
         `${
-          this.$store.state.serviceUrl
+          this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/WH/layout?wh=${this.wh}&transref=I&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
@@ -599,7 +599,7 @@ export default {
     base_save() {
       let vm = this;
       fetch(
-        `${this.$store.state.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout`,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout`,
         {
           method: this.base.controll == "create" ? "POST" : "PUT",
           headers: {
@@ -635,7 +635,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.$store.state.serviceUrl}api/${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -679,7 +679,7 @@ export default {
     rac_get(callback) {
       fetch(
         `${
-          this.$store.state.serviceUrl
+          this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/WH/shelf?action=count&transref=I&transref_type_null=1&wh=${
           this.wh
         }&total=1&page=${this.rac.page}${

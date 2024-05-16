@@ -14,6 +14,7 @@
             <div class="avatar h-full mr-2">
               <div class="rounded">
                 <img
+                alt="Image"
                   src="https://daisyui.com/images/stock/photo-1559703248-dcaaec9fab78.jpg"
                 />
               </div>
@@ -116,7 +117,7 @@
                       <button
                         class="btn btn-square btn-outline border-slate-200"
                       >
-                        <img
+                        <img  alt="Image"
                           src="https://sm.ign.com/ign_es/tech/g/google/google_ucdj.png"
                           class="rounded-lg md:w-full lg:w-1/2"
                         />
@@ -126,7 +127,7 @@
                       <button
                         class="btn btn-square btn-outline border-slate-200"
                       >
-                        <img
+                        <img  alt="Image"
                           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREKes2ipksKNOKqd1Ts8KJxoz-4bu1nmfyx-fw4gopgyLO7Nk98PnN--Vf4oNPLT3IJmY&usqp=CAU"
                           class="rounded-lg md:w-full lg:w-1/2"
                         />

@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap");
+// @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap");
 #app,
 html,
 * {
@@ -211,6 +211,6 @@ td {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 1px;
+  max-width: 10px;
 }
 </style>

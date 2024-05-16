@@ -21,6 +21,24 @@
           :prefix="prefix"
           :color="color[1]"
           @object_access="objectAccess"
+          :access="menuArray['DocumentAlert']"
+          :head="'DocumentAlert'"
+          :icon="'ph:calculator'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
+          :access="menuArray['WHM']"
+          :head="'WHM'"
+          :icon="'ph:calculator'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
           :access="menuArray['AC']"
           :head="'AC'"
           :icon="'ph:calculator'"

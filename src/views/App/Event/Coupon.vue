@@ -32,27 +32,7 @@
             <div
               class="bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full max-h-[60vh]"
             >
-              <!-- <div class="grid gap-4 md:grid-cols-1 grid-cols-1">
-                <AppModuleGlobalUpload
-                  :imageLink="`${base.form.imageLink}QAIndirectItem/${base.form.code}/`"
-                  :image="base.form.image"
-                  :id="'base'"
-                  :multiple="false"
-                  @respone="
-                    (res) => {
-                      let length = base.form.image.length
-                        ? base.form.image.length
-                        : 0;
-                      base.form.image = base.form.image.concat(res.image);
-                    }
-                  "
-                  @resetdata="
-                    (res) => {
-                      base.form.image = [...res.image];
-                    }
-                  "
-                />
-              </div> -->
+             
               <div class="form-control pt-4">
                 <!-- <label class="label"
                     ><span class="label-text">Item Description</span>
@@ -219,12 +199,12 @@
                 <AppModuleGlobalSearch
                   :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                   @search="
-                    (q) => {
-                      base.q = q;
-                      base.page = 1;
-                      base_search();
-                    }
-                  "
+                          (q) => {
+                            base.page = 1;
+                            base.q = q;
+                            typeof base.q == 'string' ? base_search() : '';
+                          }
+                        "
                 />
                 <label
                   for="modal-base"
@@ -266,10 +246,10 @@
                                     ? (imageSrc = `${
                                         v.image[v.master ? v.master : 0]
                                           .temp
-                                          ? `${serviceUrl}tmps/`
+                                          ? `${serviceUrl}tmps/image/`
                                           : v.imageLink
                                           ? `${v.imageLink}QAIndirectItem/${v.code}/`
-                                          : `${serviceUrl}tmps/`
+                                          : `${serviceUrl}tmps/image/`
                                       }${
                                         v.image[v.master ? v.master : 0]
                                           .file
@@ -281,10 +261,10 @@
                                   v-if="v.image.length > 0"
                                   :src="`${
                                     v.image[v.master ? v.master : 0].temp
-                                      ? `${serviceUrl}tmps/`
+                                      ? `${serviceUrl}tmps/image/`
                                       : v.imageLink
                                       ? `${v.imageLink}QAIndirectItem/${v.code}/`
-                                      : `${serviceUrl}tmps/`
+                                      : `${serviceUrl}tmps/image/`
                                   }${
                                     v.image[v.master ? v.master : 0].file
                                   }`"
@@ -319,10 +299,10 @@
                               v-if="v.image.length > 0"
                               :src="`${
                                 v.image[v.master ? v.master : 0].temp
-                                  ? `${serviceUrl}tmps/`
+                                  ? `${serviceUrl}tmps/image/`
                                   : v.imageLink
                                   ? v.imageLink
-                                  : `${serviceUrl}tmps/`
+                                  : `${serviceUrl}tmps/image/`
                               }${v.image[v.master ? v.master : 0].file}`"
                               alt="Image"
                             />
@@ -523,7 +503,6 @@
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";
 import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
-import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
@@ -533,7 +512,6 @@ export default {
   name: "QAIndirectItem",
   components: {
     AppLayout,
-    AppModuleGlobalUpload,
     AppModuleGlobalPageination,
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,

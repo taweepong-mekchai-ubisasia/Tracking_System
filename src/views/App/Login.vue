@@ -12,7 +12,8 @@
             >
               <div class="self-center">
                 <img
-                  :src="require(`@/assets/img/ubis-logo.png`)"
+                  alt="Ubis LOGO"
+                  :src="`${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=web/ubis-logo.png&s=50`"
                   class="w-48 py-2 px-4"
                 />
               </div>
@@ -23,7 +24,10 @@
                 Verify your access
               </p>
 
-              <div class="alert shadow-lg py-2  alert-error text-white" v-if="errorMsg">
+              <div
+                class="alert shadow-lg py-2 alert-error text-white"
+                v-if="errorMsg"
+              >
                 <div>
                   <span class="text-xs">{{ errorMsg }}</span>
                 </div>

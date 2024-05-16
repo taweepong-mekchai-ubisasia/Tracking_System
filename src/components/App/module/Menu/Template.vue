@@ -150,13 +150,14 @@ export default {
       return obj ? { [`${lastindex}`]: obj } : null;
     },
     menus() {
-      return this.$store.getters[this.head];
+      return this.$store.getters.menu(this.head);
     },
     language() {
       return this.$store.getters.language;
     },
   },
   created() {
+    // console.log(this.menus)
     this.menu = JSON.parse(JSON.stringify(this.menus));
   },
   mounted() {

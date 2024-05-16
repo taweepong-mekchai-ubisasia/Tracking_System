@@ -5,7 +5,7 @@
     placeholder="Search"
     ref="inputField"
     :class="class"
-    @keyup="search"
+    @search="search"
     v-model="q"
   />
   <!-- </div> -->
@@ -30,7 +30,6 @@ export default {
   mounted() {},
   watch: {
     q: function (v) {
-      // console.log(v);
       this.timeout ? clearTimeout(this.timeout) : "";
       this.timeout = setTimeout(() => {
         this.$emit("search", this.q);

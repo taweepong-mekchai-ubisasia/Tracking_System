@@ -1,10 +1,10 @@
 import WHBinLocationCheckRac from "../views/App/WH/BinLocation/CheckRac.vue";
 import WHBinLocationManagement from "../views/App/WH/BinLocation/Management.vue";
 import WHBinLocationShortCode from "../views/App/WH/BinLocation/ShortCode.vue";
-
+//---------------------------------
 import WHItemRequest from "../views/App/WH/Item/Request.vue";
 import WHItemApprove from "../views/App/WH/Item/Approve.vue";
-
+//---------------------------------
 import WHTracking from "../views/App/WH/Tracking.vue";
 const WHRoutes = [
   {
