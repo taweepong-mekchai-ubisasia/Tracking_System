@@ -505,7 +505,7 @@ export default {
       this.refresh = true;
       this.status = this.base.form.status
       // this.edit = this.base.form.status == 'packing' ? false : true;
-      // this.locked = this.base.form.status == 'packing' ? false : true;
+      this.locked = this.base.form.status == 'packing' ? false : true;
     },
     base_save(type) {
       // if(!this.base.form.quantation || !this.base.form.packing || !this.base.form.mark || !this.base.form.customer || !this.base.form.picking || !this.base.form.sending_date) {
