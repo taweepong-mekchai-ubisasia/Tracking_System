@@ -9,19 +9,22 @@ export default class Query {
     this.call = call;
     this.method = method;
   }
+
   get(vm = null, url = null, callback = null) {
     this.vm = vm;
     this.url = url;
     this.callback = callback;
-    this.fetch();
+    return this.fetch();
   }
+
   set(vm = null, url = null, body = null, callback = null) {
     this.vm = vm;
     this.url = url;
     this.body = body;
     this.callback = callback;
-    this.fetch();
+    return this.fetch();
   }
+
   _body(){
     return {
       method: this.method,
@@ -32,6 +35,7 @@ export default class Query {
       body: JSON.stringify(this.body),
     }
   }
+
   _nobody(){
     return {
       method: this.method,
@@ -41,6 +45,7 @@ export default class Query {
       },
     }
   }
+
   async fetch() {
     let _vm = this
     try {
@@ -64,17 +69,17 @@ export default class Query {
           }
         }
         bytesReceived += result.value.length;
-        // console.log(`Received ${bytesReceived} bytes of data so far`);
+        console.log(`Received ${bytesReceived} bytes of data so far`);
         const chunk = decoder.decode(result.value, { stream: true });
         chunks.push(chunk);
-        _vm.vm[_vm.call].loading_percent =
-          (parseFloat(bytesReceived) / parseFloat(total)) * 100;
+
+        _vm.call ? _vm.vm[_vm.call].loading_percent = (parseFloat(bytesReceived) / parseFloat(total)) * 100 : '';
         return reader.read().then(processResult);
       });
-      _vm.callback ? _vm.callback({ ...res }) : "";
+      return _vm.callback ? _vm.callback({ ...res }) : "";
     } catch (err) {
       console.log(err);
-      _vm.callback
+      return _vm.callback
         ? _vm.callback({
             success: false,
             errorMsg: err,

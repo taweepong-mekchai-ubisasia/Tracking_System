@@ -446,7 +446,7 @@
 
           <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
             <div class="flex-1 form-control mt-6">
-              <label for="modal-remove" class="btn btn-danger">Cancle</label>
+              <label for="modal-remove" class="btn btn-danger">Cancel</label>
             </div>
             <div class="flex-1 form-control mt-6">
               <button
@@ -793,11 +793,6 @@ import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.v
 
 // Document คุยวันไหน
 // คุยกับใคร
-
-// indirect อิงตาม WH
-
-// doc alert
-// TRR
 
 import Query from "@/assets/js/fetch.js";
 // import { setupCalendar } from 'v-calendar';
@@ -1207,8 +1202,8 @@ export default {
         { rows: [{ code: this.remove.code }] },
         (res) => {
           if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();

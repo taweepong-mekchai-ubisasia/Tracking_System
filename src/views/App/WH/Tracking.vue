@@ -105,6 +105,7 @@
 import AppLayout from "@/components/App/layout.vue";
 import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from "vue-qrcode-reader";
 import SelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import Query from "@/assets/js/fetch.js";
 
 export default {
   name: "Home",
@@ -261,35 +262,15 @@ export default {
 
     getList(itemCode, callback) {
       let vm = this;
-      fetch(
-        `${this.serviceUrl}api/controllers/tracking?DBType=mysqli&rows=20&total=1&itemCode=${itemCode}&transRef=I&quantitys=1&warehouse=wh1`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/tracking?DBType=mysqli&rows=20&total=1&itemCode=${itemCode}&transRef=I&quantitys=1&warehouse=wh1`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(res);
-          // console.log(res)
-          // res.rows.forEach((v, i) => {
-          //   console.log(v.image ? true : false);
-          //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-          //   if (v.type == "decentraland") {
-          //     console.log(v.link);
-          //     this.decentraland = v.link;
-          //   }
-          //   console.log();
-          //   res.rows[i].master = 0;
-          // });
-          // this.explore = res;
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
   },
   mounted() {

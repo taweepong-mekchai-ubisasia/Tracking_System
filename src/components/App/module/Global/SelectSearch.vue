@@ -8,6 +8,8 @@
       <div class="contents absolute z-10 w-full">
         <!-- {{ current }}
         {{ base.current }} -->
+        <!-- {{ base.q }}
+        {{ base.current[label] }} -->
         <input
           v-if="base.current"
           type="search"
@@ -16,7 +18,7 @@
           :class="customClass"
           @focus="base.showlist = true"
           @blur="setBlur"
-          @keyup="search"
+          @keydown="search"
           @input="onQueryChange"
           v-model="base.current[label]"
           :disabled="disabled"
@@ -87,6 +89,8 @@
   </div>
 </template>
 <script>
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "Search",
   components: {},
@@ -167,7 +171,8 @@ export default {
   },
   methods: {
     onQueryChange(e) {
-      // console.log(e.target.value.trim());
+      console.log(e.target.value);
+      this.base.q = e.target.value
       if (e.target.value.trim() == "") {
         // this.base.current = {  };
         // this.base.temp = {  };
@@ -214,6 +219,7 @@ export default {
           }
         }
       }
+      // console.log('label', this.base.current[this.label])
 
       this.base.q = this.base.current[this.label];
       clearTimeout(this.base.timeout);
@@ -241,28 +247,14 @@ export default {
 
       // console.log(this.user_token)
       // console.log(this.base.q)
-      fetch(
-        `${this.url}?page=${this.base.page}${
+      new Query('base','get').get(this, `${this.url}?page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
         }${this.base.q ? `&q=${this.base.q}` : ""}${
           this.current ? `&current=${this.current}` : ""
-        }${this.param}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-          // body: JSON.stringify({
-          //     "uuid": localStorage.getItem('uuid'),
-          // }),
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
+        }${this.param}`, (res) => {
           if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             if (this.image) {
               res.rows.forEach((v, i) => {
@@ -271,34 +263,8 @@ export default {
               });
             }
           }
-          // res.rows[0].image = res.rows[0].image
-          //   ? JSON.parse(res.rows[0].image)
-          //   : [];
-          // res.rows[0].master = 0;
-          // res.rows.forEach((v, i) => {
-          //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-          //   // console.log(res.rows[i].image)
-          //   // res.rows[i].image.forEach((vv, ii) => {
-          //   // if (ii == 0) {
-          //   res.rows[i].master = 0;
-          //   // }
-          //   // console.log(vv);
-          //   // if (vv.master) {
-          //   //   res.rows[i].master = ii;
-          //   // }
-          //   // });
-          // });
-          // }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     // search() {
     //   clearTimeout(this.base.timeout);

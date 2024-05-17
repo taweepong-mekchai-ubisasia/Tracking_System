@@ -14,7 +14,11 @@
 export default {
   name: "Search",
   components: {},
-  props: ["class"],
+  props: {
+    class: {
+      default: ""
+    }
+  },
   data() {
     return {
       q: "",

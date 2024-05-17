@@ -10,7 +10,9 @@
           v-model="base.modal"
         />
         <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-6/12 max-w-xl">
+          <div
+          class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen"
+        >
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
@@ -23,7 +25,38 @@
                   <label class="label"
                     ><span class="label-text">Short code</span>
                   </label>
+
+                  <AppModuleGlobalSelectSearch
+                    v-if="base.modal && base.controll == 'create'"
+                    :placeholder="'Short code'"
+                    :label="'short_code'"
+                    :code="'short_code'"
+                    :minChar="3"
+                    :delay="0.5"
+                    :limit="10"
+                    :customClass="`input input-bordered border-base-content ${
+                      checkbox == 'M' ? 'input-disabled' : ''
+                    }`"
+                    :disabled="checkbox == 'M' ? true : false"
+                    :current="base.form.item_short_code"
+                    :refresh="refresh.item_short_code"
+                    @updateValue="
+                      (obj) => {
+                        base.form.item_short = obj;
+                        base.form.item_short_code = obj.short_code;
+                        // base.form.item_short.code = obj.code;
+                      }
+                    "
+                    @stopRefresh="
+                      (obj) => {
+                        refresh.item_short_code = obj.value;
+                      }
+                    "
+                    :url="`${serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`"
+                    :param="`&total=1&wh=${user.branchTitle}&action=groupby-code`"
+                  />
                   <input
+                    v-else
                     type="text"
                     placeholder="Short code"
                     class="input input-bordered border-base-content input-disabled"
@@ -37,7 +70,19 @@
                     ><span class="label-text">Item Description</span>
                   </label>
 
+                  <select
+                    v-if="base.controll == 'create'"
+                    class="select select-bordered border-base-content w-full"
+                    v-model="base.form.item_code"
+                  >
+                    <option disabled selected value="">Select Option</option>
+                    <option v-for="(v, i) in item.rows" :value="v.item_code">
+                      {{ v.item_name }}
+                    </option>
+                  </select>
+
                   <input
+                    v-else
                     type="text"
                     placeholder="Short code"
                     class="input input-bordered border-base-content input-disabled"
@@ -73,7 +118,7 @@
                         min="1"
                         max="5"
                         v-model="base.form.unit"
-                        disabled
+                        :disabled="base.form.status ? true : false"
                       />
                     </div>
                   </div>
@@ -93,6 +138,7 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="form-control">
                   <label class="label"
                     ><span class="label-text">Status</span>
@@ -101,29 +147,32 @@
                     <select
                       class="select select-bordered border-base-content"
                       v-model="base.form.newStatus"
+                      :disabled="
+                        base.form.status == 'cancel' ||
+                        base.form.status == 'reject'
+                      "
                     >
-                      <option selected disabled value="">Select Option</option>
-                      <option value="pending" disabled>Request</option>
                       <option
-                        value="approve"
-                        :disabled="base.form.status == 'pending' ? false : true"
+                        selected
+                        value=""
+                        :disabled="base.controll != 'create'"
                       >
-                        Approve
+                        Select Option
                       </option>
                       <option
-                        value="reject"
-                        :disabled="base.form.status == 'pending' ? false : true"
-                      >
-                        Reject
-                      </option>
-                      <option
-                        value="cancel"
+                        value="pending"
                         :disabled="
                           base.form.status == 'approve' ||
                           base.form.status == 'reject'
-                            ? false
-                            : true
                         "
+                      >
+                        Request
+                      </option>
+                      <option value="approve" disabled>Approve</option>
+                      <option value="reject" disabled>Reject</option>
+                      <option
+                        value="cancel"
+                        :disabled="base.controll == 'create'"
                       >
                         Cancel
                       </option>
@@ -133,19 +182,72 @@
               </div>
             </div>
 
+            <!-- {{ base.form.status }} -->
             <div
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex my-4"
             >
               <div class="flex-1 form-control">
-                <label for="modal-base" class="btn btn-danger">Cancle</label>
+                <label for="modal-base" class="btn btn-danger">Cancel</label>
               </div>
               <div
                 class="flex-1 form-control"
-                :class="base.form.newStatus != base.form.status ? '' : 'hidden'"
+                v-if="
+                  base.form.status != 'cancel' &&
+                  (base.form.newStatus != base.form.status ||
+                    base.controll == 'create' ||
+                    base.form.status == '')
+                "
               >
                 <button class="btn btn-primary text-white" @click="base_save()">
                   Confirm
                 </button>
+              </div>
+
+              <div
+                class="flex-1 form-control"
+                v-if="
+                  base.form.status == 'cancel' || base.form.status == 'reject'
+                "
+              >
+                <!-- <button
+                  class="btn  btn-error text-white"
+                  @click="
+                    remove_item(
+                      `${base.form.code}`,
+                      'base',
+                      'controllers/MYSQL/INTERNAL/WH/shelf_request'
+                    )
+                  "
+                >
+                  Delete
+                </button> -->
+
+                <label
+                  for="modal-remove"
+                  class="btn btn-error text-white"
+                  @click="
+                    remove_item(
+                      `${base.form.code}`,
+                      'base',
+                      'controllers/MYSQL/INTERNAL/WH/shelf_request'
+                    )
+                  "
+                >
+                  Delete
+                </label>
+
+                <!-- <label
+                          for="modal-remove"
+                          class="join-item btn btn-ghost modal-button btn-xs"
+                          @click="
+                            remove_item(
+                              `${v.code}`,
+                              'base',
+                              'controllers/MYSQL/INTERNAL/WH/shelf_request'
+                            )
+                          "
+                          >Remove
+                        </label> -->
               </div>
             </div>
           </div>
@@ -167,7 +269,7 @@
               ✕
             </label>
             <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto max-h-[60vh]">
+            <div class="card-body overflow-auto max-h-[60vh] ">
               Are your sure for remove this item?
             </div>
 
@@ -175,7 +277,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancle</label>
+                <label for="modal-remove" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6">
                 <button
@@ -196,7 +298,7 @@
               <div
                 class="contents lg:inline-flex lg:join my-5 w-full md:justify-center lg:justify-end"
               >
-                <div class="contents sm:join md:join lg:join xl:join">
+              <div class="contents sm:join md:join lg:join xl:join">
                   <div class="join join-item">
                     <button
                       class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
@@ -264,7 +366,26 @@
                   >Create</label
                 >
               </div>
-              <div class="overflow-x-auto w-full max-h-[67.5vh]">
+
+              <!-- <div class="join mt-5 w-full md:justify-center lg:justify-end">
+                <AppModuleGlobalSearch
+                  :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
+                  @search="
+                          (q) => {
+                            base.page = 1;
+                            base.q = q;
+                            typeof base.q == 'string' ? base_search() : '';
+                          }
+                        "
+                />
+                <label
+                  for="modal-base"
+                  class="join-item btn-sm btn btn-primary modal-button text-white"
+                  @click="base_create()"
+                  >Create</label
+                >
+              </div> -->
+              <div class="overflow-x-auto w-full max-h-[60vh] lg:max-h-[65vh]">
                 <table
                   class="table table-xs table-pin-rows table-pin-cols table-zebra"
                 >
@@ -275,17 +396,13 @@
                       <td>Short Code</td>
                       <td>Item Description</td>
                       <td>Qty</td>
-                      <!-- <td>Pack Size</td> -->
                       <td>Unit</td>
-
                       <td>Requestion</td>
                       <td>Approval</td>
                       <td>Rejection</td>
                       <td>Cancellation</td>
-
                       <td>Creation</td>
                       <td>Updation</td>
-
                       <th class="text-right"></th>
                     </tr>
                   </thead>
@@ -490,35 +607,78 @@
                           </div>
                         </div>
                       </td>
-                      <!-- <th class="text-right" v-if="v.status=='pending'">
+
+                      <!-- <th class="text-right" v-if="!v.status">
                         <label
-                      
+                          for="modal-base"
+                          class="join-item btn btn-ghost modal-button btn-xs"
+                          @click="base_edit(`${v.code}`, `${i}`)"
+                          >รายละเอียด
+                        </label>
+                        <label
                           class="join-item btn btn-ghost modal-button btn-xs"
                           @click="
                             status_item(
-                              `approve`,
+                              `pending`,
                               `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/WH/shelf_request'
                             )
                           "
-                        >
-                          Approve
+                          >Request
                         </label>
-
                         <label
+                          for="modal-base"
+                          class="join-item btn btn-ghost modal-button btn-xs"
+                          @click="base_edit(`${v.code}`, `${i}`)"
+                          >Edit
+                        </label>
+                        <label
+                          for="modal-remove"
                           class="join-item btn btn-ghost modal-button btn-xs"
                           @click="
-                              status_item(
-                              `reject`,
+                            remove_item(
                               `${v.code}`,
                               'base',
                               'controllers/MYSQL/INTERNAL/WH/shelf_request'
                             )
                           "
-                          >Reject
+                          >Remove
+                        </label>
+                      </th>
+                      <th class="text-right" v-if="v.status == 'reject'">
+                        <label
+                          for="modal-remove"
+                          class="join-item btn btn-ghost modal-button btn-xs"
+                          @click="
+                            remove_item(
+                              `${v.code}`,
+                              'base',
+                              'controllers/MYSQL/INTERNAL/WH/shelf_request'
+                            )
+                          "
+                          >Cancel
+                        </label>
+                      </th>
+                      <th
+                        class="text-right"
+                        v-else-if="v.status == 'pending'"
+                      >
+                        <label
+                          for="modal-remove"
+                          class="join-item btn btn-ghost modal-button btn-xs"
+                          @click="
+                            status_item(
+                              `cancel`,
+                              `${v.code}`,
+                              'base',
+                              'controllers/MYSQL/INTERNAL/WH/shelf_request'
+                            )
+                          "
+                          >Cancel
                         </label>
                       </th> -->
+                      <!-- <th class="text-right" v-else></th> -->
                       <th class="text-right">
                         <label
                           for="modal-base"
@@ -568,6 +728,7 @@ import AppLayout from "@/components/App/layout.vue";
 import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import Query from "@/assets/js/fetch.js";
 
 export default {
   name: "Department",
@@ -585,7 +746,7 @@ export default {
       },
       checkbox: "",
       refresh: false,
-
+      
       category: {
         rows: [],
         page: 1,
@@ -666,6 +827,21 @@ export default {
     },
   },
   methods: {
+    exportExcel() {
+      return window.open(`${
+        this.serviceUrl
+      }api/controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
+        this.base.page
+      }${this.base.row ? `&rows=${this.base.row}` : ""}${
+        this.base.q ? `&q=${this.base.q}` : ""
+      }${this.wh ? `&wh=${this.wh}` : ""}${
+        this.date.from ? `&createFrom=${this.date.from}` : ""
+      }${
+        this.date.to ? `&createTo=${this.date.to}` : ""
+      }&transref=I&transref_type_null=1
+
+        `);
+    },
     change() {
       this.base_search();
     },
@@ -682,46 +858,21 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/WH/shelf_request?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }${this.date.from ? `&createFrom=${this.date.from}` : ""}${
-          this.date.to ? `&createTo=${this.date.to}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+        }`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-          }
-          //   res.rows.forEach((v, i) => {
-          //     res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-          //     res.rows[i].master = 0;
-          //   });
-          // }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       this.base.current = 0;
@@ -736,7 +887,6 @@ export default {
         status: "",
         newStatus: "",
       };
-
       this.detail.rows = [];
       this.base.controll = "create";
     },
@@ -754,88 +904,72 @@ export default {
 
       // let image = { ...this.base.form.image[0] };
       // delete image.temp;
-
       this.base.form.status = this.base.form.newStatus;
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf_request`,
-        {
-          method: this.base.controll == "create" ? "POST" : "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-          body: JSON.stringify({ ...this.base.form }),
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            const promise_arr = [];
-            console.log(this.base.current);
-            if (this.base.current == 0) {
-              this.base.current = res.row.code;
-              let i = this.detail.rows.length;
-              this.detail.controll = "create";
-              for (i; i > 0; i--) {
-                this.detail.form = {
-                  code: this.detail.rows[i - 1]["code"],
-                  title: this.detail.rows[i - 1]["title"],
-                };
-                promise_arr.push(
-                  new Promise(async function (resolve, reject) {
-                    let res = await vm.detail_save("dynamic");
-                    await resolve(res);
-                    return;
-                  })
-                );
-              }
-            }
+      console.log(this.base.form.status);
 
-            Promise.all(promise_arr)
-              .then((res) => {
-                // console.log(res);
-                vm.base_search();
-              })
-              .catch((err) => console.error(err));
+      let obj = {
+        rows: [
+          { ...this.base.form }
+        ]
+      };
+
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf_request`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.base.modal = false;
+          const promise_arr = [];
+          console.log(this.base.current);
+          if (this.base.current == 0) {
+            this.base.current = res.row.code;
+            let i = this.detail.rows.length;
+            this.detail.controll = "create";
+            for (i; i > 0; i--) {
+              this.detail.form = {
+                code: this.detail.rows[i - 1]["code"],
+                title: this.detail.rows[i - 1]["title"],
+              };
+              promise_arr.push(
+                new Promise(async function (resolve, reject) {
+                  let res = await vm.detail_save("dynamic");
+                  await resolve(res);
+                  return;
+                })
+              );
+            }
           }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+
+          Promise.all(promise_arr)
+            .then((res) => {
+              // console.log(res);
+              vm.base_search();
+            })
+            .catch((err) => console.error(err));
+        }
+      });
     },
 
     status_item(status, code, controll, tb) {
-      fetch(`${this.serviceUrl}api/${tb}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({
-          code: code,
-          status: status,
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            // console.log(res);
-            // this.remove.modal = false;
-            this[`${controll}_search`]();
-          }
-          // callback(res.success ? res.rows : []);
-        })
-        .catch((error) => {
-          // callback([]);
-          console.error("Error:", error);
-        });
+      let obj = {
+        rows: [
+          {
+            code: code,
+            status: status,
+          },
+        ]
+      };
+
+      new Query(controll, 'put').set(this, `${this.serviceUrl}api/${tb}`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          // console.log(res);
+          // this.remove.modal = false;
+          this[`${controll}_search`]();
+        }
+      });
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -857,12 +991,13 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-          if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+                   if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             // console.log(res);
             this.remove.modal = false;
+            this.base.modal = false;
             this[`${this.remove.controll}_search`]();
           }
           // callback(res.success ? res.rows : []);
@@ -887,33 +1022,21 @@ export default {
       });
     },
     item_get(callback) {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+      new Query('item','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
   },
   mounted() {
     this.$nextTick(() => {
       this.base_search();
+      
     });
   },
   watch: {
@@ -934,32 +1057,23 @@ export default {
     },
     "base.form.item_code": function (val) {
       if (val) {
-        fetch(
-          `${this.serviceUrl}api/controllers/SAP/${
+        new Query('base','get').get(this, `${this.serviceUrl}api/controllers/SAP/${
             this.base.form.item_wh ? this.base.form.item_wh : "UBA"
-          }/oitm?item_code=${val}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${this.user_token}`,
-            },
-          }
-        )
-          .then((response) => response.json())
-          .then((res) => {
+          }/oitm?item_code=${val}`, (res) => {
             if (!res.success) {
-              localStorage.removeItem("user_token");
-              this.$router.push({ name: `Login` });
+              // localStorage.removeItem("user_token");
+              // this.$router.push({ name: `Login` });
             } else {
-              this.base.form.item_code = res.rows[0].ItemCode;
-              this.base.form.item_name = res.rows[0].ItemName;
-              this.base.form.uom = res.rows[0].UomCode;
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+
+            this.base.form.item_code = res.rows[0].ItemCode;
+            this.base.form.item_name = res.rows[0].ItemName;
+            this.base.form.uom = res.rows[0].UomCode;
+          }
+        });
       }
     },
   },

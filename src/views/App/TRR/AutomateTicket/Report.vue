@@ -235,6 +235,7 @@ import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.v
 import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
 import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
 import VueMultiselect from "vue-multiselect";
+import Query from "@/assets/js/fetch.js";
 
 export default {
   name: "Report",
@@ -418,35 +419,21 @@ export default {
       });
     },
     detail_get(callback) {
-      // console.log("DASDASDASDAS")
-      fetch(
-        `${
+      new Query('detail','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/ticket?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
-        }&dash_from=${this.date.from}&dash_to=${this.date.to}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+        }&dash_from=${this.date.from}&dash_to=${this.date.to}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     detail_create() {
       this.detail.current = 0;
@@ -472,31 +459,19 @@ export default {
       if (this.detail.controll == "edit") {
         obj["code"] = this.detail.form.code;
       }
-      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/ticket`, {
-        method: this.detail.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify(obj),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.detail.modal = false;
-            if (type == "static") {
-              this.detail.page = 1;
-              this.detail_search();
-            }
+
+      new Query('base', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/ticket`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.detail.modal = false;
+          if (type == "static") {
+            this.detail.page = 1;
+            this.detail_search();
           }
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        }
+      });
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -519,8 +494,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             // console.log(res);
             this.remove.modal = false;
@@ -549,8 +524,7 @@ export default {
       });
     },
     dashboard_get(callback) {
-      fetch(
-        `${
+      new Query('dashboard','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/ticket?report=1&top=${
           this.top
@@ -558,17 +532,8 @@ export default {
           this.dashboard.page
         }${this.dashboard.row ? `&rows=${this.dashboard.row}` : ""}${
           this.dashboard.q ? `&q=${this.dashboard.q}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
+        }`, (res) => {
+        if (res.success) {
           if (res["user"].success) {
             this.pieSeries = [0];
             this.pieOptions.labels = [''];
@@ -584,16 +549,13 @@ export default {
             });
           }
 
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
+        }
+        callback({ ...res });
+      });
     },
   },
   mounted() {

@@ -500,7 +500,7 @@
           </div>
           <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
             <div class="flex-1 form-control mt-6">
-              <label for="modal-base" class="btn btn-danger">Cancle</label>
+              <label for="modal-base" class="btn btn-danger">Cancel</label>
             </div>
             <div class="flex-1 form-control mt-6" @click="base_save()">
               <button class="btn btn-primary text-white">Confirm</button>
@@ -531,7 +531,7 @@
 
           <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
             <div class="flex-1 form-control mt-6">
-              <label for="modal-remove" class="btn btn-danger">Cancle</label>
+              <label for="modal-remove" class="btn btn-danger">Cancel</label>
             </div>
             <div class="flex-1 form-control mt-6">
               <button
@@ -865,8 +865,8 @@ import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
 import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
-
 import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
+import Query from "@/assets/js/fetch.js";
 
 export default {
   name: "Employee",
@@ -945,42 +945,24 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
+        }`, (res) => {
           if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             res.rows.forEach((v, i) => {
               res.rows[i].image = v.image ? JSON.parse(v.image) : [];
               res.rows[i].master = 0;
             });
           }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       this.removing = false;
@@ -1023,37 +1005,26 @@ export default {
           },
         ],
       };
-      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, {
-        method: this.base.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify(obj),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          if (!res.success) {
-          } else {
-            this.base.current == 0
-              ? (this.base.current = res.rows[0].code)
-              : "";
-            this.detail.controll = "create";
-            const detail = new Promise(
-              async (resolve, reject) => await resolve(vm.detail_save())
-            );
 
-            detail.then((res) => {
-              this.base.modal = false;
-              this.base.page = 1;
-              this.detail.page = 1;
-              this.base_search();
-            });
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, obj, (res) => {
+        if (!res.success) {
+        } else {
+          this.base.current == 0
+            ? (this.base.current = res.rows[0].code)
+            : "";
+          this.detail.controll = "create";
+          const detail = new Promise(
+            async (resolve, reject) => await resolve(vm.detail_save())
+          );
+
+          detail.then((res) => {
+            this.base.modal = false;
+            this.base.page = 1;
+            this.detail.page = 1;
+            this.base_search();
+          });
+        }
+      });
     },
     // DETAIL
     detail_search() {
@@ -1070,34 +1041,21 @@ export default {
       });
     },
     detail_get(callback) {
-      fetch(
-        `${
+      new Query('detail','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
-        }${this.base.current ? `&current=${this.base.current}` : ``}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+        }${this.base.current ? `&current=${this.base.current}` : ``}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     detail_add_row() {
       this.detail.form = {
@@ -1139,23 +1097,13 @@ export default {
         if (object[key].length == 0) {
           continue;
         }
-        fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, {
-          method: key,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-          body: JSON.stringify({ rows: object[key] }),
-        })
-          .then((response) => response.json())
-          .then((res) => {
-            if (!res.success) {
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+
+        new Query('detail', key).set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, { rows: object[key] }, (res) => {
+          if (!res.success) {
+          } else {
+            console.log(res)
+          }
+        });
       }
     },
     // REMOVE

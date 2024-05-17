@@ -115,7 +115,7 @@
           </div>
           <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
             <div class="flex-1 form-control mt-6">
-              <label for="modal-base" class="btn btn-danger">Cancle</label>
+              <label for="modal-base" class="btn btn-danger">Cancel</label>
             </div>
             <div class="flex-1 form-control mt-6" @click="base_save()">
               <button class="btn btn-primary text-white">Confirm</button>
@@ -147,7 +147,7 @@
 
           <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
             <div class="flex-1 form-control mt-6">
-              <label for="modal-remove" class="btn btn-danger">Cancle</label>
+              <label for="modal-remove" class="btn btn-danger">Cancel</label>
             </div>
             <div class="flex-1 form-control mt-6">
               <button
@@ -333,6 +333,8 @@ import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleMenu_ from "@/components/App/Module/Menu/_.vue";
 import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
 import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "Department",
   components: {
@@ -388,43 +390,24 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/System/access?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+        }`, (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             res.rows.forEach((v, i) => {
               res.rows[i].image = v.image ? JSON.parse(v.image) : [];
               res.rows[i].master = 0;
             });
           }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       this.base.current = 0;
@@ -449,28 +432,17 @@ export default {
           },
         ],
       };
-      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/access`, {
-        method: this.base.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify(obj),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            this.base.page = 1;
-            this.base_search();
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/access`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.base.modal = false;
+          this.base.page = 1;
+          this.base_search();
+        }
+      });
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -497,9 +469,9 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();

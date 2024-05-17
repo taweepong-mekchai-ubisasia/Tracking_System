@@ -16,6 +16,10 @@
 <script>
 export default {
   name: "EmptyData",
-  props: ["class"],
+  props: {
+    class: {
+      default: "",
+    }
+  }
 };
 </script>

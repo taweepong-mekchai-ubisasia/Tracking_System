@@ -57,6 +57,8 @@
 import AppLayout from "@/components/App/layout.vue";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "Timestamp",
   components: {
@@ -99,56 +101,32 @@ export default {
       }
     },
     getTemplate() {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/template`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+      new Query('content','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/template`, (res) => {
+        if (!res.success) {
+          // localStorage.removeItem("user_token");
+          // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
+
+          this.content = res.html;
+          this.$refs.content.innerHTML = this.content;
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.content = res.html;
-            this.$refs.content.innerHTML = this.content;
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      });
     },
     saveTemplate() {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/template`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-          body: JSON.stringify({ html: this.$refs.quill.getHTML() }),
+      new Query('content', 'post').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/template`, { html: this.$refs.quill.getHTML() }, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          // alert("success");
+          this.edit = false;
+          this.getTemplate();
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            // alert("success");
-            this.edit = false;
-            this.getTemplate();
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      });
     },
   },
   unmounted() {

@@ -17,7 +17,11 @@
 <script>
 export default {
   name: "Upload",
-  props: ["src"],
+  props: {
+    src: {
+      default: null,
+    }
+  },
   data() {
     return {
       image: "",

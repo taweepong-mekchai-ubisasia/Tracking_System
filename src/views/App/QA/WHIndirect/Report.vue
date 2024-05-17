@@ -408,8 +408,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             res.rows.forEach((v, i) => {
               res.rows[i].image = v.image ? JSON.parse(v.image) : [];
@@ -545,8 +545,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             this.base.modal = false;
             const promise_arr = [];
@@ -731,8 +731,8 @@ export default {
           .then((response) => response.json())
           .then((res) => {
                      if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
               this.detail.modal = false;
 
@@ -771,8 +771,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             // console.log(res);
             this.remove.modal = false;

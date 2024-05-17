@@ -23,7 +23,7 @@
           @object_access="objectAccess"
           :access="menuArray['DocumentAlert']"
           :head="'DocumentAlert'"
-          :icon="'ph:calculator'"
+          :icon="'grommet-icons:document-time'"
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
@@ -60,6 +60,15 @@
           :access="menuArray['LM']"
           :head="'LM'"
           :icon="'la:shipping-fast'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
+          :access="menuArray['WMS']"
+          :head="'WMS'"
+          :icon="'game-icons:cargo-ship'"
         />
         <AppModuleMenuTemplate
           :menutype="menutype"

@@ -91,7 +91,26 @@
 <script>
 export default {
   name: "Pageination",
-  props: ["page", "total", "row", "back", "next", "loading"],
+  props: {
+    page: {
+      default: 1,
+    },
+    total: {
+      default: 0,
+    },
+    row: {
+      default: 20,
+    },
+    back: {
+      default: false,
+    },
+    next: {
+      default: false,
+    },
+    loading: {
+      default: false,
+    }
+  },
   data() {
     return {
       current: 1,

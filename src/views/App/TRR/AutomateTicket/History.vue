@@ -176,6 +176,7 @@ import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageinati
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
 import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
+import Query from "@/assets/js/fetch.js";
 
 export default {
   name: "History",
@@ -249,8 +250,7 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/timestamp?total=1&page=${
           this.base.page
@@ -258,39 +258,24 @@ export default {
           this.base.q ? `&q=${this.base.q}` : ""
         }${this.date.from ? `&timestampFrom=${this.date.from}` : ""}${
           this.date.to ? `&timestampTo=${this.date.to}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
+        }`, (res) => {
+        if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+        } else  {
+          res.rows.forEach((v, i) => {
             res.rows.forEach((v, i) => {
               res.rows[i].need_item = v.need_item
                 ? JSON.parse(v.need_item)
                 : [];
             });
-          }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          // callback([]);
-          // localStorage.removeItem("user_token");
-          // this.$router.push({name:"AppLogin"})
-          console.error("Error:", error);
-        });
+
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
+        }
+        callback({ ...res });
+      });
     },
   },
   mounted() {

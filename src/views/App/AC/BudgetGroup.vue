@@ -93,7 +93,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancle</label>
+                <label for="modal-base" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6" @click="base_save()">
                 <button class="btn btn-primary">Confirm</button>
@@ -125,7 +125,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancle</label>
+                <label for="modal-remove" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6">
                 <button class="btn btn-primary" @click="confirm_remove()">
@@ -261,6 +261,8 @@ import AppLayout from "@/components/App/layout.vue";
 import PageinationModule from "@/components/App/Module/Global/Pageination.vue";
 import UploadModule from "@/components/App/Module/Global/Upload.vue";
 import SelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "PO",
   components: {
@@ -316,31 +318,19 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
-          this.$store.state.serviceUrl
+      new Query('base','get').get(this, `${
+          this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/AC/BUDGET/group?page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
-        }${this.base.q ? `&q=${this.base.q}` : ""}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
+        }${this.base.q ? `&q=${this.base.q}` : ""}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       this.base.current = 0;
@@ -363,37 +353,27 @@ export default {
       this.refresh = true;
     },
     base_save() {
-      fetch(
-        `${this.$store.state.serviceUrl}api/controllers/MYSQL/INTERNAL/AC/BUDGET/group`,
-        {
-          method: this.base.controll == "create" ? "POST" : "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+      let obj = {
+        rows: [
+          {
             code: this.base.current,
             department: this.base.form.department,
             detail: this.base.form.detail,
             project: this.base.form.project,
             cost: this.base.form.cost,
-          }),
+          },
+        ]
+      };
+
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/AC/BUDGET/group`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.base.modal = false;
+          this.base_search();
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            this.base_search();
-          }
-          // callback(res.success ? res.rows : []);
-        })
-        .catch((error) => {
-          // callback([]);
-          console.error("Error:", error);
-        });
+      });
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -403,7 +383,7 @@ export default {
       this.remove.tb = tb;
     },
     confirm_remove() {
-      fetch(`${this.$store.state.serviceUrl}${this.remove.tb}`, {
+      fetch(`${this.serviceUrl}${this.remove.tb}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -415,8 +395,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             // console.log(res);
             this.remove.modal = false;

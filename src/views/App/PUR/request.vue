@@ -20,13 +20,40 @@
             </label>
             <h3 class="text-lg font-bold">Add new PO!</h3>
             <div class="card-body overflow-auto max-h-[60vh] ">
-           
+              <!-- <div class="form-control">
+                <UploadModule
+                  v-if="base.modal"
+                  :imageLink="base.form.imageLink"
+                  :image="base.form.image"
+                  :id="'base'"
+                  :multiple="false"
+                  @respone="
+                    (res) => {
+                      let length = base.form.image.length
+                        ? base.form.image.length
+                        : 0;
+                      base.form.image = base.form.image.concat(res.image);
+                    }
+                  "
+                  @resetdata="
+                    (res) => {
+                      base.form.image = [...res.image];
+                    }
+                  "
+                />
+                <label class="label">
+                  <span class="label-text text-red-500"></span>
+                  <span class="label-text-alt text-red-500 font-bold"
+                    >* note</span
+                  >
+                </label>
+              </div> -->
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">รายการใบสั่งผลิต</span>
                 </label>
                 {{ base.form.po }}das
-                <AppModuleGlobalSelectSearch
+                <SelectSearch
                   :placeholder="'test'"
                   :label="'ItemCode'"
                   :maxChar="1"
@@ -98,7 +125,7 @@
                       {{ v.title }}
                     </option>
                   </select> -->
-                  <AppModuleGlobalSelectSearch
+                  <SelectSearch
                     :placeholder="'test'"
                     :label="'ItemCode'"
                     :maxChar="1"
@@ -240,7 +267,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancle</label>
+                <label for="modal-base" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6" @click="base_save()">
                 <button class="btn btn-primary">Confirm</button>
@@ -272,7 +299,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancle</label>
+                <label for="modal-remove" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6">
                 <button class="btn btn-primary" @click="confirm_remove()">
@@ -298,7 +325,34 @@
             >
             <h3 class="text-lg font-bold">Add Quantity!</h3>
             <div class="card-body overflow-auto max-h-[60vh] ">
-              
+              <!-- <div class="form-control">
+                <UploadModule
+                  v-if="detail.modal"
+                  :imageLink="detail.form.imageLink"
+                  :image="detail.form.image"
+                  :multiple="true"
+                  :id="'detail'"
+                  @respone="
+                    (res) => {
+                      let length = detail.form.image.length
+                        ? detail.form.image.length
+                        : 0;
+                      detail.form.image = detail.form.image.concat(res.image);
+                    }
+                  "
+                  @resetdata="
+                    (res) => {
+                      detail.form.image = [...res.image];
+                    }
+                  "
+                />
+                <label class="label">
+                  <span class="label-text text-red-500"></span>
+                  <span class="label-text-alt text-red-500 font-bold"
+                    >* รูปนี้จะแสดงผลในช่องรายละเอียดสินค้า</span
+                  >
+                </label>
+              </div> -->
 
               <div class="form-control">
                 <label class="label">
@@ -343,7 +397,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-detail" class="btn btn-danger">Cancle</label>
+                <label for="modal-detail" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6">
                 <button class="btn btn-primary" @click="detail_save('static')">
@@ -463,7 +517,7 @@
               </div>
             </div>
           </div>
-          <AppModuleGlobalPageination
+          <PageinationModule
             :page="base.page"
             :total="base.total"
             :row="base.row"
@@ -492,16 +546,22 @@
 </style>
 <script>
 // @ is an alias to /src
-
+// import MemberLayout from "@/components/Admin/layouts/Member.vue";
+// import UploadModule from "@/components/Admin/module/Upload.vue";
+// import PageinationModule from "@/components/Admin/module/Pageination.vue";
 import AppLayout from "@/components/App/layout.vue";
-import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
-import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import PageinationModule from "@/components/App/Module/Global/Pageination.vue";
+import UploadModule from "@/components/App/Module/Global/Upload.vue";
+import SelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "PO",
   components: {
     AppLayout,
-    AppModuleGlobalPageination,
-    AppModuleGlobalSelectSearch,
+    UploadModule,
+    PageinationModule,
+    SelectSearch,
   },
   data() {
     return {
@@ -569,28 +629,17 @@ export default {
     },
     category_get(callback) {
       // console.log(this.base.q)
-      fetch(
-        `${this.$store.state.serviceUrl}category?page=${this.category.page}${
+      new Query('category','get').get(this, `${this.serviceUrl}category?page=${this.category.page}${
           this.category.row ? `&rows=${this.category.row}` : ""
-        }${this.category.q ? `&q=${this.category.q}` : ""}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // body: JSON.stringify({
-          //     "uuid": localStorage.getItem('uuid'),
-          // }),
+        }${this.category.q ? `&q=${this.category.q}` : ""}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(res.success ? res.rows : []);
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     // base
     base_search() {
@@ -610,54 +659,20 @@ export default {
     },
     base_get(callback) {
       // console.log(this.base.q)
-      fetch(
-        `${this.$store.state.serviceUrl}po?page=${this.base.page}${
+      new Query('base','get').get(this, `${this.serviceUrl}po?page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
-        }${this.base.q ? `&q=${this.base.q}` : ""}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // body: JSON.stringify({
-          //     "uuid": localStorage.getItem('uuid'),
-          // }),
+        }${this.base.q ? `&q=${this.base.q}` : ""}`, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            // res.rows[0].image = res.rows[0].image
-            //   ? JSON.parse(res.rows[0].image)
-            //   : [];
-            // res.rows[0].master = 0;
-            res.rows.forEach((v, i) => {
-              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-              // console.log(res.rows[i].image)
-              // res.rows[i].image.forEach((vv, ii) => {
-              // if (ii == 0) {
-              res.rows[i].master = 0;
-              // }
-              // console.log(vv);
-              // if (vv.master) {
-              //   res.rows[i].master = ii;
-              // }
-              // });
-            });
-          }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       // console.log("CREATE");
@@ -695,78 +710,72 @@ export default {
 
       console.log(image);
       let vm = this;
-      fetch(`${this.$store.state.serviceUrl}po`, {
-        method: this.base.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: this.base.current,
-          name: this.base.form.name,
-          size: this.base.form.size,
-          number: this.base.form.number,
-          description: this.base.form.description,
-          category_code: this.base.form.category_code,
-          recommend: this.base.form.recommend,
-          room: this.base.form.room,
-          image: [image],
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            const promise_arr = [];
-            console.log(this.base.current);
-            if (this.base.current == 0) {
-              this.base.current = res.row.code;
-              let i = this.detail.rows.length;
-              // console.log(i)
-              this.detail.controll = "create";
-              for (i; i > 0; i--) {
-                // this.detail.rows.forEach((v, i) => {
-                // console.log(v, i);
 
-                this.detail.form = {
-                  code: this.detail.rows[i - 1]["code"],
-                  title: this.detail.rows[i - 1]["title"],
-                  price: this.detail.rows[i - 1]["price"],
-                  image: this.detail.rows[i - 1]["image"],
-                  // imageLink: this.detail.rows[i - 1]["imageLink"],
-                  color: this.detail.rows[i - 1]["color"],
-                  color_code: this.detail.rows[i - 1]["color_code"],
-                  link: this.detail.rows[i - 1]["link"],
-                };
+      let obj = {
+        rows: [
+          {
+            id: this.base.current,
+            name: this.base.form.name,
+            size: this.base.form.size,
+            number: this.base.form.number,
+            description: this.base.form.description,
+            category_code: this.base.form.category_code,
+            recommend: this.base.form.recommend,
+            room: this.base.form.room,
+            image: [image],
+          },
+        ]
+      };
 
-                promise_arr.push(
-                  new Promise(async function (resolve, reject) {
-                    let res = await vm.detail_save("dynamic");
-                    await resolve(res);
-                    return;
-                    // setTimeout(function(){ resolve("☕") },700);
-                  })
-                );
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}po`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.base.modal = false;
+          const promise_arr = [];
+          console.log(this.base.current);
+          if (this.base.current == 0) {
+            this.base.current = res.row.code;
+            let i = this.detail.rows.length;
+            // console.log(i)
+            this.detail.controll = "create";
+            for (i; i > 0; i--) {
+              // this.detail.rows.forEach((v, i) => {
+              // console.log(v, i);
 
-                // });
-              }
+              this.detail.form = {
+                code: this.detail.rows[i - 1]["code"],
+                title: this.detail.rows[i - 1]["title"],
+                price: this.detail.rows[i - 1]["price"],
+                image: this.detail.rows[i - 1]["image"],
+                // imageLink: this.detail.rows[i - 1]["imageLink"],
+                color: this.detail.rows[i - 1]["color"],
+                color_code: this.detail.rows[i - 1]["color_code"],
+                link: this.detail.rows[i - 1]["link"],
+              };
+
+              promise_arr.push(
+                new Promise(async function (resolve, reject) {
+                  let res = await vm.detail_save("dynamic");
+                  await resolve(res);
+                  return;
+                  // setTimeout(function(){ resolve("☕") },700);
+                })
+              );
+
+              // });
             }
-
-            Promise.all(promise_arr)
-              .then((res) => {
-                // console.log(res);
-                vm.base_search();
-              })
-              .catch((err) => console.error(err));
           }
-          // callback(res.success ? res.rows : []);
-        })
-        .catch((error) => {
-          // callback([]);
-          console.error("Error:", error);
-        });
+
+          Promise.all(promise_arr)
+            .then((res) => {
+              // console.log(res);
+              vm.base_search();
+            })
+            .catch((err) => console.error(err));
+        }
+      });
     },
     // DETAIL
     detail_search() {
@@ -775,27 +784,14 @@ export default {
       });
     },
     detail_get(callback) {
-      fetch(
-        `${this.$store.state.serviceUrl}po_detail?po=${
+      new Query('detail','get').get(this, `${this.serviceUrl}po_detail?po=${
           this.base.current
         }&page=${this.detail.page}${
           this.detail.row ? `&rows=${this.detail.row}` : ""
-        }${this.detail.q ? `&q=${this.detail.q}` : ""}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // body: JSON.stringify({
-          //     "uuid": localStorage.getItem('uuid'),
-          // }),
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
+        }${this.detail.q ? `&q=${this.detail.q}` : ""}`, (res) => {
+        if (res.success) {
           res.rows.forEach((v, i) => {
             res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            // console.log(res.rows[i].image)
             res.rows[i].image.forEach((vv, ii) => {
               if (ii == 0) {
                 res.rows[i].master = ii;
@@ -806,12 +802,9 @@ export default {
               }
             });
           });
-          callback(res.success ? res.rows : []);
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        }
+        callback({ ...res });
+      });
     },
     detail_create() {
       console.log("detail_create");
@@ -906,33 +899,21 @@ export default {
         if (this.detail.controll == "edit") {
           obj["code"] = this.detail.form.code;
         }
-        fetch(`${this.$store.state.serviceUrl}po_detail`, {
-          method: this.detail.controll == "create" ? "POST" : "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(obj),
-        })
-          .then((response) => response.json())
-          .then((res) => {
-                     if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+
+        new Query('detail', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}po_detail`, obj, (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
-              this.detail.modal = false;
+            this.detail.modal = false;
 
-              if (type == "static") {
-                this.detail_search();
-              }
-
-              // this.base_search();
+            if (type == "static") {
+              this.detail_search();
             }
-            // callback(res.success ? res.rows : []);
-          })
-          .catch((error) => {
-            callback([]);
-            console.error("Error:", error);
-          });
+
+            // this.base_search();
+          }
+        });
       }
     },
     // REMOVE
@@ -951,7 +932,7 @@ export default {
         this.detail.rows.splice(index, 1);
         this.remove.modal = false;
       } else {
-        fetch(`${this.$store.state.serviceUrl}${this.remove.tb}`, {
+        fetch(`${this.serviceUrl}${this.remove.tb}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -963,8 +944,8 @@ export default {
           .then((response) => response.json())
           .then((res) => {
                      if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
               // console.log(res);
               this.remove.modal = false;

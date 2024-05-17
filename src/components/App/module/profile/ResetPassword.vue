@@ -296,8 +296,8 @@ export default {
         .then((res) => {
           // console.log(res);
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             // alert("SUCCESS");
             this.$router.push({ query: {} });

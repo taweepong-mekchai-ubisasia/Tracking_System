@@ -21,7 +21,7 @@
 
         <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
           <div class="flex-1 form-control mt-6">
-            <label for="modal-remove" class="btn btn-danger">Cancle</label>
+            <label for="modal-remove" class="btn btn-danger">Cancel</label>
           </div>
           <div class="flex-1 form-control mt-6">
             <button class="btn btn-primary" @click="confirm_remove()">
@@ -37,7 +37,18 @@
 <script>
 export default {
   name: "Remove",
-  props: ["controll", "code","parent"],
+  props: {
+    controll: {
+      default: "",
+    },
+    code: {
+      default: "",
+    },
+    parent: {
+      default: 0,
+    }
+  }
+  ["", "",""],
   data() {
     return {
       modal: false,
@@ -56,7 +67,7 @@ export default {
         return;
       }
 
-      fetch(`${this.$store.state.serviceUrl}api/controllers/${this.controll}`, {
+      fetch(`${this.serviceUrl}api/controllers/${this.controll}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -67,9 +78,9 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             // console.log(res);
             this.modal = false;

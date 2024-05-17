@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import Query from "@/assets/js/fetch.js";
 
 import Index from "../views/App/Index.vue";
 import Login from "../views/App/Login.vue";
@@ -11,6 +12,7 @@ import _DocRouter from "./_Doc";
 import ACRouter from "../router/AC";
 import HRRouter from "../router/HR";
 import LMRouter from "../router/LM";
+import WMSRouter from "../router/WMS";
 import PDRouter from "../router/PD";
 import PURRouter from "../router/PUR";
 import QARouter from "../router/QA";
@@ -72,6 +74,7 @@ const routes = [
   ...TRRRouter,
   ...WHRouter,
   ...WHMRouter,
+  ...WMSRouter,
   /*-------------------------------------------------------------*/
   ...EventRouter,
   /*-------------------------------------------------------------*/
@@ -176,32 +179,18 @@ function canUserAccess(to) {
   }
 }
 async function authentication() {
-  return await fetch(
-    `${store.getters.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/auth`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${store.getters.user_token}`,
-      },
-    }
-  )
-    .then((response) => response.json())
-    .then((res) => {
-      if (!res.success) {
-        localStorage.removeItem("user_token");
-      } else {
-        res.row.image = res.row.image ? JSON.parse(res.row.image) : [];
-        res.row.access = res.row.access ? JSON.parse(res.row.access) : {};
-        store.commit("user", res.row);
-        store.commit("user_token", store.getters.user_token);
-      }
-      return { status: res.success };
-    })
-    .catch((error) => {
+  return await new Query(null,'get').get({ user_token: store.getters.user_token }, `${store.getters.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/auth`, (res) => {
+    // console.log(res)
+    if (!res.success) {
       localStorage.removeItem("user_token");
-      console.error(error);
-      return { status: false };
-    });
+    } else {
+      res.row.image = res.row.image ? JSON.parse(res.row.image) : [];
+      res.row.access = res.row.access ? JSON.parse(res.row.access) : {};
+      store.commit("user", res.row);
+      store.commit("user_token", store.getters.user_token);
+
+      return { status: res.success };
+    }
+  });
 }
 export default router;

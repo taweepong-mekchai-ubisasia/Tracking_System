@@ -123,7 +123,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancle</label>
+                <label for="modal-base" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6" @click="base_save()">
                 <button class="btn btn-primary text-white">Confirm</button>
@@ -156,7 +156,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancle</label>
+                <label for="modal-remove" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6">
                 <button class="btn btn-error text-white" @click="confirm_remove()">
@@ -297,6 +297,8 @@ import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageinati
 import AdminmodulewebUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "ShortCode",
   components: {
@@ -367,43 +369,24 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+        }`, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            // res.rows.forEach((v, i) => {
-            //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            //   res.rows[i].master = 0;
-            // });
-          }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       this.base.current = 0;
@@ -424,37 +407,28 @@ export default {
       this.base.controll = "edit";
     },
     base_save() {
+      let obj = {
+        rows: [
+          {
+            code: this.base.current,
+            short_code: this.base.form.short_code,
+            item_name: this.base.form.item_name,
+            item_code: this.base.form.item_code,
+            wh: this.base.form.wh,
+          },
+        ]
+      };
+
       let vm = this;
-      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`, {
-        method: this.base.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({
-          code: this.base.current,
-
-          short_code: this.base.form.short_code,
-          item_name: this.base.form.item_name,
-          item_code: this.base.form.item_code,
-          wh: this.base.form.wh,
-
-          // ref: this.base.form.ref,
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            vm.base_search();
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.base.modal = false;
+          vm.base_search();
+        }
+      });
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -476,8 +450,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();

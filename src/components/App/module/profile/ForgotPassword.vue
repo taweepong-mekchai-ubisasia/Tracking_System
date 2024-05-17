@@ -122,8 +122,8 @@ export default {
           }, 1000);
           // console.log(res);
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             vm.success = "Successfully send email reset password.";
             return;

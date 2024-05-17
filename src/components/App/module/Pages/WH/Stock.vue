@@ -205,6 +205,8 @@
 import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "Stock",
   components: {
@@ -275,8 +277,7 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/WH/shelf?total=1&page=${
           this.base.page
@@ -287,28 +288,15 @@ export default {
         }${
           this.date.to ? `&createTo=${this.date.to}` : ""
         }&transref=I&transref_type_null=1&sumQuantitys=1
-
-        `,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+        `, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(
-            res.success
-              ? { ...res }
-              : { rows: [], total: 0, quantitys_total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
   },
   mounted() {

@@ -140,6 +140,60 @@ const menu = {
             ],
           },
         ],
+        WMS: [
+          {
+            title: "Ubis",
+            access: false,
+            menu: [
+              {
+                title: "Transportation",
+                name: "WMSUbisTransporation",
+                access: false,
+              },
+              {
+                title: "Report",
+                name: "WMSUbisReport",
+                access: false,
+              },
+            ],
+          },
+          {
+            title: "Vita",
+            access: false,
+            menu: [
+              {
+                title: "Operation",
+                name: "WMSVitaScanToReceive",
+                access: false,
+              },
+              {
+                title: "Receive",
+                name: "WMSVitaReceive",
+                access: false,
+              },
+              {
+                title: "StockOnHand",
+                name: "WMSVitaStockOnHand",
+                access: false,
+              },
+              {
+                title: "Pick & Pack",
+                name: "WMSVitaPicking",
+                access: false,
+              },
+              // {
+              //   title: "Packing",
+              //   name: "WMSVitaPacking",
+              //   access: false,
+              // },
+              {
+                title: "Deliver",
+                name: "WMSVitaDeliver",
+                access: false,
+              },
+            ],
+          },
+        ],
         PD: [
           {
             title: "Production Order",

@@ -258,7 +258,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex mt-5"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancle</label>
+                <label for="modal-base" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6" @click="base_save()">
                 <button class="btn btn-primary text-white">Confirm</button>
@@ -291,7 +291,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancle</label>
+                <label for="modal-remove" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6">
                 <button
@@ -420,7 +420,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-detail" class="btn btn-danger">Cancle</label>
+                <label for="modal-detail" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6">
                 <button
@@ -861,8 +861,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
           if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             res.rows.forEach((v, i) => {
               // res.rows[i].image = v.image ? JSON.parse(v.image) : [];
@@ -1242,8 +1242,8 @@ export default {
           .then((response) => response.json())
           .then((res) => {
             if (!res.success) {
-              localStorage.removeItem("user_token");
-              this.$router.push({ name: `Login` });
+              // localStorage.removeItem("user_token");
+              // this.$router.push({ name: `Login` });
             } else {
               this.detail.modal = false;
               //
@@ -1282,8 +1282,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
           if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             // console.log(res);
             this.remove.modal = false;

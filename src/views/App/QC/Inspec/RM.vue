@@ -177,7 +177,7 @@
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
             >
               <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancle</label>
+                <label for="modal-base" class="btn btn-danger">Cancel</label>
               </div>
               <div class="flex-1 form-control mt-6" @click="base_save()">
                 <button class="btn btn-primary text-white">Confirm</button>
@@ -485,6 +485,7 @@ import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
+import Query from "@/assets/js/fetch.js";
 
 export default {
   name: "Department",
@@ -589,41 +590,22 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${this.serviceUrl}api/controllers/SAP/UBP/QC/rm_inspec?total=1&page=${
+      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/SAP/UBP/QC/rm_inspec?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+        }`, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            res.rows.forEach((v, i) => {
-              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-              res.rows[i].master = 0;
-            });
-          }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       this.base.current = 0;
@@ -681,72 +663,67 @@ export default {
       } else {
         this.base.form.new_password = this.base.form.uid;
       }
-      fetch(`${this.serviceUrl}api/controllers/SAP/UBP/QC/rm_inspec`, {
-        method: this.base.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({
-          code: this.base.current,
-          uid: this.base.form.uid,
-          firstname: this.base.form.firstname,
-          lastname: this.base.form.lastname,
-          current_password: this.base.form.current_password,
-          password: this.base.form.new_password,
-          confirm_password: this.base.form.confirm_password,
-          email: this.base.form.email,
-          tel: this.base.form.tel,
-          birthdate: this.base.form.birthdate,
-          department: this.base.form.department,
-          branch: this.base.form.branch,
-          company: this.base.form.company,
-          position: this.base.form.position,
-          started_at: this.base.form.started_at,
-          leaves_at: this.base.form.leaves_at,
-          access: this.base.form.access,
-          image: [image],
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            const promise_arr = [];
-            console.log(this.base.current);
-            if (this.base.current == 0) {
-              this.base.current = res.row.code;
-              let i = this.detail.rows.length;
-              this.detail.controll = "create";
-              for (i; i > 0; i--) {
-                this.detail.form = {
-                  code: this.detail.rows[i - 1]["code"],
-                  title: this.detail.rows[i - 1]["title"],
-                };
-                promise_arr.push(
-                  new Promise(async function (resolve, reject) {
-                    let res = await vm.detail_save("dynamic");
-                    await resolve(res);
-                    return;
-                  })
-                );
-              }
-            }
 
-            Promise.all(promise_arr)
-              .then((res) => {
-                // console.log(res);
-                vm.base_search();
-              })
-              .catch((err) => console.error(err));
+      let obj = {
+        rows: [
+          {
+            code: this.base.current,
+            uid: this.base.form.uid,
+            firstname: this.base.form.firstname,
+            lastname: this.base.form.lastname,
+            current_password: this.base.form.current_password,
+            password: this.base.form.new_password,
+            confirm_password: this.base.form.confirm_password,
+            email: this.base.form.email,
+            tel: this.base.form.tel,
+            birthdate: this.base.form.birthdate,
+            department: this.base.form.department,
+            branch: this.base.form.branch,
+            company: this.base.form.company,
+            position: this.base.form.position,
+            started_at: this.base.form.started_at,
+            leaves_at: this.base.form.leaves_at,
+            access: this.base.form.access,
+            image: [image],
+          },
+        ]
+      };
+
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/SAP/UBP/QC/rm_inspec`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.base.modal = false;
+          const promise_arr = [];
+          console.log(this.base.current);
+          if (this.base.current == 0) {
+            this.base.current = res.row.code;
+            let i = this.detail.rows.length;
+            this.detail.controll = "create";
+            for (i; i > 0; i--) {
+              this.detail.form = {
+                code: this.detail.rows[i - 1]["code"],
+                title: this.detail.rows[i - 1]["title"],
+              };
+              promise_arr.push(
+                new Promise(async function (resolve, reject) {
+                  let res = await vm.detail_save("dynamic");
+                  await resolve(res);
+                  return;
+                })
+              );
+            }
           }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+
+          Promise.all(promise_arr)
+            .then((res) => {
+              // console.log(res);
+              vm.base_search();
+            })
+            .catch((err) => console.error(err));
+        }
+      });
     },
     // DETAIL
     detail_search() {
@@ -766,48 +743,19 @@ export default {
       });
     },
     detail_get(callback) {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
+      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
-        }${this.base.current ? `&current=${this.base.current}` : ``}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-          // body: JSON.stringify({
-          //     "uuid": localStorage.getItem('uuid'),
-          // }),
+        }${this.base.current ? `&current=${this.base.current}` : ``}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          // res.rows.forEach((v, i) => {
-          //   // res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-          //   // console.log(res.rows[i].image)
-          //   // res.rows[i].image.forEach((vv, ii) => {
-          //   //   if (ii == 0) {
-          //   //     res.rows[i].master = ii;
-          //   //   }
-          //   //   // console.log(vv);
-          //   //   if (vv.master) {
-          //   //     res.rows[i].master = ii;
-          //   //   }
-          //   // });
-          // });
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     detail_create() {
       // console.log("detail_create");
@@ -897,34 +845,20 @@ export default {
         if (this.detail.controll == "edit") {
           obj["code"] = this.detail.form.code;
         }
-        fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, {
-          method: this.detail.controll == "create" ? "POST" : "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-          body: JSON.stringify(obj),
-        })
-          .then((response) => response.json())
-          .then((res) => {
-                     if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+
+        new Query('base', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, obj, (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
-              this.detail.modal = false;
+            this.detail.modal = false;
 
-              if (type == "static") {
-                this.detail_search();
-              }
-
-              // this.base_search();
+            if (type == "static") {
+              this.detail_search();
             }
-            // callback(res.success ? res.rows : []);
-          })
-          .catch((error) => {
-            callback([]);
-            console.error("Error:", error);
-          });
+            // this.base_search();
+          }
+        });
       }
     },
     // REMOVE
@@ -948,8 +882,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             // console.log(res);
             this.remove.modal = false;

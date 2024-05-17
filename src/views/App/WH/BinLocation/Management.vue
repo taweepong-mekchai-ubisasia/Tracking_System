@@ -17,7 +17,7 @@
             class="btn btn-sm btn-circle absolute right-2 top-2"
             >✕
           </label>
-          <h3 class="text-lg font-bold text-primary">RAC DATA</h3>
+          <h3 class="text-lg font-bold text-primary">RACK DATA</h3>
           <div class="divider my-1"></div>
 
           <div
@@ -406,7 +406,7 @@
                       :placeholder="'Short code'"
                       :label="'short_code'"
                       :code="'short_code'"
-                      :minChar="3"
+                      :minChar="0"
                       :delay="0.5"
                       :limit="10"
                       :customClass="`input input-bordered border-base-content ${
@@ -789,6 +789,7 @@ import AppModuleWHStock from "@/components/App/Module/Pages/WH/Stock.vue";
 import AppModuleWHStockOnHand from "@/components/App/Module/Pages/WH/StockOnHand.vue";
 import AppModuleWHTransaction from "@/components/App/Module/Pages/WH/Transaction.vue";
 import AppModuleWHReportDashboard from "@/components/App/Module/Pages/WH/ReportDashboard.vue";
+import Query from "@/assets/js/fetch.js";
 
 export default {
   name: "Management",
@@ -956,63 +957,37 @@ export default {
       });
     },
     detail_get(callback) {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.form.code}&transref=I&transref_type_null=1`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+
+      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.form.code}&transref=I&transref_type_null=1`, (res) => {
+        this.total = [];
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            this.total[v.level]
+              ? this.total[v.level][v.pallet]
+                ? (this.total[v.level][v.pallet] =
+                    parseFloat(this.total[v.level][v.pallet]) +
+                    parseFloat(v.quantitys))
+                : (this.total[v.level][v.pallet] = parseFloat(v.quantitys))
+              : (this.total[v.level] = {
+                  [v.pallet]: parseFloat(v.quantitys),
+                });
+
+            this.total[v.level]
+              ? this.total[v.level]["total"]
+                ? (this.total[v.level]["total"] =
+                    parseFloat(this.total[v.level]["total"]) +
+                    parseFloat(v.quantitys))
+                : (this.total[v.level]["total"] = parseFloat(v.quantitys))
+              : (this.total[v.level] = {
+                  ["total"]: parseFloat(v.quantitys),
+                });
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          this.total = [];
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            res.rows.forEach((v, i) => {
-              this.total[v.level]
-                ? this.total[v.level][v.pallet]
-                  ? (this.total[v.level][v.pallet] =
-                      parseFloat(this.total[v.level][v.pallet]) +
-                      parseFloat(v.quantitys))
-                  : (this.total[v.level][v.pallet] = parseFloat(v.quantitys))
-                : (this.total[v.level] = {
-                    [v.pallet]: parseFloat(v.quantitys),
-                  });
-
-              this.total[v.level]
-                ? this.total[v.level]["total"]
-                  ? (this.total[v.level]["total"] =
-                      parseFloat(this.total[v.level]["total"]) +
-                      parseFloat(v.quantitys))
-                  : (this.total[v.level]["total"] = parseFloat(v.quantitys))
-                : (this.total[v.level] = {
-                    ["total"]: parseFloat(v.quantitys),
-                  });
-              //             level: "4"
-              // manufacturing_date: "2024-02-14"
-              // pack_size: "2"
-              // pallet: "1"
-              // quantitys: "2"
-            });
-          }
-
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          // callback([]);
-          // localStorage.removeItem("user_token");
-          // this.$router.push({ name: "AppLogin" });
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     detail_create(rac, bay, l, p) {
       this.modal.detail = true;
@@ -1041,7 +1016,7 @@ export default {
       this.detail.controll = "edit";
       this.checkbox = "";
 
-      this.detail.current = code;
+      this.detail.current = this.base.form.code;
 
       this.detail.form.backupUnit = this.detail.form.unit;
     },
@@ -1071,28 +1046,20 @@ export default {
           },
         ],
       };
-      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf`, {
-        method: this.detail.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify(obj),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+
+      new Query('base', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf`, obj, (res) => {
+        if (!res.success) {
+        } else {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             this.modal.detail = false;
             this.detail_search();
             this.layout[this.detail.form.wh] = true;
           }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        }
+      });
     },
 
     // getRacList
@@ -1108,37 +1075,18 @@ export default {
       });
     },
     rac_get(callback) {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=wh1&rac_list=1`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+      new Query('rac','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=${this.wh.tab == 'factory' ? 'wh1' : 'wh2'}&rac_list=1`, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            // res.rows.forEach((v, i) => {
-            //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            //   res.rows[i].master = 0;
-            // });
-          }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
 
     // bay
@@ -1154,37 +1102,18 @@ export default {
       });
     },
     bay_get(callback) {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=wh1&bay_list=1&rac=${this.detail.form.rac}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+      new Query('bay','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=wh1&bay_list=1&rac=${this.detail.form.rac}`, (res) => {
+        if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            // res.rows.forEach((v, i) => {
-            //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            //   res.rows[i].master = 0;
-            // });
-          }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
 
     // Item
@@ -1201,37 +1130,18 @@ export default {
       });
     },
     item_get(callback) {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&rac=${this.detail.form.rac}&wh=${this.user.branchTitle}&short_code=${this.detail.form.item_short_code}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+      new Query('item','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&rac=${this.detail.form.rac}&wh=${this.user.branchTitle}&short_code=${this.detail.form.item_short_code}`, (res) => {
+        if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            // res.rows.forEach((v, i) => {
-            //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            //   res.rows[i].master = 0;
-            // });
-          }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
   },
   mounted() {
@@ -1310,33 +1220,19 @@ export default {
     },
     "detail.form.item_code": function (val) {
       if (val) {
-        fetch(
-          `${this.serviceUrl}api/controllers/SAP/${
+        new Query(null,'get').get(this, `${this.serviceUrl}api/controllers/SAP/${
             this.detail.form.item_wh ? this.detail.form.item_wh : "UBA"
-          }/oitm?item_code=${val}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${this.user_token}`,
-            },
-          }
-        )
-          .then((response) => response.json())
-          .then((res) => {
-                     if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+          }/oitm?item_code=${val}`, (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
-              this.detail.form.item_code = res.rows[0].ItemCode;
-              this.detail.form.item_name = res.rows[0].ItemName;
-              this.detail.form.shelf_life = res.rows[0].U_Agin;
-              this.detail.form.uom = res.rows[0].UomCode;
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+            this.detail.form.item_code = res.rows[0].ItemCode;
+            this.detail.form.item_name = res.rows[0].ItemName;
+            this.detail.form.shelf_life = res.rows[0].U_Agin;
+            this.detail.form.uom = res.rows[0].UomCode;
+          }
+        });
       }
     },
     "modal.detail": function (val) {

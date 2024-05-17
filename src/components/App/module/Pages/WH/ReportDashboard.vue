@@ -94,6 +94,8 @@
     </div>
 </template>
 <script>
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "ReportDashboard",
   components: {},
@@ -217,8 +219,7 @@ export default {
       });
     },
     base_get(firstchar, wh, callback) {
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/WH/shelf?action=dashboard&page=${
           this.base.page
@@ -227,23 +228,15 @@ export default {
         }${wh ? `&wh=${wh}` : ""}${
           this.transref ? `&transref=${this.transref}` : ""
         }${firstchar ? `&firstchar=${firstchar}` : ""}
-        `,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+        `, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(res.success ? { rows: res.rows } : { rows: [] });
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
   },
   mounted() {

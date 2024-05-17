@@ -33,6 +33,7 @@ import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
+import Query from "@/assets/js/fetch.js";
 
 import VueMultiselect from "vue-multiselect";
 let colors = [
@@ -241,28 +242,22 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/timestamp?total=1&onlyme=1&today=1&emptyTicket=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+        }`, (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+
             this.ticket.hours = this.$moment
               .duration(
                 this.$moment(res.rows[0].created_at).diff(
@@ -284,21 +279,11 @@ export default {
               .minutes();
 
             this.ticket.get =
-              this.ticket.hours + (this.ticket.minutes > 0 ? 1 : 0);
+            this.ticket.hours + (this.ticket.minutes > 0 ? 1 : 0);
             // console.error(this.ticket.hours);
           }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          // callback([]);
-          // localStorage.removeItem("user_token");
-          // this.$router.push({name:"AppLogin"})
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       this.base.current = 0;
@@ -320,28 +305,17 @@ export default {
     base_save() {
       let vm = this;
       let obj = { ...this.base.form };
-      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/timestamp`, {
-        method: this.base.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify(obj),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            this.base_search();
-            // this.detail_search();
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/timestamp`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.base.modal = false;
+          this.base_search();
+          // this.detail_search();
+        }
+      });
     },
     // DETAIL
     detail_search() {
@@ -361,34 +335,21 @@ export default {
       });
     },
     detail_get(callback) {
-      fetch(
-        `${
+      new Query('detail','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/ticket?total=1&onlyme=1&today=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
-        }${this.base.current ? `&current=${this.base.current}` : ``}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+        }${this.base.current ? `&current=${this.base.current}` : ``}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     detail_create() {
       this.detail.current = 0;
@@ -413,32 +374,20 @@ export default {
       if (this.detail.controll == "edit") {
         obj["code"] = this.detail.form.code;
       }
-      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/ticket`, {
-        method: this.detail.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify(obj),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.detail.modal = false;
-            if (type == "static") {
-              this.base_search();
-              this.detail.page = 1;
-              this.detail_search();
-            }
+
+      new Query('detail', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/ticket`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.detail.modal = false;
+          if (type == "static") {
+            this.base_search();
+            this.detail.page = 1;
+            this.detail_search();
           }
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        }
+      });
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -461,8 +410,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             // console.log(res);
             this.remove.modal = false;

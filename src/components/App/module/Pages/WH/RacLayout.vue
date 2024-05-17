@@ -337,6 +337,8 @@
 
 <script>
 import DraggableResizableVue from "draggable-resizable-vue3";
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "RacLayoutModule",
   components: {
@@ -537,28 +539,22 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/WH/layout?wh=${this.wh}&transref=I&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+        }`, (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+
             res.rows.map((v) => {
               v.isActive = false;
               v.x = parseInt(v.x);
@@ -568,16 +564,8 @@ export default {
               return v;
             });
           }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       this.base.current = 0;
@@ -598,35 +586,19 @@ export default {
     },
     base_save() {
       let vm = this;
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout`,
-        {
-          method: this.base.controll == "create" ? "POST" : "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-          body: JSON.stringify({
-            ...Object.assign({}, this.base.rows, { wh: this.wh }),
-          }),
+
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout`, ...Object.assign({}, this.base.rows, { wh: this.wh }), (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.base.modal = false;
+          this.base.rows = [];
+          setTimeout(() => {
+            vm.base_search((res) => {});
+          }, 1000);
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            this.base.rows = [];
-            setTimeout(() => {
-              vm.base_search((res) => {});
-            }, 1000);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      });
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -648,8 +620,8 @@ export default {
         .then((response) => response.json())
         .then((res) => {
                    if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             this.remove.modal = false;
             this.base.rows = [];
@@ -677,34 +649,21 @@ export default {
       });
     },
     rac_get(callback) {
-      fetch(
-        `${
+      new Query('rac','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/WH/shelf?action=count&transref=I&transref_type_null=1&wh=${
           this.wh
         }&total=1&page=${this.rac.page}${
           this.rac.row ? `&rows=${this.rac.row}` : ""
-        }${this.rac.q ? `&q=${this.rac.q}` : ""}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+        }${this.rac.q ? `&q=${this.rac.q}` : ""}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     configData() {
       this.layouts = {

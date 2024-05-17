@@ -666,8 +666,8 @@ async function authentication() {
     .then((response) => response.json())
     .then((res) => {
       if (!res.success) {
-        localStorage.removeItem("user_token");
-        this.$router.push({ name: `Login` });
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
       } else {
         res.row.image ? JSON.parse(res.row.image) : [];
         res.row.access = JSON.parse(res.row.access);

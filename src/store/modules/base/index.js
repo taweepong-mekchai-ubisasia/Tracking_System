@@ -8,7 +8,7 @@ const menu = {
       theme: "ubis",
       user_token: false,
       serviceUrl: `${
-        window.location.origin == "http://localhost:8081"
+        window.location.origin == "http://localhost:80811"
           ? "http://localhost:8080/kay/rewrite_demo/services/"
           : `http://192.168.11.1/dev_services/`
           // : `http://192.168.11.1/services/`

@@ -135,7 +135,7 @@
             class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex my-4"
           >
             <div class="flex-1 form-control">
-              <label for="modal-base" class="btn btn-danger">Cancle</label>
+              <label for="modal-base" class="btn btn-danger">Cancel</label>
             </div>
             <div
               class="flex-1 form-control"
@@ -409,6 +409,7 @@ import AppLayout from "@/components/App/layout.vue";
 import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import Query from "@/assets/js/fetch.js";
 
 export default {
   name: "Approve",
@@ -514,36 +515,15 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${
-          this.serviceUrl
-        }api/controllers/MYSQL/INTERNAL/WH/shelf_request?total=1&page=${
-          this.base.page
-        }${this.base.row ? `&rows=${this.base.row}` : ""}${
-          this.base.q ? `&q=${this.base.q}` : ""
-        }${this.date.from ? `&createFrom=${this.date.from}` : ""}${
-          this.date.to ? `&createTo=${this.date.to}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf_request?total=1&page=${this.base.page}${this.base.row ? `&rows=${this.base.row}` : ""}${this.base.q ? `&q=${this.base.q}` : ""}${this.date.from ? `&createFrom=${this.date.from}` : ""}${this.date.to ? `&createTo=${this.date.to}` : ""}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
     base_create() {
       this.base.current = 0;
@@ -568,22 +548,13 @@ export default {
           },
         ],
       };
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf_request`,
-        {
-          method: this.base.controll == "create" ? "POST" : "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-          body: JSON.stringify(obj),
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf_request`, obj, (res) => {
+        if (!res.success) {
+        } else {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
             this.base.current == 0
               ? (this.base.current = res.rows[0].code)
@@ -592,10 +563,8 @@ export default {
             this.base.page = 1;
             this.base_search();
           }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        }
+      });
     },
     // Item
     item_search(callback) {
@@ -611,28 +580,15 @@ export default {
       });
     },
     item_get(callback) {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+      new Query('item','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&wh=${this.user.branchTitle}&short_code=${this.base.form.item_short_code}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          callback([]);
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
   },
   mounted() {
@@ -658,32 +614,16 @@ export default {
     },
     "base.form.item_code": function (val) {
       if (val) {
-        fetch(
-          `${this.serviceUrl}api/controllers/SAP/${
-            this.base.form.item_wh ? this.base.form.item_wh : "UBA"
-          }/oitm?item_code=${val}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${this.user_token}`,
-            },
-          }
-        )
-          .then((response) => response.json())
-          .then((res) => {
-                     if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
+        new Query('base','get').get(this, `${this.serviceUrl}api/controllers/SAP/${this.base.form.item_wh ? this.base.form.item_wh : "UBA"}/oitm?item_code=${val}`, (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
           } else {
-              this.base.form.item_code = res.rows[0].ItemCode;
-              this.base.form.item_name = res.rows[0].ItemName;
-              this.base.form.uom = res.rows[0].UomCode;
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+            this.base.form.item_code = res.rows[0].ItemCode;
+            this.base.form.item_name = res.rows[0].ItemName;
+            this.base.form.uom = res.rows[0].UomCode;
+          }
+        });
       }
     },
   },

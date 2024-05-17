@@ -78,6 +78,8 @@
   </div>
 </template>
 <script>
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "VerifyEmail",
   data() {
@@ -111,55 +113,29 @@ export default {
 
       vm.errorMsg = "";
 
-      fetch(`${vm.ServiceUrl}api/controllers/verify-email`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${vm.jwt}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          vm.process = false;
-          let i = 0;
-          vm.interval = setInterval(() => {
-            i++;
-            vm.errorMsg = `Please try again after ${31 - i} second.`;
-            if (i == 31) {
-              clearInterval(vm.interval);
-              vm.interval = null;
-              vm.errorMsg = "";
-            }
-          }, 1000);
-          // console.log(res);
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            vm.success = "Successfully resend verify email.";
-            //   vm.$store.commit("user", res.user);
-            //   vm.$store.commit("jwt", vm.jwt);
-            //   console.log(vm.$route.query);
-            //   if (vm.$route.query.gp_code) {
-            //     // console.log("vm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_codevm.$route.query.gp_code")
-            //     vm.$emit("setgame");
-            //   } else {
-            //     vm.$emit("getgame");
-            //   }
-            // } else {
-            //   vm.$store.commit("jwt", false);
-            //   localStorage.removeItem("jwt");
-            return;
+      new Query('base','get').get(this, `${vm.ServiceUrl}api/controllers/verify-email`, (res) => {
+        vm.process = false;
+        let i = 0;
+        vm.interval = setInterval(() => {
+          i++;
+          vm.errorMsg = `Please try again after ${31 - i} second.`;
+          if (i == 31) {
+            clearInterval(vm.interval);
+            vm.interval = null;
+            vm.errorMsg = "";
           }
-          this.errorMsg = res.errorMsg;
-        })
-        .catch((error) => {
-          vm.process = false;
-          vm.errorMsg = res.errorMsg;
-          // vm.$store.commit("jwt", false);
-          // localStorage.removeItem("jwt");
-          console.error("Error:", error);
-        });
+        }, 1000);
+
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          vm.success = "Successfully resend verify email.";
+          return;
+        }
+
+        this.errorMsg = res.errorMsg;
+      });
     },
   },
   watch: {

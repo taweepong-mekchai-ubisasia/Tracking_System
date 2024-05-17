@@ -6,7 +6,8 @@
         role="button"
         class="link link-hover inline-block font-mono text-xs"
       >
-        0.0.1
+        <!-- 0.0.1 -->
+        0.0.2
       </div>
       <ul
         tabindex="0"

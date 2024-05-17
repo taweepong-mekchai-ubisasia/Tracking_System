@@ -633,6 +633,8 @@ import LayoutTheme from "@/components/Layout/Theme.vue";
 import LayoutLogo from "@/components/Layout/Logo.vue";
 import LayoutLogoLight from "@/components/Layout/LogoLight.vue";
 import LayoutChangelog from "@/components/Layout/Changelog.vue";
+import Query from "@/assets/js/fetch.js";
+
 // import { Icon } from '@iconify/vue';
 import { ref, onMounted } from "vue";
 export default {
@@ -747,44 +749,27 @@ export default {
       if (this.user.type == "email") {
         obj.image = [image];
       }
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/user`,
 
-        // `${this.serviceUrl}api/controllers/user`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-
-          body: JSON.stringify(obj),
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            if (localStorage.getItem("user_token")) {
-              localStorage.setItem("user_token", res.jwt);
-            }
-            this.$store.commit("user", res.row);
-            this.$store.commit(
-              "user_token",
-              localStorage.getItem("user_token")
-            );
-            this.tab.profile = "profile";
-            this.confirm = false;
-            this.profileUpdate.success = "Update profile is successfully.";
-            return callback();
+      new Query('base', 'put').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/user`, obj, (res) => {
+        if (!res.success) {
+          // localStorage.removeItem("user_token");
+          // this.$router.push({ name: `Login` });
+        } else {
+          if (localStorage.getItem("user_token")) {
+            localStorage.setItem("user_token", res.jwt);
           }
-          alert(res.errorMsg);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+          this.$store.commit("user", res.row);
+          this.$store.commit(
+            "user_token",
+            localStorage.getItem("user_token")
+          );
+          this.tab.profile = "profile";
+          this.confirm = false;
+          this.profileUpdate.success = "Update profile is successfully.";
+          return callback();
+        }
+        alert(res.errorMsg);
+      });
     },
     changepage(page) {
       this.$router.push({ name: `${page}` });

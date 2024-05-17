@@ -31,9 +31,15 @@
 export default {
   name: "LoadingText",
   props: {
-    class: null,
-    percent: 0,
-    type: "text",
+    class: {
+      default: null,
+    },
+    percent: {
+      default: 0,
+    },
+    type: {
+      defualt: "text",
+    }
   },
 };
 </script>

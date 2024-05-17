@@ -164,6 +164,8 @@
 import AppLayout from "@/components/App/layout.vue";
 import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from "vue-qrcode-reader";
 import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
+import Query from "@/assets/js/fetch.js";
+
 export default {
   name: "CheckRac",
   components: {
@@ -254,52 +256,36 @@ export default {
       });
     },
     base_get(callback) {
-      fetch(
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.current}&transref=I&transref_type_null=1&sumQuantitys=1`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
+      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.current}&transref=I&transref_type_null=1&sumQuantitys=1`, (res) => {
+        this.total = [];
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            this.total[v.level]
+              ? this.total[v.level][v.pallet]
+                ? (this.total[v.level][v.pallet] =
+                    parseFloat(this.total[v.level][v.pallet]) +
+                    parseFloat(v.quantitys))
+                : (this.total[v.level][v.pallet] = parseFloat(v.quantitys))
+              : (this.total[v.level] = {
+                  [v.pallet]: parseFloat(v.quantitys),
+                });
+
+            this.total[v.level]
+              ? this.total[v.level]["total"]
+                ? (this.total[v.level]["total"] =
+                    parseFloat(this.total[v.level]["total"]) +
+                    parseFloat(v.quantitys))
+                : (this.total[v.level]["total"] = parseFloat(v.quantitys))
+              : (this.total[v.level] = {
+                  ["total"]: parseFloat(v.quantitys),
+                });
+          });
         }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          this.total = [];
-                   if (!res.success) {
-            localStorage.removeItem("user_token");
-            this.$router.push({ name: `Login` });
-          } else {
-            res.rows.forEach((v, i) => {
-              this.total[v.level]
-                ? this.total[v.level][v.pallet]
-                  ? (this.total[v.level][v.pallet] =
-                      parseFloat(this.total[v.level][v.pallet]) +
-                      parseFloat(v.quantitys))
-                  : (this.total[v.level][v.pallet] = parseFloat(v.quantitys))
-                : (this.total[v.level] = {
-                    [v.pallet]: parseFloat(v.quantitys),
-                  });
-
-              this.total[v.level]
-                ? this.total[v.level]["total"]
-                  ? (this.total[v.level]["total"] =
-                      parseFloat(this.total[v.level]["total"]) +
-                      parseFloat(v.quantitys))
-                  : (this.total[v.level]["total"] = parseFloat(v.quantitys))
-                : (this.total[v.level] = {
-                    ["total"]: parseFloat(v.quantitys),
-                  });
-            });
-          }
-
-          callback(res.success ? { ...res } : { rows: [], total: 0 });
-        })
-        .catch((error) => {
-          callback({ rows: [], total: 0 });
-          console.error("Error:", error);
-        });
+        callback({ ...res });
+      });
     },
   },
   mounted() {},
