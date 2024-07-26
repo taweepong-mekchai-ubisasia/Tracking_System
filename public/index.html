@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <meta name="description" content="UBIS : Web Application">
+    <meta name="description" content="UBIS : Web Application" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
@@ -16,10 +16,82 @@
         continue.</strong
       >
     </noscript>
+    <!-- <button onclick="main()">Enable notification</button> -->
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
 </html>
+
+<script>
+  const checkPermission = () => {
+    console.log("ASD");
+    if (!("serviceWorker" in navigator)) {
+      throw new Error("No support for service worker!");
+    }
+
+    if (!("Notification" in window)) {
+      throw new Error("No support for notification API");
+    }
+
+    if (!("PushManager" in window)) {
+      throw new Error("No support for Push API");
+    }
+  };
+
+  const registerSW = async () => {
+    // console.log(navigator.serviceWorker)
+    // const registration = await navigator.serviceWorker.register('serviceworker.js');
+
+    try {
+      var registration = await navigator.serviceWorker.register(
+        "/UAT/serviceworker.js",
+        // { scope: "./" }
+      );
+      var serviceWorker;
+      if (registration.installing) {
+        serviceWorker = registration.installing;
+        console.log("installing : " + serviceWorker.state);
+      } else if (registration.waiting) {
+        serviceWorker = registration.waiting;
+        console.log("waiting : " + serviceWorker.state);
+      } else if (registration.active) {
+        serviceWorker = registration.active;
+        console.log("active : " + serviceWorker.state);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    return registration;
+  };
+
+  // const requestNotificationPermission = async () => {
+  //     const permission = await Notification.requestPermission();
+  //     console.log(permission)
+  //     if (permission !== 'granted') {
+  //         throw new Error("Notification permission not granted")
+  //     }
+  // }
+
+  const main = async () => {
+    checkPermission();
+    // await requestNotificationPermission()
+    await registerSW();
+
+    // const broadcast = new BroadcastChannel('count-channel');
+    // Listen to the response
+    // broadcast.onmessage = (event) => {
+    //   console.log(event.data.payload);
+    // };
+
+    // Send first request
+    // broadcast.postMessage({
+    //   type: 'INCREASE_COUNT',
+    // });
+  };
+
+  main();
+</script>
 <!-- <script
   id="Cookiebot"
   src="https://consent.cookiebot.com/uc.js"

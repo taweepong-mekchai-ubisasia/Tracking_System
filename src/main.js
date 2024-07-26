@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import './registerServiceWorker'
+// import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import './assets/index.css'
@@ -28,7 +28,8 @@ import './assets/index.css'
 // import GAuth from 'vue3-google-oauth2'
 // import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 // const gAuthOptions = 
-var moment = require('moment'); // require
+// var moment = require('moment'); // require
+var moment = require('moment-timezone'); // require
 // moment().format(); 
 // app.config.globalProperties.$moment = 
 const momentPlugin = {
@@ -63,7 +64,12 @@ const options = {
 
 // Use calendar defaults (optional)
 // app
-const app = createApp(App).use(store).use(router).use(momentPlugin).use(VueApexCharts).use(setupCalendar, {}).use(VueHtmlToPaper, options)
+const app = createApp(App)
+.use(store).use(router)
+.use(momentPlugin)
+.use(VueApexCharts)
+.use(setupCalendar, {})
+.use(VueHtmlToPaper, options)
 
 // .use(GAuth, { clientId: '594749811693-j8rrlliai8tkj81gh65vi5f3tgd02seq.apps.googleusercontent.com', scope: 'email',plugin_name:'UBIS', prompt: 'consent', fetch_basic_profile: false })
 

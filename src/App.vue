@@ -1,12 +1,20 @@
 <template>
   <div class="scroll-smooth">
+ 
     <router-view ref="view" />
+    
   </div>
 </template>
+<!-- <script setup lang="ts"> -->
+
+<!-- </script> -->
 <script>
+
+
 import { useFavicon } from '@vueuse/core'
 
 const icon = useFavicon()
+
 
 icon.value = require(`@/assets/img/favicon-32x32.png`)
 export default {
@@ -21,6 +29,9 @@ export default {
     jwt() {
       return this.$store.getters.jwt;
     },
+  },
+  components:{
+    
   },
   data() {
     return {};

@@ -39,6 +39,15 @@
           :prefix="prefix"
           :color="color[1]"
           @object_access="objectAccess"
+          :access="menuArray['LabelPrint']"
+          :head="'LabelPrint'"
+          :icon="'ph:calculator'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
           :access="menuArray['AC']"
           :head="'AC'"
           :icon="'ph:calculator'"

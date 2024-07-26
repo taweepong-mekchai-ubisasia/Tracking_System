@@ -78,6 +78,33 @@ const menu = {
             access: false,
           },
         ],
+        LabelPrint: [
+          {
+            title: "PD",
+            name: "LabelPrintPD",
+            access: false,
+          },
+          {
+            title: "History",
+            name: "LabelPrintHistory",
+            access: false,
+          },
+          {
+            title: "Label",
+            name: "LabelPrintLabel",
+            access: false,
+          },
+          {
+            title: "Template",
+            name: "LabelPrintTemplate",
+            access: false,
+          },
+          {
+            title: "Sticker",
+            name: "LabelPrintSticker",
+            access: false,
+          },
+        ],
         LM: [
           // {
           //   title: "",
@@ -439,12 +466,33 @@ const menu = {
           },
         ],
         TRR: [
-          {
-            title: "Visitor",
-            name: "TRRVisitor",
-            access: false,
-          },
+          // {
+          //   title: "Visitor",
+          //   name: "TRRVisitor",
+          //   access: false,
+          // },
 
+          {
+            title: "Visitor Management",
+            access: false,
+            menu: [
+              {
+                title: "Booking",
+                name: "TRRVisitorManagementBooking",
+                access: false,
+              },
+              {
+                title: "Visitor",
+                name: "TRRVisitorManagementVisitor",
+                access: false,
+              },
+              {
+                title: "Item",
+                name: "TRRVisitorManagementItem",
+                access: false,
+              },
+            ],
+          },
           {
             title: "Automate Ticket",
             access: false,
@@ -594,14 +642,12 @@ const menu = {
             access: false,
           },
         ],
-
         DocumentAlert: [
           {
             title: "Management",
             name: "DocumentAlertManagement",
             access: true,
           },
-         
         ],
       },
     };

@@ -52,6 +52,9 @@
         <div
           class="grid card-bordered p-1 place-items-center cursor-pointer overflow-hidden"
         >
+        <!-- <span      v-if="file.length > 0">
+          {{file}}
+        </span> -->
           <img
             width="auto"
             height="auto"
@@ -79,7 +82,7 @@
         </thead>
         <tbody v-for="(v, i) in file" :key="i">
           <tr>
-            <th>1</th>
+            <th>{{ i+1 }}</th>
             <td class="crop w-40 max-w-40">{{ v.file }}</td>
             <!-- <td>{{ v.upload }} {{ v.loading}}  {{ v.error}}</td> -->
             <td class="text-center">
@@ -107,7 +110,7 @@
               <span class="btn btn-xs w-24 mr-2" v-else @click="preview(v)">
                 Preview
               </span>
-              <span class="btn btn-xs w-24" @click="removefile(i)">Delete</span>
+              <!-- <span class="btn btn-xs w-24" @click="removefile(i)">Delete</span> -->
             </th>
           </tr>
         </tbody>
@@ -205,9 +208,11 @@ export default {
   },
   methods: {
     preview(v) {
+      console.log(v)
       // console.log(`${this.fileLink}/${v.file}`);
       // this.$emit("preview", `${this.fileLink}/${v.file}`);
-      window.open(`${this.fileLink}/${v.file}`,'_blank')
+      
+      v.temp?window.open(`${this.serviceUrl}tmps/pdf/${v.file}`,'_blank'):window.open(`${this.fileLink}/${v.file}`,'_blank')
     },
     again(v) {
       let obj = {
@@ -259,6 +264,7 @@ export default {
       }
     },
     async upload(formData, r) {
+      console.log(r)
       let vm = this;
       try {
         const resp = await fetch(
@@ -346,48 +352,12 @@ export default {
         // }
       } catch (err) {
         console.log(err);
+        // console.log("EEEEEEEEEEEEEEEEERRRRRRRRRRRRRRORRRRRRRRR")
+        // console.log(r)
         this.$emit("error", {
           r: r,
         });
       }
-
-      // fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/upload`, {
-      //   method: "POST",
-      //   body: formData,
-      // })
-      //   .then((response) => response.json())
-      //   .then((result) => {
-      //     this.$refs[`uploadfile-${this.id}`].value = "";
-      //     // let file = [];
-      //     result.forEach((v, i) => {
-      //       if (v.upload.success) {
-      //         // console.log(this.tempImage)
-      //         // let index = this.tempImage.findIndex((vv)=>vv.r == r)
-      //         // console.log(this.tempImage[index])
-      //         // console.log(index)
-      //         // this.tempImage[index].upload = false;
-
-      //         this.$emit("uploaded", {
-      //           r: r,
-      //         });
-      //         // console.log("AAAA");
-      //         // file.push({
-      //         //   file: `${v.log.row.current_file}.${v.log.row.ext}`,
-      //         //   master: false,
-      //         //   temp: true,
-      //         // });
-      //         // console.log(file);
-      //       } else {
-      //         // console.log("nnnnnn");
-      //         console.log("Error:", v);
-      //       }
-      //     });
-
-      //     // console.log(file);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error:", error);
-      //   });
     },
     removefile(index) {
       // console.log(index)

@@ -182,7 +182,8 @@ export default {
           } else {
             localStorage.setItem("user_token", res.jwt);
 
-            res.row.image ? JSON.parse(res.row.image) : [];
+            res.row.image = res.row.image?JSON.parse(res.row.image) : [];
+
             res.row.access = JSON.parse(res.row.access);
             // user = res.row;
             this.$store.commit("user", res.row);

@@ -11,7 +11,7 @@
         />
         <div class="modal" v-if="base.modal">
           <div
-            class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen"
+            class="modal-box relative w-11/12 max-w-xl p-2 lg:p-4 max-h-screen"
           >
             <label
               for="modal-base"
@@ -25,13 +25,13 @@
             >
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text">Title</span>
+                  <span class="label-text">Name</span>
                 </label>
                 <input
                   type="text"
-                  placeholder="Title"
+                  placeholder="Name"
                   class="input input-bordered border-base-content"
-                  v-model="base.form.title"
+                  v-model="base.form.name"
                 />
               </div>
               <div class="form-control">
@@ -44,76 +44,76 @@
                   v-model="base.form.description"
                 ></textarea>
               </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">What do you need?</span>
-                </label>
-                <VueMultiselect
-                  v-model="base.form.need_item"
-                  :options="options_select"
-                  tag-placeholder="What do you need?"
-                  placeholder="Search or add a needed"
-                  label="name"
-                  track-by="code"
-                  :multiple="true"
-                  :taggable="true"
-                  @tag="addTag_need"
-                >
-                </VueMultiselect>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Which email notification?</span>
-                </label>
-                <VueMultiselect
-                  v-model="base.form.email"
-                  :options="options_select_email"
-                  tag-placeholder="Which email notification?"
-                  placeholder="Search or add a tag email notification"
-                  label="name"
-                  track-by="code"
-                  :multiple="true"
-                  :taggable="true"
-                  @tag="addTag_email"
-                >
-                </VueMultiselect>
-              </div>
-
-              <div class="grid gap-4 md:grid-cols-2 grid-cols-2">
-                <div class="form-control">
+              <!-- <div class="form-control">
                   <label class="label">
-                    <span class="label-text">Desired date</span>
+                    <span class="label-text">What do you need?</span>
+                  </label>
+                  <VueMultiselect
+                    v-model="base.form.need_item"
+                    :options="options_select"
+                    tag-placeholder="What do you need?"
+                    placeholder="Search or add a needed"
+                    label="name"
+                    track-by="code"
+                    :multiple="true"
+                    :taggable="true"
+                    @tag="addTag_need"
+                  >
+                  </VueMultiselect>
+                </div> -->
+              <!-- <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Which email notification?</span>
+                  </label>
+                  <VueMultiselect
+                    v-model="base.form.email"
+                    :options="options_select_email"
+                    tag-placeholder="Which email notification?"
+                    placeholder="Search or add a tag email notification"
+                    label="name"
+                    track-by="code"
+                    :multiple="true"
+                    :taggable="true"
+                    @tag="addTag_email"
+                  >
+                  </VueMultiselect>
+                </div> -->
+
+              <!-- <div class="grid gap-4 md:grid-cols-2 grid-cols-2">
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">Desired date</span>
+                    </label>
+                    <input
+                      type="date"
+                      placeholder="Desired date"
+                      class="input input-bordered border-base-content"
+                      v-model="base.form.desired_date"
+                    />
+                  </div>
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">Desired date</span>
+                    </label>
+                    <input
+                      type="time"
+                      placeholder="Desired date"
+                      class="input input-bordered border-base-content"
+                      v-model="base.form.desired_time"
+                    />
+                  </div>
+                </div> -->
+              <!-- <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Early notification</span>
                   </label>
                   <input
                     type="date"
                     placeholder="Desired date"
                     class="input input-bordered border-base-content"
-                    v-model="base.form.desired_date"
+                    v-model="base.form.early_notification"
                   />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Desired date</span>
-                  </label>
-                  <input
-                    type="time"
-                    placeholder="Desired date"
-                    class="input input-bordered border-base-content"
-                    v-model="base.form.desired_time"
-                  />
-                </div>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Early notification</span>
-                </label>
-                <input
-                  type="date"
-                  placeholder="Desired date"
-                  class="input input-bordered border-base-content"
-                  v-model="base.form.early_notification"
-                />
-              </div>
+                </div> -->
             </div>
             <div
               class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
@@ -232,12 +232,12 @@
                     <AppModuleGlobalSearch
                       :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                       @search="
-                          (q) => {
-                            base.page = 1;
-                            base.q = q;
-                            typeof base.q == 'string' ? base_search() : '';
-                          }
-                        "
+                        (q) => {
+                          base.page = 1;
+                          base.q = q;
+                          typeof base.q == 'string' ? base_search() : '';
+                        }
+                      "
                     />
                     <label
                       for="modal-base"
@@ -256,13 +256,8 @@
                         <tr>
                           <th>#</th>
                           <td>Code</td>
-                          <td>Title</td>
+                          <td>Name</td>
                           <td>Description</td>
-                          <td>Email</td>
-                          <td>Need item</td>
-                          <td>Early notification</td>
-                          <td>Desired Date</td>
-                          <td>Desired Time</td>
                           <td>Creation</td>
                           <td>Updation</td>
                           <th class="text-right"></th>
@@ -274,7 +269,7 @@
                           <td>{{ v.code }}</td>
                           <td>
                             <div class="font-bold">
-                              {{ v.title ? v.title : "-" }}
+                              {{ v.name ? v.name : "-" }}
                             </div>
                           </td>
                           <td>
@@ -282,78 +277,7 @@
                               {{ v.description ? v.description : "-" }}
                             </div>
                           </td>
-                          <td>
-                            <div
-                              tabindex="0"
-                              class="collapse collapse-plus border border-base-300 bg-white"
-                              v-if="v.need_item.length > 0"
-                            >
-                              <div class="text-xs font-medium text-center">
-                                Detail
-                              </div>
-                              <div class="collapse-content p-0 ">
-                                <div class="overflow-x-auto max-h-24">
-                                  <table
-                                    class="table table-xs table-pin-rows table-pin-cols"
-                                  >
-                                    <tbody>
-                                      <tr v-for="(v, i) in v.need_item">
-                                        <th>{{ i + 1 }}</th>
-                                        <th>{{ v.name }}</th>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                                
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                 
-                            <div
-                              tabindex="0"
-                              class="collapse collapse-plus border border-base-300 bg-white"
-                              v-if="v.email.length > 0"
-                            >
-                              <div class="text-xs font-medium text-center">
-                                Detail
-                              </div>
-                              <div class="collapse-content p-0">
-                                <div class="overflow-x-auto max-h-24">
-                                  <table
-                                    class="table table-xs table-pin-rows table-pin-cols"
-                                  >
-                                    <tbody>
-                                      <tr   v-for="(v, i) in v.email">
-                                        <th>{{ i + 1 }}</th>
-                                        <th>{{ v.name }}</th>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                               
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="font-bold">
-                              {{
-                                v.early_notification
-                                  ? v.early_notification
-                                  : "-"
-                              }}
-                            </div>
-                          </td>
-                          <td>
-                            <div class="font-bold">
-                              {{ v.desired_date ? v.desired_date : "-" }}
-                            </div>
-                          </td>
-                          <td>
-                            <div class="font-bold">
-                              {{ v.desired_time ? v.desired_time : "-" }}
-                            </div>
-                          </td>
+
                           <td>
                             <div class="flex items-center space-x-3">
                               <div>
@@ -413,7 +337,7 @@
                                 remove_item(
                                   `${v.code}`,
                                   'base',
-                                  'controllers/MYSQL/INTERNAL/TRR/visitor'
+                                  'controllers/MYSQL/INTERNAL/TRR/visitor_member'
                                 )
                               "
                               >Remove
@@ -494,7 +418,7 @@ export default {
         loading: false,
         modal: false,
         form: {
-          title: "",
+          name: "",
           ref: "",
         },
       },
@@ -509,7 +433,7 @@ export default {
         loading: false,
         modal: false,
         form: {
-          title: "",
+          name: "",
           ref: "",
         },
       },
@@ -565,13 +489,16 @@ export default {
       });
     },
     base_get(callback) {
-      new Query('base','get').get(this, `${
+      new Query("base", "get").get(
+        this,
+        `${
           this.serviceUrl
-        }api/controllers/MYSQL/INTERNAL/TRR/visitor?total=1&page=${
+        }api/controllers/MYSQL/INTERNAL/TRR/visitor_member?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`, (res) => {
+        }`,
+        (res) => {
           if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
@@ -588,8 +515,9 @@ export default {
               res.rows[i].master = 0;
             });
           }
-        callback({ ...res });
-      });
+          callback({ ...res });
+        }
+      );
     },
     base_create() {
       this.base.current = 0;
@@ -625,16 +553,21 @@ export default {
         ],
       };
 
-      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/visitor`, obj, (res) => {
-        if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
-        } else {
-          this.base.modal = false;
-          this.base.page = 1;
-          this.base_search();
+      new Query("base", this.base.controll == "create" ? "POST" : "PUT").set(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/visitor_member`,
+        obj,
+        (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+          } else {
+            this.base.modal = false;
+            this.base.page = 1;
+            this.base_search();
+          }
         }
-      });
+      );
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -654,7 +587,7 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
+          if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
           } else {
@@ -681,39 +614,3 @@ export default {
   },
 };
 </script>
-<style scrop>
-tr,
-td {
-  white-space: nowrap;
-}
-/* 
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-  } */
-
-#signature {
-  border: double 3px transparent;
-  border-radius: 5px;
-  background-image: linear-gradient(white, white),
-    radial-gradient(circle at top left, #000000, #000000);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-}
-
-.container {
-  width: "100%";
-  padding: 8px 16px;
-}
-
-.buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 8px;
-}
-</style>

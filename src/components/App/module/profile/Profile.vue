@@ -48,7 +48,7 @@
             height="auto"
                   class="max-h-44 object-cover bg-cover"
                   v-if="image.length > 0"
-                  :src="`${user.imageLink}/employee/${user.code}/${image[0].file}`"
+                  :src="`${user.imageLink}employee/${user.code}/${image[0].file}`"
                   alt="Image"
                 />
                 <img

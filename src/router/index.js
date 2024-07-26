@@ -11,6 +11,7 @@ import _DocRouter from "./_Doc";
 /*-------------------------------------------------------------*/
 import ACRouter from "../router/AC";
 import HRRouter from "../router/HR";
+import LabelPrintRouter from "../router/LabelPrint";
 import LMRouter from "../router/LM";
 import WMSRouter from "../router/WMS";
 import PDRouter from "../router/PD";
@@ -65,6 +66,7 @@ const routes = [
   ...ACRouter,
   ...HRRouter,
   ...LMRouter,
+  ...LabelPrintRouter,
   ...PDRouter,
   ...PURRouter,
   ...QARouter,

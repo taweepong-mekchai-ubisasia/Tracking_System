@@ -101,15 +101,15 @@ export default {
       }
     },
     getTemplate() {
-      new Query('content','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/template`, (res) => {
+      new Query(null,'get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/template`, (res) => {
         if (!res.success) {
           // localStorage.removeItem("user_token");
           // this.$router.push({ name: `Login` });
         } else {
-          res.rows.forEach((v, i) => {
-            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            res.rows[i].master = 0;
-          });
+          // res.rows.forEach((v, i) => {
+          //   res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+          //   res.rows[i].master = 0;
+          // });
 
           this.content = res.html;
           this.$refs.content.innerHTML = this.content;
@@ -117,7 +117,7 @@ export default {
       });
     },
     saveTemplate() {
-      new Query('content', 'post').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/template`, { html: this.$refs.quill.getHTML() }, (res) => {
+      new Query(null, 'post').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/template`, { html: this.$refs.quill.getHTML() }, (res) => {
         if (!res.success) {
         // localStorage.removeItem("user_token");
         // this.$router.push({ name: `Login` });

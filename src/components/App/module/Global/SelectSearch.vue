@@ -1,4 +1,27 @@
 <template>
+  <!-- modal base -->
+  <!-- {{ base.modal }} -->
+  <slot name="modal">
+    <input type="checkbox" class="modal-toggle" v-model="base.modal" />
+    <div class="modal" v-if="base.modal">
+      <div class="modal-box relative w-11/12 max-w-5xl p-2 lg:p-4 max-h-screen">
+        <label
+          @click="base.modal = false"
+          class="btn btn-sm btn-circle absolute right-2 top-2"
+          >✕
+        </label>
+
+        <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
+          <div class="flex-1 form-control mt-6">
+            <label for="modal-base" class="btn btn-danger">Cancel</label>
+          </div>
+          <div class="flex-1 form-control mt-6" @click="base_save()">
+            <button class="btn btn-primary text-white">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </slot>
   <div class="Search w-full">
     <!-- {{ current }} -->
     <div class="relative">
@@ -10,26 +33,37 @@
         {{ base.current }} -->
         <!-- {{ base.q }}
         {{ base.current[label] }} -->
-        <input
-          v-if="base.current"
-          type="search"
-          :placeholder="placeholder"
-          class="input input-bordered border-base-content w-full"
-          :class="customClass"
-          @focus="base.showlist = true"
-          @blur="setBlur"
-          @keydown="search"
-          @input="onQueryChange"
-          v-model="base.current[label]"
-          :disabled="disabled"
-        />
-        <!-- {{ base.current }} ffff {{ label }} -->
-        <!-- {{ base.showlist }}{{ base.focuslist }} -->
-        <!-- {{ base.current }}
+        <div class="join w-full">
+          <input
+            v-if="base.current"
+            type="search"
+            :placeholder="placeholder"
+            class="input input-bordered border-base-content w-full join-item"
+            :class="customClass"
+            @focus="base.showlist = true"
+            @blur="setBlur"
+            @keydown="search"
+            @input="onQueryChange"
+            v-model="base.current[label]"
+            :disabled="disabled"
+          />
+          <!-- {{ base.current }} ffff {{ label }} -->
+          <!-- {{ base.showlist }}{{ base.focuslist }} -->
+          <!-- {{ base.current }}
 {{ code }}
 {{ label }} -->
+          <!-- <div class=" join-item"> -->
+          <label
+            :for="`modal-base${component_name}`"
+            :class="customClass2"
+            class="btn btn-primary modal-button text-white join-item"
+            @click="base.modal = true"
+            >NEW</label
+          >
+          <!-- </div> -->
+        </div>
         <ul
-          class="absolute menu menu-xs bg-base-100 border-2 w-full shadow-lg max-h-60 overflow-auto block z-10"
+          class="absolute menu menu-xs bg-base-100 border w-full shadow-lg max-h-60 overflow-auto block z-10"
           :class="subCustomClass ? subCustomClass : ''"
           v-if="base.showlist || base.focuslist"
           ref="scrollComponent"
@@ -37,6 +71,16 @@
           @mouseover="base.focuslist = true"
           @mouseleave="base.focuslist = false"
         >
+          <!-- <li>
+            <label
+              for="modal-base22222"
+              class="bg-primary text-white w-full"
+              @click="base.modal = true"
+            >
+              Create
+            </label>
+          </li> -->
+
           <li v-for="(v, i) in base.rows" :key="i" @click="setValue(v)">
             <a
               :class="`${v[code] == current ? 'active' : ''}`"
@@ -95,11 +139,17 @@ export default {
   name: "Search",
   components: {},
   props: {
+    component_name:{
+      default: "-item",
+    },
     placeholder: {
       // type: String,
       default: "Input ...",
     },
     customClass: {
+      default: "",
+    },
+    customClass2: {
       default: "",
     },
     subCustomClass: {
@@ -172,7 +222,7 @@ export default {
   methods: {
     onQueryChange(e) {
       console.log(e.target.value);
-      this.base.q = e.target.value
+      this.base.q = e.target.value;
       if (e.target.value.trim() == "") {
         // this.base.current = {  };
         // this.base.temp = {  };
@@ -247,11 +297,14 @@ export default {
 
       // console.log(this.user_token)
       // console.log(this.base.q)
-      new Query('base','get').get(this, `${this.url}?page=${this.base.page}${
+      new Query("base", "get").get(
+        this,
+        `${this.url}?page=${this.base.page}${
           this.base.row ? `&rows=${this.base.row}` : ""
         }${this.base.q ? `&q=${this.base.q}` : ""}${
           this.current ? `&current=${this.current}` : ""
-        }${this.param}`, (res) => {
+        }${this.param}`,
+        (res) => {
           if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
@@ -263,8 +316,9 @@ export default {
               });
             }
           }
-        callback({ ...res });
-      });
+          callback({ ...res });
+        }
+      );
     },
     // search() {
     //   clearTimeout(this.base.timeout);
@@ -343,7 +397,6 @@ export default {
         return this.search();
       }
     },
-    
   },
 };
 </script>

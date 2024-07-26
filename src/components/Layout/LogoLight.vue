@@ -3,7 +3,7 @@
     href="#"
     aria-current="page"
     aria-label="Homepage"
-    class="flex-0 btn btn-ghost px-2"
+    class="flex-0 btn btn-link no-underline hover:no-underline px-2"
     data-svelte-h="svelte-nce89e"
   >
     <img

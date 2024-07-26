@@ -2,6 +2,7 @@
   <div class="Visitor">
     <AppLayout>
       <template #modal>
+        {{item}}
         <!-- modal base -->
         <input
           type="checkbox"
@@ -18,8 +19,8 @@
               class="btn btn-sm btn-circle absolute right-2 top-2"
               >✕
             </label>
-            <h3 class="text-lg font-bold">Visitor</h3>
-
+            <h3 class="text-lg font-bold text-primary">VISITOR</h3>
+            <div class="divider my-1"></div>
             <div
               class="bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full max-h-[60vh]"
             >
@@ -33,6 +34,45 @@
                   class="input input-bordered border-base-content"
                   v-model="base.form.title"
                 />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Branch</span>
+                </label>
+                <AppModuleGlobalSelectSearch
+                  :placeholder="'Branch'"
+                  :label="'title'"
+                  :code="'code'"
+                  :minChar="3"
+                  :delay="0.5"
+                  :limit="10"
+                  :customClass="`input input-bordered border-base-content`"
+                  :current="base.form.branch"
+                  @updateValue="
+                    (obj) => {
+                      base.form.branch_data = obj;
+                      base.form.branch = obj.code;
+                    }
+                  "
+                  :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/branch`"
+                  :param="`&total=1`"
+                  :image="false"
+                  component_name="-item"
+                >
+                  <template #modal>
+                 
+                    <AppModulePagesTRRVisitorModalItem
+                      :base="item"
+                      component_name="-item"
+                      @success="
+                        () => {
+                          this.base.page = 1;
+                        //   this.base_search();
+                        }
+                      "
+                    />
+                  </template>
+                </AppModuleGlobalSelectSearch>
               </div>
               <div class="form-control">
                 <label class="label">
@@ -232,12 +272,12 @@
                     <AppModuleGlobalSearch
                       :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
                       @search="
-                          (q) => {
-                            base.page = 1;
-                            base.q = q;
-                            typeof base.q == 'string' ? base_search() : '';
-                          }
-                        "
+                        (q) => {
+                          base.page = 1;
+                          base.q = q;
+                          typeof base.q == 'string' ? base_search() : '';
+                        }
+                      "
                     />
                     <label
                       for="modal-base"
@@ -291,7 +331,7 @@
                               <div class="text-xs font-medium text-center">
                                 Detail
                               </div>
-                              <div class="collapse-content p-0 ">
+                              <div class="collapse-content p-0">
                                 <div class="overflow-x-auto max-h-24">
                                   <table
                                     class="table table-xs table-pin-rows table-pin-cols"
@@ -304,12 +344,10 @@
                                     </tbody>
                                   </table>
                                 </div>
-                                
                               </div>
                             </div>
                           </td>
                           <td>
-                 
                             <div
                               tabindex="0"
                               class="collapse collapse-plus border border-base-300 bg-white"
@@ -324,14 +362,13 @@
                                     class="table table-xs table-pin-rows table-pin-cols"
                                   >
                                     <tbody>
-                                      <tr   v-for="(v, i) in v.email">
+                                      <tr v-for="(v, i) in v.email">
                                         <th>{{ i + 1 }}</th>
                                         <th>{{ v.name }}</th>
                                       </tr>
                                     </tbody>
                                   </table>
                                 </div>
-                               
                               </div>
                             </div>
                           </td>
@@ -456,6 +493,7 @@ import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
 import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
+import AppModulePagesTRRVisitorModalItem from "@/components/App/Module/Pages/TRR/Visitor/Modal/Item.vue";
 import VueMultiselect from "vue-multiselect";
 import Query from "@/assets/js/fetch.js";
 
@@ -470,6 +508,7 @@ export default {
     AppModuleGlobalShowImage,
     VueMultiselect,
     AppModuleGlobalLoadingText,
+    AppModulePagesTRRVisitorModalItem,
   },
   data() {
     return {
@@ -520,6 +559,21 @@ export default {
         tb: "",
       },
       imageSrc: null,
+      item: {
+        rows: [],
+        total: 0,
+        page: 1,
+        row: 20,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: {
+          title: "",
+          ref: "",
+        },
+      },
     };
   },
   computed: {
@@ -565,13 +619,16 @@ export default {
       });
     },
     base_get(callback) {
-      new Query('base','get').get(this, `${
+      new Query("base", "get").get(
+        this,
+        `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/visitor?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`, (res) => {
+        }`,
+        (res) => {
           if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
@@ -588,8 +645,9 @@ export default {
               res.rows[i].master = 0;
             });
           }
-        callback({ ...res });
-      });
+          callback({ ...res });
+        }
+      );
     },
     base_create() {
       this.base.current = 0;
@@ -625,16 +683,21 @@ export default {
         ],
       };
 
-      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/visitor`, obj, (res) => {
-        if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
-        } else {
-          this.base.modal = false;
-          this.base.page = 1;
-          this.base_search();
+      new Query("base", this.base.controll == "create" ? "POST" : "PUT").set(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/visitor`,
+        obj,
+        (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+          } else {
+            this.base.modal = false;
+            this.base.page = 1;
+            this.base_search();
+          }
         }
-      });
+      );
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -654,7 +717,7 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
+          if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
           } else {
@@ -687,14 +750,14 @@ td {
   white-space: nowrap;
 }
 /* 
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-  } */
+    #app {
+      font-family: Avenir, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-align: center;
+      color: #2c3e50;
+      margin-top: 60px;
+    } */
 
 #signature {
   border: double 3px transparent;

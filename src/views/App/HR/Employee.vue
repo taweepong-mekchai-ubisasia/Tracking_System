@@ -40,44 +40,41 @@
                   :multiple="false"
                   @respone="
                     (res) => {
-                      base.form.image = base.form.image.concat(res.image);
+                      base.form.image = base.form.image.concat(res.file);
                     }
                   "
                   @uploaded="
                     (res) => {
-                      let index = base.form.image.findIndex(
+                      let index = this.base.form.image.findIndex(
                         (v) => v.r == res.r
                       );
-                      base.form.image[index] = res.row;
+                      this.base.form.image[index].upload = false;
+                      this.base.form.image[index].file = res.row.file;
                     }
                   "
                   @stream="
                     (res) => {
-                      let index = base.form.image.findIndex(
-                        (v) => v.r == res.r
-                      );
+                      let index = base.form.image.findIndex((v) => v.r == res.r);
                       base.form.image[index].loading = res.loading;
                     }
                   "
                   @error="
                     (res) => {
-                      let index = base.form.image.findIndex(
-                        (v) => v.r == res.r
-                      );
+                      let index = base.form.image.findIndex((v) => v.r == res.r);
                       base.form.image[index].error = true;
                     }
                   "
                   @again="
                     (res) => {
                       let index = base.form.image.findIndex(
-                        (v) => v.r == res.image.r
+                        (v) => v.r == res.file.r
                       );
-                      base.form.image[index] = res.image;
+                      base.form.image[index] = res.file;
                     }
                   "
                   @resetdata="
                     (res) => {
-                      base.form.image = [...res.image];
+                      base.form.image = [...res.file];
                     }
                   "
                 />
@@ -819,7 +816,8 @@
                                 'controllers/MYSQL/INTERNAL/HR/employee'
                               )
                             "
-                            >Remove {{ v.code}}
+                            >Remove 
+                            <!-- {{ v.code }} -->
                           </label>
                         </th>
                       </tr>
@@ -945,13 +943,16 @@ export default {
       });
     },
     base_get(callback) {
-      new Query('base','get').get(this, `${
+      new Query("base", "get").get(
+        this,
+        `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`, (res) => {
+        }`,
+        (res) => {
           if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
@@ -961,8 +962,9 @@ export default {
               res.rows[i].master = 0;
             });
           }
-        callback({ ...res });
-      });
+          callback({ ...res });
+        }
+      );
     },
     base_create() {
       this.removing = false;
@@ -1006,25 +1008,30 @@ export default {
         ],
       };
 
-      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, obj, (res) => {
-        if (!res.success) {
-        } else {
-          this.base.current == 0
-            ? (this.base.current = res.rows[0].code)
-            : "";
-          this.detail.controll = "create";
-          const detail = new Promise(
-            async (resolve, reject) => await resolve(vm.detail_save())
-          );
+      new Query("base", this.base.controll == "create" ? "POST" : "PUT").set(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`,
+        obj,
+        (res) => {
+          if (!res.success) {
+          } else {
+            this.base.current == 0
+              ? (this.base.current = res.rows[0].code)
+              : "";
+            this.detail.controll = "create";
+            const detail = new Promise(
+              async (resolve, reject) => await resolve(vm.detail_save())
+            );
 
-          detail.then((res) => {
-            this.base.modal = false;
-            this.base.page = 1;
-            this.detail.page = 1;
-            this.base_search();
-          });
+            detail.then((res) => {
+              this.base.modal = false;
+              this.base.page = 1;
+              this.detail.page = 1;
+              this.base_search();
+            });
+          }
         }
-      });
+      );
     },
     // DETAIL
     detail_search() {
@@ -1041,21 +1048,25 @@ export default {
       });
     },
     detail_get(callback) {
-      new Query('detail','get').get(this, `${
+      new Query("detail", "get").get(
+        this,
+        `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
-        }${this.base.current ? `&current=${this.base.current}` : ``}`, (res) => {
-        if (res.success) {
-          res.rows.forEach((v, i) => {
-            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            res.rows[i].master = 0;
-          });
+        }${this.base.current ? `&current=${this.base.current}` : ``}`,
+        (res) => {
+          if (res.success) {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+          }
+          callback({ ...res });
         }
-        callback({ ...res });
-      });
+      );
     },
     detail_add_row() {
       this.detail.form = {
@@ -1098,12 +1109,17 @@ export default {
           continue;
         }
 
-        new Query('detail', key).set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, { rows: object[key] }, (res) => {
-          if (!res.success) {
-          } else {
-            console.log(res)
+        new Query("detail", key).set(
+          this,
+          `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`,
+          { rows: object[key] },
+          (res) => {
+            if (!res.success) {
+            } else {
+              console.log(res);
+            }
           }
-        });
+        );
       }
     },
     // REMOVE
@@ -1118,6 +1134,7 @@ export default {
     },
     remove_item(code, controll, tb) {
       // console.log(code);
+      this.remove.rows = null
       this.remove.code = code;
       this.remove.controll = controll;
       this.remove.tb = tb;

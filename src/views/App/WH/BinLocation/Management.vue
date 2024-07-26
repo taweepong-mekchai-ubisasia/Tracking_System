@@ -12,7 +12,7 @@
         <div
           class="modal-box max-w-[100vw] overflow-hidden relative text-center p-2 lg:p-4 max-h-screen"
         >
-        <label
+          <label
             for="modal-base"
             class="btn btn-sm btn-circle absolute right-2 top-2"
             >✕
@@ -26,7 +26,7 @@
           >
             <div class="flex flex-col-reverse">
               <div
-                class="grid items-start w-full  p-2 pb-0"
+                class="grid items-start w-full p-2 pb-0"
                 :class="`grid-cols-${base.form.pallets}`"
                 v-for="l in parseInt(base.form.levels)"
                 :key="l"
@@ -524,7 +524,14 @@
                       required=""
                       v-model="detail.form.receive_date"
                       :disabled="detail.controll == 'edit' && checkbox != 'E'"
+                      :data-date="
+                        $moment(detail.form.receive_date).format('YYYY-MM-DD')
+                      "
                     />
+                    <!-- <input type="date" :data-date="$moment(detail.form.receive_date).format('DD-MM-YYYY')"  
+                     v-model="detail.form.receive_date"
+                    class="input input-bordered border-base-content"
+                    > -->
                   </div>
                 </div>
                 <div class="flex-1 w-auto">
@@ -539,6 +546,11 @@
                       required=""
                       v-model="detail.form.manufacturing_date"
                       :disabled="detail.controll == 'edit' && checkbox != 'E'"
+                      :data-date="
+                        $moment(detail.form.manufacturing_date).format(
+                          'YYYY-MM-DD'
+                        )
+                      "
                     />
                   </div>
                 </div>
@@ -957,37 +969,40 @@ export default {
       });
     },
     detail_get(callback) {
+      new Query("detail", "get").get(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.form.code}&transref=I&transref_type_null=1`,
+        (res) => {
+          this.total = [];
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+          } else {
+            res.rows.forEach((v, i) => {
+              this.total[v.level]
+                ? this.total[v.level][v.pallet]
+                  ? (this.total[v.level][v.pallet] =
+                      parseFloat(this.total[v.level][v.pallet]) +
+                      parseFloat(v.quantitys))
+                  : (this.total[v.level][v.pallet] = parseFloat(v.quantitys))
+                : (this.total[v.level] = {
+                    [v.pallet]: parseFloat(v.quantitys),
+                  });
 
-      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf?rac_layout=${this.base.form.code}&transref=I&transref_type_null=1`, (res) => {
-        this.total = [];
-        if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
-        } else {
-          res.rows.forEach((v, i) => {
-            this.total[v.level]
-              ? this.total[v.level][v.pallet]
-                ? (this.total[v.level][v.pallet] =
-                    parseFloat(this.total[v.level][v.pallet]) +
-                    parseFloat(v.quantitys))
-                : (this.total[v.level][v.pallet] = parseFloat(v.quantitys))
-              : (this.total[v.level] = {
-                  [v.pallet]: parseFloat(v.quantitys),
-                });
-
-            this.total[v.level]
-              ? this.total[v.level]["total"]
-                ? (this.total[v.level]["total"] =
-                    parseFloat(this.total[v.level]["total"]) +
-                    parseFloat(v.quantitys))
-                : (this.total[v.level]["total"] = parseFloat(v.quantitys))
-              : (this.total[v.level] = {
-                  ["total"]: parseFloat(v.quantitys),
-                });
-          });
+              this.total[v.level]
+                ? this.total[v.level]["total"]
+                  ? (this.total[v.level]["total"] =
+                      parseFloat(this.total[v.level]["total"]) +
+                      parseFloat(v.quantitys))
+                  : (this.total[v.level]["total"] = parseFloat(v.quantitys))
+                : (this.total[v.level] = {
+                    ["total"]: parseFloat(v.quantitys),
+                  });
+            });
+          }
+          callback({ ...res });
         }
-        callback({ ...res });
-      });
+      );
     },
     detail_create(rac, bay, l, p) {
       this.modal.detail = true;
@@ -1047,19 +1062,24 @@ export default {
         ],
       };
 
-      new Query('base', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf`, obj, (res) => {
-        if (!res.success) {
-        } else {
+      new Query("base", this.detail.controll == "create" ? "POST" : "PUT").set(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelf`,
+        obj,
+        (res) => {
           if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
           } else {
-            this.modal.detail = false;
-            this.detail_search();
-            this.layout[this.detail.form.wh] = true;
+            if (!res.success) {
+              // localStorage.removeItem("user_token");
+              // this.$router.push({ name: `Login` });
+            } else {
+              this.modal.detail = false;
+              this.detail_search();
+              this.layout[this.detail.form.wh] = true;
+            }
           }
         }
-      });
+      );
     },
 
     // getRacList
@@ -1075,18 +1095,26 @@ export default {
       });
     },
     rac_get(callback) {
-      new Query('rac','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=${this.wh.tab == 'factory' ? 'wh1' : 'wh2'}&rac_list=1`, (res) => {
-        if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
-        } else {
-          res.rows.forEach((v, i) => {
-            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            res.rows[i].master = 0;
-          });
+      new Query("rac", "get").get(
+        this,
+        `${
+          this.serviceUrl
+        }api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=${
+          this.wh.tab == "factory" ? "wh1" : "wh2"
+        }&rac_list=1`,
+        (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+          } else {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+          }
+          callback({ ...res });
         }
-        callback({ ...res });
-      });
+      );
     },
 
     // bay
@@ -1102,18 +1130,22 @@ export default {
       });
     },
     bay_get(callback) {
-      new Query('bay','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=wh1&bay_list=1&rac=${this.detail.form.rac}`, (res) => {
-        if (!res.success) {
+      new Query("bay", "get").get(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/layout?total=1&wh=wh1&bay_list=1&rac=${this.detail.form.rac}`,
+        (res) => {
+          if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
-        } else {
-          res.rows.forEach((v, i) => {
-            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            res.rows[i].master = 0;
-          });
+          } else {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+          }
+          callback({ ...res });
         }
-        callback({ ...res });
-      });
+      );
     },
 
     // Item
@@ -1130,18 +1162,22 @@ export default {
       });
     },
     item_get(callback) {
-      new Query('item','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&rac=${this.detail.form.rac}&wh=${this.user.branchTitle}&short_code=${this.detail.form.item_short_code}`, (res) => {
-        if (!res.success) {
+      new Query("item", "get").get(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?total=1&wh=wh1&item_list=1&rac=${this.detail.form.rac}&wh=${this.user.branchTitle}&short_code=${this.detail.form.item_short_code}`,
+        (res) => {
+          if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
-        } else {
-          res.rows.forEach((v, i) => {
-            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            res.rows[i].master = 0;
-          });
+          } else {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+          }
+          callback({ ...res });
         }
-        callback({ ...res });
-      });
+      );
     },
   },
   mounted() {
@@ -1220,19 +1256,23 @@ export default {
     },
     "detail.form.item_code": function (val) {
       if (val) {
-        new Query(null,'get').get(this, `${this.serviceUrl}api/controllers/SAP/${
+        new Query(null, "get").get(
+          this,
+          `${this.serviceUrl}api/controllers/SAP/${
             this.detail.form.item_wh ? this.detail.form.item_wh : "UBA"
-          }/oitm?item_code=${val}`, (res) => {
-          if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
-          } else {
-            this.detail.form.item_code = res.rows[0].ItemCode;
-            this.detail.form.item_name = res.rows[0].ItemName;
-            this.detail.form.shelf_life = res.rows[0].U_Agin;
-            this.detail.form.uom = res.rows[0].UomCode;
+          }/oitm?item_code=${val}`,
+          (res) => {
+            if (!res.success) {
+              // localStorage.removeItem("user_token");
+              // this.$router.push({ name: `Login` });
+            } else {
+              this.detail.form.item_code = res.rows[0].ItemCode;
+              this.detail.form.item_name = res.rows[0].ItemName;
+              this.detail.form.shelf_life = res.rows[0].U_Agin;
+              this.detail.form.uom = res.rows[0].UomCode;
+            }
           }
-        });
+        );
       }
     },
     "modal.detail": function (val) {
@@ -1253,8 +1293,36 @@ export default {
   },
 };
 </script>
-<style scrope>
+<style scoped>
 .tab-content {
   border-radius: 10px 10px 10px 10px;
+}
+
+input[type="date"] {
+  position: relative;
+}
+
+input[type="date"]:before {
+  /* position: absolute; */
+  /* top: 3px; left: 3px; */
+  content: attr(data-date);
+  display: inline-block;
+  /* color: black; */
+}
+
+input[type="date"]::-webkit-datetime-edit {
+  display: none;
+}
+
+/* input::-webkit-datetime-edit, input::-webkit-inner-spin-button, input::-webkit-clear-button {
+    display: none;
+} */
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 13px;
+  right: 10px;
+  color: black;
+  opacity: 1;
 }
 </style>

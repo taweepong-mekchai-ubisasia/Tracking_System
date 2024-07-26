@@ -34,21 +34,47 @@
             >
               <div class="grid gap-4 md:grid-cols-1 grid-cols-1">
                 <AppModuleGlobalUpload
-                  :imageLink="`${base.form.imageLink}QAIndirectItem/${base.form.code}/`"
-                  :image="base.form.image"
+                  :fileLink="`${base.form.imageLink}QAIndirectItem/${base.form.code}/`"
+                  :file="base.form.image"
                   :id="'base'"
                   :multiple="false"
                   @respone="
                     (res) => {
-                      let length = base.form.image.length
-                        ? base.form.image.length
-                        : 0;
-                      base.form.image = base.form.image.concat(res.image);
+                      base.form.image = base.form.image.concat(res.file);
+                    }
+                  "
+                  @uploaded="
+                    (res) => {
+                      let index = this.base.form.image.findIndex(
+                        (v) => v.r == res.r
+                      );
+                      this.base.form.image[index].upload = false;
+                      this.base.form.image[index].file = res.row.file;
+                    }
+                  "
+                  @stream="
+                    (res) => {
+                      let index = base.form.image.findIndex((v) => v.r == res.r);
+                      base.form.image[index].loading = res.loading;
+                    }
+                  "
+                  @error="
+                    (res) => {
+                      let index = base.form.image.findIndex((v) => v.r == res.r);
+                      base.form.image[index].error = true;
+                    }
+                  "
+                  @again="
+                    (res) => {
+                      let index = base.form.image.findIndex(
+                        (v) => v.r == res.file.r
+                      );
+                      base.form.image[index] = res.file;
                     }
                   "
                   @resetdata="
                     (res) => {
-                      base.form.image = [...res.image];
+                      base.form.image = [...res.file];
                     }
                   "
                 />

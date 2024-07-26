@@ -38,8 +38,8 @@ export default {
       default: 0,
     },
     type: {
-      defualt: "text",
-    }
+      default: "text",
+    },
   },
 };
 </script>

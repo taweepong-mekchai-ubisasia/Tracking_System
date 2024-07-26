@@ -47,8 +47,7 @@ export default {
     parent: {
       default: 0,
     }
-  }
-  ["", "",""],
+  },
   data() {
     return {
       modal: false,

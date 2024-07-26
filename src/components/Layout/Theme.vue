@@ -3,7 +3,7 @@
     title="Change Theme"
     class="dropdown dropdown-end hidden [@supports(color:oklch(0_0_0))]:block"
   >
-    <div tabindex="0" role="button" class="btn btn-ghost">
+    <div tabindex="0" role="button" class="btn btn-link no-underline hover:no-underline text-white">
       <!-- <svg
         width="20"
         height="20"

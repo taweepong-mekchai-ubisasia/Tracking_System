@@ -319,45 +319,289 @@
             </div>
             <div class="flex-0">
               <LayoutTheme />
-              <div title="Change Language" class="dropdown dropdown-end">
+              <GoogleTranslateSelect
+                default-language-code="en"
+                default-page-language-code="en"
+                :fetch-browser-language="true"
+                trigger="click"
+                @select="handleGoogleTranslateSelect"
+                :languages="[
+                  {
+                    code: 'en',
+                    // name: 'English',
+                    // cname: '英语',
+                    // ename: 'English',
+                  },
+                  // {
+                  //   code: 'af',
+                  //   name: 'Afrikaans',
+                  //   cname: '南非语',
+                  //   ename: 'Afrikaans',
+                  // },
+                  // {
+                  //   code: 'sq',
+                  //   name: 'Gjuha shqipe',
+                  //   cname: '阿尔巴尼亚语',
+                  //   ename: 'Albanian',
+                  // },
+                  // {
+                  //   code: 'ar',
+                  //   name: 'العربية',
+                  //   cname: '阿拉伯语',
+                  //   ename: 'Arabic',
+                  // },
+                  // {
+                  //   code: 'hy',
+                  //   name: 'Հայերեն',
+                  //   cname: '亚美尼亚语',
+                  //   ename: 'Armenian',
+                  // },
+                  // {
+                  //   code: 'az',
+                  //   name: 'Азәрбајҹан дили',
+                  //   cname: '阿塞拜疆语',
+                  //   ename: 'Azerbaijani',
+                  // },
+                  // {
+                  //   code: 'eu',
+                  //   name: 'Euskara',
+                  //   cname: '巴斯克语',
+                  //   ename: 'Basque',
+                  // },
+                  // {
+                  //   code: 'be',
+                  //   name: 'беларуская мова',
+                  //   cname: '白俄罗斯语',
+                  //   ename: 'Belarusian',
+                  // },
+                  // {
+                  //   code: 'bg',
+                  //   name: 'български език',
+                  //   cname: '保加利亚语',
+                  //   ename: 'Bulgarian',
+                  // },
+                  // {
+                  //   code: 'ca',
+                  //   name: 'Català',
+                  //   cname: '加泰罗尼亚语',
+                  //   ename: 'Catalan',
+                  // },
+                  {
+                    code: 'zh-CN',
+                    // name: 'Chinese (Simplified)',
+                    // cname: '中文 (简体)',
+                    // ename: 'Chinese (Simplified)',
+                  },
+                  {
+                    code: 'zh-TW',
+                    // name: 'Chinese (Traditional)',
+                    // cname: '中文 (繁体)',
+                    // ename: 'Chinese (Traditional)',
+                  },
+                  // {
+                  //   code: 'hr',
+                  //   name: 'Српскохрватски језик',
+                  //   cname: '克罗地亚语',
+                  //   ename: 'Croatian',
+                  // },
+                  // {
+                  //   code: 'cs',
+                  //   name: 'čeština',
+                  //   cname: '捷克语',
+                  //   ename: 'Czech',
+                  // },
+                  // {
+                  //   code: 'da',
+                  //   name: 'Danmark',
+                  //   cname: '丹麦语',
+                  //   ename: 'Danish',
+                  // },
+                  // {
+                  //   code: 'nl',
+                  //   name: 'Nederlands',
+                  //   cname: '荷兰语',
+                  //   ename: 'Dutch',
+                  // },
+                  // {
+                  //   code: 'et',
+                  //   name: 'eesti keel',
+                  //   cname: '爱沙尼亚语',
+                  //   ename: 'Estonian',
+                  // },
+                  // {
+                  //   code: 'tl',
+                  //   name: 'Filipino',
+                  //   cname: '菲律宾语',
+                  //   ename: 'Filipino',
+                  // },
+                  // {
+                  //   code: 'fi',
+                  //   name: 'Finnish',
+                  //   cname: '芬兰语',
+                  //   ename: 'Finnish',
+                  // },
+                  // {
+                  //   code: 'fr',
+                  //   name: 'Français',
+                  //   cname: '法语',
+                  //   ename: 'French',
+                  // },
+                  // {
+                  //   code: 'de',
+                  //   name: 'Deutsch',
+                  //   cname: '德语',
+                  //   ename: 'German',
+                  // },
+                  // {
+                  //   code: 'el',
+                  //   name: 'Ελληνικά',
+                  //   cname: '希腊语',
+                  //   ename: 'Greek',
+                  // },
+                  // {
+                  //   code: 'hu',
+                  //   name: 'magyar',
+                  //   cname: '匈牙利语',
+                  //   ename: 'Hungarian',
+                  // },
+                  // {
+                  //   code: 'id',
+                  //   name: 'Indonesia',
+                  //   cname: '印度尼西亚语',
+                  //   ename: 'Indonesian',
+                  // },
+                  // {
+                  //   code: 'ga',
+                  //   name: 'Irish',
+                  //   cname: '爱尔兰语',
+                  //   ename: 'Irish',
+                  // },
+                  // {
+                  //   code: 'it',
+                  //   name: 'Italiano',
+                  //   cname: '意大利语',
+                  //   ename: 'Italian',
+                  // },
+                  {
+                    code: 'ja',
+                    // name: 'にほんご',
+                    // cname: '日语',
+                    // ename: 'Japanese',
+                  },
+                  {
+                    code: 'ko',
+                    // name: '한국어',
+                    // cname: '韩语',
+                    // ename: 'Korean',
+                  },
+                  // {
+                  //   code: 'lt',
+                  //   name: 'lietuvių kalba',
+                  //   cname: '立陶宛语',
+                  //   ename: 'Lithuanian',
+                  // },
+                  // {
+                  //   code: 'ms',
+                  //   name: 'Malay',
+                  //   cname: '马来西亚语',
+                  //   ename: 'Malay',
+                  // },
+                  // {
+                  //   code: 'no',
+                  //   name: 'norsk',
+                  //   cname: '挪威语',
+                  //   ename: 'Norwegian',
+                  // },
+                  // {
+                  //   code: 'pl',
+                  //   name: 'Polski',
+                  //   cname: '波兰语',
+                  //   ename: 'Polish',
+                  // },
+                  // {
+                  //   code: 'pt',
+                  //   name: 'Português',
+                  //   cname: '葡萄牙语',
+                  //   ename: 'Portuguese',
+                  // },
+                  // {
+                  //   code: 'ro',
+                  //   name: 'limba română',
+                  //   cname: '罗马尼亚语',
+                  //   ename: 'Romanian',
+                  // },
+                  // {
+                  //   code: 'ru',
+                  //   name: 'Русский',
+                  //   cname: '俄语',
+                  //   ename: 'Russian',
+                  // },
+                  // {
+                  //   code: 'es',
+                  //   name: 'Español',
+                  //   cname: '西班牙语',
+                  //   ename: 'Spanish',
+                  // },
+                  // {
+                  //   code: 'sv',
+                  //   name: 'Swedish',
+                  //   cname: '瑞典语',
+                  //   ename: 'Swedish',
+                  // },
+                  {
+                    code: 'th',
+                    // name: 'ภาษาไทย',
+                    // cname: '泰语',
+                    // ename: 'Thai',
+                  },
+                  // {
+                  //   code: 'tr',
+                  //   name: 'Turkish',
+                  //   cname: '土耳其语',
+                  //   ename: 'Turkish',
+                  // },
+                  // {
+                  //   code: 'uk',
+                  //   name: 'українська мова',
+                  //   cname: '乌克兰语',
+                  //   ename: 'Ukrainian',
+                  // },
+                ]"
+                :dropdownClassName="` 
+                mt-6
+                dropdown-content bg-base-200 text-base-content  max-h-[calc(100vh-10rem)] 
+                w-auto overflow-y-auto border border-white/5 shadow-2xl outline outline-1 outline-black/5 `"
+              />
+              <button
+                class="btn btn-link no-underline hover:no-underline text-white font-black"
+                @click="requestNotificationPermission()"
+                v-if="!noti"
+              >
+                <Icon icon="mdi:bell-off-outline" class="w-5 h-5" />
+              </button>
+
+              <LayoutNoti v-if="noti" />
+
+              <!-- <div title="Change Language" class="dropdown dropdown-end">
                 <div
                   tabindex="0"
                   role="button"
                   class="btn btn-ghost"
                   aria-label="Language"
                 >
-                  <!-- <svg
+                  <Icon
+                    icon="material-symbols:language"
                     class="h-5 w-5 fill-current"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 512 512"
-                  >
-                    <path
-                      d="M363,176,246,464h47.24l24.49-58h90.54l24.49,58H480ZM336.31,362,363,279.85,389.69,362Z"
-                    ></path>
-                    <path
-                      d="M272,320c-.25-.19-20.59-15.77-45.42-42.67,39.58-53.64,62-114.61,71.15-143.33H352V90H214V48H170V90H32v44H251.25c-9.52,26.95-27.05,69.5-53.79,108.36-32.68-43.44-47.14-75.88-47.33-76.22L143,152l-38,22,6.87,13.86c.89,1.56,17.19,37.9,54.71,86.57.92,1.21,1.85,2.39,2.78,3.57-49.72,56.86-89.15,79.09-89.66,79.47L64,368l23,36,19.3-11.47c2.2-1.67,41.33-24,92-80.78,24.52,26.28,43.22,40.83,44.3,41.67L255,362Z"
-                    ></path>
-                  </svg>
-                  <svg
-                    width="12px"
-                    height="12px"
-                    class="hidden h-2 w-2 fill-current opacity-60 sm:inline-block"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 2048 2048"
-                  >
-                    <path
-                      d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"
-                    ></path>
-                  </svg> -->
-                  <Icon icon="material-symbols:language"    class="h-5 w-5 fill-current" />
-                  <Icon icon="ph:caret-down-bold"    class="hidden h-3 w-3 fill-current opacity-60 sm:inline-block" />
-                  <!-- <iconify-icon icon="ri:arrow-drop-down-line"></iconify-icon> -->
+                  />
+                  <Icon
+                    icon="ph:caret-down-bold"
+                    class="hidden h-3 w-3 fill-current opacity-60 sm:inline-block"
+                  />
                 </div>
+
                 <div
                   tabindex="0"
-                  class="dropdown-content bg-base-200 text-base-content rounded-box top-px mt-16 max-h-[calc(100vh-10rem)] w-56 overflow-y-auto border border-white/5 shadow-2xl outline outline-1 outline-black/5"
+                  class="dropdown-content bg-base-200 text-base-content rounded-box top-px mt-16 max-h-[calc(100vh-10rem)] w-56 overflow-y-auto border border-white/5 shadow-2xl outline outline-1 outline-black/5 h-[50vh]"
                 >
                   <ul class="menu menu-sm gap-1">
                     <li>
@@ -398,7 +642,7 @@
                     </li>
                   </ul>
                 </div>
-              </div>
+              </div> -->
             </div>
             <div class="flex-0" v-if="user">
               <!-- <div
@@ -448,17 +692,17 @@
                 </div>
               </div> -->
               <button
-                class="btn btn-ghost text-white font-black"
+                class="btn btn-link no-underline hover:no-underline text-white font-black"
                 @click="showProfile()"
               >
                 <Icon icon="pajamas:profile" class="w-5 h-5" />
-                <span class="hidden font-normal md:inline">
+                <span class="hidden font-normal md:inline notranslate">
                   {{ user.firstname }} {{ user.lastname }}
                 </span>
                 <!-- <iconify-icon icon="mage:shut-down-fill"></iconify-icon> -->
               </button>
               <button
-                class="btn btn-ghost text-white opacity-50"
+                class="btn btn-link no-underline hover:no-underline text-white opacity-50"
                 aria-label="Logout"
                 @click="Logout()"
               >
@@ -629,11 +873,14 @@ import AppModuleProfileEditPassword from "@/components/App/Module/Profile/EditPa
 import AppModuleProfileEditSignature from "@/components/App/Module/Profile/EditSignature.vue";
 
 import LayoutTheme from "@/components/Layout/Theme.vue";
+import LayoutNoti from "@/components/Layout/Noti.vue";
 
 import LayoutLogo from "@/components/Layout/Logo.vue";
 import LayoutLogoLight from "@/components/Layout/LogoLight.vue";
 import LayoutChangelog from "@/components/Layout/Changelog.vue";
 import Query from "@/assets/js/fetch.js";
+
+import GoogleTranslateSelect from "@google-translate-select/vue3";
 
 // import { Icon } from '@iconify/vue';
 import { ref, onMounted } from "vue";
@@ -658,13 +905,17 @@ export default {
     AppModuleProfileEditSignature,
     AppModuleMenu_,
     LayoutTheme,
+    LayoutNoti,
     LayoutLogo,
     LayoutLogoLight,
     LayoutChangelog,
+    GoogleTranslateSelect,
   },
   name: "Layout",
   data() {
     return {
+      noti: false,
+      broadcast: new BroadcastChannel("noti-channel"),
       // test: {
       //   login: false,
       // },
@@ -730,6 +981,9 @@ export default {
     },
   },
   methods: {
+    handleGoogleTranslateSelect(language) {
+      console.log(language);
+    },
     changeLanguage(v) {
       this.$store.commit("language", v);
       localStorage.setItem("language", v);
@@ -750,26 +1004,31 @@ export default {
         obj.image = [image];
       }
 
-      new Query('base', 'put').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/user`, obj, (res) => {
-        if (!res.success) {
-          // localStorage.removeItem("user_token");
-          // this.$router.push({ name: `Login` });
-        } else {
-          if (localStorage.getItem("user_token")) {
-            localStorage.setItem("user_token", res.jwt);
+      new Query("base", "put").set(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/user`,
+        obj,
+        (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+          } else {
+            if (localStorage.getItem("user_token")) {
+              localStorage.setItem("user_token", res.jwt);
+            }
+            this.$store.commit("user", res.row);
+            this.$store.commit(
+              "user_token",
+              localStorage.getItem("user_token")
+            );
+            this.tab.profile = "profile";
+            this.confirm = false;
+            this.profileUpdate.success = "Update profile is successfully.";
+            return callback();
           }
-          this.$store.commit("user", res.row);
-          this.$store.commit(
-            "user_token",
-            localStorage.getItem("user_token")
-          );
-          this.tab.profile = "profile";
-          this.confirm = false;
-          this.profileUpdate.success = "Update profile is successfully.";
-          return callback();
+          alert(res.errorMsg);
         }
-        alert(res.errorMsg);
-      });
+      );
     },
     changepage(page) {
       this.$router.push({ name: `${page}` });
@@ -792,9 +1051,9 @@ export default {
     //     .then((response) => response.json())
     //     .then((res) => {
     //                if (!res.success) {
-          //   localStorage.removeItem("user_token");
-          //   this.$router.push({ name: `Login` });
-          // } else {
+    //   localStorage.removeItem("user_token");
+    //   this.$router.push({ name: `Login` });
+    // } else {
     //         res.row.access = JSON.parse(res.row.access);
     //         vm.$store.commit("user", res.row);
     //         vm.$store.commit("user_token", vm.user_token);
@@ -815,16 +1074,45 @@ export default {
       this.tab.profile = "profile";
       this.$refs.profile.checked = true;
     },
+
+    async requestNotificationPermission() {
+      const permission = await Notification.requestPermission();
+      console.log(permission);
+      if (permission !== "granted") {
+        throw new Error("Notification permission not granted");
+      }
+      this.broadcast.postMessage({
+        type: "notification",
+        user: JSON.stringify(this.user),
+      });
+    },
+  },
+  unmounted(){
+    console.log("NOITO")
+    this.broadcast.close()
   },
   mounted() {
     this.$nextTick(() => {
+      // this.noti = localStorage.getItem("notification");
+
+      // const saveSubscription = async (subscription) => {
+      // Set up channel with same name as in app.js
+
+      this.broadcast.onmessage = (event) => {
+        if (event.data.type != "subscription") {
+          return;
+        }
+        // console.log(event.data.payload);
+        // localStorage.setItem("notification", event.data.payload);
+        this.noti = event.data.payload;
+      };
+
       // this.$store.commit(
       //   "language",
       //   localStorage.getItem("language")
       //     ? localStorage.getItem("language")
       //     : "th"
       // );
-
     });
     // this.$store.commit("user_token", localStorage.getItem("user_token"));
   },
@@ -837,12 +1125,16 @@ export default {
     //     this.goLoginPage(this);
     //   }
     // },
-    // user: function (val) {
-    //   console.log(val);
-    //   if (!val) {
-    //     return;
-    //   }
-    // },
+    user: function (val) {
+      // console.log(val);
+      if (!val) {
+        return;
+      }
+      this.broadcast.postMessage({
+        type: "checknoti",
+        user: JSON.stringify(this.user),
+      });
+    },
     "tab.profile": function (val) {
       // console.log(val);
       if (val == "profile") {
@@ -875,5 +1167,15 @@ nav {
 }
 span {
   line-break: anywhere;
+}
+.google-translate-select-language {
+  margin-right: 5px;
+}
+.google-translate-select-flag {
+  margin-right: 0px;
+}
+.google-translate-select-dropdown__menu__item {
+  padding: 4px 20px !important;
+  display: flex;
 }
 </style>

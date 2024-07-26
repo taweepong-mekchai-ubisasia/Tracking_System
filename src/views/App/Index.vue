@@ -210,166 +210,90 @@
         </div>
       </template>
       <template #view>
-        <div class="grid grid-cols-1 gap-6">
+        <div class="grid grid-cols-1">
           <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
             <div class="card-body overflow-auto p-4">
               <div style="width: 100%; position: relative">
                 <div
-                  class="bg-primary min-h-[15vh] h-auto text-white rounded-t-xl"
+                  class="bg-primary min-h-[15vh] h-auto text-white rounded-xl"
                 >
-                  <div class="text-4xl lg:text-5xl font-bold pt-4">
-                    {{ date2 }}
-                  </div>
-                  <div class="text-3xl lg:text-4xl font-bold pt-4">
-                    {{ time2 }}
-                  </div>
-                  <div
-                    class="text-md opacity-80 py-4 flex flex-row flex-nowrap content-center items-start justify-center"
-                  >
-                    <Icon
-                      icon="lets-icons:clock"
-                      class="w-auto h-full p-2 text-white"
-                    />08:30 - 17:30
-                  </div>
+                  <!-- <div class="flex w-full"> -->
+                    <!-- <div class="w-full">
+                      <div class="text-4xl lg:text-5xl font-bold pt-4">
+                        {{ date2 }}
+                      </div>
+                      <div class="text-3xl lg:text-4xl font-bold pt-4">
+                        {{ time2 }}
+                      </div>
+                    </div> -->
+
+                    <div
+                      class="w-full flex flex-col flex-nowrap content-center justify-center p-4"
+                    >
+                      <div
+                        class="text-md opacity-80 py-4 flex flex-row flex-nowrap content-center items-start justify-center text-3xl lg:text-4xl font-bold"
+                      >
+                        <Icon
+                          icon="lets-icons:clock"
+                          class="w-auto h-full p-2 text-white"
+                        />08:30 - 17:30
+                      </div>
+                      <button
+                        class="btn  text-white border-rad rounded-xl shadow-inner"
+                       
+                        :class="!this.location.id?'btn-warning':'btn-accent'"
+                        @click="TS"
+                      >
+                        <Icon v-if="this.location.id"
+                          icon="lets-icons:clock"
+                          class="w-auto h-full p-2 text-white"
+                        />
+                        {{this.location.id?'Check In - Out':'Access permission'}}
+                      </button>
+                    </div>
+                  <!-- </div> -->
                 </div>
-                <div class="absolute w-full h-[50px] bg-primary">
+
+                <!-- <div class="absolute w-full h-[50px] bg-primary">
                   <div
                     class="relative w-full grid content-center justify-center"
                   ></div>
-                </div>
+                </div> -->
               </div>
               <div
                 class="bg-base-100 border-base-300 rounded-box lg:p-6 overflow-auto w-full relative"
                 style="box-shadow: inset 0px 10px 10px -10px rgba(0, 0, 0, 0.3)"
               >
-                <div class="w-full mt-4 lg:mt-0 rounded-t-xl">
-                  <button
-                    class="btn btn-accent text-white border-rad rounded-xl"
-                    style="
-                      box-shadow: inset 0px 10px 10px -10px rgba(0, 0, 0, 0.3);
-                    "
+                <div style="height: 600px; width: 100%">
+                  <!-- {{location.pos}} -->
+                  <l-map
+                    ref="map"
+                    v-model:zoom="zoom"
+                    :center="[location.pos.lat, location.pos.lng]"
                   >
-                    <Icon
-                      icon="lets-icons:clock"
-                      class="w-auto h-full p-2 text-white"
-                    />
-                    Check In - Out
-                  </button>
+                    <l-tile-layer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      layer-type="base"
+                      name="OpenStreetMap"
+                    ></l-tile-layer>
+
+                    <l-marker
+                      :lat-lng="[location.pos.lat, location.pos.lng]"
+                    ></l-marker>
+
+                    <l-circle
+                      v-for="(v, i) in base.rows"
+                      :key="v.code"
+                      :lat-lng="[v.lat, v.lng]"
+                      :color="'red'"
+                      :fillColor="'#f03'"
+                      :fillOpacity="0.5"
+                      :radius=" parseInt(v.distance)>1000?1000:parseInt(v.distance) "
+                      >dasdasdsa</l-circle
+                    >
+                  </l-map>
                 </div>
               </div>
-              <!-- <div
-                class="bg-base-100 border-base-300 rounded-box lg:p-6 overflow-auto w-full relative max-h-[60vh]"
-              > -->
-
-              <!-- <div class="divider"></div> -->
-              <!-- <div class="grid gap-4 md:grid-cols-2 grid-cols-1"> -->
-              <!-- <div>
-                    <div class="form-control">
-                      <label class="label">
-                        <span class="label-text">Frist Timestamp</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Frist Timestamp"
-                        class="input input-bordered border-base-content"
-                        v-model="base.form.frist_timestamp"
-                        disabled
-                      />
-                    </div>
-                    <div class="form-control">
-                      <label class="label">
-                        <span class="label-text">Last Timestamp</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Last Timestamp"
-                        class="input input-bordered border-base-content"
-                        v-model="base.form.last_timestamp"
-                        disabled
-                      />
-                    </div>
-                  </div> -->
-
-              <!-- <div
-                    class="flex flex-col w-full border-opacity-50 lg:flex-row justify-center items-center content-center"
-                  >
-                    <div class="grid h-40 card rounded-box place-items-center">
-                      <button
-                        class="btn join-item btn-primary w-40 h-40"
-                        @click="base_save()"
-                      >
-                        <Icon
-                          icon="lets-icons:clock"
-                          class="w-40 h-40 text-white"
-                        />
-                      </button>
-                    </div>
-                  </div> -->
-              <!-- </div> -->
-              <!-- </div> -->
-
-              <!-- <div
-                class="lg:join lg:mt-5 w-full md:justify-center lg:justify-end flex lg:block flex-col-reverse gap-2 lg:gap-0 text-right"
-              >
-                <label
-                  v-if="base.total > 0"
-                  for="modal-detail"
-                  class="btn btn-outline btn-primary btn-sm join-item border-2 text-white"
-                  @click="parseInt(ticket.get) > 0 ? detail_create() : ''"
-                  :class="`${
-                    parseInt(ticket.get) > 0 ? '  ' : ' btn-disabled '
-                  }`"
-                  >( {{ ticket.hours }}H {{ ticket.minutes }}m ) GET
-                  {{ ticket.get }}
-                  TICKET
-                </label>
-                <div
-                  class="join join-item lg:mt-5 w-full md:justify-center lg:justify-end lg:contents"
-                >
-                  <button
-                    class="join-item btn btn-xs lg:btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    วันที่
-                  </button>
-                  <input
-                    type="date"
-                    placeholder="title"
-                    class="join-item input input-xs lg:input-sm input-bordered border-base-content"
-                    v-model="date.from"
-                    @change="change"
-                  />
-                  <button
-                    class="join-item btn btn-xs lg:btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    -
-                  </button>
-                  <input
-                    type="date"
-                    placeholder="title"
-                    class="join-item input input-xs lg:input-sm input-bordered border-base-content"
-                    v-model="date.to"
-                    @change="change"
-                  />
-                </div>
-                <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button text-white"
-                  @click="base_create()"
-                  >Create</label
-                >
-              </div> -->
-              <!-- <div role="tablist" class="tabs tabs-lifted">
-                <input
-                  type="radio"
-                  role="tab"
-                  class="tab"
-                  name="Timestamp"
-                  aria-label="Report"
-                  @change="tab = 'Report'"
-                  :checked="tab == 'Report' ? true : false"
-                /> -->
 
               <div class="bg-base-100 border-base-300">
                 <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
@@ -483,6 +407,9 @@ let colors = [
 
 var week = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
+import "leaflet/dist/leaflet.css";
+import { LMap, LTileLayer, LMarker, LCircle } from "@vue-leaflet/vue-leaflet";
+
 export default {
   name: "Timestamp",
   components: {
@@ -493,11 +420,15 @@ export default {
     AppModuleGlobalSearch,
     AppModuleGlobalShowImage,
     VueMultiselect,
+    LMap,
+    LTileLayer,
+    LMarker,
+    LCircle,
   },
   data() {
     return {
       timerID: null,
-
+      zoom: 5,
       time2: "",
       date2: "",
       date: {
@@ -608,6 +539,21 @@ export default {
           ref: "",
         },
       },
+      ts: {
+        rows: [],
+        total: 0,
+        page: 1,
+        row: 1000,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: {
+          title: "",
+          ref: "",
+        },
+      },
       detail: {
         rows: [],
         total: 0,
@@ -635,6 +581,13 @@ export default {
         minutes: 0,
         get: 0,
       },
+      location: {
+        id: null,
+        pos: {
+          lat: 0,
+          lng: 0,
+        },
+      },
     };
   },
   computed: {
@@ -648,9 +601,18 @@ export default {
     },
   },
   methods: {
-    change() {
-      this.base_search();
+    TS() {
+      if(!this.location.id){
+        return this.getGPS()
+      }
+      console.log(":DAS");
+      this.ts.controll = "create";
+      this.ts_save();
+      // this.base_save();
     },
+    // change() {
+    //   this.base_search();
+    // },
     // base
     base_search() {
       this.base.loading = true;
@@ -664,13 +626,10 @@ export default {
       });
     },
     base_get(callback) {
-      new Query('base','get').get(this, `${
-          this.serviceUrl
-        }api/controllers/MYSQL/INTERNAL/TRR/timestamp?total=1&onlyme=1&today=1&emptyTicket=1&page=${
-          this.base.page
-        }${this.base.row ? `&rows=${this.base.row}` : ""}${
-          this.base.q ? `&q=${this.base.q}` : ""
-        }`, (res) => {
+      new Query("base", "get").get(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/lbs/location?lat=${this.location.pos.lat}&lng=${this.location.pos.lng}`,
+        (res) => {
           if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
@@ -701,11 +660,12 @@ export default {
               .minutes();
 
             this.ticket.get =
-            this.ticket.hours + (this.ticket.minutes > 0 ? 1 : 0);
+              this.ticket.hours + (this.ticket.minutes > 0 ? 1 : 0);
             // console.error(this.ticket.hours);
           }
-        callback({ ...res });
-      });
+          callback({ ...res });
+        }
+      );
     },
     base_create() {
       this.base.current = 0;
@@ -726,18 +686,126 @@ export default {
     },
     base_save() {
       let vm = this;
-      let obj = { rows: [ {...this.base.form} ] };
+      let obj = { rows: [{ ...this.base.form }] };
 
-      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/timestamp`, obj, (res) => {
-        if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
-        } else {
-          this.base.modal = false;
-          this.base_search();
-          // this.detail_search();
+      new Query("base", this.base.controll == "create" ? "POST" : "PUT").set(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/timestamp`,
+        obj,
+        (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+          } else {
+            this.base.modal = false;
+            this.base_search();
+            // this.detail_search();
+          }
         }
+      );
+    },
+
+    // ts
+    ts_search() {
+      this.ts.loading = true;
+      this.ts_get((res) => {
+        this.ts.rows = res.rows;
+        this.ts.total = res.total;
+        this.ts.next =
+          this.ts.page * this.ts.row >= this.ts.total ? false : true;
+        this.ts.back = this.ts.page > 1 ? true : false;
+        this.ts.loading = false;
       });
+    },
+    ts_get(callback) {
+      new Query("ts", "get").get(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/lbs/ts?lat=${this.location.pos.lat}&lng=${this.location.pos.lng}`,
+        (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+          } else {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+
+            this.ticket.hours = this.$moment
+              .duration(
+                this.$moment(res.rows[0].created_at).diff(
+                  this.$moment(res.rows[res.rows.length - 1].created_at),
+                  "minutes"
+                ),
+                "minutes"
+              )
+              .hours();
+
+            this.ticket.minutes = this.$moment
+              .duration(
+                this.$moment(res.rows[0].created_at).diff(
+                  this.$moment(res.rows[res.rows.length - 1].created_at),
+                  "minutes"
+                ),
+                "minutes"
+              )
+              .minutes();
+
+            this.ticket.get =
+              this.ticket.hours + (this.ticket.minutes > 0 ? 1 : 0);
+            // console.error(this.ticket.hours);
+          }
+          callback({ ...res });
+        }
+      );
+    },
+    ts_create() {
+      this.ts.current = 0;
+      this.ts.form = {
+        code: "",
+      };
+
+      this.ts.controll = "create";
+
+      if (this.ts.rows.length > 0) {
+        this.ts.form.frist_timestamp =
+          this.ts.rows[this.ts.rows.length - 1].created_at;
+        this.ts.form.last_timestamp = this.ts.rows[0].created_at;
+      } else {
+        this.ts.form.frist_timestamp = "-";
+        this.ts.form.last_timestamp = "-";
+      }
+    },
+    ts_save() {
+      let vm = this;
+      let obj = {
+        rows: [
+          {
+            ...this.ts.form,
+            lat: this.location.pos.lat,
+            lng: this.location.pos.lng,
+          },
+        ],
+      };
+
+      new Query("ts", this.ts.controll == "create" ? "POST" : "PUT").set(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/lbs/ts`,
+        obj,
+        (res) => {
+          if (!res.success) {
+            alert(res.errorMsg);
+
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+          } else {
+            alert("SUCCESS");
+            this.ts.modal = false;
+            // this.ts_search();
+            // this.detail_search();
+          }
+        }
+      );
     },
     // DETAIL
     detail_search() {
@@ -757,21 +825,25 @@ export default {
       });
     },
     detail_get(callback) {
-      new Query('detail','get').get(this, `${
+      new Query("detail", "get").get(
+        this,
+        `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/ticket?total=1&onlyme=1&today=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
-        }${this.base.current ? `&current=${this.base.current}` : ``}`, (res) => {
-        if (res.success) {
-          res.rows.forEach((v, i) => {
-            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-            res.rows[i].master = 0;
-          });
+        }${this.base.current ? `&current=${this.base.current}` : ``}`,
+        (res) => {
+          if (res.success) {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+          }
+          callback({ ...res });
         }
-        callback({ ...res });
-      });
+      );
     },
     detail_create() {
       this.detail.current = 0;
@@ -790,26 +862,34 @@ export default {
     },
     detail_save(type) {
       this.detail.controll = "create";
-      let obj = { rows: [{...this.detail.form}] };
-      obj['rows']["ticket"] = this.ticket.get;
+      let obj = { rows: [{ ...this.detail.form }] };
+      obj["rows"]["ticket"] = this.ticket.get;
       // console.log(obj);
       if (this.detail.controll == "edit") {
-        obj['rows']["code"] = this.detail.form.code;
+        obj["rows"]["code"] = this.detail.form.code;
       }
 
-      new Query('detail', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/ticket`, obj, (res) => {
-        if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
-        } else {
-          this.detail.modal = false;
-          if (type == "static") {
-            this.base_search();
-            this.detail.page = 1;
-            this.detail_search();
+      new Query(
+        "detail",
+        this.detail.controll == "create" ? "POST" : "PUT"
+      ).set(
+        this,
+        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/ticket`,
+        obj,
+        (res) => {
+          if (!res.success) {
+            // localStorage.removeItem("user_token");
+            // this.$router.push({ name: `Login` });
+          } else {
+            this.detail.modal = false;
+            if (type == "static") {
+              this.base_search();
+              this.detail.page = 1;
+              this.detail_search();
+            }
           }
         }
-      });
+      );
     },
     // REMOVE
     remove_item(code, controll, tb) {
@@ -870,16 +950,54 @@ export default {
       }
       return (zero + num).slice(-digit);
     },
+    success(pos) {
+      const crd = pos.coords;
+      console.log(crd.latitude, crd.longitude);
+
+      if (
+        this.location.pos.latitude === crd.latitude &&
+        this.location.pos.longitude === crd.longitude
+      ) {
+        console.log("Congratulations, you reached the target");
+        navigator.geolocation.clearWatch(this.location.id);
+      } else {
+        this.location.pos = {
+          lat: crd.latitude,
+          lng: crd.longitude,
+        };
+        // this.ts_search();
+      }
+    },
+    error(err) {
+      console.error(`ERROR(${err.code}): ${err}`);
+    },
+    getGPS(){
+ 
+      this.location.id = navigator.geolocation.watchPosition(
+        this.success,
+        this.error,
+        {
+          enableHighAccuracy: true,
+          // timeout: 5000,
+          maximumAge: 0,
+        }
+      );
+    }
   },
   unmounted() {
     clearInterval(this.timerID);
+    navigator.geolocation.clearWatch(this.location.id);
   },
   mounted() {
-    this.$nextTick(() => {
-      // this.base_search();
+   
+    this.$nextTick(async () => {
+    
+
+        
+      this.base_search();
       // this.detail_search();
-      this.timerID = setInterval(this.updateTime, 1000);
-      this.updateTime();
+      // this.timerID = setInterval(this.updateTime, 1000);
+      // this.updateTime();
     });
   },
   watch: {
@@ -892,6 +1010,15 @@ export default {
 };
 </script>
 <style scrop>
+.leaflet-pane {
+  z-index: 5;
+}
+.leaflet-top,
+.leaflet-bottom {
+  /* position: absolute; */
+  z-index: 5;
+  /* pointer-events: none; */
+}
 tr,
 td {
   white-space: nowrap;
