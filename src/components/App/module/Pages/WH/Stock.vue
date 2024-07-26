@@ -176,7 +176,7 @@
             </table>
           </div>
           <div
-            class="text-right text-ellipsis whitespace-nowrap font-bold text-primary"
+            class="text-right text-ellipsis whitespace-nowrap font-bold text-primary my-1"
           >
             Total Quantitys
             {{ new Intl.NumberFormat("th-TH").format(base.quantitys_total) }}

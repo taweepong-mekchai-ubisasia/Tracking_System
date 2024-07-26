@@ -8,8 +8,8 @@ export default createStore({
       serviceUrl: `${
         window.location.origin == "http://localhost:80811"
           ? "http://localhost:8080/kay/rewrite_demo/services/"
-          : `http://192.168.11.1/dev_services/`
-          // : `http://192.168.11.1/services/`
+          // : `http://192.168.11.1/dev_services/`
+          : `http://192.168.11.1/services/`
       }`,
       jwt: null,
       user: null,
@@ -282,7 +282,7 @@ export default createStore({
                 access: false,
               },
               {
-                title: "Trackeability",
+                title: "TraceAbility",
                 name: "QCInspecTrackeability",
                 access: false,
               },

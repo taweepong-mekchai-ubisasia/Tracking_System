@@ -410,7 +410,7 @@ const routes = [
   },
 
   {
-    path: "/QC/Inspec/Trackeability",
+    path: "/QC/Inspec/Traceability",
     name: "QCInspecTrackeability",
     component: QCInspecTrackeability,
     props: { default: true, menu: true, type: "member" },

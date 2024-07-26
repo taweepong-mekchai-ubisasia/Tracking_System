@@ -15,7 +15,7 @@ import LabelPrintRouter from "../router/LabelPrint";
 import LMRouter from "../router/LM";
 import WMSRouter from "../router/WMS";
 import PDRouter from "../router/PD";
-import PURRouter from "../router/PUR";
+import PURouter from "../router/PU";
 import QARouter from "../router/QA";
 import QCRouter from "../router/QC";
 import RDRouter from "../router/RD";
@@ -23,6 +23,9 @@ import SuperDataRouter from "../router/SuperData";
 import TRRRouter from "../router/TRR";
 import WHRouter from "../router/WH";
 import WHMRouter from "../router/WHM";
+import CALRouter from "../router/Calibrate";
+import InditectRoutes from "../router/WHIndirect";
+import SalesRoutes from "../router/Sales";
 /*-------------------------------------------------------------*/
 import EventRouter from "../router/Event";
 /*-------------------------------------------------------------*/
@@ -68,7 +71,7 @@ const routes = [
   ...LMRouter,
   ...LabelPrintRouter,
   ...PDRouter,
-  ...PURRouter,
+  ...PURouter,
   ...QARouter,
   ...QCRouter,
   ...RDRouter,
@@ -77,6 +80,9 @@ const routes = [
   ...WHRouter,
   ...WHMRouter,
   ...WMSRouter,
+  ...CALRouter,
+  ...InditectRoutes,
+  ...SalesRoutes,
   /*-------------------------------------------------------------*/
   ...EventRouter,
   /*-------------------------------------------------------------*/

@@ -712,16 +712,29 @@
             </div>
           </nav>
         </div>
-        <div class="max-w-[100vw] px-2 pb-2 md:px-6 md:pb-6">
+        <div class="max-w-[100vw] px-5 pb-3">
           <div class="flex flex-col-reverse justify-between gap-6 xl:flex-row">
             <div
-              class="prose prose-sm md:prose-base w-full flex-grow pt-0 md:pt-4"
+              class="prose prose-sm md:prose-base w-full flex-grow pt-3"
             >
               <div class="text-sm breadcrumbs">
                 <ul>
                   <!-- <li v-if="$route.name != 'Dashboard'" class="font-bold">Home</li> -->
-                  <li v-if="$route.name != 'Dashboard'">
-                    <a href="#" @click="changepage('Dashboard')">Home</a>
+                  <li class="gap-2 badge badge-white shadow" v-if="$route.name != 'Dashboard'">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      class="h-4 w-4 stroke-current"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
+                      </path>
+                    </svg>
+                    <a href="#" @click="changepage('Dashboard')">Menu</a>
                   </li>
                   <!-- <li v-if="$route.name != 'Dashboard'"><a>Documents</a></li> -->
                   <li
@@ -738,7 +751,23 @@
                       i == $route.path.split('/').length - 1 ? `font-bold` : ''
                     "
                   >
-                    {{ v }}
+                    <div class="gap-2 badge badge-white shadow">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        class="h-4 w-4 stroke-current"
+                        v-if="i != $route.path.split('/').length - 1"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
+                        </path>
+                      </svg>
+                      {{ v }}
+                    </div>
                   </li>
 
                   <!-- {{ $route.matched[0].meta }} -->

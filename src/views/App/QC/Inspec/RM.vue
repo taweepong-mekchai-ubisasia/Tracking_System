@@ -1,138 +1,6 @@
 <template>
-  <div class="Department">
-    <AppLayout>
+  <AppLayout>
       <template #modal>
-        <div class="drawer drawer-end z-50">
-          <input id="drawer-search" type="checkbox" class="drawer-toggle" />
-          <div class="drawer-side overflow-hidden">
-            <label
-              for="drawer-search"
-              aria-label="close sidebar"
-              class="drawer-overlay"
-            ></label>
-            <div class="p-4 w-80 min-h-full bg-base-200 text-base-content">
-              <div class="grid gap-2 md:grid-cols-1 grid-cols-1 mb-4">
-                <div class="form-control">
-                  <button
-                    class="btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    Receipt <span>No.</span>
-                  </button>
-                </div>
-                <div class="grid gap-1">
-                  <div class="form-control">
-                    <input
-                      type="text"
-                      placeholder="Form No."
-                      class="input input-sm input-bordered border-base-content"
-                      v-model="search.receiptNo.from"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <input
-                      type="text"
-                      placeholder="To No."
-                      class="input input-sm input-bordered border-base-content"
-                      v-model="search.receiptNo.to"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid gap-2 md:grid-cols-1 grid-cols-1 mb-4">
-                <div class="form-control">
-                  <button
-                    class="btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    <span>Receipt</span> Date
-                  </button>
-                </div>
-                <div class="grid gap-1">
-                  <div class="form-control">
-                    <input
-                      type="date"
-                      placeholder="title"
-                      class="input input-sm input-bordered border-base-content"
-                      v-model="search.receiptDate.from"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <input
-                      type="date"
-                      placeholder="title"
-                      class="input input-sm input-bordered border-base-content"
-                      v-model="search.receiptDate.to"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid gap-2 md:grid-cols-1 grid-cols-1 mb-4">
-                <div class="form-control">
-                  <button
-                    class="btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    Item Code
-                  </button>
-                </div>
-                <div class="grid gap-1">
-                  <div class="form-control">
-                    <input
-                      type="text"
-                      placeholder="From Code"
-                      class="input input-sm input-bordered border-base-content"
-                      v-model="search.receiptDate.from"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <input
-                      type="text"
-                      placeholder="To Code"
-                      class="input input-sm input-bordered border-base-content"
-                      v-model="search.receiptDate.to"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid gap-2 md:grid-cols-1 grid-cols-1 mb-4">
-                <div class="form-control">
-                  <button
-                    class="btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    Item Code
-                  </button>
-                </div>
-                <div class="grid gap-1">
-                  <div class="form-control">
-                    <input
-                      type="search"
-                      placeholder="Search"
-                      class="input input-sm input-bordered border-base-content"
-                      v-model="base.q"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div class="grid gap-2 md:grid-cols-1 grid-cols-1 mb-4">
-                <div class="form-control">
-                  <label
-                    for="drawer-search"
-                    class="lg:hidden join-item btn btn-sm btn-accent"
-                    @click="searching"
-                  >
-                    <Icon icon="tabler:search" class="h-5 w-5 text-white"
-                  /></label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- modal base -->
         <input
           type="checkbox"
@@ -141,342 +9,420 @@
           v-model="base.modal"
         />
         <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-6/12 max-w-6xl">
+          <div class="modal-box relative w-11/12 max-w-4xl">
             <label
               for="modal-base"
               class="btn btn-sm btn-circle absolute right-2 top-2"
               >✕
             </label>
-            <h3 class="text-lg font-bold">Results</h3>
-            <div class="overflow-x-auto">
-              <table class="table table-xs table-pin-rows table-pin-cols">
+            <button
+              class="join-item btn btn-xs btn-outline btn-primary text-xs" style="display: flex;"
+              @click="exportExcel('detail')"
+            >
+              <Icon
+                icon="mdi:file-excel-outline"
+                class="h-4 w-4"
+              />
+              Excel
+            </button>
+            <div class="overflow-auto mt-3" style="max-height: 60vh">
+              <table class="table table-xs table-pin-rows table-pin-cols" v-if="!load">
                 <thead>
-                  <tr>
-                    <th></th>
+                  <tr class="bg-accent text-white">
                     <td>Parameter</td>
                     <td>Specification</td>
                     <td>COA</td>
+                    <td>samping#1</td>
+                    <td>samping#2</td>
+                    <td>samping#3</td>
                     <td>Samping</td>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th>{{ base.form.U_Parameter }}</th>
-                    <td>{{ base.form.U_Specification }}</td>
-                    <td>{{ base.form.U_COA }}</td>
-                    <td>
-                      {{ base.form.U_ReAppearance || base.U_XBar || "-" }}
-                    </td>
+                  <tr v-for="key in detail.rows">
+                    <td>{{ key.U_Parameter || '-' }}</td>
+                    <td>{{ key.U_Specification || '-' }}</td>
+                    <td>{{ key.U_COA || '-' }}</td>
+                    <td>{{ key.U_sampling1 || '-' }}</td>
+                    <td>{{ key.U_sampling2 || '-' }}</td>
+                    <td>{{ key.U_sampling3 || '-' }}</td>
+                    <td>{{ key.U_ReAppearance || key.U_XBar || '-' }}</td>
                   </tr>
                 </tbody>
               </table>
+              <div v-else>
+                <span class="loading loading-spinner text-primary"></span>
+              </div>
             </div>
-
-            <!-- <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancel</label>
-              </div>
-              <div class="flex-1 form-control mt-6" @click="base_save()">
-                <button class="btn btn-primary text-white">Confirm</button>
-              </div>
-            </div> -->
           </div>
         </div>
       </template>
       <template #view>
-        <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2">
-          <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
+        <div class="gap-3 py-3">
+          <div class="card shadow-lg bg-base-100">
             <div class="card-body overflow-auto">
-              <div
-                class="hidden md:grid lg:inline-flex lg:join w-full md:justify-center lg:justify-end"
-              >
-                <div class="join join-item md:justify-end mb-4 lg:mb-0">
-                  <button
-                    class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    Receipt No.
-                  </button>
-                  <input
-                    type="text"
-                    placeholder="From No."
-                    class="join-item input input-sm input-bordered border-base-content"
-                    v-model="search.receiptNo.from"
-                  />
-
-                  <input
-                    type="text"
-                    placeholder="To No."
-                    class="join-item input input-sm input-bordered border-base-content"
-                    v-model="search.receiptNo.to"
-                  />
-                </div>
-                <div class="join join-item md:justify-end mb-4 lg:mb-0">
-                  <button
-                    class="lg:hidden join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    Receipt Date
-                  </button>
-                  <input
-                    type="date"
-                    placeholder="title"
-                    class="join-item input input-sm input-bordered border-base-content"
-                    v-model="search.receiptDate.from"
-                  />
-                  <button
-                    class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    -
-                  </button>
-                  <input
-                    type="date"
-                    placeholder="title"
-                    class="join-item input input-sm input-bordered border-base-content"
-                    v-model="search.receiptDate.to"
-                  />
-                </div>
-              </div>
-              <div
-                class="hidden md:grid lg:inline-flex xl:join w-full md:justify-center lg:justify-end"
-              >
-                <div class="join join-item md:justify-end mb-4 lg:mb-0">
-                  <button
-                    class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                    disabled
-                  >
-                    Item Code
-                  </button>
-                  <AppModuleGlobalSelectSearch
-                    :placeholder="'From Code'"
-                    :label="'title'"
-                    :code="'code'"
-                    :minChar="3"
-                    :delay="0.5"
-                    :limit="10"
-                    :customClass="`input input-bordered border-base-content input-sm join-item ${
-                      checkbox == 'M' ? 'input-disabled' : ''
-                    }`"
-                    :disabled="checkbox == 'M' ? true : false"
-                    :current="base.form.company"
-                    :refresh="refresh"
-                    @updateValue="
-                      (obj) => {
-                        base.form.company_data = obj;
-                        base.form.company = obj.code;
-                      }
-                    "
-                    @stopRefresh="
-                      (obj) => {
-                        refresh = obj.value;
-                      }
-                    "
-                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
-                    :param="`&total=1`"
-                  />
-                  <AppModuleGlobalSelectSearch
-                    :placeholder="'To Code'"
-                    :label="'title'"
-                    :code="'code'"
-                    :minChar="3"
-                    :delay="0.5"
-                    :limit="10"
-                    :customClass="`input input-bordered border-base-content input-sm join-item ${
-                      checkbox == 'M' ? 'input-disabled' : ''
-                    }`"
-                    :disabled="checkbox == 'M' ? true : false"
-                    :current="base.form.company"
-                    :refresh="refresh"
-                    @updateValue="
-                      (obj) => {
-                        base.form.company_data = obj;
-                        base.form.company = obj.code;
-                      }
-                    "
-                    @stopRefresh="
-                      (obj) => {
-                        refresh = obj.value;
-                      }
-                    "
-                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/System/company`"
-                    :param="`&total=1`"
-                  />
-                  <!-- <input
-                    type="text"
-                    placeholder="From Code"
-                    class="join-item input input-sm input-bordered border-base-content"
-                    v-model="search.itemcode.from"
-                  />
-                  <input
-                    type="text"
-                    placeholder="To Code"
-                    class="join-item input input-sm input-bordered border-base-content"
-                    v-model="search.itemcode.to"
-                  /> -->
-                </div>
-              </div>
-
-              <div
-                class="join w-full justify-center md:justify-center lg:justify-end"
-              >
-                <button
-                  class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                  disabled
-                >
-                  สาขา
-                </button>
-                <select
-                  class="join-item select select-sm select-bordered border-base-content w-auto max-w-xs"
-                  v-model="wh"
-                >
-                  <!-- <option selected value="">ALL</option> -->
-                  <option value="UBA">UBA</option>
-                  <option value="UBP">UBP</option>
-                </select>
-                <AppModuleGlobalSearch
-                  :class="'hidden md:block join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
-                  @search="
-                          (q) => {
-                            base.page = 1;
-                            base.q = q;
-                            typeof base.q == 'string' ? base_search() : '';
+              <div class="border-dashed border-2 rounded-lg p-2">
+                <h1 class="text-center text-lg font-black text-primary underline underline-offset-2">รายงานผลการทดสอบ RM</h1>
+                  <div class="grid gap-3 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 mt-3">
+                    <div class="join lg:col-span-2 col-span-1">
+                      <button
+                        class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                        disabled
+                      >
+                        สาขา
+                      </button>
+                      <select
+                        class="join-item select select-sm select-bordered w-fit border-gray-300"
+                        v-model="search.wh"
+                      >
+                        <option value="UBP" selected>UBP</option>
+                        <option value="UBA">UBA</option>
+                      </select>
+                      <button
+                        class="lg:block md:hidden block join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                        disabled
+                      >
+                        Item Code
+                      </button>
+                      <AppModuleGlobalSelectSearch
+                        :placeholder="'search code ...'"
+                        :label="'ItemCode'"
+                        :code="'ItemCode'"
+                        :minChar="0"
+                        :delay="0.5"
+                        :limit="10"
+                        :customClass="`input input-bordered border-base-content input-sm join-item ${
+                          checkbox == 'M' ? 'input-disabled' : ''
+                        }`"
+                        :disabled="checkbox == 'M' ? true : false"
+                        :current="search.itemCode.from"
+                        :refresh="refresh.search"
+                        @updateValue="
+                          (obj) => {
+                            search.itemCode.from = obj.ItemCode;
                           }
                         "
+                        @stopRefresh="
+                          (obj) => {
+                            refresh.search = obj.value;
+                          }
+                        "
+                        :url="`${this.serviceUrl}api/controllers/SAP/${search.wh}/oitm`"
+                        :param="`&rm=1&total=1`"
+                      />
+                      <AppModuleGlobalSelectSearch
+                        :placeholder="'search code'"
+                        :label="'ItemCode'"
+                        :code="'ItemCode'"
+                        :minChar="0"
+                        :delay="0.5"
+                        :limit="10"
+                        :customClass="`input input-bordered border-base-content input-sm join-item ${
+                          checkbox == 'M' ? 'input-disabled' : ''
+                        }`"
+                        :current="search.itemCode.to"
+                        :refresh="refresh.search"
+                        @updateValue="
+                          (obj) => {
+                            search.itemCode.to = obj.ItemCode;
+                          }
+                        "
+                        @stopRefresh="
+                          (obj) => {
+                            refresh.search = obj.value;
+                          }
+                        "
+                        :url="`${this.serviceUrl}api/controllers/SAP/${search.wh}/oitm`"
+                        :param="`&rm=1&total=1`"
+                      />
+                    </div>
+                    <div class="join">
+                      <button
+                        class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                        disabled
+                      >
+                        Lot No.
+                      </button>
+                      <input
+                        type="text"
+                        placeholder="lot no."
+                        class="join-item input input-sm input-bordered w-full border-gray-300"
+                        v-model="search.lot"
+                      />
+                    </div>
+                    <div class="join">
+                      <button
+                        class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                        disabled
+                      >
+                        Receipt No.
+                      </button>
+                      <input
+                        type="text"
+                        placeholder="receipt no."
+                        class="join-item input input-sm input-bordered w-full border-gray-300"
+                        v-model="search.receiptNo.from"
+                      />
+                      <input
+                        type="text"
+                        placeholder="to no."
+                        class="join-item input input-sm input-bordered w-full border-gray-300"
+                        v-model="search.receiptNo.to"
+                      />
+                    </div>
+                    <div class="join">
+                      <button
+                        class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                        disabled
+                      >
+                        Receipt Date
+                      </button>
+                      <input
+                        type="date"
+                        placeholder="first date"
+                        class="join-item input input-sm input-bordered w-full border-gray-300"
+                        v-model="search.receiptDate.from"
+                      />
+                      <button
+                        class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                        disabled
+                      >
+                        -
+                      </button>
+                      <input
+                        type="date"
+                        placeholder="second date"
+                        class="join-item input input-sm input-bordered w-full border-gray-300"
+                        v-model="search.receiptDate.to"
+                      />
+                    </div>
+                    <!-- <div class="join">
+                      <button
+                        class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                        disabled
+                      >
+                        Short Code
+                      </button>
+                      <AppModuleGlobalSelectSearch
+                        :placeholder="'code ...'"
+                        :label="'short_code'"
+                        :code="'short_code'"
+                        :minChar="0"
+                        :delay="0.5"
+                        :limit="10"
+                        :customClass="`input input-bordered border-base-content input-sm join-item ${
+                          checkbox == 'M' ? 'input-disabled' : ''
+                        }`"
+                        :disabled="checkbox == 'M' ? true : false"
+                        :current="search.itemCode.from"
+                        :refresh="refresh.search"
+                        @updateValue="
+                          (obj) => {
+                            search.itemCode.from = obj.item_code;
+                          }
+                        "
+                        @stopRefresh="
+                          (obj) => {
+                            refresh.search = obj.value;
+                          }
+                        "
+                        :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`"
+                        :param="`&rm=1&total=1&wh=${wh}&action=groupby-code`"
+                      />
+                      <AppModuleGlobalSelectSearch
+                        :placeholder="'to code'"
+                        :label="'short_code'"
+                        :code="'short_code'"
+                        :minChar="0"
+                        :delay="0.5"
+                        :limit="10"
+                        :customClass="`input input-bordered border-base-content input-sm join-item ${
+                          checkbox == 'M' ? 'input-disabled' : ''
+                        }`"
+                        :current="search.itemCode.to"
+                        :refresh="refresh.search"
+                        @updateValue="
+                          (obj) => {
+                            search.itemCode.to = obj.item_code;
+                          }
+                        "
+                        @stopRefresh="
+                          (obj) => {
+                            refresh.search = obj.value;
+                          }
+                        "
+                        :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`"
+                        :param="`&rm=1&total=1&wh=${wh}&action=groupby-code`"
+                      />
+                    </div> -->
+                    <!-- <div class="join">
+                      <button
+                        class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                        disabled
+                      >
+                        สาขา
+                      </button>
+                      <select
+                        class="join-item select select-sm select-bordered max-w-lg w-full border-gray-300"
+                        v-model="search.wh"
+                      >
+                        <option value="UBP" selected>UBP</option>
+                        <option value="UBA">UBA</option>
+                      </select>
+                    </div> -->
+                    <div class="join lg:col-span-1 md:col-span-2 col-span-1">
+                      <button class="hidden md:block join-item btn btn-sm btn-active btn-ghost" style="display: inline-flex; width: 50%;" @click="clearing">
+                        <Icon
+                          icon="icon-park-outline:clear-format"
+                          class="h-5 w-5"
+                        />
+                        ล้าง
+                      </button>
+                      <button class="hidden md:block join-item btn btn-sm btn-primary text-white" style="display: inline-flex; width: 50%;" @click="searching">
+                        <Icon
+                          icon="tabler:search"
+                          class="h-5 w-5 text-white"
+                        />
+                        ค้นหา
+                      </button>
+                    </div>
+                  </div>
+              </div>
+              <div
+                v-if="base.loading"
+                class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-white bg-opacity-50 top-0 left-0"
+              >
+                <AppModuleGlobalLoadingText
+                  :type="'text'"
+                  :class="`p-4 py-12 text-3xl text-center`"
                 />
-                <!-- <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button text-white"
-                  @click="base_create()"
-                  >Create</label
-                > -->
+              </div>
+              <div class="mt-1" v-if="check">
+                <div class="grid gap-3 grid-cols-2">
+                  <button
+                    class="join-item btn btn-sm btn-outline btn-primary w-24" style="display: flex;"
+                    @click="exportExcel('base')"
+                  >
+                    <Icon
+                      icon="mdi:file-excel-outline"
+                      class="h-5 w-5"
+                    />
+                    Excel
+                  </button>
+                  <div class="join w-full justify-end">
+                    <AppModuleGlobalSearch
+                      :class="'join-item input input-sm input-bordered w-full max-w-xs'"
+                      @search="
+                        (q) => {
+                          base.q = q;
+                          base.page = 1;
+                          base_search();
+                        }
+                      "
+                    />
+                  </div>
+                </div>
+                <div class="overflow-x-auto w-full max-h-[47vh] my-2">
+                  <div v-if="!base.loading && base.rows.length == 0">
+                    <AppModuleGlobalEmptyData
+                      :class="`p-4 py-12 text-3xl text-center`"
+                    />
+                  </div>
+                  <table class="table table-xs table-pin-rows table-pin-cols table-zebra" v-else>
+                    <thead>
+                      <tr>
+                        <td>Receipt No.</td>
+                        <td>Receipt Date</td>
+                        <td>Lot No.</td>
+                        <td>RM Code</td>
+                        <td>RM Name</td>
+                        <td>Expire Date</td>
+                        <td>Supplier Name</td>
+                        <td>Supplier Lot No.</td>
+                        <td class="text-right">Quantity</td>
+                        <td>Checker</td>
+                        <td>Approver</td>
+                        <th class="text-center">Results</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(v, i) in base.rows" :key="v.DocEntry" class="hover">
+                        <td>{{ v.U_ReceiptNO }}</td>
+                        <td>{{ v.U_DateRe ? $moment(v.U_DateRe.date).format("DD-MM-YYYY") : "-" }}</td>
+                        <td>{{ v.U_LotNo }}</td>
+                        <td>{{ v.U_ItemNo }}</td>
+                        <td>{{ v.ItemName }}</td>
+                        <td>{{ v.U_ExpireDate ? $moment(v.U_ExpireDate.date).format("DD-MM-YYYY") : "-" }}</td>
+                        <td>{{ v.U_SupName }}</td>
+                        <td>{{ v.U_SupLot || '-' }}</td>
+                        <td class="text-right">{{ new Intl.NumberFormat("th-TH", {minimumFractionDigits: 2,}).format(v.U_ReAmount) }}</td>
+                        <td>{{ v.U_Inspected || '-' }}</td>
+                        <td>{{ v.U_Approve || '-' }}</td>
+                        <th class="text-center">
+                          <label
+                            for="modal-base"
+                            class="btn btn-primary modal-button btn-xs text-white"
+                            @click="base_edit(`${v.DocEntry}`, `${i}`)"
+                          >
+                            Results
+                          </label>
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
 
-                <label
-                  for="drawer-search"
-                  class="md:hidden join-item btn btn-sm btn-accent"
-                >
-                  <Icon icon="tabler:search" class="h-5 w-5 text-white"
-                /></label>
-                <button class="hidden md:block join-item btn btn-sm btn-accent">
-                  <Icon
-                    icon="tabler:search"
-                    class="h-5 w-5 text-white"
-                    @click="searching"
-                  />
-                </button>
-                <button
-                  class="join-item btn btn-sm btn-primary"
-                  @click="exportExcel()"
-                >
-                  <Icon
-                    icon="mdi:file-excel-outline"
-                    class="h-5 w-5 text-white"
-                  />
-                </button>
+                <div class="grid gap-3 lg:grid-cols-2 grid-cols-1">
+                  <div class="text-left text-sm">
+                    Show :
+                    <select class="select select-bordered select-xs w-fit bg-yellow-50" 
+                      v-model="base.row" 
+                      @change="base_search()"
+                    >
+                      <option value="15">15</option>
+                      <option value="20">20</option>
+                      <option value="30">30</option>
+                    </select>
+                    |
+                    Showing {{ base.page == Math.ceil(base.total/base.row) ? 1 + (base.row*(base.page - 1)) : 1 + ((base.page - 1)*base.row) }} to {{ base.page == Math.ceil(base.total/base.row) ? base.total : base.row*base.page }} of {{ base.total }} entries
+                  </div>
+                  <div class="join w-full justify-center lg:justify-end">
+                    <AppModuleGlobalPageination
+                      :page="base.page"
+                      :total="base.total"
+                      :row="base.row"
+                      :back="base.back"
+                      :next="base.next"
+                      :loading="base.loading"
+                      @search="
+                        (res) => {
+                          base.page = res.page;
+                          this.base_search();
+                        }
+                      "
+                    />
+                  </div>
+                </div>
               </div>
-              <div class="overflow-x-auto w-full max-h-[60vh]">
-                <table
-                  class="table table-xs table-pin-rows table-pin-cols table-zebra"
-                >
-                  <thead>
-                    <tr>
-                      <th>Receipt No.</th>
-                      <td>Receipt Date</td>
-                      <td>Lot No.</td>
-                      <td>RM Code</td>
-                      <td>RM Name</td>
-                      <td>Expire Date</td>
-                      <td>Supplier Name</td>
-                      <td>Supplier Lot No.</td>
-                      <td class="text-right">Quantity</td>
-                      <td>Checker</td>
-                      <td>Approver</td>
-                      <td>Results</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(v, i) in base.rows" :key="v.DocEntry">
-                      <td>{{ v.U_ReceiptNO }}</td>
-                      <td>
-                        {{
-                          v.U_DateRe
-                            ? $moment(v.U_DateRe.date).format("YYYY-MM-DD")
-                            : "-"
-                        }}
-                      </td>
-                      <td>{{ v.U_LotNo }}</td>
-                      <td>{{ v.U_ItemNo }}</td>
-                      <td>{{ v.ItemName }}</td>
-                      <td>
-                        {{
-                          v.U_ExpireDate
-                            ? $moment(v.U_ExpireDate.date).format(
-                                "YYYY-MM-DD"
-                              )
-                            : "-"
-                        }}
-                      </td>
-                      <td>{{ v.U_SupName }}</td>
-                      <td>{{ v.U_SupLot }}</td>
-                      <td class="text-right">
-                        {{
-                          new Intl.NumberFormat("th-TH", {
-                            minimumFractionDigits: 2,
-                          }).format(v.U_ReAmount)
-                        }}
-                      </td>
-                      <td>{{ v.U_Inspected }}</td>
-                      <td>
-                        {{ v.U_Approve == null ? "-" : v.U_Approve }}
-                      </td>
-                      <th>
-                        <label
-                          for="modal-base"
-                          class="btn btn-link modal-button btn-xs"
-                          @click="base_edit(`${v.DocEntry}`, `${i}`)"
-                        >
-                          Results
-                        </label>
-                      </th>
-                      <!-- <td>'+rowResult(x.item) }} <button class="btn btn-sm btn-success btnExportRow" docentry="{{ v.DocEntry }}"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</button></td> -->
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="join w-full justify-center lg:justify-end">
-                <AppModuleGlobalPageination
-                  :page="base.page"
-                  :total="base.total"
-                  :row="base.row"
-                  :back="base.back"
-                  :next="base.next"
-                  :loading="base.loading"
-                  @search="
-                    (res) => {
-                      base.page = res.page;
-                      this.base_search();
-                    }
-                  "
-                />
+              <div class="overflow-x-auto w-full h-32 mt-9" v-else>
+                <span class="font-bold italic text-gray-500">{{ text }}</span>
               </div>
             </div>
           </div>
         </div>
       </template>
-    </AppLayout>
-  </div>
+  </AppLayout>
 </template>
+
 <style>
-.crop {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 1px;
-}
+  .crop {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 1px;
+  }
 </style>
+
 <script>
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";
@@ -485,10 +431,12 @@ import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
+import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
 import Query from "@/assets/js/fetch.js";
 
 export default {
-  name: "Department",
+  name: "RM",
   components: {
     AppLayout,
     AppModuleGlobalUpload,
@@ -496,9 +444,15 @@ export default {
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,
     AppModuleGlobalShowImage,
+    AppModuleGlobalLoadingText,
+    AppModuleGlobalEmptyData
   },
   data() {
     return {
+      load: false,
+      text: 'Specify Information Before Searching.',
+      allow: false,
+      check: 0,
       search: {
         receiptNo: {
           from: "",
@@ -508,26 +462,21 @@ export default {
           from: "",
           to: "",
         },
-        itemcode: {
+        itemCode: {
           from: "",
           to: "",
         },
+        lot: "",
+        wh: "UBP"
       },
-      wh: "UBA",
+      wh: "",
       checkbox: "",
       refresh: false,
-      
-      category: {
-        rows: [],
-        page: 1,
-        row: 9999,
-        q: "",
-      },
       base: {
         rows: [],
         total: 0,
         page: 1,
-        row: 20,
+        row: 15,
         q: "",
         next: false,
         back: false,
@@ -552,14 +501,7 @@ export default {
           title: "",
           ref: "",
         },
-      },
-      remove: {
-        current: 0,
-        model: false,
-        controll: "",
-        tb: "",
-      },
-      imagerow: null,
+      }
     };
   },
   computed: {
@@ -574,31 +516,61 @@ export default {
     },
   },
   methods: {
+    exportExcel(controll) {
+      if (controll == 'base') {
+        return window.open(`${this.serviceUrl}api/controllers/SAP/Excel/${this.wh}/qc?for=rmreport&total=1
+          ${this.search.receiptNo.from ? `&receipt_from=${this.search.receiptNo.from}` : ''}${this.search.receiptNo.to ? `&receipt_to=${this.search.receiptNo.to}` : ''}
+          ${this.search.receiptDate.from ? `&start_date=${this.search.receiptDate.from}` : ''}${this.search.receiptDate.to ? `&end_date=${this.search.receiptDate.to}` : ''}
+          ${this.search.itemCode.from ? `&code_from=${this.search.itemCode.from}` : ''}${this.search.itemCode.to ? `&code_to=${this.search.itemCode.to}` : ''}
+          ${this.search.lot ? `&lot_no=${this.search.lot}` : ""}${this.base.q ? `&q=${this.base.q}` : ""}`);
+      } else {
+        return window.open(`${this.serviceUrl}api/controllers/SAP/Excel/${this.wh}/qc?for=rmresult&total=1&doc=${this.base.form.DocEntry}`);
+      }
+    },
     searching() {
+      this.wh = this.search.wh
+      this.base.page = 1
+      this.allow = true
       this.base_search();
+    },
+    clearing() {
+      this.search.receiptNo.from = ''
+      this.search.receiptNo.to = ''
+      this.search.receiptDate.from = ''
+      this.search.receiptDate.to = ''
+      this.search.itemCode.from = ''
+      this.search.itemCode.to = ''
+      this.search.lot = ''
+
+      this.base.q = ''
     },
     // base
     base_search() {
       this.base.loading = true;
-      this.base_get((res) => {
-        this.base.rows = res.rows;
-        this.base.total = res.total;
-        this.base.next =
-          this.base.page * this.base.row >= this.base.total ? false : true;
-        this.base.back = this.base.page > 1 ? true : false;
-        this.base.loading = false;
-      });
+      setTimeout(() => {
+        this.base_get((res) => {
+          this.base.rows = res.rows;
+          this.base.total = res.total;
+          this.base.next =
+            this.base.page * this.base.row >= this.base.total ? false : true;
+          this.base.back = this.base.page > 1 ? true : false;
+          this.base.loading = false;
+
+          this.allow = false
+        });
+      }, 250);
     },
     base_get(callback) {
-      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/SAP/UBP/QC/rm_inspec?total=1&page=${
-          this.base.page
-        }${this.base.row ? `&rows=${this.base.row}` : ""}${
-          this.base.q ? `&q=${this.base.q}` : ""
-        }`, (res) => {
+      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/SAP/${this.search.wh}/QC/rm_inspec?total=1&page=${this.base.page}
+        ${this.search.receiptNo.from ? `&receipt_from=${this.search.receiptNo.from}` : ''}${this.search.receiptNo.to ? `&receipt_to=${this.search.receiptNo.to}` : ''}
+        ${this.search.receiptDate.from ? `&start_date=${this.search.receiptDate.from}` : ''}${this.search.receiptDate.to ? `&end_date=${this.search.receiptDate.to}` : ''}
+        ${this.search.itemCode.from ? `&code_from=${this.search.itemCode.from}` : ''}${this.search.itemCode.to ? `&code_to=${this.search.itemCode.to}` : ''}
+        ${this.search.lot ? `&lot_no=${this.search.lot}` : ""}${this.base.row ? `&rows=${this.base.row}` : ""}${this.base.q ? `&q=${this.base.q}` : ""}`, (res) => {
         if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
         } else {
+          this.text = !res.rows.length ? `No Information found. Can It Be ${ this.search.wh == 'UBP' ? '"UBA"' : '"UBP"' } Base?` : 'Specify Information Before Searching.'
+          this.check = this.allow ? res.rows.length : this.check
+
           res.rows.forEach((v, i) => {
             res.rows[i].image = v.image ? JSON.parse(v.image) : [];
             res.rows[i].master = 0;
@@ -607,129 +579,19 @@ export default {
         callback({ ...res });
       });
     },
-    base_create() {
-      this.base.current = 0;
-      this.base.form = {
-        uid: "",
-        firstname: "",
-        lastname: "",
-        current_password: "",
-        new_password: "",
-        confirm_password: "",
-        email: "",
-        tel: "",
-        birthdate: "",
-        department: "",
-        branch: "",
-        company: "",
-        position: "",
-        started_at: "",
-        leaves_at: "",
-        title: "",
-        link: "",
-        type: "",
-        // imageLink_empty: "",
-        // image_empty: [],
-        // imageLink_active: "",
-        // image_active: [],
-        imageLink: "",
-        image: [],
-      };
-      this.detail.rows = [];
-      this.base.controll = "create";
-    },
     base_edit(code, index) {
       this.base.form = { ...this.base.rows[index] };
       this.base.current = code;
       this.detail.rows = [];
-      this.base.controll = "edit";
       this.detail_search();
       this.refresh = true;
     },
-    base_save() {
-      let vm = this;
-
-      let image = { ...this.base.form.image[0] };
-      delete image.temp;
-
-      if (this.base.controll != "create") {
-        if (
-          !this.base.form.current_password ||
-          !this.base.form.new_password ||
-          !this.base.form.confirm_password
-        ) {
-          // console.log("ASD")
-        }
-      } else {
-        this.base.form.new_password = this.base.form.uid;
-      }
-
-      let obj = {
-        rows: [
-          {
-            code: this.base.current,
-            uid: this.base.form.uid,
-            firstname: this.base.form.firstname,
-            lastname: this.base.form.lastname,
-            current_password: this.base.form.current_password,
-            password: this.base.form.new_password,
-            confirm_password: this.base.form.confirm_password,
-            email: this.base.form.email,
-            tel: this.base.form.tel,
-            birthdate: this.base.form.birthdate,
-            department: this.base.form.department,
-            branch: this.base.form.branch,
-            company: this.base.form.company,
-            position: this.base.form.position,
-            started_at: this.base.form.started_at,
-            leaves_at: this.base.form.leaves_at,
-            access: this.base.form.access,
-            image: [image],
-          },
-        ]
-      };
-
-      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/SAP/UBP/QC/rm_inspec`, obj, (res) => {
-        if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
-        } else {
-          this.base.modal = false;
-          const promise_arr = [];
-          console.log(this.base.current);
-          if (this.base.current == 0) {
-            this.base.current = res.row.code;
-            let i = this.detail.rows.length;
-            this.detail.controll = "create";
-            for (i; i > 0; i--) {
-              this.detail.form = {
-                code: this.detail.rows[i - 1]["code"],
-                title: this.detail.rows[i - 1]["title"],
-              };
-              promise_arr.push(
-                new Promise(async function (resolve, reject) {
-                  let res = await vm.detail_save("dynamic");
-                  await resolve(res);
-                  return;
-                })
-              );
-            }
-          }
-
-          Promise.all(promise_arr)
-            .then((res) => {
-              // console.log(res);
-              vm.base_search();
-            })
-            .catch((err) => console.error(err));
-        }
-      });
-    },
     // DETAIL
     detail_search() {
+      this.load = true
+
       this.detail.loading = true;
       this.detail_get((res) => {
-        // console.log(res)
         this.detail.rows = res.rows;
         this.detail.total = res.total;
         this.detail.next =
@@ -739,15 +601,13 @@ export default {
         this.detail.back = this.detail.page > 1 ? true : false;
         this.detail.loading = false;
 
-        console.log(this.detail.rows);
+        setTimeout(() => {
+          this.load = false
+        }, 100);
       });
     },
     detail_get(callback) {
-      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email?total=1&page=${
-          this.detail.page
-        }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
-          this.detail.q ? `&q=${this.detail.q}` : ""
-        }${this.base.current ? `&current=${this.base.current}` : ``}`, (res) => {
+      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/SAP/${this.wh}/QC/rm_inspec_result?total=1&doc=${this.base.form.DocEntry}`, (res) => {
         if (res.success) {
           res.rows.forEach((v, i) => {
             res.rows[i].image = v.image ? JSON.parse(v.image) : [];
@@ -757,155 +617,12 @@ export default {
         callback({ ...res });
       });
     },
-    detail_create() {
-      // console.log("detail_create");
-      // this.clearimage();
-      this.detail.current = 0;
-      // console.log("callback");
-      // this.detail.rows = [];
-      this.detail.form = {
-        code: "",
-        title: "",
-        price: "",
-        image: [],
-        imageLink: "",
-        color: "",
-        color_code: "",
-        link: "",
-      };
-      this.detail.controll = "create";
-    },
-    detail_edit(code, index) {
-      // console.log("detail_edit");
-      // this.clearimage();
-      // console.log(id,index);
-      // setTimeout(() => {
-      this.detail.current = code;
-      this.detail.form = Object.assign({}, this.detail.rows[index]);
-      this.detail.form.color = this.detail.form.color == "0" ? false : true;
-
-      // console.log(this.detail.form.image);
-      this.detail.form.image.forEach((v, i) => {
-        // console.log(v);
-        this.detail.form.image[i] = Object.assign(
-          {},
-          this.detail.form.image[i]
-        );
-      });
-
-      // console.log(this.detail.form);
-      // this.detail.form.image = JSON.parse(this.detail.form.image)
-
-      // }, 5000);
-
-      // this.base.form = this.base.rows[index]
-      this.detail.current = id;
-      // this.detail_search();
-
-      this.detail.controll = "edit";
-    },
-    detail_save(type) {
-      if (!this.base.current) {
-        if (this.detail.controll == "create") {
-          this.detail.form.code = this.detail.rows.length;
-          this.detail.rows = [{ ...this.detail.form }].concat(this.detail.rows);
-          // this.detail.rows.push({ ...this.detail.form });
-          this.detail.modal = false;
-        } else {
-          //  this.detail.form.id = this.detail.rows.length
-          let index = this.detail.rows.findIndex(
-            (v) => v.code == this.detail.current
-          );
-          this.detail.rows[index] = { ...this.detail.form };
-
-          // this.detail.rows.push({ ...this.detail.form });
-          this.detail.modal = false;
-        }
-      } else {
-        // console.table(this.detail.form.image);
-        // let array_image = [];
-        // this.detail.form.image.forEach((v, i) => {
-        //   console.log(v);
-        //   if (v.temp) {
-        //     let image = { ...v };
-        //     delete image.temp;
-        //     array_image[i] = image;
-        //   } else {
-        //     array_image[i] = { ...v };
-        //   }
-        //   // console.log(this.detail.form.image[i])
-        // });
-        //  console.table(this.detail.form.image);
-        let obj = {
-          emp: this.base.current,
-          code: this.detail.form.code,
-          email: this.detail.form.email,
-        };
-        console.log(obj);
-        if (this.detail.controll == "edit") {
-          obj["code"] = this.detail.form.code;
-        }
-
-        new Query('base', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/email`, obj, (res) => {
-          if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
-          } else {
-            this.detail.modal = false;
-
-            if (type == "static") {
-              this.detail_search();
-            }
-            // this.base_search();
-          }
-        });
-      }
-    },
-    // REMOVE
-    remove_item(code, controll, tb) {
-      console.log(code);
-      this.remove.code = code;
-      this.remove.controll = controll;
-      this.remove.tb = tb;
-    },
-    confirm_remove() {
-      fetch(`${this.serviceUrl}api/${this.remove.tb}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({
-          code: this.remove.code,
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
-          } else {
-            // console.log(res);
-            this.remove.modal = false;
-            this[`${this.remove.controll}_search`]();
-          }
-          // callback(res.success ? res.rows : []);
-        })
-        .catch((error) => {
-          // callback([]);
-          console.error("Error:", error);
-        });
-    },
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.wh = this.user.branchTitle;
-      this.base_search();
-      
-    });
-  },
+  mounted() {},
+  watch: {}
 };
 </script>
+
 <style scrop>
 tr,
 td {

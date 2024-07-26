@@ -1,301 +1,359 @@
 <template>
   <AppLayout>
-      <template #modal>
-        <!-- modal base -->
-        <input
-          type="checkbox"
-          id="modal-base"
-          class="modal-toggle"
-          v-model="base.modal"
-        />
-        <div class="modal" v-if="base.modal">
-          <div class="modal-box w-11/12 max-w-5xl">
-            <label
-              for="modal-base"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-            >
-              ✕
-            </label>
-            <h3 class="text-lg font-bold text-primary">Packing Order</h3>
-            <hr class="mt-5" />
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              <div class="grid gap-3 md:grid-cols-3 grid-cols-1">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Quantation</span><span class="text-xs text-error">{{ msg.quan }}</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="quantation"
-                    class="input input-bordered"
-                    v-model="base.form.quantation"
-                    :readonly="status == 'packing'"
-                    :disabled="status == 'deliver'"
-                    />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Customer</span><span class="text-xs text-error">{{ msg.customer }}</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="customer"
-                    class="input input-bordered"
-                    v-model="base.form.customer"
-                    :readonly="status == 'packing'"
-                    :disabled="status == 'deliver'"
-                    />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Sending Date</span><span class="text-xs text-error">{{ msg.send_date }}</span>
-                  </label>
-                  <input
-                    type="date"
-                    placeholder="sending date"
-                    class="input input-bordered"
-                    v-model="base.form.sending_date"
-                    :readonly="status == 'packing'"
-                    :disabled="status == 'deliver'"
-                    />
-                </div>
-              </div>
-              <div class="form-control mt-5">
-                <div class="overflow-x-auto min-h-40 max-h-40 border-2">
-                  <table
-                    class="table table-xs table-pin-rows table-pin-cols table-zebra table-auto"
-                  >
-                    <thead>
-                      <tr>
-                        <td>Order</td>
-                        <td>Product</td>
-                        <td>Description</td>
-                        <td>Lot No.</td>
-                        <td class="text-end">Quantity</td>
-                        <td class="text-end">Pack Size</td>
-                        <td>Unit</td>
-                        <td class="text-end">Net Weight</td>
-                        <td class="text-center">Expire Date</td>
-                        <th class="text-right" v-if="status == 'picking'">
-                          <label
-                            for="modal-detail"
-                            class="btn btn-primary modal-button btn-xs text-white me-1"
-                            @click="detail_create();"
-                          >
-                            + new
-                          </label>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        class="hover"
-                        v-for="(row, index) in detail.rows"
-                        :key="index"
-                      >
-                        <td class="font-bold">{{ index + 1 }}</td>
-                        <td>{{ row.parent }}</td>
-                        <td>{{ row.descrip }}</td>
-                        <td>{{ row.lot }}</td>
-                        <td class="text-end">{{ new Intl.NumberFormat("en-US").format(Math.abs(row.quantity)) }}</td>
-                        <td class="text-end">{{ new Intl.NumberFormat("en-US").format(row.pack_size) }}</td>
-                        <td>{{ row.unit }}</td>
-                        <td class="text-end">{{ new Intl.NumberFormat("en-US").format(row.pack_size*Math.abs(row.quantity)) }}</td>
-                        <td class="text-center">{{ row.exp }}</td>
-                        <th class="text-right" v-if="status == 'picking'">
-                          <label
-                            for="modal-detail"
-                            class="btn btn-ghost modal-button btn-xs"
-                            @click="detail_edit(`${row.code}`, `${index}`)"
-                          >
-                            edit
-                          </label>
-                          <label
-                            for="modal-remove"
-                            class="btn btn-ghost modal-button btn-xs"
-                            @click="
-                              remove_item(
-                                `${row.code}`,
-                                'detail',
-                                'api/controllers/MYSQL/INTERNAL/WMS/logs'
-                              )
-                            "
-                            v-if="base.controll != 'create'"
-                          >
-                            remove
-                          </label>
-                        </th>
-                      </tr>
-                    </tbody>
-                    <tfoot v-if="detail.rows.length && base.controll != 'create'">
-                      <tr class="text-right">
-                        <td :colspan="status == 'picking' ? '9' : '8'"></td>
-                        <th>Total Quantity : {{ sum }}</th>
-                      </tr>
-                      <tr class="text-right">
-                        <td :colspan="status == 'picking' ? '9' : '8'"></td>
-                        <th>Total Net Weight : {{ new Intl.NumberFormat("en-US").format(total_net) }}</th>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-              </div>
-              <div class="grid gap-3 grid-cols-2">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Creator</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="ผู้ทำรายการ"
-                    class="input input-bordered"
-                    disabled
-                    :value="base.form.creator_name ? base.form.creator_name : user.firstname+' '+user.lastname"
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Status</span>
-                  </label>
-                  <label class="form-control w-full">
-                    <select class="select select-bordered" v-model="base.form.status" :disabled="locked">
-                      <option disabled selected value="">เลือกรายการ</option>
-                      <!-- <option value="picking" disabled>Picking</option> -->
-                      <option value="packing">Packing</option>
-                      <option value="deliver">Deliver</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <hr v-if="!locked" />
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-3 px-4 flex"
-              v-if="!locked"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn">Cancel</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-primary text-white"
-                  @click="base_save('static')"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- modal remove -->
-        <input
-          type="checkbox"
-          id="modal-remove"
-          class="modal-toggle"
-          v-model="remove.modal"
-        />
-        <div class="modal" v-if="remove.modal">
-          <div class="modal-box relative">
-            <label
-              for="modal-remove"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-            >
-              ✕
-            </label>
-            <h3 class="text-lg font-bold text-error">Remove Item!</h3>
-            <hr class="mt-5" />
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              Are your sure for remove this item?
-            </div>
-            <hr class="" />
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancel</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-error text-white"
-                  @click="confirm_remove()"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template #view>
-        <div class="grid grid-cols-1 gap-6 lg:px-9 lg:py-5">
-          <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-            <div class="card-body overflow-auto">
-              <div class="join mt-5 w-full md:justify-center lg:justify-end">
-                <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered w-full max-w-xs'"
-                  @search="
-                    (q) => {
-                      base.q = q;
-                      base.page = 1;
-                      base_search();
-                    }
-                  "
+    <template #modal>
+      <!-- modal base -->
+      <input
+        type="checkbox"
+        id="modal-base"
+        class="modal-toggle"
+        v-model="base.modal"
+      />
+      <div class="modal" v-if="base.modal">
+        <div class="modal-box w-11/12 max-w-5xl">
+          <label
+            for="modal-base"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">Packing Order</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto" style="max-height: 76vh;">
+            <div class="grid gap-3 md:grid-cols-3 grid-cols-1">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Sale Order No.</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="sale order no."
+                  class="input input-bordered"
+                  v-model="base.form.sale"
+                  :readonly="status != 'delivered'"
+                  :disabled="status == 'delivered'"
                 />
-                <!-- <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button text-white"
-                  @click="base_create()"
-                  >Create</label
-                > -->
               </div>
-              <div class="overflow-x-auto w-full max-h-[60vh] mt-9">
-                <table
-                  class="table table-xs table-pin-rows table-pin-cols table-zebra"
-                >
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Customer</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="customer"
+                  class="input input-bordered"
+                  v-model="base.form.customer"
+                  :readonly="status != 'delivered'"
+                  :disabled="status == 'delivered'"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Sending Date</span>
+                </label>
+                <input
+                  type="date"
+                  placeholder="sending date"
+                  class="input input-bordered"
+                  v-model="base.form.sending_date"
+                  :readonly="status != 'delivered'"
+                  :disabled="status == 'delivered'"
+                />
+              </div>
+            </div>
+            <div class="form-control mt-5">
+              <div class="overflow-x-auto min-h-40 max-h-40 border">
+                <table class="table table-xs table-pin-rows table-pin-cols table-zebra table-auto">
                   <thead>
                     <tr>
-                      <td>Order</td>
-                      <td>Quantation</td>
-                      <td>Customer</td>
-                      <td>Sending Date</td>
-                      <td>Creator</td>
-                      <td>Status</td>
-                      <th class="text-right"></th>
+                      <td>Order (Total {{ detail.total }})</td>
+                      <td>Product</td>
+                      <td>Description</td>
+                      <td>Lot No.</td>
+                      <td class="text-end">Quantity</td>
+                      <td class="text-center" colspan="2">Pack Size</td>
+                      <td class="text-center" colspan="2">Net Weight</td>
+                      <td class="text-center">Expire Date</td>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(v, i) in base.rows" :class="v.status == 'packing' ? 'hover' : 'text-slate-500 hover'">
-                      <td class="font-bold">{{ i + 1 }}</td>
-                      <td>{{ v.quantation }}</td>
-                      <td>{{ v.customer }}</td>
-                      <td>{{ v.sending_date }}</td>
+                    <tr v-for="(row, index) in detail.rows" :key="index">
+                      <td class="font-bold">Order No. {{ index + 1 }}</td>
+                      <td>{{ row.parent }}</td>
+                      <td>{{ row.descrip }}</td>
+                      <td>{{ row.lot }}</td>
+                      <td class="text-end">{{ new Intl.NumberFormat("en-US").format(Math.abs(row.quantity)) }}</td>
+                      <td class="text-end">{{ new Intl.NumberFormat("en-US").format(row.pack_size) }}</td>
+                      <td>{{ row.unit }}</td>
+                      <td class="text-end">{{ new Intl.NumberFormat("en-US").format(row.pack_size*Math.abs(row.quantity)) }}</td>
+                      <td>{{ row.unit }}</td>
+                      <td class="text-center">{{ $moment(row.exp).format("DD-MM-YYYY") }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot v-if="detail.rows.length && base.controll != 'create'">
+                    <tr class="text-right">
+                      <td colspan="9"></td>
+                      <th>Total Quantity : {{ sum }}</th>
+                    </tr>
+                    <tr class="text-right">
+                      <td colspan="9"></td>
+                      <th>Total Net Weight : {{ new Intl.NumberFormat("en-US").format(total_net) }}</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            <div class="grid gap-3 grid-cols-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Creator</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="ผู้ทำรายการ"
+                  class="input input-bordered"
+                  disabled
+                  :value="base.form.creator_name ? base.form.creator_name : user.firstname+' '+user.lastname"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Status</span>
+                </label>
+                <label class="form-control w-full">
+                  <select class="select select-bordered border-gray-300" v-model="base.form.status" :disabled="locked">
+                    <option disabled selected value="">เลือกรายการ</option>
+                    <option value="packing">Packing</option>
+                    <option value="delivering">Delivering</option>
+                    <option value="delivered">Delivered</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+          <hr v-if="!locked" />
+          <div
+            class="backdrop-blur sticky top-0 items-center gap-3 px-4 flex"
+            v-if="!locked"
+          >
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-base" class="btn">Cancel</label>
+            </div>
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-primary text-white"
+                @click="base_save('static')"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template #view>
+      <div class="gap-3 py-3">
+        <div class="card card-compact shadow-lg bg-base-100">
+          <div class="card-body overflow-auto">
+            <div
+              v-if="base.loading"
+              class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-white bg-opacity-50 top-0 left-0"
+            >
+              <AppModuleGlobalLoadingText
+                :type="'text'"
+                :class="`p-4 py-12 text-3xl text-center`"
+              />
+            </div>
+            <div class="border-2 border-dashed rounded-xl p-2">
+              <div class="join w-full">
+                <button
+                  class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                  disabled
+                >
+                  Date Type:
+                </button>
+                <select class="join-item select select-bordered select-sm border-gray-300 w-full shadow"
+                  v-model="base.date"
+                >
+                  <option value="sending_date" selected>sending date</option>
+                  <option value="created_at">pick date</option>
+                  <option value="packed_at">pack date</option>
+                </select>
+                <button
+                  class="md:block hidden join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                  disabled
+                >
+                  Start from:
+                </button>
+                <input type="date" class="join-item input input-bordered input-sm border-gray-300 w-full shadow"
+                  v-model="base.from"
+                />
+                <button
+                  class="md:block hidden join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                  disabled
+                >
+                  -
+                </button>
+                <input type="date" class="join-item input input-bordered input-sm border-gray-300 w-full shadow"
+                  v-model="base.to"
+                />
+                <button class="join-item btn btn-sm btn-active text-white shadow" 
+                  @click="searching"
+                >
+                  <Icon
+                    icon="tabler:search"
+                    class="text-white"
+                    width="18" height="18"
+                  />
+                  <span class="sm:block hidden">Search</span>
+                </button>
+              </div>
+            </div>
+            <div class="p-2">
+              <!-- <div class="grid grid-cols-2 gap-3">
+                <button
+                  class="join-item btn btn-sm btn-outline btn-primary w-fit"
+                  @click="exportExcel('base')"
+                  disabled
+                >
+                  <Icon
+                    icon="mdi:file-excel-outline"
+                    width="16" height="16"
+                  />
+                    Excel
+                </button> -->
+                <!-- </div> -->
+                <div class="flex justify-end">
+                  <AppModuleGlobalSearch
+                    :class="'join-item input input-sm input-bordered border-gray-300 w-full md:max-w-xs'"
+                    @search="
+                      (q) => {
+                        base.q = q;
+                        base.page = 1;
+                        base_search();
+                      }
+                    "
+                  />
+                </div>
+              <!-- </div> -->
+              <div class="overflow-x-auto w-full max-h-[59vh] my-3">
+                <table class="table table-xs table-pin-rows table-pin-cols table-zebra">
+                  <thead>
+                    <tr class="italic">
+                      <th>Sale Order No.</th>
+                      <td>Status</td>
+                      <td>Customer</td>
+                      <td>Sending</td>
+                      <td>Pick</td>
+                      <td>Pack</td>
+                      <td colspan="2">Deliver</td>
+                      <th class="text-center">View</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, i) in base.rows"
+                    >
+                    <!-- :class="row.status == 'delivered' ? 'text-emerald-700' : row.status == 'delivering' ? 'text-amber-700' : ''" -->
+                      <th>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ row.sale }}
+                            </div>
+                            <div class="opacity-50">
+                              ( Code: {{ row.code }} )
+                            </div>
+                          </div>
+                        </div>
+                      </th>
+                      <td>
+                        <span 
+                          class="badge badge-sm font-semibold italic px-4 py-2 w-20 text-base-100" 
+                          :class="row.status == 'delivered' ? 'badge-success' : row.status == 'delivering' ? 'badge-warning' : 'badge-info'">
+                            {{ row.status }}
+                        </span>
+                      </td>
+                      <td>{{ row.customer }}</td>
+                      <td class="italic">{{ $moment(row.sending_date).format("DD-MM-YYYY") }}</td>
+                      <!-- <td><span class="badge badge-sm font-semibold italic" :class="row.status == 'delivered' ? 'badge-success text-success-content' : row.status == 'delivering' ? 'badge-warning text-warning-content' : index & 1 ? 'badge-white' : 'badge-ghost'">{{ row.status }}</span></td> -->
                       <td>
                         <div class="flex items-center space-x-3">
                           <div>
                             <div>
-                              {{ v.creator_name }}
+                              {{ $moment(row.created_at).format("DD-MM-YYYY HH:mm:ss") }}
                             </div>
-                            <div class="italic">
-                              date : {{ v.created_at }}
+                            <div class="text-slate-500">
+                              {{ row.creator_name }}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td class="font-bold">{{ v.status }}</td>
-                      <th class="text-right">
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ row.packed_at ? $moment(row.packed_at).format("DD-MM-YYYY HH:mm:ss") : '-' }}
+                            </div>
+                            <div class="text-slate-500" v-if="row.packed_at">
+                              {{ row.packer_name || '-' }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div class="text-right">
+                            <div>
+                              delivering at :
+                            </div>
+                            <hr>
+                            <div>
+                              delivered at :
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ row.delivering_at ? $moment(row.delivering_at).format("DD-MM-YYYY HH:mm:ss")  : '-' }}
+                            </div>
+                            <hr v-if="row.delivering_at">
+                            <div v-if="row.delivering_at">
+                              {{ row.delivered_at ? $moment(row.delivered_at).format("DD-MM-YYYY HH:mm:ss")  : '-' }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <th class="text-center">
                         <label
                           for="modal-base"
-                          class="join-item btn btn-ghost no-underline modal-button btn-xs"
-                          @click="base_edit(`${v.code}`, `${i}`)"
+                          class="join-item btn btn-ghost modal-button btn-xs text-slate-500 hover:text-black"
+                          @click="base_edit(`${row.code}`, `${i}`)"
                         >
-                          Detail
+                          <span class="underline underline-offset-2">detail</span>
                         </label>
                       </th>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="join w-full justify-center lg:justify-end">
+              <div class="grid gap-3 md:grid-cols-2 grid-cols-1">
+                <div class="md:text-left text-center text-sm">
+                  Show :
+                  <select class="select select-bordered select-xs w-fit bg-yellow-50" 
+                    v-model="base.row" 
+                    @change="base_search()"
+                  >
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </select>
+                  |
+                  Showing {{ base.page == Math.ceil(base.total/base.row) ? 1 + (base.row*(base.page - 1)) : 1 + ((base.page - 1)*base.row) }} to {{ base.page == Math.ceil(base.total/base.row) ? base.total : base.row*base.page }} of {{ base.total }} entries
+                </div>
+                <div class="join w-full justify-center lg:justify-end">
                   <AppModuleGlobalPageination
                   :page="base.page"
                   :total="base.total"
@@ -304,27 +362,29 @@
                   :next="base.next"
                   :loading="base.loading"
                   @search="
-                      (res) => {
+                    (res) => {
                       base.page = res.page;
                       this.base_search();
-                      }
+                    }
                   "
                   />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </template>
+      </div>
+    </template>
   </AppLayout>
 </template>
 
 <style>
-.crop {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 1px;
-}
+  .crop {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 1px;
+  }
 </style>
 
 <script>
@@ -335,6 +395,7 @@ import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
 import Query from "@/assets/js/fetch.js";
 
 export default {
@@ -346,32 +407,23 @@ export default {
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,
     AppModuleGlobalShowImage,
+    AppModuleGlobalLoadingText
   },
   data() {
     return {
       status: '',
       sum: 0,
       total_net: 0,
-      edit: false,
-      done: false,
-      checkbox: "",
       refresh: false,
-      tmpsLink: "",
-      msg: {
-        quan: '',
-        packing: '',
-        mark: '',
-        customer: '',
-        picking: '',
-        sending: ''
-      },
-      datalist: [],
       base: {
         rows: [],
         total: 0,
         page: 1,
-        row: 10,
+        row: 15,
         q: "",
+        date: "sending_date",
+        from: "",
+        to: "",
         next: false,
         back: false,
         loading: false,
@@ -395,13 +447,7 @@ export default {
           title: "",
           ref: "",
         },
-      },
-      remove: {
-        current: 0,
-        model: false,
-        controll: "",
-        tb: "",
-      },
+      }
     };
   },
   computed: {
@@ -427,8 +473,7 @@ export default {
     },
     makeid(length) {
       let result = "";
-      const characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       const charactersLength = characters.length;
       let counter = 0;
       while (counter < length) {
@@ -439,20 +484,28 @@ export default {
       }
       return result;
     },
+    searching() {
+      this.base.page = 1;
+      this.base_search();
+    },
     // base
     base_search() {
       this.base.loading = true;
       this.base_get((res) => {
-        this.base.rows = res.rows;
-        this.base.total = res.total;
-        this.base.next =
-          this.base.page * this.base.row >= this.base.total ? false : true;
-        this.base.back = this.base.page > 1 ? true : false;
-        this.base.loading = false;
+        setTimeout(() => {
+          this.base.rows = res.rows;
+          this.base.total = res.total;
+          this.base.next =
+            this.base.page * this.base.row >= this.base.total ? false : true;
+          this.base.back = this.base.page > 1 ? true : false;
+          this.base.loading = false;
+        }, 200);
       });
     },
     base_get(callback) {
-      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/vita?status=picking&total=1&page=${this.base.page}${this.base.row ? `&rows=${this.base.row}` : ""}${this.base.q ? `&q=${this.base.q}` : ""}`, (res) => {
+      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/vita?packed=1&d=1&total=1&page=${this.base.page}
+        ${this.base.row ? `&rows=${this.base.row}` : ""}${this.base.q ? `&q=${this.base.q}` : ""}
+        &date=${this.base.date}&from=${this.base.from ? this.base.from : ''}&to=${this.base.to  ? this.base.to : ''}`, (res) => {
         if (res.success) {
           res.rows.forEach((v, i) => {
             res.rows[i].image = v.image ? JSON.parse(v.image) : [];
@@ -462,38 +515,7 @@ export default {
         callback({ ...res });
       });
     },
-    base_create() {
-      this.datalist = []
-      this.sum = 0
-      this.total_net = 0
-
-      this.msg.quan = ''
-      this.msg.packing = ''
-      this.msg.mark = ''
-      this.msg.customer = ''
-      this.msg.picking = ''
-      this.msg.sending = ''
-
-      this.base.current = this.makeid(15);
-      this.base.form = {
-        quantation: "",
-        packing: "",
-        mark: "",
-        customer: "",
-        picking: "",
-        sending_date: "",
-        status:'picking'
-      };
-      this.status = 'picking'
-
-      this.detail.rows = [];
-      this.base.controll = "create";
-      this.detail_search();
-      this.edit = false;
-      this.done = false;
-    },
     base_edit(code, index) {
-      this.datalist = []
       this.detail.rows = [];
       this.sum = 0
       this.total_net = 0
@@ -504,73 +526,53 @@ export default {
       this.detail_search();
       this.refresh = true;
       this.status = this.base.form.status
-      // this.edit = this.base.form.status == 'packing' ? false : true;
-      this.locked = this.base.form.status == 'packing' ? false : true;
+      this.locked = this.base.form.status == 'delivered' ? true : false;
     },
     base_save(type) {
-      // if(!this.base.form.quantation || !this.base.form.packing || !this.base.form.mark || !this.base.form.customer || !this.base.form.picking || !this.base.form.sending_date) {
-      //   if(!this.base.form.quantation) this.msg.quan = '*fill in information*'
-      //   else this.msg.quan = ''
-      //   if(!this.base.form.packing) this.msg.packing = '*fill in information*'
-      //   else this.msg.packing = ''
-      //   if(!this.base.form.mark) this.msg.mark = '*fill in information*'
-      //   else this.msg.mark = ''
-      //   if(!this.base.form.customer) this.msg.customer = '*fill in information*'
-      //   else this.msg.customer = ''
-      //   if(!this.base.form.picking) this.msg.picking = '*fill in information*'
-      //   else this.msg.picking = ''
-      //   if(!this.base.form.sending_date) this.msg.sending = '*fill in information*'
-      //   else this.msg.sending = ''
-      //   return;
-      // }
-
       let obj = {
         rows: [
           {
             code: this.base.form.code,
-            quantation: this.base.form.quantation,
-            packing: this.base.form.packing,
-            mark: this.base.form.mark,
-            customer: this.base.form.customer,
-            picking: this.detail.rows.find(x => x.doc_name == this.base.form.picking).code,
-            sending_date: this.base.form.sending_date,
             status: this.base.form.status,
           },
         ]
       };
 
-      if(this.base.form.status == 'shipping') {
-        obj['rows'][0]["shipped_at"] = this.dateNow()
-        obj['rows'][0]["shipped_by"] = this.user.code
+      if(this.base.form.status == 'delivering') {
+        obj['rows'][0]["delivering_at"] = this.dateNow()
+        obj['rows'][0]["delivering_by"] = this.user.code
       }
 
-      if(this.base.form.status == 'received') {
-        obj['rows'][0]["received_at"] = this.dateNow()
-        obj['rows'][0]["received_by"] = this.user.code
+      if(this.base.form.status == 'delivered') {
+        obj['rows'][0]["delivered_at"] = this.dateNow()
+        obj['rows'][0]["delivered_by"] = this.user.code
       }
 
-      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/vita`, obj, (res) => {
+      new Query(null, 'put').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/vita`, obj, (res) => {
         if (!res.success) {
         } else {
-          let obj = {
-            rows: [
-              {
-                code: res.rows[0].picking,
-                used: this.base.form.status == 'pending' ? 'Y' : 'S'
-              },
-            ]
-          };
+          new Query(null,'get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/logs?ref_code=${this.base.form.code}&total=1`, (res) => {
+            if (res.success) {
+              let obj = { rows: [] }
+              res.rows.forEach((x, i) => {
+                obj['rows'][i] = {
+                  code: x.code,
+                  type: this.base.form.status == 'delivering' ? 'carry' : 'issue'
+                }
+              })
 
-          new Query('base','put').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/temp`, obj, (res) => {
-            if (!res.success) {
-            } else {
-              this.base.modal = false;
-  
-              if (type == "static") {
-                this.base_search();
-              }
+              new Query(null,'put').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/logs`, obj, (res) => {
+                if (!res.success) {
+                } else {
+                  this.base.modal = false;
+
+                  if (type == "static") {
+                    this.base_search();
+                  }
+                }
+              });
             }
-          });
+          })
         }
       });
     },
@@ -586,12 +588,10 @@ export default {
             : true;
         this.detail.back = this.detail.page > 1 ? true : false;
         this.detail.loading = false;
-
-        this.base.controll == 'edit' ? this.detail_list() : ''
       });
     },
     detail_get(callback) {
-      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/logs?ref_code=${this.base.form.code}`, (res) => {
+      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/logs?ref_code=${this.base.form.code}&asc=1&total=1`, (res) => {
         if (res.success) {
           res.rows.filter(x => x.code).forEach(x => {
             this.sum += parseFloat(Math.abs(x.quantity))
@@ -606,81 +606,11 @@ export default {
         }
         callback({ ...res });
       });
-    },
-    detail_list() {
-      let used = this.detail.rows.find(x => x.code == this.base.form.picking || x.doc_name == this.base.form.picking)
-      this.base.form.picking = used.doc_name
-
-      new Query('datalist','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/logs?ref_code=${used.code}`, (res) => {
-        if (res.success) {
-          res.rows.filter(x => x.code).forEach(x => {
-            this.sum += parseFloat(Math.abs(x.quantity))
-            x['net_weight'] = Math.abs(x.quantity)*x.pack_size
-            this.total_net += x.net_weight
-          })
-
-          this.datalist = res.rows
-        }
-      });
-    },
-    // REMOVE
-    remove_item(code, controll, tb) {
-      // console.log(code, controll, tb)
-
-      this.remove.code = code;
-      this.remove.controll = controll;
-      this.remove.tb = tb;
-    },
-    confirm_remove() {
-      fetch(`${this.serviceUrl}${this.remove.tb}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({
-          rows: [{ code: this.remove.code }]
-        }),
-      })
-      .then((response) => response.json())
-      .then((res) => {
-        // console.log(res.rows)
-
-        if (res.success) {
-          let obj = {
-            rows: [
-              {
-                code: this.base.rows.find(x => x.code == this.remove.code).picking,
-                used: 'N'
-              },
-            ]
-          };
-
-          new Query('base','put').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/temp`, obj, (res) => {
-            if (!res.success) {
-            } else {
-              console.log(res)
-            }
-          });
-
-          this.remove.modal = false;
-          this[`${this.remove.controll}_search`]();
-        }
-      })
-      .catch((error) => {
-        callback([]);
-        console.error("Error:", error);
-      });
-    },
+    }
   },
   mounted() {
     this.$nextTick(() => {
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:80811"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
     });
   },
   watch: {

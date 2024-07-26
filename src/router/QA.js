@@ -7,19 +7,19 @@ import QAWHIndirectApprove from "../views/App/QA/WHIndirect/Approve.vue";
 import QAWHIndirectIssue from "../views/App/QA/WHIndirect/Issue.vue";
 const QARoutes = [
   {
-    path: "/QA/WHIndirect/Report",
+    path: "/QA/WHindirect/Report",
     name: "QAWHIndirectReport",
     component: QAWHIndirectReport,
     props: { default: true, menu: true, type: "member" },
   },
   {
-    path: "/QA/WHIndirect/Item",
+    path: "/QA/WHindirect/ItemMaster",
     name: "QAWHIndirectItem",
     component: QAWHIndirectItem,
     props: { default: true, menu: true, type: "member" },
   },
   {
-    path: "/QA/WHIndirect/Recive",
+    path: "/QA/WHindirect/ManageItem",
     name: "QAWHIndirectReceive",
     component: QAWHIndirectReceive,
     props: { default: true, menu: true, type: "member" },
@@ -31,19 +31,19 @@ const QARoutes = [
   //   props: { default: true, menu: true, type: "member" },
   // },
   {
-    path: "/QA/WHIndirect/Request",
+    path: "/QA/WHindirect/Request",
     name: "QAWHIndirectRequest",
     component: QAWHIndirectRequest,
     props: { default: true, menu: true, type: "member" },
   },
   {
-    path: "/QA/WHIndirect/Approve",
+    path: "/QA/WHindirect/Approve",
     name: "QAWHIndirectApprove",
     component: QAWHIndirectApprove,
     props: { default: true, menu: true, type: "member" },
   },
   {
-    path: "/QA/WHIndirect/Issue",
+    path: "/QA/WHindirect/Issue",
     name: "QAWHIndirectIssue",
     component: QAWHIndirectIssue,
     props: { default: true, menu: true, type: "member" },

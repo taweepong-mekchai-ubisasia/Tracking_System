@@ -43,28 +43,28 @@ const QCRouter = [
   },
 
   {
-    path: "/QC/Inspec/RM",
+    path: "/QC/Inspections/RMreport",
     name: "QCInspecRM",
     component: QCInspecRM,
     props: { default: true, menu: true, type: "member" },
   },
 
   {
-    path: "/QC/InspecFG",
+    path: "/QC/Inspections/FGreport",
     name: "QCInspecFG",
     component: QCInspecFG,
     props: { default: true, menu: true, type: "member" },
   },
 
   {
-    path: "/QC/InspecPD",
+    path: "/QC/Inspections/PDissueReport",
     name: "QCInspecPD",
     component: QCInspecPD,
     props: { default: true, menu: true, type: "member" },
   },
 
   {
-    path: "/QC/Inspec/Trackeability",
+    path: "/QC/Inspections/TraceAbilityFG",
     name: "QCInspecTrackeability",
     component: QCInspecTrackeability,
     props: { default: true, menu: true, type: "member" },

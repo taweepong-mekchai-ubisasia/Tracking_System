@@ -7,11 +7,11 @@ import WMSUbisDefault4 from "../views/App/WMS/Ubis/Default4.vue";
 
 import WMSVitaScanToReceive from "../views/App/WMS/Vita/ScanToReceive.vue";
 import WMSVitaReceive from "../views/App/WMS/Vita/Receive.vue";
-import WMSVitaPicking from "../views/App/WMS/Vita/Picking.vue";
-import WMSVitaPacking from "../views/App/WMS/Vita/Packing.vue";
+import WMSVitaPickPack from "../views/App/WMS/Vita/PickAndPack.vue";
 import WMSVitaDeliver from "../views/App/WMS/Vita/Deliver.vue";
-import WMSVitaReport from "../views/App/WMS/Vita/Report.vue";
+import WMSVitaCustomer from "../views/App/WMS/Vita/Customer.vue";
 import WMSVitaStockOnHand from "../views/App/WMS/Vita/StockOnHand.vue";
+// import WMSVitaStockOnHandByLot from "../views/App/WMS/Vita/StockOnHand_ByLot.vue";
 const WMSRoutes = [
     {
     path: "/WMS/Ubis/Report",
@@ -56,21 +56,15 @@ const WMSRoutes = [
     props: { default: true, menu: true, type: "member" },
     },
     {
-    path: "/WMS/Vita/Receive",
+    path: "/WMS/Vita/Management",
     name: "WMSVitaReceive",
     component: WMSVitaReceive,
     props: { default: true, menu: true, type: "member" },
     },
     {
-    path: "/WMS/Vita/Picking",
-    name: "WMSVitaPicking",
-    component: WMSVitaPicking,
-    props: { default: true, menu: true, type: "member" },
-    },
-    {
-    path: "/WMS/Vita/Packing",
-    name: "WMSVitaPacking",
-    component: WMSVitaPacking,
+    path: "/WMS/Vita/PickAndPack",
+    name: "WMSVitaPickPack",
+    component: WMSVitaPickPack,
     props: { default: true, menu: true, type: "member" },
     },
     {
@@ -79,17 +73,29 @@ const WMSRoutes = [
     component: WMSVitaDeliver,
     props: { default: true, menu: true, type: "member" },
     },
-    // {
-    // path: "/WMS/Vita/Report",
-    // name: "WMSVitaReport",
-    // component: WMSVitaReport,
-    // props: { default: true, menu: true, type: "member" },
-    // },
+    {
+    path: "/WMS/Vita/Customer",
+    name: "WMSVitaCustomer",
+    component: WMSVitaCustomer,
+    props: { default: true, menu: true, type: "member" },
+    },
     {
     path: "/WMS/Vita/StockOnHand",
     name: "WMSVitaStockOnHand",
     component: WMSVitaStockOnHand,
     props: { default: true, menu: true, type: "member" },
     },
+    // {
+    // path: "/WMS/Vita/StockOnHandByProduct",
+    // name: "WMSVitaStockOnHand",
+    // component: WMSVitaStockOnHand,
+    // props: { default: true, menu: true, type: "member" },
+    // },
+    // {
+    // path: "/WMS/Vita/StockOnHandByLot",
+    // name: "WMSVitaStockOnHandByLot",
+    // component: WMSVitaStockOnHandByLot,
+    // props: { default: true, menu: true, type: "member" },
+    // },
 ];
 export default WMSRoutes;

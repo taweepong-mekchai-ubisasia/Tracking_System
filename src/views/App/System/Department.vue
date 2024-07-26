@@ -372,7 +372,7 @@ export default {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
           } else {
-            base.page = 1;
+            this.base.page = 1;
             this.base.modal = false;
             this.base_search();
           }

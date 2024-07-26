@@ -30,8 +30,6 @@
               this.menutype == 'Access' ? '' : changepage(`${prefix}${v.title}`)
             "
           >
-
-       
             <span class="flex-1 text-1xl">
               {{ v.title }}
             </span>

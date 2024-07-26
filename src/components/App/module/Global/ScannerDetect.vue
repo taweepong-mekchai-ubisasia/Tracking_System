@@ -1,5 +1,8 @@
 <template>
-  <div>scanning...</div>
+  <div class="mt-3">
+    <h3 class="text-lg font-bold italic">Scaning </h3>
+    <h3 class="loading loading-dots loading-lg"></h3>
+  </div>
   <!-- {{ this.detechScan }} -->
 </template>
 

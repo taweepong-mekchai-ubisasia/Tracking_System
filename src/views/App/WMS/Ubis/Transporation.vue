@@ -1,824 +1,1019 @@
 <template>
-    <AppLayout>
-      <template #modal>
-        <!-- modal base -->
-        <input
-          type="checkbox"
-          id="modal-base"
-          class="modal-toggle"
-          v-model="base.modal"
-        />
-        <div class="modal" v-if="base.modal">
-          <div class="modal-box w-11/12 max-w-4xl">
-            <label
-              for="modal-base"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-            >
-              ✕
-            </label>
-            <h3 class="text-lg font-bold text-primary">Transportation to Vita</h3>
-            <hr class="mt-5" />
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-                <div class="grid gap-3 grid-cols-2 md:grid-cols-3">
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text font-semibold">Customer </span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="customer"
-                      class="input input-bordered"
-                      :value="base.form.customer || 'Vita'"
-                      disabled
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text font-semibold">EN </span><span class="text-xs text-error">{{ msg.en }}</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="en"
-                      class="input input-bordered"
-                      v-model="base.form.en"
-                      :readonly="locked"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text font-semibold">Ref </span><span class="text-xs text-error">{{ msg.ref }}</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ref"
-                      class="input input-bordered"
-                      v-model="base.form.ref"
-                      :readonly="locked"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text font-semibold">Packing List </span><span class="text-xs text-error">{{ msg.packing }}</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="packing list"
-                      class="input input-bordered"
-                      v-model="base.form.packing"
-                      :readonly="locked"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text font-semibold">Shipping Mark </span><span class="text-xs text-error">{{ msg.mark }}</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="shipping mark"
-                      class="input input-bordered"
-                      v-model="base.form.shipping_mark"
-                      :readonly="locked"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text font-semibold">Shipping Date </span><span class="text-xs text-error">{{ msg.date }}</span>
-                    </label>
-                    <input
-                      type="date"
-                      placeholder="shipping date"
-                      class="input input-bordered"
-                      v-model="base.form.shipping_date"
-                      :readonly="locked"
-                    />
-                  </div>
-                </div>
-                <div class="form-control mt-5">
-                  <div class="overflow-x-auto min-h-40 max-h-40 border-2">
-                    <table
-                      class="table table-xs table-pin-rows table-pin-cols table-zebra table-auto"
-                    >
-                      <thead>
-                        <tr>
-                          <td>ลำดับ</td>
-                          <td>Product</td>
-                          <td>Description</td>
-                          <!-- <td>Shelf Life</td> -->
-                          <td class="text-right">Quantity</td>
-                          <td class="text-right">Pack Size</td>
-                          <td>Unit</td>
-                          <td class="text-right">Net Weight</td>
-                          <th class="text-right" v-if="!locked">
-                            <label
-                              for="modal-detail"
-                              class="btn btn-primary modal-button btn-xs text-white me-1"
-                              @click="detail_create();"
-                            >
-                              + new
-                            </label>
-                          </th>
-                          <th v-else></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          class="hover"
-                          v-for="(row, index) in detail.rows"
-                          :key="index"
-                        >
-                          <td class="font-bold">{{ index + 1 }}</td>
-                          <td>{{ row.product }}</td>
-                          <td>{{ row.descrip }}</td>
-                          <!-- <td>{{ row.shelf_life }}</td> -->
-                          <td class="text-right">{{ new Intl.NumberFormat("en-US").format(row.total_qty) }}</td>
-                          <td class="text-right">{{ new Intl.NumberFormat("en-US").format(row.pack_size) }}</td>
-                          <td>{{ row.unit }}</td>
-                          <td class="text-right">{{ new Intl.NumberFormat("en-US").format(row.net_weight) }}</td>
-                          <th class="text-right" v-if="!locked">
-                            <label
-                              for="modal-print"
-                              class="btn btn-ghost modal-button btn-xs"
-                              @click="prod_detail(`${row.code}`)"
-                            >
-                              <span class="underline underline-offset-2">พิมพ์</span>
-                            </label>
-                            |
-                            <label
-                              for="modal-detail"
-                              class="btn btn-ghost modal-button btn-xs"
-                              @click="scan = true; detail_edit(`${row.code}`, `${index}`)"
-                            >
-                              แก้ไข
-                            </label>
-                            |
-                            <label
-                              for="modal-remove"
-                              class="btn btn-ghost modal-button btn-xs"
-                              @click="
-                                remove_item(
-                                  `${row.code}`,
-                                  'detail',
-                                  'api/controllers/MYSQL/INTERNAL/WMS/prod'
-                                )
-                              "
-                            >
-                              ลบ
-                            </label>
-                          </th>
-                          <th class="text-right" v-else>
-                            <label
-                              for="modal-print"
-                              class="btn btn-ghost modal-button btn-xs"
-                              @click="prod_detail(`${row.code}`)"
-                              v-if="base.form.status == 'shipping'"
-                            >
-                              <span class="underline underline-offset-2">พิมพ์</span>
-                            </label>
-                            <label
-                              for="modal-detail"
-                              class="btn btn-ghost modal-button btn-xs"
-                              @click="detail_edit(`${row.code}`, `${index}`)"
-                            >
-                              รายละเอียด
-                            </label>
-                          </th>
-                        </tr>
-                      </tbody>
-                      <tfoot v-if="detail.rows.length && base.controll != 'create'">
-                        <tr class="text-right">
-                          <td colspan="7"></td>
-                          <th>Total Quantity : {{ sum }}</th>
-                        </tr>
-                        <tr class="text-right">
-                          <td colspan="7"></td>
-                          <th>Total Net Weight : {{ new Intl.NumberFormat("en-US").format(total_net) }}</th>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-                <div class="grid gap-3 grid-cols-2">
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text font-semibold">ผู้ทำรายการ</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ผู้ทำรายการ"
-                      class="input input-bordered"
-                      disabled
-                      :value="base.form.creator_name ? base.form.creator_name : user.firstname+' '+user.lastname"
-                    />
-                  </div>
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text font-semibold">Status</span>
-                    </label>
-                    <label class="form-control w-full">
-                      <select class="select select-bordered" v-model="base.form.status" :disabled="locked">
-                        <option disabled selected value="">เลือกรายการ</option>
-                        <option value="pending" >เตรียมจัดส่ง</option>
-                        <!-- <option value="pending" disabled>ร้องขอ</option>
-                        <option value="pending" disabled>เตรียมสินค้า</option>
-                        <option value="pending" disabled>ตรวจสอบ</option>
-                        <option value="pending" disabled>ควบคุมการจัดส่ง</option>
-                        <option value="pending" disabled>อนุมัติปล่อยสินค้า</option> -->
-                        <option value="shipping">จัดส่งแล้ว</option>
-                        <option value="receiving" disabled>กำลังรับสินค้า</option>
-                        <option value="received" disabled>รับสินค้าแล้ว</option>
-                      </select>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <hr v-if="!locked" />
-            <!-- </div> -->
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-              v-if="!locked"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancel</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button class="btn btn-primary text-white" @click="base_save('static')">Confirm</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- modal detail -->
-        <input
-          type="checkbox"
-          id="modal-detail"
-          class="modal-toggle"
-          v-model="detail.modal"
-        />
-        <div class="modal" v-if="detail.modal">
-          <div class="modal-box w-11/12 max-w-2xl">
-            <label
-              for="modal-detail"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-              @click="scan = false"
-            >
-              ✕
-            </label>
-            <h3 class="text-lg font-bold text-primary">Product</h3>
-            <hr class="mt-5" />
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              <div class="grid gap-3 grid-cols-2 md:grid-cols-2">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Product</span><span class="text-xs text-error">{{ msg.product }}</span>
-                  </label>
-                  <AppModuleGlobalSelectSearch
-                    v-if="
-                      !edit
-                    "
-                    :placeholder="'short code'"
-                    :label="'short_code'"
-                    :code="'short_code'"
-                    :minChar="0"
-                    :delay="0.5"
-                    :limit="10"
-                    :customClass="`input input-bordered ${
-                      checkbox == 'M' ? 'input-disabled' : ''
-                    }`"
-                    :disabled="checkbox == 'M' ? true : false"
-                    :current="detail.form.product"
-                    :refresh="refresh.product"
-                    @updateValue="
-                      (obj) => {
-                        // console.log(obj)
-                        detail.form.product = obj.short_code;
-                      }
-                    "
-                    @stopRefresh="
-                      (obj) => {
-                        // console.log(obj)
-                        refresh.product = obj.value;
-                      }
-                    "
-                    :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`"
-                    :param="`&item_name=1&total=1&wh=${user.branchTitle}&action=groupby-code`"
-                  />
-                  <input
-                    v-else
-                    type="text"
-                    placeholder="short code"
-                    class="input input-bordered"
-                    v-model="detail.form.product"
-                    disabled
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Description</span>
-                  </label>
-                  <select class="select select-bordered w-full" v-model="detail.form.descrip" v-if="!edit">
-                    <option value="" disabled selected>เลือก Description</option>
-                    <option v-for="v in datalist">{{ v.item_name }}</option>
-                  </select>
-                  <input
-                    v-else
-                    type="text"
-                    placeholder="short code"
-                    class="input input-bordered"
-                    v-model="detail.form.descrip"
-                    disabled
-                  />
-                </div>
-              </div>
-              <div class="grid gap-3 grid-cols-3 md:grid-cols-3">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Shelf Life</span>
-                  </label>
+  <AppLayout>
+    <template #modal>
+      <!-- modal base -->
+      <input
+        type="checkbox"
+        id="modal-base"
+        class="modal-toggle"
+        v-model="base.modal"
+      />
+      <div class="modal" v-if="base.modal">
+        <div class="modal-box w-11/12 max-w-4xl">
+          <label
+            for="modal-base"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">Transportation to Vita</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto" style="max-height: 68vh;">
+            <div class="grid gap-3 grid-cols-2 md:grid-cols-4">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">EN </span><span class="text-xs text-error">{{ msg.en }}</span>
+                </label>
+                <label class="input flex items-center gap-2 border-gray-300" :class="locked ? 'input-disabled' : 'input-bordered'">
+                  EN
                   <input
                     type="text"
-                    placeholder="shelf life"
-                    class="input input-bordered"
-                    v-model="detail.form.shelf_life"
-                    disabled
+                    placeholder="..."
+                    class="grow w-full"
+                    v-model="base.form.en"
+                    :disabled="locked"
                   />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Pack Size</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="packing"
-                    class="input input-bordered"
-                    v-model="detail.form.pack_size"
-                    :disabled="detail.form.pack_size == 'None' ? false : true"
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Unit</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="unit"
-                    class="input input-bordered"
-                    v-model="detail.form.unit"
-                    :disabled="detail.form.unit == 'None' ? false : true"
-                  />
-                </div>
+                </label>
               </div>
-              <div class="form-control mt-5">
-                <div class="overflow-x-auto min-h-40 max-h-40 border-2">
-                  <table
-                    class="table table-xs table-pin-rows table-pin-cols table-zebra table-auto"
-                  >
-                    <thead>
-                      <tr>
-                        <td>ลำดับ</td>
-                        <td>Lot No.</td>
-                        <td class="text-center">MFG</td>
-                        <td class="text-center">EXP</td>
-                        <td class="text-right">Quantity</td>
-                        <th class="text-right" v-if="!locked">
-                          <label
-                            for="modal-item"
-                            class="btn btn-primary modal-button btn-xs text-white me-1"
-                            @click="scan = false; item_create()"
-                          >
-                            + new
-                          </label>
-                          <!-- <label
-                            for="modal-qr"
-                            class="btn btn-secondary modal-button btn-xs text-white"
-                            @click="select = !select; scan = true"
-                          >
-                            # scan
-                          </label> -->
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        class="hover"
-                        v-for="(row, index) in item.rows"
-                        :key="index"
-                      >
-                        <td class="font-bold">{{ index + 1 }}</td>
-                        <td>{{ row.lot }}</td>
-                        <td class="text-center">{{ row.mfg }}</td>
-                        <td class="text-center">{{ row.exp }}</td>
-                        <td class="text-right">{{ new Intl.NumberFormat("en-US").format(row.quantity) }}</td>
-                        <th class="text-right" v-if="!locked">
-                          <label
-                            for="modal-item"
-                            class="btn btn-ghost modal-button btn-xs"
-                            @click="scan = true; item_edit(`${row.code}`, `${index}`)"
-                          >
-                            แก้ไข
-                          </label>
-                          |
-                          <label
-                            for="modal-remove"
-                            class="btn btn-ghost modal-button btn-xs"
-                            @click="
-                              remove_item(
-                                `${row.code}`,
-                                'item',
-                                'api/controllers/MYSQL/INTERNAL/WMS/item'
-                              )
-                            "
-                          >
-                            ลบ
-                          </label>
-                        </th>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <hr v-if="!locked" />
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-              v-if="!locked"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-detail" class="btn btn-danger" @click="scan = false">Cancel</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-primary text-white"
-                  @click="detail_save('static')"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- modal item -->
-        <input
-          type="checkbox"
-          id="modal-item"
-          class="modal-toggle"
-          v-model="item.modal"
-        />
-        <div class="modal" v-if="item.modal">
-          <div class="modal-box w-11/12 max-w-xl">
-            <label
-              for="modal-item"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-            >
-              ✕
-            </label>
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              <div class="grid gap-3 grid-cols-2">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Lot Number</span><span class="text-xs text-error">{{ msg.lot }}</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="lot number"
-                    class="input input-bordered"
-                    v-model="item.form.lot"
-                    :disabled="scan ? true : false"
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Quantity</span><span class="text-xs text-error">{{ msg.quantity }}</span>
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="quantity"
-                    class="input input-bordered"
-                    min="1"
-                    v-model="item.form.quantity"
-                  />
-                </div>
-              </div>
-              <div class="grid gap-3 grid-cols-2">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">MFG</span><span class="text-xs text-error">{{ msg.mfg }}</span>
-                  </label>
-                  <input
-                    type="date"
-                    placeholder="mfg"
-                    class="input input-bordered"
-                    v-model="item.form.mfg"
-                    :disabled="scan ? true : false"
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">EXP</span><span class="text-xs text-error">{{ msg.exp }}</span>
-                  </label>
-                  <input
-                    type="date"
-                    placeholder="exp"
-                    class="input input-bordered"
-                    v-model="item.form.exp"
-                    disabled
-                  />
-                </div>
-              </div>
-            </div>
-            <hr />
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-primary text-white"
-                  @click="item_save('static')"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- modal print -->
-        <input
-          type="checkbox"
-          id="modal-print"
-          class="modal-toggle"
-          v-model="print.modal"
-        />
-        <div class="modal" v-if="print.modal">
-          <div class="modal-box w-11/12 max-w-xl">
-            <label
-              for="modal-print"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-            >
-              ✕
-            </label>
-            <h3 class="text-lg font-bold text-primary">Choose Print Format</h3>
-            <hr class="mt-5" />
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              <div class="grid gap-3 md:grid-cols-4 grid-cols-2">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">จำนวนถังต่อชั้น</span>
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="ถังต่อชั้น"
-                    min="1"
-                    class="input input-bordered"
-                    @change="build = false"
-                    v-model="floor"
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Font Size</span>
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="font size"
-                    min="1"
-                    class="input input-bordered"
-                    v-model="fsize"
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">QR Code Size</span>
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="QRcode size"
-                    min="1"
-                    class="input input-bordered"
-                    v-model="qrsize"
-                  />
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Barcode Size</span>
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="Barcode size"
-                    min="1"
-                    class="input input-bordered"
-                    v-model="barsize"
-                  />
-                </div>
-              </div>
-              <div class="grid gap-3 grid-cols-3">
-                <button class="btn btn-primary text-white" @click="floor != 'NaN' ? build = true : build = false;" :disabled="build">Submit</button>
-                <button class="btn btn-error text-white" @click="build = false; floor = 'NaN'">Clear</button>
-                <button class="btn" @click="printPaper()" :disabled="!build">Print</button>
-              </div>
-              <div class="mt-4">
-                <div class="grid grid-cols-2">
-                  <p class="text-start font-semibold" :class="text-center">Preview :</p>
-                  <div class="form-control border-dashed border-2">
-                    <label class="label cursor-pointer">
-                      <span class="label-text">Drum No.</span> 
-                      <input type="checkbox" class="toggle toggle-sm toggle-success" v-model="drumcheck" />
-                    </label>
-                  </div>
-                </div>
-                <div class="border-dashed border-2 mt-1 pb-2" v-for="row in item.rows">
-                  <!-- {{ detail.form[0] }} -->
-                  <h1>{{ base.form.en }} ({{ base.form.ref }})</h1>
-                  <h1>PALLET NO. n/<span class="text-blue-500">{{ Math.ceil(detail.form[0].total_qty/floor) }}</span></h1>
-                  <h1>{{ detail.form[0].product }} = <span class="text-blue-500">{{ floor }}</span> x {{ detail.form[0].pack_size }} {{ detail.form[0].unit }}</h1>
-                  <h1>LOT NO. {{ row.lot }}</h1>
-                  <h1 v-if="drumcheck">DRUM NO. 1 - <span class="text-blue-500">{{ floor }}</span></h1>
-                  <div class="grid grid-cols-2 justify-items-center">
-                    <VueQRCodeComponent :text="123456789" :size="qrsize" class="mt-2" />
-                    <vue-barcode :value="123456789" :options="{ displayValue: false, width: barsize, height: 50*barsize }" tag="img" />
-                  </div>
-                </div>
-              </div>
-              <div id="printMe" class="landscape:hidden">
-                <div style="display: flex; justify-content: center;" v-for="n in Math.ceil(detail.form[0].total_qty/floor)" v-if="build">
-                  <div style="white-space: nowrap;" align="center">
-                    <h1 :style="`font-size: ${fsize}px;`">{{ base.form.en }} ({{ base.form.ref }})</h1>
-                    <h1 :style="`font-size: ${fsize}px;`">PALLET NO. {{ n }}/{{ Math.ceil(detail.form[0].total_qty/floor) }}</h1>
-                    <h1 :style="`font-size: ${fsize}px;`">
-                      {{ detail.form[0].product }} = 
-                      <!-- {{ list.filter(x => x.order == n-1) }} -->
-                      {{ list.filter(x => x.order == n-1).reduce((a, b) => { return { qty: a.qty + b.qty } }).qty != floor 
-                        ? list.filter(x => x.order == n-1).reduce((a, b) => { return { qty: a.qty + b.qty } }).qty 
-                        : floor }}
-                      x {{ detail.form[0].pack_size }} {{ detail.form[0].unit }}
-                    </h1>
-                    <div v-for="v in list.filter(x => x.order == n-1)">
-                      <h1 :style="`font-size: ${fsize}px;`">LOT NO. {{ v.lot }}<span v-if="v.qty != floor"> = {{ v.qty }}</span></h1>
-                      <h1 :style="`font-size: ${fsize}px;`" v-if="drumcheck">DRUM NO. {{ v.drum+1 }}<span v-if="v.qty != 1"> - {{ v.drum+v.qty }}</span></h1>
-                    </div>
-                    <table style="width: 100%">
-                      <tr>
-                        <td>
-                          <VueQRCodeComponent :text="'http://192.168.11.1/UAT-tin/WMS/Vita/ScanToReceive?'+detail.form[0].code+'&'+n+'&'+floor" :size="3*qrsize" />
-                        </td>
-                        <td>
-                          <vue-barcode :value="detail.form[0].code+'&'+n+'&'+floor" :options="{ displayValue: false, width: 3*barsize, height: 150*barsize }" tag="img"/>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div style="break-after:page"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- qr modal -->
-        <input
-          type="checkbox"
-          id="modal-qr"
-          class="modal-toggle"
-          v-model="qrmodal.modal"
-        />
-        <div class="modal" v-if="qrmodal.modal">
-          <div class="modal-box">
-            <label
-              for="modal-qr"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-              @click="select = !select"
-            >
-              ✕
-            </label>
-            <qrcode-stream
-              :camera="camera"
-              @init="onCameraChange"
-              @detect="onDetect"
-              @error="onError"
-              @camera-on="onReady"
-              :track="selected.value"
-              class="max-w-lg mt-7"
-              v-if="select"
-            ></qrcode-stream>
-          </div>
-        </div>
-        <!-- modal remove -->
-        <input
-          type="checkbox"
-          id="modal-remove"
-          class="modal-toggle"
-          v-model="remove.modal"
-        />
-        <div class="modal" v-if="remove.modal">
-          <div class="modal-box relative">
-            <label
-              for="modal-remove"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-            >
-              ✕
-            </label>
-            <h3 class="text-lg font-bold text-error">Remove Item!</h3>
-            <hr class="mt-5" />
-            <div class="card-body overflow-auto" style="max-height: 60vh">
-              Are your sure for remove this item?
-            </div>
-            <hr class="" />
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancel</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-error text-white"
-                  @click="confirm_remove()"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template #view>
-        <div class="grid grid-cols-1 gap-6 lg:px-9 lg:py-5">
-          <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-            <div class="card-body overflow-auto">
-              <div class="join mt-5 w-full md:justify-center lg:justify-end">
-                <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered w-full max-w-xs'"
-                  @search="
-                    (q) => {
-                      base.q = q;
-                      base.page = 1;
-                      base_search();
-                    }
-                  "
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Ref </span><span class="text-xs text-error">{{ msg.ref }}</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="ref"
+                  class="input input-bordered border-gray-300"
+                  v-model="base.form.ref"
+                  :disabled="locked"
                 />
-                <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button text-white"
-                  @click="base_create()"
-                  >Create</label
-                >
               </div>
-              <div class="overflow-x-auto w-full max-h-[60vh] mt-9">
-                <table
-                  class="table table-xs table-pin-rows table-pin-cols table-zebra"
-                >
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Customer </span><span class="text-xs text-error">{{ msg.customer }}</span>
+                </label>
+                <select class="select select-bordered" v-model="base.form.customer" disabled>
+                  <option value="VITA" selected>VITA</option>
+                </select>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Loading Date </span><span class="text-xs text-error">{{ msg.date }}</span>
+                </label>
+                <input
+                  type="date"
+                  placeholder="shipping date"
+                  class="input input-bordered border-gray-300"
+                  v-model="base.form.load_date"
+                  :disabled="locked"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Invoice</span>
+                </label>
+                <label class="input flex items-center gap-2 border-gray-300" :class="locked ? 'input-disabled' : 'input-bordered'">
+                  AE
+                  <input
+                    type="text"
+                    placeholder="..."
+                    class="grow w-full"
+                    v-model="base.form.inv"
+                    :disabled="locked"
+                  />
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Packing List </span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="packing list"
+                  class="input input-bordered border-gray-300"
+                  v-model="base.form.packing"
+                  :disabled="locked"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Shipping Marks </span>
+                </label>
+                <select class="select select-bordered" v-model="base.form.customer" disabled>
+                  <option value="VITA" selected>VT2024</option>
+                </select>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Remark </span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="remark"
+                  class="input input-bordered border-gray-300"
+                  v-model="base.form.remark"
+                  :disabled="locked"
+                />
+              </div>
+            </div>
+            <div class="form-control mt-5">
+              <div class="overflow-x-auto min-h-40 max-h-40 border shadow">
+                <table class="table table-xs table-pin-rows table-pin-cols table-zebra table-auto">
                   <thead>
                     <tr>
+                      <th v-if="base.form.status != 'receiving' && base.form.status != 'received'">
+                        <label
+                          class="btn modal-button btn-xs"
+                          @click="prod_detail('create', 0);"
+                        >
+                          พิมพ์
+                        </label>
+                      </th>
                       <td>ลำดับ</td>
-                      <td>EN</td>
-                      <td>Ref</td>
-                      <td>Shipping Date</td>
-                      <td>Transaction Maker</td>
-                      <td>Transaction</td>
-                      <td>Status</td>
-                      <th class="text-right"></th>
+                      <td>Product</td>
+                      <td>Description</td>
+                      <td class="text-right">Quantity</td>
+                      <td class="text-center" colspan="2">Pack Size</td>
+                      <td class="text-center" colspan="2">Net Weight</td>
+                      <td>อัพเดทล่าสุดเมื่อ</td>
+                      <th class="text-right" v-if="!locked">
+                        <label
+                          for="modal-detail"
+                          class="btn btn-primary modal-button btn-xs text-white me-1"
+                          @click="detail_create();"
+                        >
+                          + new
+                        </label>
+                      </th>
+                      <th v-else></th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(row, index) in base.rows" :key="row.code" :class="row.status == 'pending' ? 'hover' : row.status == 'received' ? 'text-primary hover' : 'text-slate-500 hover'">
-                      <td class="font-bold">{{ index + 1 }}</td>
-                      <td>{{ row.en }}</td>
-                      <td>{{ row.ref }}</td>
-                      <td>{{ row.shipping_date }}</td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div>
-                              {{ row.creator_name }}
-                            </div>
-                            <div class="italic">
-                              date : {{ row.created_at }}
-                            </div>
-                          </div>
-                        </div>
+                    <tr class="text-center" v-if="msg.detail">
+                      <td colspan="8">
+                        <span class="text-xs text-error">{{ msg.detail }}</span>
                       </td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="italic">
-                              shipped at :  {{ row.shipped_at || '-' }}
-                            </div>
-                            <div class="italic">
-                              received at : {{ row.received_at || '-' }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="font-bold">{{ row.status }}</td>
-                      <th class="text-right" v-if="row.status == 'pending'">
+                    </tr>
+                    <tr
+                      v-for="(row, index) in detail.rows"
+                      :key="index"
+                    >
+                      <th class="text-center" v-if="base.form.status != 'receiving' && base.form.status != 'received'">
+                        <input type="checkbox" class="checkbox checkbox-xs checked:checkbox-success" v-model="printcheck[index]" />
+                      </th>
+                      <td>{{ index + 1 }}</td>
+                      <td>{{ row.product }}</td>
+                      <td>{{ row.descrip }}</td>
+                      <td class="text-right">{{ new Intl.NumberFormat("en-US").format(row.total_qty) }}</td>
+                      <td class="text-right">{{ new Intl.NumberFormat("en-US").format(row.pack_size) }}</td>
+                      <td>{{ row.unit }}</td>
+                      <td class="text-right">{{ new Intl.NumberFormat("en-US").format(row.net_weight) }}</td>
+                      <td>{{ row.unit }}</td>
+                      <td>{{ $moment(row.updated_at ? row.updated_at : row.created_at).format("DD-MM-YYYY HH:MM:SS") }}</td>
+                      <th class="text-right" v-if="!locked">
                         <label
-                          for="modal-base"
-                          class="join-item btn btn-link no-underline text-warning modal-button btn-xs"
-                          @click="base_edit(`${row.code}`, `${index}`)"
+                          class="btn btn-ghost modal-button btn-xs"
+                          @click="scan = true; detail_edit(`${row.code}`, `${index}`)"
                         >
-                          <!-- <Icon icon="iconamoon:edit-light" />แก้ไข -->
-                          แก้ไข
+                          <span class="underline underline-offset-2">แก้ไข</span>
                         </label>
                         |
                         <label
                           for="modal-remove"
-                          class="join-item btn btn-link no-underline text-error modal-button btn-xs"
+                          class="btn btn-ghost modal-button btn-xs"
+                          @click="
+                            remove_item(
+                              `${row.code}`,
+                              'detail',
+                              'api/controllers/MYSQL/INTERNAL/WMS/prod'
+                            )
+                          "
+                        >
+                          ลบ
+                        </label>
+                      </th>
+                      <th class="text-right" v-else>
+                        <label
+                          class="btn btn-ghost modal-button btn-xs"
+                          @click="detail_edit(`${row.code}`, `${index}`)"
+                        >
+                          <span class="underline underline-offset-2">รายละเอียด</span>
+                        </label>
+                      </th>
+                    </tr>
+                  </tbody>
+                  <tfoot v-if="detail.rows.length && base.controll != 'create'">
+                    <tr class="text-right">
+                      <td :colspan="base.form.status != 'receiving' && base.form.status != 'received' ? '2' : '1'"></td>
+                      <th colspan="9">Total Quantity : {{ new Intl.NumberFormat("en-US").format(sum) }}</th>
+                    </tr>
+                    <tr class="text-right">
+                      <td :colspan="base.form.status != 'receiving' && base.form.status != 'received' ? '2' : '1'"></td>
+                      <th colspan="9">Total Net Weight : {{ new Intl.NumberFormat("en-US").format(total_net) }}</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            <div class="overflow-x-automax-h-40" v-if="print.total">
+              <h3 class="font-bold my-1 underline underline-offset-2">Print Format</h3>
+              <table class="table table-xs table-pin-rows table-pin-cols table-auto">
+                <thead>
+                  <tr>
+                    <td>ลำดับ</td>
+                    <td>code</td>
+                    <td>สร้างรายการเมื่อ</td>
+                    <td class="text-right">#สั่งพิมพ์</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(row, index) in print.rows"
+                    :key="index"
+                  >
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ row.code }}</td>
+                    <td>{{ row.created_at ? $moment(row.created_at).format("DD-MM-YYYY HH:MM:SS") : '-' }}</td>
+                    <td class="text-right">
+                      <label
+                        class="btn modal-button btn-xs"
+                        @click="prod_detail('show', index);"
+                      >
+                        พิมพ์
+                      </label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="grid gap-3 grid-cols-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">ผู้ทำรายการ</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="ผู้ทำรายการ"
+                  class="input input-bordered border-gray-300"
+                  
+                  disabled
+                  :value="base.form.creator_name ? base.form.creator_name : user.firstname+' '+user.lastname"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Status</span>
+                </label>
+                <label class="form-control w-full">
+                  <select class="select select-bordered border-gray-300" v-model="base.form.status" :disabled="locked">
+                    <option disabled selected value="">เลือกรายการ</option>
+                    <option value="pending">เตรียมจัดส่ง</option>
+                    <option value="shipping">จัดส่งแล้ว</option>
+                    <option value="receiving" disabled>กำลังรับสินค้า</option>
+                    <option value="received" disabled>รับสินค้าแล้ว</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+          <hr v-if="!locked" />
+          <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex" v-if="!locked">
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-base" class="btn btn-danger">Cancel</label>
+            </div>
+            <div class="flex-1 form-control mt-6">
+              <button class="btn btn-primary text-white" @click="base_save('static')">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal detail -->
+      <input
+        type="checkbox"
+        id="modal-detail"
+        class="modal-toggle"
+        v-model="detail.modal"
+      />
+      <div class="modal" v-if="detail.modal">
+        <div class="modal-box w-11/12 max-w-2xl">
+          <label
+            for="modal-detail"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+            @click="scan = false"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">Product</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto" style="max-height: 68vh;">
+            <div class="grid gap-3 grid-cols-2 md:grid-cols-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Product</span><span class="text-xs text-error">{{ msg.product }}</span>
+                </label>
+                <AppModuleGlobalSelectSearch
+                  v-if="!edit"
+                  :placeholder="'short code'"
+                  :label="'short_code'"
+                  :code="'short_code'"
+                  :minChar="0"
+                  :delay="0.5"
+                  :limit="10"
+                  :customClass="`input input-bordered ${
+                    checkbox == 'M' ? 'input-disabled' : ''
+                  }`"
+                  :disabled="checkbox == 'M' ? true : false"
+                  :current="detail.form.product"
+                  :refresh="refresh.product"
+                  @updateValue="
+                    (obj) => {
+                      detail.form.product = obj.short_code;
+                      wh = obj.wh;
+                    }
+                  "
+                  @stopRefresh="
+                    (obj) => {
+                      refresh.product = obj.value;
+                    }
+                  "
+                  :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort`"
+                  :param="`&item_name=1&total=1&wh=${user.branchTitle}&action=groupby-code`"
+                />
+                <input
+                  v-else
+                  type="text"
+                  placeholder="short code"
+                  class="input input-bordered border-gray-300"
+                  v-model="detail.form.product"
+                  disabled
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Description</span><span class="text-xs text-error">{{ msg.descrip }}</span>
+                </label>
+                <select class="select select-bordered w-full border-gray-300" v-model="detail.form.descrip" v-if="!edit">
+                  <option value="" disabled selected>เลือก Description</option>
+                  <option v-for="v in datalist">{{ v.item_name }}</option>
+                </select>
+                <input
+                  v-else
+                  type="text"
+                  placeholder="short code"
+                  class="input input-bordered border-gray-300"
+                  v-model="detail.form.descrip"
+                  disabled
+                />
+              </div>
+            </div>
+            <div class="grid gap-3 grid-cols-3 md:grid-cols-3">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Shelf Life</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="shelf life"
+                  class="input input-bordered"
+                  v-model="detail.form.shelf_life"
+                  disabled
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Pack Size</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="packing"
+                  class="input input-bordered"
+                  v-model="detail.form.pack_size"
+                  :disabled="detail.form.pack_size == 'None' ? false : true"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Unit</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="unit"
+                  class="input input-bordered"
+                  v-model="detail.form.unit"
+                  :disabled="detail.form.unit == 'None' ? false : true"
+                />
+              </div>
+            </div>
+            <div class="form-control mt-5">
+              <div class="overflow-x-auto min-h-40 max-h-40 border">
+                <table class="table table-xs table-pin-rows table-pin-cols table-zebra">
+                  <thead>
+                    <tr>
+                      <td>ลำดับ</td>
+                      <td>Lot No.</td>
+                      <td class="text-center">MFG</td>
+                      <td class="text-center">EXP</td>
+                      <td class="text-right">Quantity</td>
+                      <th class="text-right" v-if="!locked">
+                        <label
+                          for="modal-item"
+                          class="btn btn-primary modal-button btn-xs text-white me-1"
+                          @click="scan = false; item_create()"
+                        >
+                          + new
+                        </label>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="text-center" v-if="msg.item">
+                      <td colspan="6">
+                        <span class="text-xs text-error">{{ msg.item }}</span>
+                      </td>
+                    </tr>
+                    <tr v-for="(row, index) in item.rows" :key="index">
+                      <td class="font-bold">{{ index + 1 }}</td>
+                      <td>{{ row.lot }}</td>
+                      <td class="text-center">{{ $moment(row.mfg).format("DD-MM-YYYY") }}</td>
+                      <td class="text-center">{{ $moment(row.exp).format("DD-MM-YYYY") }}</td>
+                      <td class="text-right">{{ new Intl.NumberFormat("en-US").format(row.quantity) }}</td>
+                      <th class="text-right" v-if="!locked">
+                        <label
+                          for="modal-item"
+                          class="btn btn-ghost modal-button btn-xs"
+                          @click="scan = true; item_edit(`${row.code}`, `${index}`)"
+                        >
+                          แก้ไข
+                        </label>
+                        <span class="mx-1" v-if="detail.controll != 'create'">|</span>
+                        <label
+                          for="modal-remove"
+                          class="btn btn-ghost modal-button btn-xs"
+                          @click="
+                            remove_item(
+                              `${row.code}`,
+                              'item',
+                              'api/controllers/MYSQL/INTERNAL/WMS/item'
+                            )
+                          "
+                          v-if="detail.controll != 'create'"
+                        >
+                          ลบ
+                        </label>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <hr v-if="!locked" />
+          <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex" v-if="!locked">
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-detail" class="btn btn-danger" @click="scan = false">Cancel</label>
+            </div>
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-primary text-white"
+                @click="detail_save('static')"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal item -->
+      <input
+        type="checkbox"
+        id="modal-item"
+        class="modal-toggle"
+        v-model="item.modal"
+      />
+      <div class="modal" v-if="item.modal">
+        <div class="modal-box w-11/12 max-w-xl">
+          <label
+            for="modal-item"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <div class="card-body overflow-auto" style="max-height: 68vh;">
+            <div class="grid gap-3 grid-cols-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Lot Number</span><span class="text-xs text-error">{{ msg.lot }}</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="lot number"
+                  class="input input-bordered border-gray-300"
+                  v-model="item.form.lot"
+                  :disabled="scan ? true : false"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Quantity</span><span class="text-xs text-error">{{ msg.quantity }}</span>
+                </label>
+                <input
+                  type="number"
+                  placeholder="quantity"
+                  class="input input-bordered border-gray-300"
+                  min="1"
+                  v-model="item.form.quantity"
+                />
+              </div>
+            </div>
+            <div class="grid gap-3 grid-cols-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">MFG</span><span class="text-xs text-error">{{ msg.mfg }}</span>
+                </label>
+                <input
+                  type="date"
+                  placeholder="mfg"
+                  class="input input-bordered border-gray-300"
+                  v-model="item.form.mfg"
+                  :disabled="scan ? true : false"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">EXP</span><span class="text-xs text-error">{{ msg.exp }}</span>
+                </label>
+                <input
+                  type="date"
+                  placeholder="exp"
+                  class="input input-bordered border-gray-300"
+                  v-model="item.form.exp"
+                  disabled
+                />
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-primary text-white"
+                @click="item_save('static')"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal print -->
+      <input
+        type="checkbox"
+        id="modal-print"
+        class="modal-toggle"
+        v-model="print.modal"
+      />
+      <div class="modal" v-if="print.modal">
+        <div class="modal-box w-11/12 max-w-xl">
+          <label
+            for="modal-print"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">Choose Print Format</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto" style="max-height: 68vh;">
+            <div>
+              <div class="border-dashed border-2 border-slate-300 p-2" :class="!build ? 'rounded-lg' : ''">
+                <div class="form-control mb-1" v-if="!build">
+                  <label class="label">
+                    <span class="label-text font-semibold">จำนวน Package ของ Pallet ที่ {{ this.list.reduce((a,b) => { return a.order > b.order ? a.order : b.order }, 0) + 1 }}</span>
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="จำนวน Package ต่อ Pallet"
+                    class="input input-sm input-bordered border-gray-300"
+                    v-model="floor"
+                  />
+                </div>
+                <hr class="my-3" v-if="!build">
+                <div class="grid grid-cols-5 gap-3 my-1" v-if="!build">
+                  <span class="label-text text-xs font-semibold">lot</span>
+                  <span class="label-text text-xs font-semibold">จำนวนทั้งหมด</span>
+                  <span class="label-text text-xs font-semibold">จำนวนคงเหลือ</span>
+                  <span class="label-text text-xs font-semibold">กรอกจำนวน</span>
+                  <span class="label-text text-xs font-semibold">เพิ่ม</span>
+                </div>
+                <div class="grid grid-cols-5 gap-3 my-1" v-for="(row, index) in item.rows" v-if="!build">
+                  <input type="text" :value="row.lot" class="input input-bordered input-xs" readonly />
+                  <input type="number" :value="row.quantity" class="input input-bordered input-xs" readonly />
+                  <input type="number" :value="list.length ? row.quantity - list.filter(x => x.lot == row.lot).reduce((sum, v) =>  sum + v.qty, 0) : row.quantity" class="input input-bordered input-xs" readonly />
+                  <input type="number" placeholder="จำนวน" class="input input-bordered input-xs border-gray-300" v-model="qty[index]" 
+                    @change="change(index, row.quantity - list.filter(x => x.lot == row.lot).reduce((sum, v) =>  sum + v.qty, 0))" 
+                    :disabled="list.length ? row.quantity - list.filter(x => x.lot == row.lot).reduce((sum, v) =>  sum + v.qty, 0) > 0 ? 0 : 1 : 0" 
+                  />
+                  <button class="btn btn-xs btn-success text-white" @click="qty[index] ? add(index) : ''"
+                  :disabled="list.length ? row.quantity - list.filter(x => x.lot == row.lot).reduce((sum, v) =>  sum + v.qty, 0) > 0 ? 0 : 1 : 0">
+                    <Icon icon="gridicons:add-outline" width="1.2rem" height="1.2rem" />
+                  </button>
+                </div>
+                <div class="overflow-x-auto w-full mb-3" :class="!build ? 'mt-3': ''">
+                  <table class="table table-xs">
+                    <thead>
+                      <tr>
+                        <th class="border border-slate-300" rowspan="2" :colspan="build ? '2' : '1'">pallet</th>
+                        <td class="border border-slate-300 text-center" :colspan="build ? '4' : '5'">item</td>
+                      </tr>
+                      <tr>
+                        <th class="border border-slate-300">lot</th>
+                        <th class="border border-slate-300">จำนวน</th>
+                        <th class="border border-slate-300">mfg</th>
+                        <!-- <th class="border border-slate-300">exp</th> -->
+                        <th class="border border-slate-300">drum</th>
+                        <th class="border border-slate-300" v-if="!build">บรรจุได้</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <template v-if="list.length" v-for="n in list.length > 1 ? list.reduce((a,b) => { return a.order > b.order ? a.order : b.order }) + 1 : 1">
+                        <tr>
+                          <td class="border border-slate-300" :rowspan="list.filter(x => x.order+1 == n).length + 1">{{ n }}</td>
+                          <td class="border border-slate-300" :rowspan="list.filter(x => x.order+1 == n).length + 1" v-if="build">
+                            <input type="number" class="input input-xs input-bordered w-12" v-model="fsize[n-1]" />
+                          </td>
+                        </tr>
+                        <tr v-for="l in list.filter(x => x.order+1 == n)">
+                          <td class="border border-slate-300">{{ l.lot || '-' }}</td>
+                          <td class="border border-slate-300">{{ l.qty || '-' }}</td>
+                          <td class="border border-slate-300">{{ l.mfg || '-' }}</td>
+                          <!-- <td class="border border-slate-300">{{ l.exp || '-' }}</td> -->
+                          <td class="border border-slate-300" v-if="l.drum != '-'">{{ l.drum+1 }}<span v-if="l.qty != 1">-{{ l.drum+l.qty }}</span></td>
+                          <td class="border border-slate-300" v-else>-</td>
+                          <td class="border border-slate-300" v-if="!build">{{ l.floor || '-' }}</td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="form-control border-dashed border-neutral border-2">
+                  <label class="label cursor-pointer">
+                    <span class="label-text">Drum No.</span> 
+                    <input type="checkbox" class="toggle toggle-sm toggle-success" v-model="drumcheck" />
+                  </label>
+                </div>
+                <div class="grid gap-3 grid-cols-2">
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text text-xs font-semibold">QR size</span>
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="QRcode size"
+                      min="1"
+                      class="input input-sm input-bordered border-gray-300"
+                      v-model="qrsize"
+                    />
+                  </div>
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text text-xs font-semibold">Barcode size</span>
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="Barcode size"
+                      min="1"
+                      class="input input-sm input-bordered border-gray-300"
+                      v-model="barsize"
+                    />
+                  </div>
+                </div>
+                <div class="grid gap-3 mt-3 grid-cols-1">
+                  <button class="btn btn-success text-white" :class="build ? 'hidden' : ''" @click="confirm.modal = true">Save</button>
+                  <button class="btn" :class="!build ? 'hidden' : ''"  @click="printPaper()">Print</button>
+                </div>
+              </div>
+            </div>
+            <div id="printMe" class="landscape:hidden" style="display: none;" v-if="build">
+              <div style="display: flex; justify-content: center;" v-for="n in this.list.filter(x => x.lot).reduce((a,b) => { return a.order > b.order ? a.order : b.order }, 0) + 1" v-if="build">
+                <div style="white-space: nowrap;" align="center">
+                  <h3 :style="`font-size: ${fsize[n-1]}px;`">{{ base.form.en }} ({{ base.form.ref }})</h3>
+                  <h3 :style="`font-size: ${fsize[n-1]}px;`">PALLET NO. {{ n }}/{{ this.list.filter(x => x.lot).reduce((a,b) => { return a.order > b.order ? a.order : b.order }, 0) + 1}}</h3>
+                  <h3 :style="`font-size: ${fsize[n-1]}px;`">
+                    {{ detail.rows.find(x => x.code == list.find(x => x.order == n-1).code).product }} = 
+                    {{ list.filter(x => x.order == n-1).reduce((a, b) => { return { qty: a.qty + b.qty } }).qty }} x 
+                    {{ detail.rows.find(x => x.code == list.find(x => x.order == n-1).code).pack_size }} {{ detail.rows.find(x => x.code == list.find(x => x.order == n-1).code).unit }}
+                  </h3>
+                  <div v-for="v in list.filter(x => x.order == n-1)">
+                    <h3 :style="`font-size: ${fsize[n-1]}px;`">LOT NO. {{ v.lot }}<span v-if="v.qty != floor"> = {{ v.qty }}</span></h3>
+                    <h3 :style="`font-size: ${fsize[n-1]}px;`" v-if="drumcheck">DRUM NO. {{ v.drum+1 }}<span v-if="v.qty != 1"> - {{ v.drum+v.qty }}</span></h3>
+                  </div>
+                  <table style="width: 100%">
+                    <tr>
+                      <td>
+                        <VueQRCodeComponent :text="'http://192.168.11.1/WMS/Vita/ScanToReceive?'+print.form.code+'&'+n+'&ubis'" :size="3*qrsize" />
+                      </td>
+                      <td>
+                        <vue-barcode :value="print.form.code+'&'+n+'&ubis'" :options="{ displayValue: false, width: 3*barsize, height: 150*barsize }" tag="img"/>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div style="break-after:page"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- qr modal -->
+      <input
+        type="checkbox"
+        id="modal-qr"
+        class="modal-toggle"
+        v-model="qrmodal.modal"
+      />
+      <div class="modal" v-if="qrmodal.modal">
+        <div class="modal-box">
+          <label
+            for="modal-qr"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+            @click="select = !select"
+          >
+            ✕
+          </label>
+          <qrcode-stream
+            :camera="camera"
+            @init="onCameraChange"
+            @detect="onDetect"
+            @error="onError"
+            @camera-on="onReady"
+            :track="selected.value"
+            class="max-w-lg mt-7"
+            v-if="select"
+          ></qrcode-stream>
+        </div>
+      </div>
+      <!-- modal remove -->
+      <input
+        type="checkbox"
+        id="modal-remove"
+        class="modal-toggle"
+        v-model="remove.modal"
+      />
+      <div class="modal" v-if="remove.modal">
+        <div class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700" role="alert">
+          <div class="flex p-4">
+            <div class="flex-shrink-0">
+              <svg class="size-5 text-gray-600 mt-1 dark:text-neutral-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+              </svg>
+            </div>
+            <div class="ms-4">
+              <h3 class="text-error font-semibold dark:text-white underline underline-offset-2">
+                System notification
+              </h3>
+              <div class="mt-2 text-sm text-slate-500 dark:text-neutral-400">
+                คุณแน่ใจหรือไม่ว่าจะลบรายการนี้?
+              </div>
+              <div class="mt-4">
+                <div class="flex space-x-3">
+                  <label for="modal-remove" type="label" class="btn btn-xs btn-active decoration-2 font-medium text-xs text-white dark:text-blue-500">
+                    Cancel
+                  </label>
+                  <label class="btn btn-xs btn-error decoration-2 font-semibold text-xs text-white dark:text-blue-500" @click="confirm_remove()">
+                    Confirm
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal confirm -->
+      <input
+        type="checkbox"
+        id="modal-confirm"
+        class="modal-toggle"
+        v-model="confirm.modal"
+      />
+      <div class="modal" v-if="confirm.modal">
+        <div class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700" role="alert">
+          <div class="flex p-4">
+            <div class="flex-shrink-0">
+              <svg class="size-5 text-gray-600 mt-1 dark:text-neutral-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+              </svg>
+            </div>
+            <div class="ms-4">
+              <h3 class="text-success font-semibold dark:text-white underline underline-offset-2">
+                System notification
+              </h3>
+              <div class="mt-2 text-sm text-slate-500 dark:text-neutral-400">
+                ยืนยันที่จะบันทึก format การพิมพ์?
+              </div>
+              <div class="mt-4">
+                <div class="flex space-x-3">
+                  <button type="button" class="btn btn-xs btn-active decoration-2 font-medium text-xs text-white dark:text-blue-500" @click="confirm.modal = false">
+                    Cancel
+                  </button>
+                  <button type="button" class="btn btn-xs btn-success decoration-2 font-semibold text-xs text-white dark:text-blue-500" @click="save()">
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template #view>
+      <div class="gap-3 py-3">
+        <div class="card card-compact shadow-lg bg-base-100">
+          <div class="card-body overflow-auto">
+            <div
+              v-if="base.loading"
+              class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-white bg-opacity-50 top-0 left-0"
+            >
+              <AppModuleGlobalLoadingText
+                :type="'text'"
+                :class="`p-4 py-12 text-3xl text-center`"
+              />
+            </div>
+            <div class="flex justify-end mb-2">
+              <label
+                for="modal-base"
+                class="btn btn-sm btn-primary modal-button text-white shadow"
+                @click="base_create()"
+              >
+                <Icon icon="uil:create-dashboard" width="18" height="18" />
+                สร้างรายการ
+              </label>
+            </div>
+            <div class="border-2 border-dashed rounded-xl p-2">
+              <div class="join w-full">
+                <button
+                  class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                  disabled
+                >
+                  ประเภทวัน:
+                </button>
+                <select class="join-item select select-bordered select-sm w-full border-gray-300 shadow"
+                  v-model="base.date"
+                >
+                  <option value="load_date" selected>loading date</option>
+                  <option value="created_at">created date</option>
+                  <option value="shipped_at">shipped date</option>
+                  <option value="received_at">received date</option>
+                </select>
+                <button
+                  class="md:block hidden join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                  disabled
+                >
+                  เริ่มจาก:
+                </button>
+                <input type="date" class="join-item input input-bordered input-sm w-full border-gray-300 shadow"
+                  v-model="base.from"
+                />
+                <button
+                  class="md:block hidden join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                  disabled
+                >
+                  -
+                </button>
+                <input type="date" class="join-item input input-bordered input-sm w-full border-gray-300 shadow"
+                  v-model="base.to"
+                />
+                <button class="join-item btn btn-sm btn-active text-white shadow" 
+                  @click="searching"
+                >
+                  <Icon
+                    icon="tabler:search"
+                    class="text-white"
+                    width="18" height="18"
+                  />
+                    <span class="md:block hidden">ค้นหา</span>
+                </button>
+              </div>
+            </div>
+            <div class="p-2">
+              <!-- <div class="grid grid-cols-2 gap-3">
+                <button
+                  class="join-item btn btn-sm btn-outline btn-primary w-fit"
+                  @click="exportExcel('base')"
+                  disabled
+                >
+                  <Icon
+                    icon="mdi:file-excel-outline"
+                    width="16" height="16"
+                  />
+                    Excel
+                </button> -->
+                <div class="flex justify-end">
+                  <AppModuleGlobalSearch
+                    :class="'join-item input input-sm input-bordered border-gray-300 w-full md:max-w-xs'"
+                    @search="
+                      (q) => {
+                        base.q = q;
+                        base.page = 1;
+                        base_search();
+                      }
+                    "
+                  />
+                </div>
+              <!-- </div> -->
+              <div class="overflow-x-auto w-full max-h-[52vh] my-3">
+                <div v-if="!base.loading && base.rows.length == 0">
+                  <AppModuleGlobalEmptyData
+                    :class="`p-4 py-12 text-3xl text-center`"
+                  />
+                </div>
+                <table class="table table-xs table-pin-rows table-pin-cols table-zebra" v-else>
+                  <thead>
+                    <tr class="italic">
+                      <th>EN</th>
+                      <td>Status</td>
+                      <td>Inv.#</td>
+                      <td>กำหนดส่ง</td>
+                      <td>Transaction Maker</td>
+                      <td colspan="2">Transaction</td>
+                      <td>Remarks</td>
+                      <th class="text-center">Options</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, index) in base.rows" :key="row.code"
+                    >
+                    <!-- :class="row.status == 'shipping' ? '' : row.status == 'received' ? 'text-emerald-700' : row.status == 'receiving' ? 'text-amber-700' : row.status == 'pending' ? 'text-rose-700' : ''" -->
+                      <th>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ row.en }}
+                            </div>
+                            <div class="opacity-50">
+                              ( {{ row.ref }} )
+                            </div>
+                          </div>
+                        </div>
+                      </th>
+                      <td>
+                        <span 
+                          class="badge badge-sm font-semibold italic px-4 py-2 w-20 text-base-100" 
+                          :class="row.status == 'received' ? 'badge-success' : row.status == 'receiving' ? 'badge-warning' : row.status == 'shipping' ? 'badge-info' : 'badge-error'">
+                            {{ row.status }}
+                        </span>
+                      </td>
+                      <td>{{ row.inv || '-' }}</td>
+                      <td class="italic">{{ row.load_date ? $moment(row.load_date).format("DD-MM-YYYY") : '-' }}</td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ $moment(row.created_at).format("DD-MM-YYYY HH:mm:ss") }}
+                            </div>
+                            <div class="text-slate-500">
+                              {{ row.creator_name }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div class="text-right">
+                            <div>
+                              shipped at :
+                            </div>
+                            <hr>
+                            <div>
+                              received at :
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ row.shipped_at ? $moment(row.shipped_at).format("DD-MM-YYYY HH:mm:ss")  : '-' }}
+                            </div>
+                            <hr v-if="row.shipped_at">
+                            <div v-if="row.shipped_at">
+                              {{ row.received_at ? $moment(row.received_at).format("DD-MM-YYYY HH:mm:ss")  : '-' }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{{ row.remark || '-' }}</td>
+                      <th class="text-center" v-if="row.status == 'pending'">
+                        <label
+                          class="join-item btn btn-ghost text-warning hover:text-black modal-button btn-xs"
+                          @click="base_edit(`${row.code}`, `${index}`)"
+                        >
+                          <span class="underline underline-offset-2">แก้ไข</span>
+                        </label>
+                        |
+                        <label
+                          for="modal-remove"
+                          class="join-item btn btn-ghost text-error hover:text-black modal-button btn-xs"
                           @click="
                             remove_item(
                               `${row.code}`,
@@ -827,43 +1022,59 @@
                             )
                           "
                         >
-                          <!-- <Icon icon="iconamoon:trash" />ลบ -->
                           ลบ
                         </label>
                       </th>
-                      <th class="text-right" v-else>
+                      <th class="text-center" v-else>
                         <label
-                          for="modal-base"
-                          class="btn btn-ghost modal-button btn-xs"
+                          class="btn btn-ghost modal-button btn-xs text-slate-500 hover:text-black"
                           @click="base_edit(`${row.code}`, `${index}`)"
-                          ><Icon icon="bx:detail" />รายละเอียด
+                        >
+                          <span class="underline underline-offset-2">รายละเอียด</span>
                         </label>
                       </th>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="join w-full justify-center lg:justify-end">
-                <AppModuleGlobalPageination
-                  :page="base.page"
-                  :total="base.total"
-                  :row="base.row"
-                  :back="base.back"
-                  :next="base.next"
-                  :loading="base.loading"
-                  @search="
-                    (res) => {
-                      base.page = res.page;
-                      this.base_search();
-                    }
-                  "
-                />
+              <div class="grid gap-3 md:grid-cols-2 grid-cols-1">
+                <div class="md:text-left text-center text-sm">
+                  Show :
+                  <select class="select select-bordered select-xs w-fit bg-yellow-50" 
+                    v-model="base.row" 
+                    @change="base_search()"
+                  >
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </select>
+                  |
+                  Showing {{ base.page == Math.ceil(base.total/base.row) ? 1 + (base.row*(base.page - 1)) : 1 + ((base.page - 1)*base.row) }} to {{ base.page == Math.ceil(base.total/base.row) ? base.total : base.row*base.page }} of {{ base.total }} entries
+                </div>
+                <div class="join w-full justify-center lg:justify-end">
+                  <AppModuleGlobalPageination
+                    :page="base.page"
+                    :total="base.total"
+                    :row="base.row"
+                    :back="base.back"
+                    :next="base.next"
+                    :loading="base.loading"
+                    @search="
+                      (res) => {
+                        base.page = res.page;
+                        this.base_search();
+                      }
+                    "
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </template>
-    </AppLayout>
+      </div>
+    </template>
+  </AppLayout>
 </template>
 
 <style>
@@ -882,10 +1093,14 @@ import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageinati
 import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
+import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
 import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from "vue-qrcode-reader";
 import VueQRCodeComponent from "vue-qrcode-component";
 import VueBarcode from '@chenfengyuan/vue-barcode';
 import Query from "@/assets/js/fetch.js";
+import { useToast } from "vue-toastification";
+import { socket } from "@/socket";
 
 export default {
   name: "Transportation",
@@ -898,8 +1113,14 @@ export default {
     AppModuleGlobalPageination,
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,
+    AppModuleGlobalLoadingText,
+    AppModuleGlobalEmptyData,
     VueQRCodeComponent,
     VueBarcode,
+  },
+  setup() {
+    const toast = useToast();
+    return { toast }
   },
   data() {
     const option = [
@@ -911,12 +1132,16 @@ export default {
     const selected = option[1];
 
     return {
-      fsize: 0,
+      wh: '',
+      fsize: [],
       qrsize: 0,
       barsize: 0,
       drumcheck: false,
       build: false,
+      compile: 1,
+      qty: [],
       floor: '',
+      mock_rc: false,
       output: null,
       sum: 0,
       total_net: 0,
@@ -927,30 +1152,34 @@ export default {
       edit: false,
       checkbox: "",
       refresh: false,
-      tmpsLink: "",
       list: [],
       datalist: [],
+      printcheck: [],
       options: {
         penColor: "#c0f"
       },
       msg: {
         en: '',
         ref: '',
-        packing: '',
         customer: '',
-        mark: '',
         date: '',
         product: '',
+        descrip: '',
         lot: '',
         quantity: '',
         mfg: '',
+        detail: '',
+        item: '',
       },
       base: {
         rows: [],
         total: 0,
         page: 1,
-        row: 20,
+        row: 15,
         q: "",
+        date: "load_date",
+        from: "",
+        to: "",
         next: false,
         back: false,
         loading: false,
@@ -964,7 +1193,22 @@ export default {
         rows: [],
         total: 0,
         page: 1,
-        row: 20,
+        row: 10,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: {
+          title: "",
+          ref: "",
+        },
+      },
+      print: {
+        rows: [],
+        total: 0,
+        page: 1,
+        row: 10,
         q: "",
         next: false,
         back: false,
@@ -979,7 +1223,7 @@ export default {
         rows: [],
         total: 0,
         page: 1,
-        row: 20,
+        row: 10,
         q: "",
         next: false,
         back: false,
@@ -995,6 +1239,9 @@ export default {
         model: false,
         controll: "",
         tb: "",
+      },
+      confirm: {
+        modal: false,
       },
       print: {
         modal: false,
@@ -1013,157 +1260,9 @@ export default {
     },
     user() {
       return this.$store.getters.user;
-    },
-    transpotationItem() {
-      return this.$store.getters.transpotationItem;
-    },
-    transpotation() {
-      return this.$store.getters.transpotation;
-    },
+    }
   },
   methods: {
-    printPaper () {
-      this.$htmlToPaper('printMe', {styles:['/landscape.css']})
-
-      let checklist = {}
-      let max = this.list.reduce((a,b) => { return a.order > b.order ? a.order : b.order })
-      max = isNaN(max) ? max.order : max
-      // console.log('list', this.list)
-      // console.log('max', max)
-      for(let i = 0; i <= max; i++) {
-        this.list.filter(x => x.order == i).forEach((x,index) => {
-          if(index) {
-            checklist[i][`total`] += x.qty
-            checklist[i][`item`] = [
-              {
-                ...checklist[i].item
-              },{
-                lot: x.lot,
-                qty: x.qty,
-                mfg: x.mfg,
-                exp: x.exp
-              }
-            ]
-          } else {
-            checklist[i] = {
-              pallet: i+1,
-              checked: false,
-              total: x.qty,
-              item: {
-                lot: x.lot,
-                qty: x.qty,
-                mfg: x.mfg,
-                exp: x.exp
-              }
-            }
-          }
-        })
-      }
-      // console.log(checklist)
-      
-      let obj = {
-        rows: [
-          {
-            code: this.detail.form.code,
-            received: checklist,
-          },
-        ],
-      };
-
-      new Query(null,'put').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/prod`, obj, (res) => {
-        if (!res.success) {
-        } else {
-          console.log(res)
-        }
-      });
-    },
-    prod_detail(code) {
-      this.fsize = 60
-      this.qrsize = 38
-      this.barsize = 0.75
-      this.drumcheck = false
-      this.build = false
-      this.floor = 'NaN'
-      this.detail.form = this.detail.rows.filter(x => x.code == code)
-      this.detail.form.code = this.detail.form[0].code
-      this.item_search()
-    },
-    startFrontCamera () {
-      this.camera = 'front'
-    },
-    onCameraChange (promise) {
-      promise.catch(error => {
-        const cameraMissingError = error.name === 'OverconstrainedError'
-        const triedFrontCamera = this.camera === 'front'
-        if (triedFrontCamera && cameraMissingError) {
-          // no front camera on this device
-        }
-      })
-    },
-    onDetect(detectedCodes) {
-      let ar = JSON.parse(detectedCodes[0].rawValue);
-      // this.getList(ar, (res) => {
-      //   fetch(`http://10.2.11.90:8080/dev/rewrite_demo/services/api/api/controllers/MSSQL/INTERNAL/Label?ItemCode=${res.rows[0].product}`, {
-      //     method: "GET",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Authorization: `Bearer ${this.user_token}`,
-      //     },
-      //   })
-      //   .then((response) => response.json())
-      //   .then((response) => {
-      //     this.detail.form = res.rows[0]
-      //     this.detail.form['product_code'] = response.rows[0].ProductName
-      //     this.detail.form['product_code'] = response.rows[0].ProductName
-      //     this.detail.form['packing'] = response.rows[0].PackSize
-      //     this.detail.form['mfg'] = res.rows[0].mfg.date.split(' ')[0]
-      //     this.detail.form['exp'] = this.ymd(this.detail.form['mfg'], res.rows[0].U_BOM_SHELFLIFE)
-      //     this.qrmodal.modal = false;
-      //     this.select = 0;
-      //     this.detail.modal = true;
-      //   })
-      //   .catch((error) => {
-      //     alert("Error:", error)
-      //     console.error("Error:", error);
-      //   });
-      // })
-    },
-    onReady(capabilities) {
-      // console.log(capabilities);
-    },
-    onError(error) {
-      if (error.name === "NotAllowedError") {
-          console.log("user denied camera access permission");
-      } else if (error.name === "NotFoundError") {
-          console.log("no suitable camera device installed");
-      } else if (error.name === "NotSupportedError") {
-          console.log("page is not served over HTTPS (or localhost)");
-      } else if (error.name === "NotReadableError") {
-          console.log("maybe camera is already in use");
-      } else if (error.name === "OverconstrainedError") {
-          console.log("did you request the front camera although there is none?");
-      } else if (error.name === "StreamApiNotSupportedError") {
-          console.log("browser seems to be lacking features");
-      }
-    },
-    // getList(lot, callback) {
-    //   let vm = this;
-    //   fetch(`http://10.2.11.90:8080/dev/rewrite_demo/services/api/api/controllers/SAP/UBP/tracking?filter=${lot}`, {
-    //       method: "GET",
-    //       headers: {
-    //           "Content-Type": "application/json",
-    //           Authorization: `Bearer ${this.user_token}`,
-    //       },
-    //   })
-    //   .then((response) => response.json())
-    //   .then((res) => {
-    //       callback(res);
-    //   })
-    //   .catch((error) => {
-    //       alert("Error:", error)
-    //       console.error("Error:", error);
-    //   });
-    // },
     dateNow() {
       let d = new Date();
       return d.getFullYear() + '-' + (d.getMonth() >= 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)) + '-' + (d.getDate() > 9 ? d.getDate() : '0' + d.getDate())
@@ -1172,57 +1271,6 @@ export default {
     ymd(start, life) {
       let expire = new Date((new Date(start)).getTime() + life * 86400E3);
       return expire.getFullYear() + '-' + (expire.getMonth() >= 9 ? expire.getMonth() + 1 : '0' + (expire.getMonth() + 1)) + '-' + (expire.getDate() > 9 ? expire.getDate() : '0' + expire.getDate());
-    },
-    paintOutline(detectedCodes, ctx) {
-      for (const detectedCode of detectedCodes) {
-        const [firstPoint, ...otherPoints] = detectedCode.cornerPoints;
-
-        ctx.strokeStyle = "red";
-
-        ctx.beginPath();
-        ctx.moveTo(firstPoint.x, firstPoint.y);
-        for (const { x, y } of otherPoints) {
-            ctx.lineTo(x, y);
-        }
-        ctx.lineTo(firstPoint.x, firstPoint.y);
-        ctx.closePath();
-        ctx.stroke();
-      }
-    },
-    paintBoundingBox(detectedCodes, ctx) {
-      for (const detectedCode of detectedCodes) {
-        const {
-            boundingBox: { x, y, width, height },
-        } = detectedCode;
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#007bff";
-        ctx.strokeRect(x, y, width, height);
-      }
-    },
-    paintCenterText(detectedCodes, ctx) {
-      for (const detectedCode of detectedCodes) {
-        const { boundingBox, rawValue } = detectedCode;
-
-        const centerX = boundingBox.x + boundingBox.width / 2;
-        const centerY = boundingBox.y + boundingBox.height / 2;
-
-        const fontSize = Math.max(
-            12,
-            (50 * boundingBox.width) / ctx.canvas.width
-        );
-        // console.log(boundingBox.width, ctx.canvas.width);
-
-        ctx.font = `bold ${fontSize}px sans-serif`;
-        ctx.textAlign = "center";
-
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "#35495e";
-        ctx.strokeText(detectedCode.rawValue, centerX, centerY);
-
-        ctx.fillStyle = "#5cb984";
-        ctx.fillText(rawValue, centerX, centerY);
-      }
     },
     makeid(length) {
       let result = "";
@@ -1238,20 +1286,27 @@ export default {
       }
       return result;
     },
-    // base
+    searching() {
+      this.base.page = 1;
+      this.base_search();
+    },
+    // Base
     base_search() {
       this.base.loading = true;
       this.base_get((res) => {
-        this.base.rows = res.rows;
-        this.base.total = res.total;
-        this.base.next =
-          this.base.page * this.base.row >= this.base.total ? false : true;
-        this.base.back = this.base.page > 1 ? true : false;
-        this.base.loading = false;
+        setTimeout(() => {
+          this.base.rows = res.rows;
+          this.base.total = res.total;
+          this.base.next = this.base.page * this.base.row >= this.base.total ? false : true;
+          this.base.back = this.base.page > 1 ? true : false;
+          this.base.loading = false;
+        }, 200);
       });
     },
     base_get(callback) {
-      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/trans?total=1&page=${this.base.page}${this.base.row ? `&rows=${this.base.row}` : ""}${this.base.q ? `&q=${this.base.q}` : ""}`, (res) => {
+      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/trans?total=1&page=${this.base.page}
+        ${this.base.row ? `&rows=${this.base.row}` : ""}${this.base.q ? `&q=${this.base.q}` : ""}
+        &date=${this.base.date}&from=${this.base.from ? this.base.from : ''}&to=${this.base.to  ? this.base.to : ''}`, (res) => {
         if (res.success) {
           res.rows.forEach((v, i) => {
             res.rows[i].image = v.image ? JSON.parse(v.image) : [];
@@ -1267,9 +1322,9 @@ export default {
 
       this.msg.en = ''
       this.msg.ref = ''
-      this.msg.packing = ''
-      this.msg.mark = ''
+      this.msg.customer = ''
       this.msg.date = ''
+      this.msg.detail = ''
 
       this.base.current = this.makeid(15);
       this.base.form = {
@@ -1277,13 +1332,16 @@ export default {
         en: "",
         ref: "",
         packing: "",
-        customer: "Vita",
+        customer: "VITA",
         shipping_mark: "",
         shipping_date: "",
-        status:'pending'
+        status:'pending',
+        remark: ''
       };
 
       this.detail.rows = [];
+      this.print.rows = [];
+      this.print.total = 0;
       this.base.controll = "create";
       this.locked = false;
     },
@@ -1296,6 +1354,7 @@ export default {
       this.msg.packing = ''
       this.msg.mark = ''
       this.msg.date = ''
+      this.msg.detail = ''
 
       this.base.form = { ...this.base.rows[index] };
       this.base.current = code;
@@ -1306,31 +1365,35 @@ export default {
       this.locked = this.base.form.status == 'pending' ? false : true;
     },
     base_save(type) {
-      if(!this.base.form.en || !this.base.form.packing || !this.base.form.ref || !this.base.form.shipping_mark || !this.base.form.shipping_date) {
+      if(!this.base.form.en || !this.base.form.ref || !this.base.form.customer || !this.base.form.load_date) {
         if(!this.base.form.en) this.msg.en = '*กรอกข้อมูล*'
         else this.msg.en = ''
         if(!this.base.form.ref) this.msg.ref = '*กรอกข้อมูล*'
         else this.msg.ref = ''
-        if(!this.base.form.packing) this.msg.packing = '*กรอกข้อมูล*'
-        else this.msg.packing = ''
-        if(!this.base.form.shipping_mark) this.msg.mark = '*กรอกข้อมูล*'
-        else this.msg.mark = ''
-        if(!this.base.form.shipping_date) this.msg.date = '*กรอกข้อมูล*'
+        if(!this.base.form.customer) this.msg.customer = '*กรอกข้อมูล*'
+        else this.msg.customer = ''
+        if(!this.base.form.load_date) this.msg.date = '*กรอกข้อมูล*'
         else this.msg.date = ''
         return;
+      } else {
+        this.msg.en = ''
+        this.msg.ref = ''
+        this.msg.packing = ''
+        this.msg.mark = ''
+        this.msg.date = ''
+      }
+
+      if(this.base.form.status == 'shipping') {
+        if(!this.detail.rows.length) {
+          this.msg.detail = '*เพิ่ม Product ก่อนส่ง*'
+          return;
+        }
       }
 
       let obj = {
         rows: [
           {
-            code: this.base.form.code,
-            en : this.base.form.en,
-            ref : this.base.form.ref,
-            packing: this.base.form.packing,
-            customer: this.base.form.customer,
-            shipping_mark: this.base.form.shipping_mark,
-            shipping_date: this.base.form.shipping_date,
-            status: this.base.form.status,
+            ...this.base.form
           },
         ]
       };
@@ -1339,7 +1402,6 @@ export default {
         obj['rows'][0]["shipped_at"] = this.dateNow()
         obj['rows'][0]["shipped_by"] = this.user.code
       }
-      // console.log(obj)
 
       new Query(null, this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/trans`, obj, (res) => {
         if (!res.success) {
@@ -1354,6 +1416,9 @@ export default {
     },
     // DETAIL
     detail_search() {
+      this.sum = 0
+      this.total_net = 0
+
       this.detail.loading = true;
       this.detail_get((res) => {
         this.detail.rows = res.rows;
@@ -1364,10 +1429,25 @@ export default {
             : true;
         this.detail.back = this.detail.page > 1 ? true : false;
         this.detail.loading = false;
+        this.printcheck = []
+
+        this.print.rows = [];
+        this.print_get((res) => {
+          this.print.rows = res.rows;
+          this.print.total = res.total;
+          this.print.next =
+            this.print.page * this.print.row >= this.print.total
+              ? false
+              : true;
+          this.print.back = this.print.page > 1 ? true : false;
+          this.print.loading = false;
+
+          this.base.modal = true
+        });
       });
     },
     detail_get(callback) {
-      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/prod?trans_code=${this.base.form.code}`, (res) => {
+      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/prod?trans_code=${this.base.form.code}&total=1`, (res) => {
         if (res.success) {
           res.rows.filter(x => x.code).forEach(x => {
             this.sum += parseFloat(x.total_qty)
@@ -1383,8 +1463,24 @@ export default {
         callback({ ...res });
       });
     },
+    // Show Print
+    print_get(callback) {
+      new Query('print','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/print?en=${this.base.form.code}&total=1`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
+        }
+        callback({ ...res });
+      });
+    },
     detail_create() {
       this.msg.product = ''
+      this.msg.descrip = ''
+      this.msg.item = ''
+
+      this.wh = ''
 
       this.detail.current = this.makeid(10);
       this.detail.form = {
@@ -1404,27 +1500,40 @@ export default {
     },
     detail_edit(code, index) {
       this.msg.product = ''
+      this.msg.descrip = ''
+      this.msg.item = ''
+
+      this.wh = ''
 
       this.detail.form = Object.assign({}, this.detail.rows[index]);
       this.detail.current = code;
       this.item.rows = [];
+      this.item.new = [];
       this.detail.controll = "edit";
       this.item_search();
       this.refresh = true;
       this.edit = true;
     },
     detail_save(type) {
-      if(!this.detail.form.product) {
-        this.msg.product = '*กรอกข้อมูล*'
+      if(!this.detail.form.product || !this.detail.form.descrip) {
+        if(!this.detail.form.product) this.msg.product = '*กรอกข้อมูล*'
+        else this.msg.product = ''
+        if(!this.detail.form.descrip) this.msg.descrip = '*กรอกข้อมูล*'
+        else this.msg.descrip = ''
         return;
       } else {
         this.msg.product = ''
+        this.msg.descrip = ''
+      }
+
+      if(!this.item.rows.length) {
+        this.msg.item = '*เพิ่ม Item ก่อนบันทึก*'
+        return;
       }
 
       let obj = {
         rows: [
           {
-            code: this.detail.form.code,
             trans_code : this.base.current,
             product: this.detail.form.product,
             descrip: this.detail.form.descrip,
@@ -1441,9 +1550,13 @@ export default {
           if (this.item.new.length) {
             let obj = { rows: [] }
             this.item.new.forEach((x, i) => {
+              this.remove.code = x.code;
+              this.remove.controll = 'item';
+              this.remove.tb = 'api/controllers/MYSQL/INTERNAL/WMS/item';
+              this.confirm_remove()
+
               obj['rows'][i] = {
-                code: this.detail.current+''+x.lot,
-                prod_code: this.detail.current,
+                prod_code: this.detail.controll == 'create' ? res.rows[0].code : this.detail.current,
                 lot: x.lot,
                 quantity: x.quantity,
                 mfg: x.mfg,
@@ -1454,6 +1567,7 @@ export default {
             new Query(null,'post').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/item`, obj, (res) => {
               if (!res.success) {
               } else {
+                this.msg.detail = ''
                 this.detail.modal = false;
                 
                 if (type == "static") {
@@ -1471,6 +1585,265 @@ export default {
         }
       });
     },
+    // Print
+    prod_detail(controll, index) {
+      this.item.rows = []
+      this.qrsize = 38
+      this.barsize = 0.75
+      this.drumcheck = false
+
+      if (controll == 'show') {
+        this.list = []
+        let checklist = []
+        this.print.form = this.print.rows[index]
+        checklist = JSON.parse(this.print.form.format)
+
+        for (let i = 0; i < checklist.reduce((a,b) => { return a.pallet > b.pallet ? a.pallet : b.pallet }, 0); i++) {
+          this.fsize[i] = 60
+        }
+
+        if (checklist) {
+          this.mock_rc = true
+          if(Array.isArray(checklist)) {
+            this.floor = checklist[0].total
+  
+            for (let n in checklist) {
+              if (checklist[n].item.length) {
+                for (let m in checklist[n].item) {
+                  this.list.push({
+                    code: checklist[n].code,
+                    lot: checklist[n].item[m].lot,
+                    qty: checklist[n].item[m].qty,
+                    mfg: checklist[n].item[m].mfg,
+                    exp: checklist[n].item[m].exp,
+                    order: checklist[n].pallet-1,
+                    drum: this.list.filter(k => k.lot == checklist[n].item[m].lot).reduce((sum, v) => sum + v.qty, 0)
+                  })
+                }
+              } else {
+                this.list.push({
+                  code: checklist[n].code,
+                  lot: checklist[n].item.lot,
+                  qty: checklist[n].item.qty,
+                  mfg: checklist[n].item.mfg,
+                  exp: checklist[n].item.exp,
+                  order: checklist[n].pallet-1,
+                  drum: this.list.filter(k => k.lot == checklist[n].item.lot).reduce((sum, v) => sum + v.qty, 0)
+                })
+              }
+            }
+          } else {
+            this.floor = checklist.total
+
+            this.list.push({
+              code: checklist.code,
+              lot: checklist.item.lot,
+              qty: checklist.item.qty,
+              mfg: checklist.item.mfg,
+              exp: checklist.item.exp,
+              order: checklist.pallet-1,
+              drum: this.list.filter(k => k.lot == checklist.item.lot).reduce((sum, v) => sum + v.qty, 0)
+            })
+          }
+
+          this.build = true
+        }
+      } else {
+        this.list = []
+
+        this.list.push({
+          lot: '',
+          qty: '',
+          mfg: '',
+          exp: '',
+          order: 0,
+          drum: '-'
+        })
+        this.floor = ''
+
+        this.printcheck.forEach((x, i) => {
+          if (x) {
+            new Query(null,'get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/item?prod_code=${this.detail.rows[i].code}&total=1`, (res) => {
+              res.rows.forEach(x => 
+                this.item.rows[this.item.rows.length] = x
+              )
+            });
+          }
+        })
+
+        this.build = false
+      }
+      
+      this.print.modal = true
+    },
+    change(index, limit) {
+      if (this.qty[index] < 1) {
+        this.qty[index] = 1
+      } 
+      
+      if (this.qty[index] > limit) {
+        this.qty[index] = limit
+      } else {
+        if (this.qty[index] > this.floor) {
+          this.qty[index] = this.floor
+        }
+      }
+
+    },
+    add(index) {
+      let mockup = []
+      mockup = Object.assign({}, this.item.rows[index]);
+      let count =  this.list.filter(k => k.lot).length
+      let max = this.list.filter(x => x.lot).reduce((a,b) => { return a.order > b.order ? a.order : b.order }, -1)
+      let last_order_qty = (max == -1) ? 0 : this.list.filter(k => k.order == this.list.reduce((a,b) => { return a.order > b.order ? a.order : b.order }, 0)).reduce((sum, v) =>  sum + v.qty, 0)
+      let need = this.floor - last_order_qty
+
+      let finding = this.list.filter(k => k.order == this.list.reduce((a,b) => { return a.order > b.order ? a.order : b.order }, 0)).find(kk => kk.lot == mockup.lot)
+
+      if(finding) {
+        this.list[finding.order] = {
+            code: mockup.prod_code,
+            lot: mockup.lot,
+            qty: this.qty[index] > need ? this.floor : this.list.filter(k => k.order == (isNaN(max) ? max.order : max)).find(kk => kk.lot == mockup.lot).qty + this.qty[index],
+            mfg: mockup.mfg,
+            exp: mockup.exp,
+            order: this.list.filter(k => k.order == (isNaN(max) ? max.order : max)).find(kk => kk.lot == mockup.lot).order,
+            drum: this.list.filter(k => k.order == (isNaN(max) ? max.order : max)).find(kk => kk.lot == mockup.lot).drum,
+            floor: this.floor
+          }
+      } else {
+        if (max > -1) {
+          this.list[count] = {
+            code: mockup.prod_code,
+            lot: mockup.lot,
+            qty: this.qty[index] > need ? need : this.qty[index],
+            mfg: mockup.mfg,
+            exp: mockup.exp,
+            order: this.list.reduce((a,b) => { return a.order > b.order ? a.order : b.order }, 0),
+            drum:  this.list.filter(k => k.lot == mockup.lot).reduce((sum, v) =>  sum + v.qty, 0),
+            floor: this.floor
+          } 
+        } else {
+          this.list[count] = {
+            code: mockup.prod_code,
+            lot: mockup.lot,
+            qty: this.qty[index] > this.floor ? this.floor : this.qty[index],
+            mfg: mockup.mfg,
+            exp: mockup.exp,
+            order: this.list.reduce((a,b) => { return a.order > b.order ? a.order : b.order }, 0) ,
+            drum:  this.list.filter(k => k.lot == mockup.lot).reduce((sum, v) =>  sum + v.qty, 0),
+            floor: this.floor
+          }
+        }
+      }
+
+      if (this.qty[index] >= need) {
+        this.list.push({
+          lot: '',
+          qty: '',
+          mfg: '',
+          exp: '',
+          order: this.list.filter(x => x.lot).reduce((a,b) => { return a.order > b.order ? a.order : b.order }, 0) + 1,
+          drum: '-',
+          floor: '-'
+        })
+      }
+
+      setTimeout(() => {
+        this.qty[index] = ''
+      }, 100);
+    },
+    save() {
+      let checklist = {}
+      let max = this.list.filter(x => x.lot).reduce((a,b) => { return a.order > b.order ? a.order : b.order })
+      max = isNaN(max) ? max.order : max
+
+      for (let i = 0; i <= max; i++) {
+        this.list.filter(x => x.order == i).forEach((x,index) => {
+          if(index) {
+            checklist[i][`total`] += x.qty
+            if(index > 1) {
+              checklist[i][`item`] = [
+                ...checklist[i].item, {
+                  lot: x.lot,
+                  qty: x.qty,
+                  mfg: x.mfg,
+                  exp: x.exp
+                }
+              ]
+            } else {
+              checklist[i][`item`] = [
+                checklist[i].item, {
+                  lot: x.lot,
+                  qty: x.qty,
+                  mfg: x.mfg,
+                  exp: x.exp
+                }
+              ]
+            }
+          } else {
+            checklist[i] = {
+              pallet: i+1,
+              code: x.code,
+              checked: false,
+              total: x.qty,
+              item: {
+                lot: x.lot,
+                qty: x.qty,
+                mfg: x.mfg,
+                exp: x.exp
+              },
+              floor: x.floor
+            }
+          }
+        })
+      }
+      
+      let obj = {
+        rows: [
+          {
+            en: this.base.form.code,
+            format: checklist
+          },
+        ],
+      };
+
+      new Query(null,'post').set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/print`, obj, (res) => {
+        if (!res.success) {
+        } else {
+          this.confirm.modal = false
+
+          this.toast.success("บันทึก format การพิมพ์เรียบร้อยแล้ว.", {
+            position: "top-center",
+            timeout: 2000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: false,
+            draggable: true,
+            draggablePercent: 0.5,
+            showCloseButtonOnHover: true,
+            hideProgressBar: true,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+          });
+
+          this.list = this.list.filter(x => x.lot)
+
+          this.build = true
+          this.print.form = res.rows[0]
+
+          for (let i = 0; i < JSON.parse(this.print.form.format).reduce((a,b) => { return a.pallet > b.pallet ? a.pallet : b.pallet }, 0); i++) {
+            this.fsize[i] = 60
+          }
+
+          this.detail_search()
+        }
+      });
+    },
+    printPaper () {
+      this.$htmlToPaper('printMe', {styles:['/landscape.css']})
+    },
     // Item
     item_search() {
       this.item.loading = true;
@@ -1483,6 +1856,8 @@ export default {
             : true;
         this.item.back = this.item.page > 1 ? true : false;
         this.item.loading = false;
+
+        this.detail.modal = true
       });
     },
     item_get(callback) {
@@ -1493,6 +1868,7 @@ export default {
             res.rows[i].master = 0;
           });
         }
+
         callback({ ...res });
       });
     },
@@ -1534,24 +1910,30 @@ export default {
       }
 
       if (this.item.controll == "create") {
-        if(this.item.rows.find(x => x.lot == this.item.form.lot)) {
-          this.item.rows.find(x => x.lot == this.item.form.lot).quantity += this.item.form.quantity
+        if (this.item.rows && this.item.rows.find(x => x.lot == this.item.form.lot)) {
+          this.item.rows.find(x => x.lot == this.item.form.lot).quantity = parseInt(this.item.rows.find(x => x.lot == this.item.form.lot).quantity) + this.item.form.quantity
         } else {
           this.item.rows.push({ ...this.item.form });
         }
 
-        if(this.item.new.find(x => x.lot == this.item.form.lot)) {
-          this.item.new.find(x => x.lot == this.item.form.lot).quantity += this.item.form.quantity
+        if (this.item.new && this.item.new.find(x => x.lot == this.item.form.lot)) {
+          this.item.new.find(x => x.lot == this.item.form.lot).quantity = parseInt(this.item.new.find(x => x.lot == this.item.form.lot).quantity) + this.item.form.quantity
         } else {
-          this.item.new.push({ ...this.item.form });
+          if (this.item.rows && this.item.rows.find(x => x.lot == this.item.form.lot)) {
+            this.item.new.push({ ...this.item.rows.find(x => x.lot == this.item.form.lot) });
+          } else {
+            this.item.new.push({ ...this.item.form });
+          }
         }
 
         this.item.modal = false;
+        this.msg.item = ''
       } else {
         if(this.item.new.find(x => x.lot == this.item.form.lot)) {
           this.item.rows.find(x => x.lot == this.item.form.lot).quantity = this.item.form.quantity
 
           this.item.modal = false;
+          this.msg.item = ''
         } else {
           let obj = {
             rows: [
@@ -1571,6 +1953,7 @@ export default {
             if (!res.success) {
             } else {
               this.item.modal = false;
+              this.msg.item = ''
 
               if (type == "static") {
                 this.item_search();
@@ -1600,6 +1983,22 @@ export default {
       .then((response) => response.json())
       .then((res) => {
         if (res.success) {
+
+          this.toast.success("ลบรายการเรียบร้อยแล้ว", {
+            position: "top-center",
+            timeout: 4000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: false,
+            draggable: true,
+            draggablePercent: 0.5,
+            showCloseButtonOnHover: true,
+            hideProgressBar: true,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+          });
+
           this.remove.modal = false;
           this[`${this.remove.controll}_search`]();
         }
@@ -1613,95 +2012,53 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.base_search();
-      this.tmpsLink = `${
-        window.location.origin == "http://localhost:80811"
-          ? `http://localhost:8080/kay/rewrite_demo/services/`
-          : `${window.location.origin}/services/`
-      }tmps/`;
+
+      console.log(socket)
+
+      socket.on("connect", () => {
+        console.log("CONNECT")
+      });
+
+      socket.on("disconnect", () => {
+        console.log("DICONNECT")
+        socket.connect()
+      });
     });
   },
   watch: {
-    build: function (v) {
-      if(v) {
-        let i = 0
-        let count = 0
-        let order = 0
-        let remaining = 0
-        let array = [ ...this.item.rows]
-        // console.log(array)
-        while(i < array.length) {
-          let qty = parseFloat(array[i].quantity)
-          while(qty) {
-            if(remaining) {
-              if(remaining > qty) {
-                this.list[count] = {
-                  lot: array[i].lot,
-                  qty: qty,
-                  mfg: array[i].mfg,
-                  exp: array[i].exp,
-                  order: order,
-                  drum: this.list.filter(k => k.lot == array[i].lot).reduce((sum, v) =>  sum + v.qty, 0)
-                }
-                count += 1
-                remaining -= qty
-                qty = 0
-              } else {
-                this.list[count] = {
-                  lot: array[i].lot,
-                  qty: remaining,
-                  mfg: array[i].mfg,
-                  exp: array[i].exp,
-                  order: order,
-                  drum: this.list.filter(k => k.lot == array[i].lot).reduce((sum, v) => sum + v.qty, 0)
-                }
-                count += 1
-                order += 1
-                qty -= remaining
-                remaining = 0
-              }
-            } else if(qty >= this.floor) {
-              this.list[count] = {
-                lot: array[i].lot,
-                qty: this.floor,
-                mfg: array[i].mfg,
-                exp: array[i].exp,
-                order: order,
-                drum: this.list.filter(k => k.lot == array[i].lot).reduce((sum, v) => sum + v.qty, 0)
-              }
-              count += 1
-              order += 1
-              remaining = 0
-              qty -= this.floor
-            } else {
-              this.list[count] = {
-                lot: array[i].lot,
-                qty: qty,
-                mfg: array[i].mfg,
-                exp: array[i].exp,
-                order: order,
-                drum: this.list.filter(k => k.lot == array[i].lot).reduce((sum, v) => sum + v.qty, 0)
-              }
-              count += 1
-              remaining = this.floor - qty
-              qty = 0
-            }
-          }
-
-          i += 1
+    base: function (v) {
+      // console.log(v);
+    },
+    detail: function (v) {
+      // console.log(v);
+    },
+    item: function (v) {
+      // console.log(v);
+    },
+    floor: function (v) {
+      // console.log(v);
+      if (!isNaN(v)) {
+        if (v < 1) {
+          this.floor = 1
         }
-        // console.log(this.list)
-      } else {
-        this.list = []
+
+        if (v > this.detail.form.total_qty) {
+          this.floor = this.detail.form.total_qty
+        }
       }
     },
     select: function (v) {
       // console.log(v);
       this.datalist = [];
     },
-    detail: function (v) {
-      // console.log(v);
+    "base.form.customer": function (val) {
+      // console.log(val);
+      if (val) {
+        this.base.form.shipping_mark = (val == 'VITA') ? 'VT2024' : '' 
+      }
     },
     "detail.form.product": function (val) {
+      // console.log(val);
       if (val) {
         new Query(null,'get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WH/shelfshort?short_code=${val}&total=1`, (res) => {
           if (res.success) {
@@ -1716,8 +2073,8 @@ export default {
     },
     "detail.form.descrip": function (val) {
       // console.log(val)
-      if (val) {
-        new Query(null,'get').get(this, `${this.serviceUrl}api/controllers/SAP/UBA/oitm?item_name=${val}`, (res) => {
+      if (val && this.detail.controll == 'create') {
+        new Query(null,'get').get(this, `${this.serviceUrl}api/controllers/SAP/${this.wh}/oitm?item_name=${val}`, (res) => {
           if (res.success) {
             if (res.rows.length > 0) {
               let used = res.rows[0].ItemName.split(" ")
@@ -1751,6 +2108,7 @@ export default {
       }
     },
     "item.form.mfg": function (val) {
+      // console.log(val)
       if (val) {
         this.item.form.exp = this.ymd(val, this.detail.form.shelf_life)
       } else {
@@ -1762,38 +2120,8 @@ export default {
 </script>
 
 <style scrop>
-tr,
-td {
-  white-space: nowrap;
-}
-/* 
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
-
-#signature {
-  border: double 3px transparent;
-  border-radius: 5px;
-  background-image: linear-gradient(white, white),
-    radial-gradient(circle at top left, #000000, #000000);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-}
-
-.container {
-  width: "100%";
-  padding: 8px 16px;
-}
-
-.buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 8px;
-}
+  tr,
+  td {
+    white-space: nowrap;
+  }
 </style>
