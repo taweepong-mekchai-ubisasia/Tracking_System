@@ -21,6 +21,15 @@
           :prefix="prefix"
           :color="color[1]"
           @object_access="objectAccess"
+          :access="menuArray['SuperData']"
+          :head="'SuperData'"
+          :icon="'icon-park-outline:data'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
           :access="menuArray['DocumentAlert']"
           :head="'DocumentAlert'"
           :icon="'grommet-icons:document-time'"
@@ -30,10 +39,28 @@
           :prefix="prefix"
           :color="color[1]"
           @object_access="objectAccess"
+          :access="menuArray['Calibrate']"
+          :head="'Calibrate'"
+          :icon="'carbon:calibrate'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
+          :access="menuArray['WHIndirect']"
+          :head="'WHIndirect'"
+          :icon="'mdi:cupboard-outline'"
+        />
+        <!-- <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
           :access="menuArray['WHM']"
           :head="'WHM'"
           :icon="'ph:calculator'"
-        />
+        /> -->
         <AppModuleMenuTemplate
           :menutype="menutype"
           :prefix="prefix"
@@ -52,7 +79,7 @@
           :head="'HR'"
           :icon="'grommet-icons:group'"
         />
-        <AppModuleMenuTemplate
+        <!-- <AppModuleMenuTemplate
           :menutype="menutype"
           :prefix="prefix"
           :color="color[1]"
@@ -60,16 +87,7 @@
           :access="menuArray['LM']"
           :head="'LM'"
           :icon="'la:shipping-fast'"
-        />
-        <AppModuleMenuTemplate
-          :menutype="menutype"
-          :prefix="prefix"
-          :color="color[1]"
-          @object_access="objectAccess"
-          :access="menuArray['WMS']"
-          :head="'WMS'"
-          :icon="'game-icons:cargo-ship'"
-        />
+        /> -->
         <AppModuleMenuTemplate
           :menutype="menutype"
           :prefix="prefix"
@@ -111,28 +129,18 @@
           :prefix="prefix"
           :color="color[1]"
           @object_access="objectAccess"
-          :access="menuArray['PUR']"
-          :head="'PUR'"
+          :access="menuArray['PU']"
+          :head="'PU'"
           :icon="'bx:purchase-tag-alt'"
         />
-
         <AppModuleMenuTemplate
           :menutype="menutype"
           :prefix="prefix"
           :color="color[1]"
           @object_access="objectAccess"
-          :access="menuArray['SuperData']"
-          :head="'SuperData'"
-          :icon="'icon-park-outline:data'"
-        />
-        <AppModuleMenuTemplate
-          :menutype="menutype"
-          :prefix="prefix"
-          :color="color[1]"
-          @object_access="objectAccess"
-          :access="menuArray['TRR']"
-          :head="'TRR'"
-          :icon="'ci:building-04'"
+          :access="menuArray['Sales']"
+          :head="'Sales'"
+          :icon="'mdi:cart-sale'"
         />
         <AppModuleMenuTemplate
           :menutype="menutype"
@@ -143,7 +151,24 @@
           :head="'WH'"
           :icon="'bx:store-alt'"
         />
-
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
+          :access="menuArray['WMS']"
+          :head="'WMS'"
+          :icon="'game-icons:cargo-ship'"
+        />
+        <AppModuleMenuTemplate
+          :menutype="menutype"
+          :prefix="prefix"
+          :color="color[1]"
+          @object_access="objectAccess"
+          :access="menuArray['TRR']"
+          :head="'TRR'"
+          :icon="'ci:building-04'"
+        />
         <AppModuleMenuTemplate
           :menutype="menutype"
           :prefix="prefix"
@@ -191,7 +216,6 @@ export default {
   },
   methods: {
     objectAccess(obj) {
-      // console.log(this.user)
       this.menuArray[obj.key] = obj.array;
       this.$emit("object_access", this.menuArray);
     },

@@ -646,7 +646,7 @@
       </div>
     </template>
     <template #view v-if="user">
-      <div class="grid grid-cols-1 gap-6 w-full overflow-auto">
+      <div class="gap-3 py-1 w-full overflow-auto">
         <!-- <div class="card col-span-4 bg-transparent"> -->
         <div role="tablist" class="tabs tabs-lifted">
           <input

@@ -547,7 +547,7 @@
       <AppModuleGlobalShowImage :src="imageSrc" />
     </template>
     <template #view>
-      <div class="grid grid-cols-1 gap-6">
+      <div class="gap-3 py-3">
         <div class="card shadow-lg bg-base-100">
           <div class="card-body overflow-auto p-2 lg:p-4">
             <div>
@@ -556,6 +556,7 @@
                 class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-base-100 bg-opacity-50 top-0 left-0"
               >
                 <AppModuleGlobalLoadingText
+                  :type="'text'"
                   :class="`p-4 py-12 text-3xl text-center`"
                 />
               </div>
@@ -579,7 +580,7 @@
                   >
                 </div>
                 <div
-                  class="overflow-x-auto w-full max-h-[60vh] min-h-[60vh] my-4"
+                  class="overflow-x-auto w-full max-h-[69vh] my-2"
                 >
                   <div v-if="!base.loading && base.rows.length == 0">
                     <AppModuleGlobalEmptyData
@@ -827,20 +828,35 @@
                   </table>
                 </div>
               </div>
-              <AppModuleGlobalPageination
-                :page="base.page"
-                :total="base.total"
-                :row="base.row"
-                :back="base.back"
-                :next="base.next"
-                :loading="base.loading"
-                @search="
-                  (res) => {
-                    base.page = res.page;
-                    base_search();
-                  }
-                "
-              />
+              <div class="grid gap-3 lg:grid-cols-2 grid-cols-1">
+                <div class="text-left text-sm">
+                  Show :
+                  <select class="select select-bordered select-xs w-fit bg-yellow-50" 
+                    v-model="base.row" 
+                    @change="base_search()"
+                  >
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </select>
+                  |
+                  Showing {{ base.page == Math.ceil(base.total/base.row) ? 1 + (base.row*(base.page - 1)) : 1 + ((base.page - 1)*base.row) }} to {{ base.page == Math.ceil(base.total/base.row) ? base.total : base.row*base.page }} of {{ base.total }} entries
+                </div>
+                <AppModuleGlobalPageination
+                  :page="base.page"
+                  :total="base.total"
+                  :row="base.row"
+                  :back="base.back"
+                  :next="base.next"
+                  :loading="base.loading"
+                  @search="
+                    (res) => {
+                      base.page = res.page;
+                      base_search();
+                    }
+                  "
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -888,7 +904,7 @@ export default {
         rows: [],
         total: 0,
         page: 1,
-        row: 20,
+        row: 10,
         q: "",
         next: false,
         back: false,
@@ -936,12 +952,14 @@ export default {
     base_search() {
       this.base.loading = true;
       this.base_get((res) => {
-        this.base.rows = res.rows;
-        this.base.total = res.total;
-        this.base.next =
-          this.base.page * this.base.row >= this.base.total ? false : true;
-        this.base.back = this.base.page > 1 ? true : false;
-        this.base.loading = false;
+        setTimeout(() => {
+          this.base.rows = res.rows;
+          this.base.total = res.total;
+          this.base.next =
+            this.base.page * this.base.row >= this.base.total ? false : true;
+          this.base.back = this.base.page > 1 ? true : false;
+          this.base.loading = false;
+        }, 250);
       });
     },
     base_get(callback) {

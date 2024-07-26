@@ -61,9 +61,18 @@ const options = {
   windowTitle: window.document.title, // override the window title
 }
 
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
+const toastoptions = {
+  transition: "Vue-Toastification__bounce",
+  maxToasts: 20,
+  newestOnTop: true
+}
+
 // Use calendar defaults (optional)
 // app
-const app = createApp(App).use(store).use(router).use(momentPlugin).use(VueApexCharts).use(setupCalendar, {}).use(VueHtmlToPaper, options)
+const app = createApp(App).use(store).use(router).use(momentPlugin).use(VueApexCharts).use(setupCalendar, {}).use(VueHtmlToPaper, options).use(Toast, toastoptions)
 
 // .use(GAuth, { clientId: '594749811693-j8rrlliai8tkj81gh65vi5f3tgd02seq.apps.googleusercontent.com', scope: 'email',plugin_name:'UBIS', prompt: 'consent', fetch_basic_profile: false })
 

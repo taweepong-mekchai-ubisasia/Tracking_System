@@ -1,456 +1,405 @@
 <template>
-  <div class="Department">
-    <AppLayout>
-      <template #modal>
-        <!-- modal base -->
-        <input
-          type="checkbox"
-          id="modal-base"
-          class="modal-toggle"
-          v-model="base.modal"
-        />
-        <div class="modal" v-if="base.modal">
-          <div class="modal-box relative w-10/12 lg:w-6/12 max-w-full">
-            <label
-              for="modal-base"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-              >✕
-            </label>
-            <h3 class="text-lg font-bold">Request Doc</h3>
-
-            <div
-              class="bg-base-100 border-base-300 rounded-box p-6 overflow-auto w-full max-h-[60vh]"
-            >
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Title</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Title"
-                  class="input input-bordered border-base-content"
-                  v-model="base.form.title"
-                  :disabled="!base.form.status || base.form.status == 'draft' ? false : true"
-                />
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Description</span>
-                </label>
-
-                <textarea
-                  class="textarea textarea-bordered h-24"
-                  placeholder="Description"
-                  v-model="base.form.description"
-                  :disabled="!base.form.status || base.form.status == 'draft' ? false : true"
-                ></textarea>
-              </div>
-              <div class="form-control pt-4">
-                <div
-                  class="w-full overflow-auto min-h-[20vh] max-h-[20vh] border-2"
-                >
-                  <!-- <label class="label cursor-pointer">
-                    <span class="label-text">Email</span>
-                  </label> -->
-                  <table
-                    class="table table-xs table-pin-rows table-pin-cols table-zebra"
-                  >
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>ItemCode</th>
-                        <th>Item</th>
-                        <th>Qty</th>
-                        <!-- <th>Email</th> -->
-                        <!-- <th>Color</th>
-
-                        <th>Price</th>
-                        <th>Link</th> -->
-                        <th class="text-right"  v-if="!base.form.status || base.form.status == 'draft'">
-                          <label
-                         
-                            for="modal-detail"
-                            class="btn btn-primary modal-button btn-xs text-white"
-                            @click="detail_create()"
-                            >+ new
-                          </label>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        class="hover"
-                        v-for="(v, i) in detail.rows"
-                        :key="i"
-                      >
-                        <th>
-                          <!-- {{row}} -->
-                          {{ i + 1 }}
-                        </th>
-                        <td>
-                          <!-- <div class="flex items-center space-x-3">
-                            <div>
-                              <div class="font-bold">{{ v.ref_code }}</div>
-                              <div class="text-sm"> -->
-                          {{ v.item }}
-                          <!-- </div>
-                            </div>
-                          </div> -->
-                        </td>
-                        <td>
-                          <div class="flex items-center space-x-3">
-                            <div>
-                              <div class="font-bold">{{ v.title }}</div>
-                              <div class="text-sm">
-                                {{ v.ref_code }}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <!-- <div class="flex items-center space-x-3"> -->
-                          <!-- <div> -->
-                          <div class="font-bold"  v-if="!base.form.status || base.form.status == 'draft'">{{ v.qty }}</div>
-                          <!-- <div class="text-sm">
-                                {{ v.ref_code }}
-                              </div> -->
-                          <!-- </div>
-                          </div> -->
-                          <div class="font-bold" v-else>
-                                {{ v.issue ? v.issue : 0 }} / {{ v.qty }}
-                              </div>
-                        </td>
-                        
-                       
-
-                        <!-- <td>{{ v.price }}</td> -->
-                        <!-- <td>
-                            <a :href="v.link" target="_blank">
-                              <font-awesome-icon
-                                v-if="v.link"
-                                icon="fa-solid fa-globe"
-                                size="1x"
-                                class="btn btn-ghost modal-button btn-xs"
-                            /></a>
-                          </td> -->
-                        <th class="text-right"     v-if="!base.form.status || base.form.status == 'draft'">
-                          <label
-                            for="modal-detail"
-                            class="btn btn-link modal-button btn-xs"
-                            @click="detail_edit(`${v.code}`)"
-                          >
-                            แก้ไข
-                          </label>
-                          |
-                          <label
-                            for="modal-remove"
-                            class="btn btn-ghost modal-button btn-xs"
-                            @click="
-                              remove_item(
-                                `${v.code}`,
-                                'detail',
-                                'controllers/MYSQL/INTERNAL/QA/Indirect/request_item'
-                              )
-                            "
-                          >
-                            ลบ
-                          </label>
-                        </th>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Status</span>
-                </label>
-
-                <select
-                  class="select select-bordered border-base-content w-full"
-                  v-model="base.form.newStatus"
-                  :disabled="!base.form.status || base.form.status == 'draft' ? false : true"
-                >
-                  <option disabled selected value="">Select Option</option>
-                  <option value="draft" :disabled="!base.form.status ? false : true">Draft</option>
-                  <option value="pending" :disabled="!base.form.status || base.form.status == 'draft' ? false : true">Request</option>
-                  <option value="reject" disabled>Reject</option><option value="approve" disabled>Approve</option>
-                  <option value="close" disabled>Close</option>
-                </select>
-              </div>
-            </div>
-
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-              v-if="!base.form.status || base.form.status == 'draft' || base.form.status == 'pending'"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-base" class="btn btn-danger">Cancel</label>
-              </div>
-              <div class="flex-1 form-control mt-6" @click="base_save()">
-                <button class="btn btn-primary text-white">Confirm</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- modal remove -->
-        <input
-          type="checkbox"
-          id="modal-remove"
-          class="modal-toggle"
-          v-model="remove.modal"
-        />
-        <div class="modal">
-          <div class="modal-box relative">
-            <label
-              for="modal-remove"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-            >
-              ✕
-            </label>
-            <h3 class="text-lg font-bold">Remove Item!</h3>
-            <div class="card-body overflow-auto max-h-[60vh] ">
-              Are your sure for remove this item?
-            </div>
-
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-remove" class="btn btn-danger">Cancel</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-error text-white"
-                  @click="confirm_remove()"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- modal detail -->
-        <input
-          type="checkbox"
-          id="modal-detail"
-          class="modal-toggle"
-          v-model="detail.modal"
-        />
-        <div class="modal" v-if="detail.modal">
-          <div
-            class="modal-box relative w-10/12 lg:w-6/12 xl:w-4/12 max-w-full"
+  <AppLayout>
+    <template #modal>
+      <!-- modal base -->
+      <input
+        type="checkbox"
+        id="modal-base"
+        class="modal-toggle"
+        v-model="base.modal"
+      />
+      <div class="modal" v-if="base.modal">
+        <div class="modal-box relative w-11/12 max-w-xl">
+          <label
+            for="modal-base"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
           >
-            <label
-              for="modal-detail"
-              class="btn btn-sm btn-circle absolute right-2 top-2"
-              >✕</label
-            >
-            <h3 class="text-lg font-bold">Request Item</h3>
-            <div class="card-body overflow-auto max-h-[60vh] ">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Item</span>
-                </label>
-                <AppModuleGlobalSelectSearch
-                       
-                :placeholder="'Item'"
-                        :label="'title'"
-                        :code="'code'"
-                        :minChar="3"
-                        :delay="0.5"
-                        :limit="10"
-                        :customClass="`w-full input input-bordered border-base-content `"
-                      
-                        :current="detail.form.item"
-                        :refresh="refresh.item"
-                        :image="true"
-                        @updateValue="
-                          (obj) => {
-                            detail.form.item = obj ? obj.code : '';
-                            detail.form.ref_code = obj ? obj.ref_code : '';
-                            detail.form.title = obj ? obj.title : '';
-                            detail.form.current_price = obj ? obj.current_price?obj.current_price:0 : 0;
-                            detail.form.amount = obj ? obj.amount?obj.amount:0 : 0;
-                            // base.form.item_short.code = obj.code;
-                          }
-                        "
-                        @stopRefresh="
-                          (obj) => {
-                            refresh.item_short_code = obj.value;
-                          }
-                        "
-                        :url="`${serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/item`"
-                        :param="`&total=1`"
-                      />
-              
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Item Ref Code</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ref Code"
-                  class="input input-bordered border-base-content"
-                  v-model="detail.form.ref_code"
-                  :disabled="true"
-                />
-              </div>
-              <!-- <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Current Price</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Current Price"
-                  class="input input-bordered border-base-content"
-                  v-model="detail.form.current_price"
-                  :disabled="true"
-                />
-              </div> -->
-              <!-- <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Item Code</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Item Code"
-                  class="input input-bordered border-base-content"
-                  v-model="detail.form.item"
-                  :disabled="true"
-                />
-              </div> -->
-              <!-- {{detail.form}} -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Amount</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Amount"
-                  class="input input-bordered border-base-content"
-                  v-model="detail.form.amount"
-                  :disabled="true"
-                />
-              </div>
-              
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Qty</span>
-                </label>
-                <input
-                  type="number"
-                  placeholder="Qty"
-                  class="input input-bordered border-base-content"
-                  v-model="detail.form.qty"
-                />
-              </div>
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">Request Document</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto" style="max-height: 68vh;">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">หัวข้อเอกสารขอเบิก</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Title"
+                class="input input-md input-bordered border-gray-300 shadow"
+                :class="base.form.status != 'draft' ? 'bg-gray-200 text-black' : ''"
+                v-model="base.form.title"
+                :readonly="base.form.status == 'draft' ? false : true"
+              />
             </div>
-            <div
-              class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex"
-            
-            >
-              <div class="flex-1 form-control mt-6">
-                <label for="modal-detail" class="btn btn-danger">Cancel</label>
-              </div>
-              <div class="flex-1 form-control mt-6">
-                <button
-                  class="btn btn-primary text-white"
-                  @click="detail_save('static')"
-                >
-                  Confirm
-                </button>
-              </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">รายละเอียดการขอเบิก</span>
+              </label>
+              <textarea
+                class="textarea textarea-bordered h-20 border-gray-300 shadow"
+                :class="base.form.status != 'draft' ? 'bg-gray-200 text-black' : ''"
+                placeholder="Description"
+                v-model="base.form.description"
+                :readonly="base.form.status == 'draft' ? false : true"
+              ></textarea>
             </div>
-          </div>
-        </div>
-
-        <!-- Open the modal using ID.showModal() method -->
-
-        <!-- The button to open modal -->
-
-        <!-- Put this part before </body> tag -->
-
-        <AppModuleGlobalShowImage :src="imageSrc" />
-      </template>
-      <template #view>
-        <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2">
-          <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-            <div class="card-body overflow-auto">
-              <div class="join mt-5 w-full md:justify-center lg:justify-end">
-                <AppModuleGlobalSearch
-                  :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
-                  @search="
-                          (q) => {
-                            base.page = 1;
-                            base.q = q;
-                            typeof base.q == 'string' ? base_search() : '';
-                          }
-                        "
-                />
-                <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button text-white"
-                  @click="base_create()"
-                  >Create</label
-                >
-              </div>
-              <div class="overflow-x-auto w-full max-h-[60vh]">
-                <table
-                  class="table table-xs table-pin-rows table-pin-cols table-zebra"
-                >
+            <div class="form-control pt-4">
+              <div class="w-full overflow-auto min-h-[20vh] max-h-[20vh] border-2">
+                <table class="table table-xs table-pin-rows table-pin-cols table-zebra">
                   <thead>
                     <tr>
                       <th>#</th>
-                      <!-- <td>รูป</td> -->
-                      <td>Status/Code</td>
-                      <td>Title</td>
-                      <td>Description</td>
-                      <!-- <td>สิทธิ์การใช้งาน</td> -->
-                      <!-- <td>วันที่</td> -->
-                      <td>Creation</td>
-                      <td>Updation</td>
-                      <th class="text-right"></th>
+                      <th>Item Code</th>
+                      <th>Item</th>
+                      <th class="text-right">จำนวน</th>
+                      <th class="text-right" v-if="base.form.status == 'draft'">
+                        <label
+                          for="modal-detail"
+                          class="btn btn-primary modal-button btn-xs text-white"
+                          @click="detail_create()"
+                        >
+                          <Icon icon="subway:add" width="12" height="12" />
+                          Add
+                        </label>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(v, i) in base.rows" :key="v.code">
-                      <th>{{ v.id }}</th>
+                    <tr
+                      class="hover"
+                      v-for="(v, i) in detail.rows"
+                      :key="i"
+                    >
+                      <th>{{ i + 1 }}</th>
+                      <td>{{ v.item }}</td>
                       <td>
                         <div class="flex items-center space-x-3">
                           <div>
-                            <div>
-                              {{ v.status?v.status:'draft' }}
-                            </div>
-                            <div>
-                              {{ v.code }}
+                            <div class="font-bold">{{ v.title }}</div>
+                            <div class="text-sm">
+                              {{ v.ref_code }}
                             </div>
                           </div>
                         </div>
                       </td>
+                      <!-- <td class="text-right">
+                        <div class="font-bold"  v-if="base.form.status == 'draft'">
+                          {{ v.qty }}
+                        </div>
+                        <div class="font-bold" v-else>
+                          {{ v.issue ? v.issue : 0 }} / {{ v.qty }}
+                        </div>
+                      </td> -->
+                      <td class="text-right">
+                        <div class="font-bold">{{ v.qty }}</div>
+                      </td>
+                      <th class="text-right"  v-if="base.form.status == 'draft'">
+                        <label
+                          for="modal-detail"
+                          class="btn btn-ghost modal-button btn-xs"
+                          @click="detail_edit(`${v.code}`)"
+                        >
+                          <span class="underline underline-offset-2">แก้ไข</span>
+                        </label>
+                        <label
+                          for="modal-remove"
+                          class="btn btn-ghost modal-button btn-xs"
+                          @click="
+                            remove_item(
+                              `${v.code}`,
+                              'detail',
+                              'controllers/MYSQL/INTERNAL/QA/Indirect/request_item'
+                            )
+                          "
+                        >
+                          ลบ
+                        </label>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Status</span>
+              </label>
+              <select
+                class="select select-bordered border-gray-300 w-full shadow"
+                v-model="base.form.newStatus"
+                :disabled="base.form.status == 'draft' ? false : true"
+              >
+                <!-- <option disabled selected value="">Select Option</option> -->
+                <option value="draft" disabled>Draft</option>
+                <option value="pending" :disabled="!base.form.status || base.form.status == 'draft' ? false : true">Request</option>
+                <option value="reject" disabled>Reject</option>
+                <option value="approve" disabled>Approve</option>
+                <option value="close" disabled>Close</option>
+              </select>
+            </div>
+            <div class="form-control" v-if="base.form.newStatus == 'reject'">
+              <label class="label">
+                <span class="label-text">เหตุผลการ reject</span>
+              </label>
+              <textarea
+                class="textarea textarea-bordered h-20 border-gray-300 shadow bg-gray-200 text-black"
+                placeholder="Remarks"
+                v-model="base.form.reject_reason"
+                :readonly="base.form.newStatus == 'reject'"
+              ></textarea>
+            </div>
+          </div>
+          <hr v-if="base.form.status == 'draft'" />
+          <div
+            class="backdrop-blur sticky top-0 items-center gap-3 px-4 flex"
+            v-if="base.form.status == 'draft'"
+          >
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-base" class="btn">
+                <Icon icon="hugeicons:cancel-circle-half-dot" width="16" height="16" />
+                ปิด
+              </label>
+            </div>
+            <div class="flex-1 form-control mt-6" @click="base_save()">
+              <button class="btn btn-primary text-white">
+                <Icon icon="line-md:circle-to-confirm-circle-transition" width="16" height="16" />
+                บันทึกรายการ
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal detail -->
+      <input
+        type="checkbox"
+        id="modal-detail"
+        class="modal-toggle"
+        v-model="detail.modal"
+      />
+      <div class="modal" v-if="detail.modal">
+        <div class="modal-box relative w-11/12 max-w-lg">
+          <label
+            for="modal-detail"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-secondary">Request Item</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto" style="max-height: 60vh;">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Item</span>
+              </label>
+              <AppModuleGlobalSelectSearch
+                :placeholder="'Item'"
+                :label="'title'"
+                :code="'code'"
+                :minChar="3"
+                :delay="0.5"
+                :limit="10"
+                :customClass="`w-full input input-bordered border-gray-300 shadow`"
+                :current="detail.form.item"
+                :refresh="refresh.item"
+                :image="true"
+                @updateValue="
+                  (obj) => {
+                    detail.form.item = obj ? obj.code : '';
+                    detail.form.title = obj ? obj.title : '';
+                    detail.form.amount = obj ? obj.amount ? obj.amount : 0 : 0;
+                    detail.form.ref_code = obj ? obj.ref_code : '';
+                    // detail.form.current_price = obj ? (obj.current_price ? obj.current_price : 0) : 0;
+                    // base.form.item_short.code = obj.code;
+                  }
+                "
+                @stopRefresh="
+                  (obj) => {
+                    refresh.item_short_code = obj.value;
+                  }
+                "
+                :url="`${serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/item`"
+                :param="`&total=1`"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">คงเหลือในคลัง</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Amount"
+                class="input input-bordered border-gray-300 bg-gray-200 text-black shadow"
+                v-model="detail.form.amount"
+                readonly
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">จำนวนเบิก</span>
+              </label>
+              <input
+                type="number"
+                placeholder="Quantity"
+                class="input input-bordered border-gray-300 shadow"
+                v-model="detail.form.qty"
+              />
+            </div>
+          </div>
+          <hr />
+          <div class="backdrop-blur sticky top-0 items-center gap-3 px-4 flex">
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-detail" class="btn">
+                <Icon icon="hugeicons:cancel-circle-half-dot" width="16" height="16" />
+                ปิด
+              </label>
+            </div>
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-primary text-white"
+                @click="detail_save('static')"
+              >
+                <Icon icon="line-md:circle-to-confirm-circle-transition" width="16" height="16" />
+                ยืนยันข้อมูล
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal remove -->
+      <input
+        type="checkbox"
+        id="modal-remove"
+        class="modal-toggle"
+        v-model="remove.modal"
+      />
+      <div class="modal" v-if="remove.modal">
+        <div class="modal-box relative w-11/12 max-w-sm">
+          <label
+            for="modal-remove"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-error">REMOVE ITEM</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto max-h-[60vh]">
+            คุณแน่ใจหรือไม่ว่าจะลบรายการนี้?
+          </div>
+          <hr>
+          <div class="backdrop-blur sticky top-0 items-center gap-3 px-4 flex">
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-remove" class="btn btn-danger">
+                <Icon icon="hugeicons:cancel-circle-half-dot" width="16" height="16" />
+                ปิด
+              </label>
+            </div>
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-error text-white"
+                @click="confirm_remove()"
+              >
+                <Icon icon="line-md:circle-to-confirm-circle-transition" width="16" height="16" />
+                ยืนยัน
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <AppModuleGlobalShowImage :src="imageSrc" />
+    </template>
+    <template #view>
+      <div class="gap-3 lg:px-3 lg:py-3">
+        <div class="card shadow-lg bg-base-100">
+          <div class="card-body overflow-auto">
+            <div
+              v-if="base.loading"
+              class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-base-100 bg-opacity-50 top-0 left-0"
+            >
+              <AppModuleGlobalLoadingText
+                :class="`p-4 py-12 text-3xl text-center`"
+              />
+            </div>
+            <div class="flex justify-end">
+              <label
+                for="modal-base"
+                class="join-item btn-sm btn btn-primary modal-button text-white"
+                @click="base_create()"
+              >
+                <Icon icon="uil:create-dashboard" width="18" height="18" />
+                ทำรายการเบิก
+              </label>
+            </div>
+            <div class="border-2 border-dashed rounded-xl p-3 mt-2">
+              <div class="grid grid-cols-2 gap-3">
+                <button
+                  class="join-item btn btn-xs btn-outline btn-primary w-fit"
+                  @click="exportExcel('base')"
+                  disabled
+                >
+                  <Icon
+                    icon="mdi:file-excel-outline"
+                    width="16" height="16"
+                  />
+                  Excel
+                </button>
+                <div class="flex justify-end">
+                  <AppModuleGlobalSearch
+                    :class="'join-item input input-sm input-bordered border-gray-300 lg:w-1/2 w-full'"
+                    @search="
+                      (q) => {
+                        base.page = 1;
+                        base.q = q;
+                        typeof base.q == 'string' ? base_search() : '';
+                      }
+                    "
+                  />
+                </div>
+              </div>
+              <div class="overflow-x-auto w-full max-h-[60vh] my-3">
+                <table class="table table-xs table-pin-rows table-pin-cols table-zebra">
+                  <thead>
+                    <tr class="italic">
+                      <th class="text-right">#</th>
+                      <td>Status</td>
+                      <td>Doc Code</td>
+                      <td>หัวข้อเอกสาร</td>
+                      <td>รายละเอียด</td>
+                      <td>เปิด draft</td>
+                      <td>ขอเบิกเมื่อ</td>
+                      <!-- <td>อนุมัติเมื่อ</td>
+                      <td>ถูกปฏิเสธเมื่อ</td>
+                      <td>เหตุผลการปฏิเสธ</td> -->
+                      <td>approve / reject</td>
+                      <td>ทำรายการสำเร็จเมื่อ</td>
+                      <th class="text-right"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(v, i) in base.rows" :key="v.code" class="hover" >
+                      <th class="text-right font-bold">{{ v.id }}</th>
+                      <td>
+                        <span 
+                          class="badge badge-sm font-semibold italic px-4 py-2 w-20" 
+                          :class="v.status == 'close' ? 'badge-success text-base-100' : v.status == 'approve' ? 'badge-info text-base-100' : v.status == 'reject' ? 'badge-error text-base-100' : v.status == 'pending' ? 'badge-warning text-base-100' : ''">
+                            {{ v.status }}
+                        </span>
+                      </td>
+                      <td>{{ v.code }}</td>
                       <td>{{ v.title }}</td>
                       <td>{{ v.description }}</td>
                       <td>
                         <div class="flex items-center space-x-3">
                           <div>
-                            <div class="text-xs">
+                            <div class="text-xs italic">
                               {{
-                                v.created_at &&
-                                $moment(v.created_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? v.created_at
+                                v.created_at
+                                  ? $moment(v.created_at).format("DD-MM-YYYY HH:mm:ss")
                                   : "-"
                               }}
                             </div>
-                            <div class="text-xs opacity-30">
-                              {{
-                                v.created_fullname
-                                  ? v.created_fullname
-                                  : "-"
-                              }}
+                            <div class="text-xs opacity-50" v-if="v.created_fullname">
+                              {{ v.created_fullname }}
                             </div>
                           </div>
                         </div>
@@ -458,38 +407,116 @@
                       <td>
                         <div class="flex items-center space-x-3">
                           <div>
-                            <div class="text-xs">
+                            <div class="text-xs italic">
                               {{
-                                v.updated_at &&
-                                $moment(v.updated_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? v.updated_at
+                                v.request_at
+                                  ? $moment(v.request_at).format("DD-MM-YYYY HH:mm:ss")
                                   : "-"
                               }}
                             </div>
-                            <div class="text-xs opacity-30">
-                              {{
-                                v.updated_fullname
-                                  ? v.updated_fullname
-                                  : "-"
-                              }}
+                            <div class="text-xs opacity-50" v-if="v.request_at">
+                              {{ v.requester_fullname }}
                             </div>
                           </div>
                         </div>
                       </td>
-
+                      <td v-if="v.status == 'reject'">
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div class="text-xs italic">
+                              {{
+                                v.reject_at
+                                  ? $moment(v.reject_at).format("DD-MM-YYYY HH:mm:ss")
+                                  : "-"
+                              }}
+                            </div>
+                            <div class="text-xs opacity-50" v-if="v.reject_at">
+                              ( <span class="font-bold">reject</span> )
+                              {{ v.reject_reason }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td v-else>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div class="text-xs italic">
+                              {{
+                                v.approve_at
+                                  ? $moment(v.approve_at).format("DD-MM-YYYY HH:mm:ss")
+                                  : "-"
+                              }}
+                            </div>
+                            <div class="text-xs opacity-50" v-if="v.approve_at">
+                              ( <span class="font-bold">approve</span> )
+                              {{ v.approver_fullname }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <!-- <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div class="text-xs">
+                              {{
+                                v.reject_at
+                                  ? $moment(v.reject_at).format("DD-MM-YYYY HH:mm:ss")
+                                  : "-"
+                              }}
+                            </div>
+                            <div class="text-xs opacity-50" v-if="v.reject_at">
+                              {{ v.rejecter_fullname }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{{ v.reject_reason || '-' }}</td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div class="text-xs">
+                              {{
+                                v.approve_at
+                                  ? $moment(v.approve_at).format("DD-MM-YYYY HH:mm:ss")
+                                  : "-"
+                              }}
+                            </div>
+                            <div class="text-xs opacity-50" v-if="v.approve_at">
+                              {{ v.approver_fullname }}
+                            </div>
+                          </div>
+                        </div>
+                      </td> -->
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div class="text-xs italic">
+                              {{
+                                v.close_at
+                                  ? $moment(v.close_at).format("DD-MM-YYYY HH:mm:ss")
+                                  : "-"
+                              }}
+                            </div>
+                            <div class="text-xs opacity-50" v-if="v.close_at">
+                              {{ v.closed_person }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
                       <th class="text-right" >
                         <label
                           for="modal-base"
-                          class="join-item btn btn-ghost modal-button btn-xs"
+                          class="join-item btn btn-ghost modal-button btn-xs hover:text-black"
+                          :class="v.status == 'draft' ? 'text-warning' : 'text-primary'"
                           @click="base_edit(`${v.code}`, `${i}`)"
-                          >
-                          {{!v.status || v.status == 'draft' ? 'Edit' : 'Detail'}}
+                        >
+                          <span class="underline underline-offset-2">
+                            {{!v.status || v.status == 'draft' ? 'แก้ไข' : 'รายละเอียด'}}
+                          </span>
                         </label>
-
                         <label
                           for="modal-remove"
-                          class="join-item btn btn-ghost modal-button btn-xs"
+                          class="join-item btn btn-ghost modal-button btn-xs text-error hover:text-black"
                           v-if="!v.status || v.status == 'draft' || v.status == 'pending'"
                           @click="
                             remove_item(
@@ -498,36 +525,43 @@
                               'controllers/MYSQL/INTERNAL/QA/Indirect/request'
                             )
                           "
-                          >Remove
+                        >
+                          ยกเลิก
                         </label>
                       </th>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="join w-full justify-center lg:justify-end">
-                <AppModuleGlobalPageination
-                  :page="base.page"
-                  :total="base.total"
-                  :row="base.row"
-                  :back="base.back"
-                  :next="base.next"
-                  :loading="base.loading"
-                  @search="
-                    (res) => {
-                      base.page = res.page;
-                      this.base_search();
-                    }
-                  "
-                />
+              <div class="grid gap-3 grid-cols-2">
+                <div class="flex justify-start items-center text-sm">
+                  Showing {{ base.page == Math.ceil(base.total/base.row) ? 1 + (base.row*(base.page - 1)) : 1 + ((base.page - 1)*base.row) }} to {{ base.page == Math.ceil(base.total/base.row) ? base.total : base.row*base.page }} of {{ base.total }} entries
+                </div>
+                <div class="join w-full justify-center lg:justify-end">
+                  <AppModuleGlobalPageination
+                    :page="base.page"
+                    :total="base.total"
+                    :row="base.row"
+                    :back="base.back"
+                    :next="base.next"
+                    :loading="base.loading"
+                    @search="
+                      (res) => {
+                        base.page = res.page;
+                        this.base_search();
+                      }
+                    "
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </template>
-    </AppLayout>
-  </div>
+      </div>
+    </template>
+  </AppLayout>
 </template>
+
 <style>
 .crop {
   white-space: nowrap;
@@ -536,6 +570,7 @@
   max-width: 1px;
 }
 </style>
+
 <script>
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";
@@ -547,7 +582,7 @@ import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.v
 import Query from "@/assets/js/fetch.js";
 
 export default {
-  name: "Department",
+  name: "IndirectRequest",
   components: {
     AppLayout,
     AppModuleGlobalUpload,
@@ -559,18 +594,7 @@ export default {
   data() {
     return {
       loadimage: false,
-      options: {
-        penColor: "#c0f",
-      },
-      checkbox: "",
       refresh: false,
-      
-      category: {
-        rows: [],
-        page: 1,
-        row: 9999,
-        q: "",
-      },
       base: {
         rows: [],
         total: 0,
@@ -615,45 +639,25 @@ export default {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
-      // console.log("token");
-      //console.log(this.$store.getters.user_token);
       return this.$store.getters.user_token;
     },
+    user() {
+      return this.$store.getters.user;
+    }
   },
   methods: {
+    dateNow() {
+      let d = new Date();
+      return d.getFullYear() + '-' + (d.getMonth() >= 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)) + '-' + (d.getDate() > 9 ? d.getDate() : '0' + d.getDate())
+              + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+    },
     error() {
       this.loadimage = false;
     },
     loaded() {
       this.loadimage = true;
     },
-
-    change() {
-      this.base_search();
-    },
-
-    undo() {
-      this.$refs.signaturePad.undoSignature();
-    },
-    save() {
-      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
-
-      alert("Open DevTools see the save data.");
-      console.log(isEmpty);
-      console.log(data);
-    },
-    // change() {
-    //   this.options = {
-    //     penColor: "#00f",
-    //   };
-    // },
-    // resume() {
-    //   this.options = {
-    //     penColor: "#c0f",
-    //   };
-    // },
-
-    // base
+    // Base
     base_search() {
       this.base.loading = true;
       this.base_get((res) => {
@@ -674,8 +678,7 @@ export default {
           this.base.q ? `&q=${this.base.q}` : ""
         }`, (res) => {
         if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
+          console.log(res)
         } else {
           res.rows.forEach((v, i) => {
             res.rows[i].image = v.image ? JSON.parse(v.image) : [];
@@ -690,6 +693,8 @@ export default {
       this.base.form = {
         title: "",
         description: "",
+        status: "draft",
+        newStatus: "draft",
       };
       this.detail.rows = [];
       this.base.controll = "create";
@@ -698,14 +703,13 @@ export default {
       this.base.form = { ...this.base.rows[index] };
       this.base.current = code;
       this.base.form.newStatus = this.base.form.status;
-      this.detail.rows = [];
       this.base.controll = "edit";
+      this.detail.rows = [];
       this.detail_search();
       this.refresh = true;
     },
     base_save() {
       let vm = this;
-      !this.base.form.newStatus ? (this.base.form.newStatus = "draft") : "";
       let obj = {
         code: this.base.current,
         rows: [
@@ -716,14 +720,19 @@ export default {
         ],
       };
 
-      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/request`, obj, (res) => {
+      if (this.base.form.newStatus == 'pending') {
+        obj['rows'][0]['request_at'] = this.dateNow()
+        obj['rows'][0]['request_by'] = this.user.code
+      }
+
+      new Query(null, this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/request`, obj, (res) => {
         if (!res.success) {
-        // localStorage.removeItem("user_token");
-        // this.$router.push({ name: `Login` });
+          console.log(res)
         } else {
           this.base.modal = false;
+
           const promise_arr = [];
-          console.log(this.base.current);
+          // console.log(this.base.current);
           if (this.base.current == 0) {
             this.base.current = res.rows[0].code;
             let i = this.detail.rows.length;
@@ -742,7 +751,6 @@ export default {
 
           Promise.all(promise_arr)
             .then((res) => {
-              // console.log(res);
               vm.base_search();
             })
             .catch((err) => console.error(err));
@@ -753,7 +761,6 @@ export default {
     detail_search() {
       this.detail.loading = true;
       this.detail_get((res) => {
-        // console.log(res)
         this.detail.rows = res.rows;
         this.detail.total = res.total;
         this.detail.next =
@@ -762,8 +769,6 @@ export default {
             : true;
         this.detail.back = this.detail.page > 1 ? true : false;
         this.detail.loading = false;
-
-        console.log(this.detail.rows);
       });
     },
     detail_get(callback) {
@@ -784,117 +789,65 @@ export default {
       });
     },
     detail_create() {
-      // console.log("detail_create");
-      // this.clearimage();
       this.detail.current = 0;
-      // console.log("callback");
-      // this.detail.rows = [];
       this.detail.form = {
         code: "",
-        // title: "",
-        // price: "",
-        // image: [],
-        // imageLink: "",
-        // color: "",
-        // color_code: "",
-        // link: "",
+        title: "",
+        item: "",
+        ref_code: "",
+        amount: "",
+        qty: "",
       };
       this.detail.controll = "create";
     },
     detail_edit(code) {
-      // console.log("detail_edit");
-      // this.clearimage();
-      // console.log(id,index);
-      // setTimeout(() => {
       this.detail.current = code;
       let index = this.detail.rows.findIndex(
         (v) => v.code == this.detail.current
       );
-      // this.detail.rows[index] = { ...this.detail.form };
       this.detail.form = Object.assign({}, this.detail.rows[index]);
-      // this.detail.form.color = this.detail.form.color == "0" ? false : true;
-
-      // console.log(this.detail.form.image);
-      // this.detail.form.image.forEach((v, i) => {
-      //   // console.log(v);
-      //   this.detail.form.image[i] = Object.assign(
-      //     {},
-      //     this.detail.form.image[i]
-      //   );
-      // });
-
-      // console.log(this.detail.form);
-      // this.detail.form.image = JSON.parse(this.detail.form.image)
-
-      // }, 5000);
-
-      // this.base.form = this.base.rows[index]
-      // this.detail.current = index;
-      // this.detail_search();
-
       this.detail.controll = "edit";
     },
     detail_save(type) {
-      // console.log(this.base.current);
-      // console.log(this.detail.controll);
       if (!this.base.current) {
         if (this.detail.controll == "create") {
           this.detail.form.code = this.detail.rows.length;
           this.detail.rows = [{ ...this.detail.form }].concat(this.detail.rows);
-          // this.detail.rows.push({ ...this.detail.form });
           this.detail.modal = false;
         } else {
-          //  this.detail.form.id = this.detail.rows.length
           let index = this.detail.rows.findIndex(
             (v) => v.code == this.detail.current
           );
           this.detail.rows[index] = { ...this.detail.form };
-
-          // this.detail.rows.push({ ...this.detail.form });
           this.detail.modal = false;
         }
       } else {
-        // console.table(this.detail.form.image);
-        // let array_image = [];
-        // this.detail.form.image.forEach((v, i) => {
-        //   console.log(v);
-        //   if (v.temp) {
-        //     let image = { ...v };
-        //     delete image.temp;
-        //     array_image[i] = image;
-        //   } else {
-        //     array_image[i] = { ...v };
-        //   }
-        //   // console.log(this.detail.form.image[i])
-        // });
-        //  console.table(this.detail.form.image);
         let obj = {
-          ...this.detail.form,
+          rows: [
+            { ...this.detail.form }
+          ]
         };
-        obj["doc"] = this.base.current;
-        console.log(obj);
+
+        obj['rows'][0]["doc"] = this.base.current;
         if (this.detail.controll == "edit") {
-          obj["code"] = this.detail.form.code;
+          obj['rows'][0]["code"] = this.detail.form.code;
         }
 
-        new Query('detail', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/request_item`, obj, (res) => {
+        new Query(null, this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/request_item`, obj, (res) => {
           if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
+            console.log(res)
           } else {
             this.detail.modal = false;
 
             if (type == "static") {
               this.detail_search();
             }
-
-            // this.base_search();
           }
         });
       }
     },
    // REMOVE
-   remove_item(code, controll, tb) {
+    remove_item(code, controll, tb) {
       this.remove.code = code;
       this.remove.controll = controll;
       this.remove.tb = tb;
@@ -910,25 +863,21 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
+          if (!res.success) {
+            console.log(res)
           } else {
             this.remove.modal = false;
             this[`${this.remove.controll}_search`]();
           }
         })
         .catch((error) => {
-          // callback([]);
           console.error("Error:", error);
         });
     },
   },
   mounted() {
     this.$nextTick(() => {
-      //console.log(this.user_token);
       this.base_search();
-      
     });
   },
 };

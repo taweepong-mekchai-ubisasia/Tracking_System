@@ -59,12 +59,12 @@
         <AppModuleGlobalSearch
           :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
           @search="
-                          (q) => {
-                            base.page = 1;
-                            base.q = q;
-                            typeof base.q == 'string' ? base_search() : '';
-                          }
-                        "
+            (q) => {
+              base.page = 1;
+              base.q = q;
+              typeof base.q == 'string' ? base_search() : '';
+            }
+          "
         />
       </div>
     </div>
@@ -91,12 +91,7 @@
             <thead>
               <tr>
                 <th>Rack</th>
-
                 <td>Date Time</td>
-                <td>Code</td>
-                <td>Ref</td>
-                <td>Ref2</td>
-                <td>Transaction</td>
                 <td>Short Code</td>
                 <td>Item Name</td>
                 <td>Lot No.</td>
@@ -105,6 +100,10 @@
                 <td>Total Quantity</td>
                 <td>Unit</td>
                 <td>Comments</td>
+                <td>Transaction</td>
+                <td>Code</td>
+                <td>Ref</td>
+                <td>Ref2</td>
               </tr>
             </thead>
             <tbody>
@@ -147,30 +146,6 @@
                     </div>
                   </div>
                 </td>
-                <td>
-                  {{ v.code }}
-                </td>
-                <td>
-                  {{ v.ref }}
-                </td>
-                <td>
-                  {{ v.ref2 }}
-                </td>
-                <td>
-                  {{
-                    v.ref && v.ref2
-                      ? "Join"
-                      : v.transref == "I" && v.ref
-                      ? "Move"
-                      : v.transref == "O" && v.ref
-                      ? "Issue"
-                      : v.transref == "I" && !v.ref
-                      ? "In"
-                      : v.transref == "O" && !v.ref
-                      ? "Issue"
-                      : "-"
-                  }}
-                </td>
                 <td>{{ v.item_short_code }}</td>
                 <td>{{ v.item_name }}</td>
                 <td>{{ v.batch }}</td>
@@ -194,6 +169,32 @@
                       </div>
                     </div>
                   </div>
+                </td>
+                <td>
+                  {{
+                    v.ref && v.ref2
+                      ? "Join"
+                      : v.transref == "I" && v.ref && v.b_check
+                      ? "Balance"
+                      : v.transref == "I" && v.ref
+                      ? "Move"
+                      : v.transref == "O" && v.ref
+                      ? "Issue"
+                      : v.transref == "I" && !v.ref
+                      ? "In"
+                      : v.transref == "O" && !v.ref
+                      ? "Issue"
+                      : "-"
+                  }}
+                </td>
+                <td>
+                  {{ v.code }}
+                </td>
+                <td>
+                  {{ v.ref }}
+                </td>
+                <td>
+                  {{ v.ref2 }}
                 </td>
               </tr>
             </tbody>

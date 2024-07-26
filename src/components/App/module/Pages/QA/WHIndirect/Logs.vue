@@ -1,232 +1,221 @@
 <template>
-  <div class="Logs">
-
-  
-        <!-- <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2"> -->
-          <div class="card col-span-4 row-span-4 shadow-lg bg-base-100 border-2 mt-4">
-            <div class="card-body overflow-auto">
-              <div
-                class="contents lg:inline-flex lg:join my-5 w-full md:justify-center lg:justify-end"
-              >
-                <div class="contents sm:join md:join lg:join xl:join">
-                  <div class="join join-item">
-                    <button
-                      class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                      disabled
-                    >
-                      วันที่
-                    </button>
-                    <input
-                      type="date"
-                      placeholder="title"
-                      class="join-item input input-sm input-bordered border-base-content"
-                      v-model="date.from"
-                      @change="change"
-                    />
-                    <button
-                      class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
-                      disabled
-                    >
-                      -
-                    </button>
-
-                    <input
-                      type="date"
-                      placeholder="title"
-                      class="join-item input input-sm input-bordered border-base-content"
-                      v-model="date.to"
-                      @change="change"
-                    />
-                  </div>
-                  <AppModuleGlobalSearch
-                    :class="'join-item input input-sm input-bordered border-base-content w-full max-w-xs'"
-                    @search="
-                          (q) => {
-                            base.page = 1;
-                            base.q = q;
-                            typeof base.q == 'string' ? base_search() : '';
-                          }
-                        "
-                  />
-                </div>
-                <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button text-white "
-                  @click="exportExcel()"
-                >
-                  <Icon
-                    icon="mdi:file-excel-outline"
-                    class="h-5 w-5 text-white"
-                /></label>
-
-                <!-- <label
-                  for="modal-base"
-                  class="join-item btn-sm btn btn-primary modal-button text-white"
-                  @click="base_create()"
-                  >Create</label
-                > -->
-              </div>
-              <div class="overflow-x-auto w-full max-h-[60vh] lg:max-h-[65vh]">
-                <table
-                  class="table table-xs table-pin-rows table-pin-cols table-zebra"
-                >
-                  <thead>
-                    <tr>
-                      <th>Code</th>
-                      <td>Status</td>
-                      <td>Item Code</td>
-                      <td>Item Title</td>
-                      <td>qty</td>
-                      <td>price</td>
-                      <td>Doc ref</td>
-                      <td>Creation</td>
-                      <td>Updation</td>
-                      
-                      <td>Deletion</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="(v, i) in base.rows"
-                      :key="v.code"
-
-
-
-                      :class="
-                        v.deleted_at?` text-gray-500 line-through decoration-red-500`:``
-                      "
-                    >
-                      <th>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{ v.code }}
-                            </div>
-                            <div class="text-xs">( {{ v.id }} )</div>
-                          </div>
-                        </div>
-                      </th>
-                      <td>
-                        <span class="pr-2">{{ v.status }}</span>
-                      </td>
-           
-                      <td>{{ v.doc }}</td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{ v.title }}
-                            </div>
-                            <div class="text-xs">{{ v.item }}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>{{ v.qty }}</td>
-                      <td>{{ v.price }}</td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{ v.requestTitle ? v.requestTitle : "-" }}
-                            </div>
-                            <div class="text-xs">
-                              {{ v.doc ? v.doc : "-" }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                v.created_at &&
-                                $moment(v.created_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? v.created_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs">
-                              {{
-                                v.created_fullname
-                                  ? v.created_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                v.updated_at &&
-                                $moment(v.updated_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? v.updated_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs">
-                              {{
-                                v.updated_fullname
-                                  ? v.updated_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                    
-                      <td>
-                        <div class="flex items-center space-x-3">
-                          <div>
-                            <div class="text-xs">
-                              {{
-                                v.deleted_at &&
-                                $moment(v.deleted_at).format("YYYY-MM-DD") >
-                                  "2000"
-                                  ? v.deleted_at
-                                  : "-"
-                              }}
-                            </div>
-                            <div class="text-xs">
-                              {{
-                                v.deleted_fullname
-                                  ? v.deleted_fullname
-                                  : "-"
-                              }}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="w-full">
-                <AppModuleGlobalPageination
-                  :page="base.page"
-                  :total="base.total"
-                  :row="base.row"
-                  :back="base.back"
-                  :next="base.next"
-                  :loading="base.loading"
-                  @search="
-                    (res) => {
-                      base.page = res.page;
-                      this.base_search();
-                    }
-                  "
-                />
-              </div>
-            </div>
+  <div class="card shadow-lg bg-base-100 border-2 mt-3">
+    <div class="card-body overflow-auto">
+      <div
+        v-if="base.loading"
+        class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-white bg-opacity-50 top-0 left-0"
+      >
+        <AppModuleGlobalLoadingText
+          :type="'text'"
+          :class="`p-4 py-12 text-3xl text-center`"
+        />
+      </div>
+      <div class="contents lg:inline-flex lg:join my-5 w-full md:justify-center lg:justify-end">
+        <div class="contents sm:join md:join lg:join xl:join">
+          <div class="join join-item">
+            <button
+              class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+              disabled
+            >
+              วันที่
+            </button>
+            <input
+              type="date"
+              placeholder="title"
+              class="join-item input input-sm input-bordered border-gray-300 w-full"
+              v-model="date.from"
+              @change="change"
+            />
+            <button
+              class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+              disabled
+            >
+              -
+            </button>
+            <input
+              type="date"
+              placeholder="title"
+              class="join-item input input-sm input-bordered border-gray-300 w-full"
+              v-model="date.to"
+              @change="change"
+            />
           </div>
-        <!-- </div> -->
-  
-
+          <AppModuleGlobalSearch
+            :class="'join-item input input-sm input-bordered border-gray-300 w-full'"
+            @search="
+              (q) => {
+                base.page = 1;
+                base.q = q;
+                typeof base.q == 'string' ? base_search() : '';
+              }
+            "
+          />
+        </div>
+        <label
+          for="modal-base"
+          class="join-item btn-sm btn btn-primary modal-button text-white "
+          @click="exportExcel()"
+        >
+          <Icon
+            icon="mdi:file-excel-outline"
+            class="h-5 w-5 text-white"
+          /></label>
+      </div>
+      <div class="overflow-x-auto w-full max-h-[60vh] lg:max-h-[65vh]">
+        <div v-if="!base.loading && base.rows.length == 0">
+          <AppModuleGlobalEmptyData
+            :class="`p-4 py-12 text-3xl text-center`"
+          />
+        </div>
+        <table class="table table-xs table-pin-rows table-pin-cols table-zebra" v-else>
+          <thead>
+            <tr class="italic">
+              <th>Transaction Code</th>
+              <td>Status</td>
+              <!-- <td>Item Code</td> -->
+              <td>Item Ref</td>
+              <td>Doc Ref</td>
+              <td class="text-right">Quantity</td>
+              <td class="text-right">Price</td>
+              <td class="text-right">Total Cost</td>
+              <td>Comments</td>
+              <td>Creation</td>
+              <!-- <td>Updation</td> -->
+              <td>Deletion</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(v, i) in base.rows"
+              :key="v.code"
+              class="hover"
+              :class="
+                v.deleted_at?` text-gray-500 line-through decoration-red-500`:``
+              "
+            >
+              <th>
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="text-xs">
+                      {{ v.code }}
+                    </div>
+                    <div class="text-xs opacity-50">( {{ v.id }} )</div>
+                  </div>
+                </div>
+              </th>
+              <td>
+                <span class="pr-2">{{ v.status }}</span>
+              </td>
+              <!-- <td>{{ v.doc }}</td> -->
+              <td>
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="text-xs font-bold">
+                      {{ v.title }}
+                    </div>
+                    <div class="text-xs opacity-70">( {{ v.item }} )</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="text-xs">
+                      {{ v.requestTitle ? v.requestTitle : "-" }}
+                    </div>
+                    <div class="text-xs opacity-70" v-if="v.doc">
+                      ( {{ v.doc }} )
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-right">{{ v.qty }}</td>
+              <td class="text-right" v-if="v.status == 'import'">{{ v.price ? new Intl.NumberFormat("th-TH", {minimumFractionDigits: 2,}).format(v.price) : '0.00' }} ฿</td>
+              <td class="text-right" v-else>{{ v.price ? new Intl.NumberFormat("th-TH", {minimumFractionDigits: 2,}).format(v.price) : '-' }}</td>
+              <td class="text-right" v-if="v.status == 'import'">{{ v.sum ? new Intl.NumberFormat("th-TH", {minimumFractionDigits: 2,}).format(v.sum) : '0.00' }} ฿</td>
+              <td class="text-right" v-else>{{ v.sum ? new Intl.NumberFormat("th-TH", {minimumFractionDigits: 2,}).format(v.sum) : '-' }}</td>
+              <td>{{ v.comments || '-' }}</td>
+              <td>
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="text-xs italic">
+                      {{
+                        v.created_at
+                          ? $moment(v.created_at).format("DD-MM-YYYY HH:mm:ss")
+                          : "-"
+                      }}
+                    </div>
+                    <div class="text-xs opacity-70">
+                      {{
+                        v.created_fullname
+                          ? v.created_fullname
+                          : "-"
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <!-- <td>
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="text-xs">
+                      {{
+                        v.updated_at
+                          ? v.updated_at
+                          : "-"
+                      }}
+                    </div>
+                    <div class="text-xs opacity-70" v-if="v.updated_at">
+                      {{
+                        v.updated_fullname
+                          ? v.updated_fullname
+                          : "-"
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </td> -->
+              <td>
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="text-xs">
+                      {{
+                        v.deleted_at
+                          ? $moment(v.deleted_at).format("DD-MM-YYYY HH:mm:ss")
+                          : "-"
+                      }}
+                    </div>
+                    <div class="text-xs" v-if="v.deleted_at">
+                      {{
+                        v.deleted_fullname
+                          ? v.deleted_fullname
+                          : "-"
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="w-full">
+        <AppModuleGlobalPageination
+          :page="base.page"
+          :total="base.total"
+          :row="base.row"
+          :back="base.back"
+          :next="base.next"
+          :loading="base.loading"
+          @search="
+            (res) => {
+              base.page = res.page;
+              this.base_search();
+            }
+          "
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -236,6 +225,8 @@ import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageinati
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
 import AppModuleGlobalScannerDetect from "@/components/App/Module/Global/ScannerDetect.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
+import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
 import Query from "@/assets/js/fetch.js";
 
 export default {
@@ -246,9 +237,12 @@ export default {
     AppModuleGlobalSelectSearch,
     AppModuleGlobalSearch,
     AppModuleGlobalScannerDetect,
+    AppModuleGlobalLoadingText,
+    AppModuleGlobalEmptyData
   },
   data() {
     return {
+      dept: '',
       vers: 2,
       vers2Active: false,
       scan: false,
@@ -269,7 +263,7 @@ export default {
         rows: [],
         total: 0,
         page: 1,
-        row: 20,
+        row: 10,
         q: "",
         next: false,
         back: false,
@@ -349,7 +343,7 @@ export default {
 
       new Query('detail','get').get(this, `${
           this.serviceUrl
-        }api/controllers/MYSQL/INTERNAL/QA/Indirect/item?total=1&page=${
+        }api/controllers/MYSQL/INTERNAL/WHI/item?total=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
@@ -414,6 +408,22 @@ export default {
     // base
     base_search() {
       this.base.loading = true;
+      // console.log(this.user)
+
+      // if (this.user.department == '170564984084c6f') this.dept = 'im'
+      // else if (this.user.department == '170564984092be0' || this.user.department == '17056498404bf20') this.dept = 'pd'
+      // else if (this.user.department == '17056498405bb45') this.dept = 'qa'
+      // else if (this.user.department == '17056498404fe0b' || this.user.department == '1705649840cabf2') this.dept = 'qc'
+      // else if (this.user.department == '1721103490tpyEU' || this.user.department == '1721103499WUnje' || this.user.department == '1705649840b0cd6') this.dept = 'rd'
+      // else this.dept = 'it'
+
+      if (this.user.depRef == 224) this.dept = 'im'
+      else if (this.user.depRef == 221 || this.user.depRef == 228) this.dept = 'pd'
+      else if (this.user.depRef > 329 && this.user.depRef < 333) this.dept = 'rd'
+      else if (this.user.depRef == 779) this.dept = 'qa'
+      else if (this.user.depRef == 222 || this.user.depRef == 229) this.dept = 'qc'
+      else this.dept = 'it'
+
       this.base_get((res) => {
         this.base.rows = res.rows;
         this.base.total = res.total;
@@ -424,13 +434,13 @@ export default {
       });
     },
     base_get(callback) {
+      // console.log(this.dept)
       new Query('base','get').get(this, `${
           this.serviceUrl
-        }api/controllers/MYSQL/INTERNAL/QA/Indirect/transaction?total=1&action=all&page=${
-          this.base.page
-        }${this.base.row ? `&rows=${this.base.row}` : ""}${
-          this.base.q ? `&q=${this.base.q}` : ""
-        }`, (res) => {
+        }api/controllers/MYSQL/INTERNAL/WHI/transaction?total=1${this.user.access.WHIndirect.WHIndirectRequest == 'admin' ? `&${this.dept}=1` : ''}
+        &action=all${this.date.from ? `&from=${this.date.from}` : ''}${
+          this.date.to ? `&to=${this.date.to}` : ''}&page=${this.base.page}${
+        this.base.row ? `&rows=${this.base.row}` : ""}${this.base.q ? `&q=${this.base.q}` : ""}`, (res) => {
         if (res.success) {
           res.rows.forEach((v, i) => {
             res.rows[i].image = v.image ? JSON.parse(v.image) : [];
@@ -499,7 +509,7 @@ export default {
       }
       this.base.form.status = this.base.form.newStatus;
       // console.log(this.base.form.status);
-      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/transaction`, { rows: [{ ...this.base.form }] }, (res) => {
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WHI/transaction`, { rows: [{ ...this.base.form }] }, (res) => {
         if (!res.success) {
         // localStorage.removeItem("user_token");
         // this.$router.push({ name: `Login` });
@@ -613,7 +623,7 @@ export default {
     detail_get(callback) {
       new Query('detail','get').get(this, `${
           this.serviceUrl
-        }api/controllers/MYSQL/INTERNAL/QA/Indirect/transaction?total=1&page=${
+        }api/controllers/MYSQL/INTERNAL/WHI/transaction?total=1&page=${
           this.detail.page
         }${this.detail.row ? `&rows=${this.detail.row}` : ""}${
           this.detail.q ? `&q=${this.detail.q}` : ""
@@ -727,7 +737,7 @@ export default {
         console.error(this.base.form.doc);
         this.detail.form.doc = this.base.form.doc;
 
-        new Query('detail', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/transaction`, obj, (res) => {
+        new Query('detail', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WHI/transaction`, obj, (res) => {
           if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
@@ -782,7 +792,7 @@ export default {
       });
     },
     req_item_get(callback) {
-      new Query('item','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/QA/Indirect/request_item?total=1&doc=${this.base.form.doc}`, (res) => {
+      new Query('item','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WHI/request_item?total=1&doc=${this.base.form.doc}`, (res) => {
         if (res.success) {
           res.rows.forEach((v, i) => {
             res.rows[i].image = v.image ? JSON.parse(v.image) : [];

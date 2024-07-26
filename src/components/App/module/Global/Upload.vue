@@ -57,7 +57,7 @@
             height="auto"
             class="max-h-44 object-cover bg-cover"
             v-if="file.length > 0"
-            :src="`${file[0].temp ? `${serviceUrl}tmps/${type}/` : fileLink}${
+            :src="`${file[0] ? `${serviceUrl}tmps/${type}/` : fileLink}${
               file[0].file
             }`"
             :alt="`${file[0].file}`"
@@ -113,7 +113,7 @@
         </tbody>
       </table>
     </div>
-
+    
     <div
       v-if="multiple && type == 'image' && file.length > 0"
       class="grid md:gap-6 gap-6 md:grid-rows-1 grid-rows-2 p-4 mx-auto border-t-[1px] bg-white"
@@ -139,8 +139,9 @@
         <span
           class="indicator-item badge cursor-pointer py-3"
           @click="removefile(i)"
-          >x</span
         >
+          x
+        </span>
         <!-- <span class="indicator-item indicator-start badge badge-secondary"></span> -->
         <span
           class="indicator-item indicator-center indicator-middle badge badge-secondary"

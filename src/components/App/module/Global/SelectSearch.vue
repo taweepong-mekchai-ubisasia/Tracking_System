@@ -14,7 +14,7 @@
           v-if="base.current"
           type="search"
           :placeholder="placeholder"
-          class="input input-bordered border-base-content w-full"
+          class="input input-bordered w-full border-gray-300"
           :class="customClass"
           @focus="base.showlist = true"
           @blur="setBlur"
@@ -46,11 +46,18 @@
                 <img
                   v-if="image && v.image.length > 0"
                   :src="`${
+                    // v.image[v.master ? v.master : 0].temp
+                    //   ? `${serviceUrl}tmps/image/`
+                    //   : `${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=QAIndirectItem/${
+                    //       v.code
+                    //     }/${v.image[v.master ? v.master : 0].file}&s=10`
                     v.image[v.master ? v.master : 0].temp
                       ? `${serviceUrl}tmps/image/`
-                      : `${serviceUrl}api/controllers/MYSQL/INTERNAL/Global/image?path=QAIndirectItem/${
-                          v.code
-                        }/${v.image[v.master ? v.master : 0].file}&s=10`
+                      : v.imageLink
+                      ? `${v.imageLink}IndirectItem/${v.code}/`
+                      : `${serviceUrl}tmps/image/`
+                    }${
+                      v.image[v.master ? v.master : 0].file
                   }`"
                   alt="Image"
                   style="object-fit: contain"
@@ -171,7 +178,7 @@ export default {
   },
   methods: {
     onQueryChange(e) {
-      console.log(e.target.value);
+      // console.log(e.target.value);
       this.base.q = e.target.value
       if (e.target.value.trim() == "") {
         // this.base.current = {  };
@@ -210,26 +217,32 @@ export default {
       }
     },
     search() {
-      // console.log(this.base.current[this.label].length)
+      console.log(this.base.current[this.label])
       // console.log(this.minChar)
       if (this.base.current[this.label]) {
-        if (this.base.current[this.label] != "") {
+        // console.log('เข้า')
+        // if (this.base.current[this.label] != "") {
           if (this.base.current[this.label].length <= this.minChar) {
             return;
           }
-        }
+        // }
       }
       // console.log('label', this.base.current[this.label])
 
       this.base.q = this.base.current[this.label];
-      clearTimeout(this.base.timeout);
-      this.base.timeout = setTimeout(() => {
-        this.base.page = 1;
-        this.base_search((rows) => {
-          this.base.rows = rows;
-        });
-        clearTimeout(this.base.timeout);
-      }, this.base.delay * this.delay);
+      // clearTimeout(this.base.timeout);
+      // this.base.timeout = setTimeout(() => {
+      //   this.base.page = 1;
+      //   this.base_search((rows) => {
+      //     this.base.rows = rows;
+      //   });
+      //   clearTimeout(this.base.timeout);
+      // }, this.base.delay * this.delay);
+
+      this.base.page = 1;
+      this.base_search((rows) => {
+        this.base.rows = rows;
+      });
     },
     base_search(callback) {
       this.base.loading = true;

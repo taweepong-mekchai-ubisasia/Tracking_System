@@ -77,6 +77,32 @@ const menu = {
             name: "HREmployee",
             access: false,
           },
+          {
+            title: "Stationery",
+            access: false,
+            menu: [
+              {
+                title: "Dashboard",
+                name: "HRDashboard",
+                access: false,
+              },
+              {
+                title: "Request Lists",
+                name: "HRRequest",
+                access: false,
+              },
+              {
+                title: "Warehouse Shelfs",
+                name: "HRShelfs",
+                access: false,
+              },
+              {
+                title: "Item Price Lists",
+                name: "HRItem",
+                access: false,
+              },
+            ],
+          },
         ],
         LM: [
           // {
@@ -162,30 +188,40 @@ const menu = {
             access: false,
             menu: [
               {
-                title: "Operation",
+                title: "Scan To Receive",
                 name: "WMSVitaScanToReceive",
                 access: false,
               },
               {
-                title: "Receive",
+                title: "Management",
                 name: "WMSVitaReceive",
                 access: false,
               },
               {
-                title: "StockOnHand",
+                title: "Stock On Hand",
                 name: "WMSVitaStockOnHand",
+                access: false,
+              },
+              // {
+              //   title: "Stock On Hand By Product",
+              //   name: "WMSVitaStockOnHand",
+              //   access: false,
+              // },
+              // {
+              //   title: "Stock On Hand By Lot",
+              //   name: "WMSVitaStockOnHandByLot",
+              //   access: false,
+              // },
+              {
+                title: "Customer",
+                name: "WMSVitaCustomer",
                 access: false,
               },
               {
                 title: "Pick & Pack",
-                name: "WMSVitaPicking",
+                name: "WMSVitaPickPack",
                 access: false,
               },
-              // {
-              //   title: "Packing",
-              //   name: "WMSVitaPacking",
-              //   access: false,
-              // },
               {
                 title: "Deliver",
                 name: "WMSVitaDeliver",
@@ -228,16 +264,15 @@ const menu = {
                 access: false,
               },
               {
-                title: "Item",
+                title: "Item Master",
                 name: "QAWHIndirectItem",
                 access: false,
               },
               {
-                title: "Receive",
+                title: "Manage Item",
                 name: "QAWHIndirectReceive",
                 access: false,
               },
-
               {
                 title: "Request",
                 name: "QAWHIndirectRequest",
@@ -248,13 +283,11 @@ const menu = {
                 name: "QAWHIndirectApprove",
                 access: false,
               },
-
               {
                 title: "Issue",
                 name: "QAWHIndirectIssue",
                 access: false,
               },
-
               {
                 title: "Manage",
                 name: "QAWHIndirectManage",
@@ -302,31 +335,31 @@ const menu = {
             ],
           },
           {
-            title: "Inspector",
+            title: "Inspections",
             access: false,
             menu: [
+              // {
+              //   title: "Report",
+              //   name: "QCInspecReport",
+              //   access: false,
+              // },
               {
-                title: "Report",
-                name: "QCInspecReport",
-                access: false,
-              },
-              {
-                title: "RM",
+                title: "RM Report",
                 name: "QCInspecRM",
                 access: false,
               },
               {
-                title: "FG",
+                title: "FG Report",
                 name: "QCInspecFG",
                 access: false,
               },
               {
-                title: "PD",
+                title: "PD Issue Report",
                 name: "QCInspecPD",
                 access: false,
               },
               {
-                title: "Trackeability",
+                title: "TraceAbility FG",
                 name: "QCInspecTrackeability",
                 access: false,
               },
@@ -340,44 +373,44 @@ const menu = {
             access: false,
           },
         ],
-        PUR: [
+        PU: [
           {
             title: "Purchase Request",
             access: false,
             menu: [
               {
                 title: "Request",
-                name: "PURPORequestOld",
+                name: "PUPORequestOld",
                 access: false,
               },
               {
                 title: "Approve",
-                name: "PURPOApproveOld",
+                name: "PUPOApproveOld",
                 access: false,
               },
               {
                 title: "Recruitment",
-                name: "PURPORecruitmentOld",
+                name: "PUPORecruitmentOld",
                 access: false,
               },
               {
                 title: "Order",
-                name: "PURPOOrderOld",
+                name: "PUPOOrderOld",
                 access: false,
               },
               {
                 title: "Follow",
-                name: "PURPOFollowOld",
+                name: "PUPOFollowOld",
                 access: false,
               },
               {
                 title: "Supplier",
-                name: "PURPOSupplierOld",
+                name: "PUPOSupplierOld",
                 access: false,
               },
               {
                 title: "Receive",
-                name: "PURPOReceiveOld",
+                name: "PUPOReceiveOld",
                 access: false,
               },
             ],
@@ -388,12 +421,12 @@ const menu = {
             menu: [
               {
                 title: "Request",
-                name: "PURPRRequest",
+                name: "PUPRRequest",
                 access: false,
               },
               {
                 title: "Approve",
-                name: "PURPRApprove",
+                name: "PUPRApprove",
                 access: false,
               },
             ],
@@ -404,16 +437,37 @@ const menu = {
             menu: [
               {
                 title: "Request",
-                name: "PURPORequest",
+                name: "PUPORequest",
                 access: false,
               },
               {
                 title: "Approve",
-                name: "PURPOApprove",
+                name: "PUPOApprove",
                 access: false,
               },
             ],
           },
+          {
+            title: "Report",
+            access: false,
+            menu: [
+              {
+                title: "Purchase Approver Report",
+                name: "PUPOData",
+                access: false,
+              },
+              {
+                title: "Last Indirect Report",
+                name: "PULatest",
+                access: false,
+              },
+              {
+                title: "PR to PO Report",
+                name: "PUReport",
+                access: false,
+              }
+            ]
+          }
         ],
         SuperData: [
           {
@@ -444,7 +498,6 @@ const menu = {
             name: "TRRVisitor",
             access: false,
           },
-
           {
             title: "Automate Ticket",
             access: false,
@@ -461,8 +514,6 @@ const menu = {
               },
               {
                 title: "History",
-                name: "TRRAutomateTicketHistory",
-                access: false,
               },
             ],
           },
@@ -529,27 +580,6 @@ const menu = {
             ],
           },
           {
-            title: "Bin Location",
-            access: false,
-            menu: [
-              {
-                title: "Check Rac",
-                name: "WHBinLocationCheckRac",
-                access: false,
-              },
-              {
-                title: "Factory&External",
-                name: "WHBinLocationManagement",
-                access: false,
-              },
-              {
-                title: "Short Code",
-                name: "WHBinLocationShortCode",
-                access: false,
-              },
-            ],
-          },
-          {
             title: "Tracking",
             name: "WHTracking",
             access: false,
@@ -594,15 +624,74 @@ const menu = {
             access: false,
           },
         ],
-
         DocumentAlert: [
           {
             title: "Management",
             name: "DocumentAlertManagement",
-            access: true,
+            access: false,
           },
-         
         ],
+        Calibrate: [
+          {
+            title: "ItemMaster",
+            name: "CALitemmaster",
+            access: false,
+          },
+          {
+            title: "Calibration",
+            name: "CALcalibration",
+            access: false,
+          },
+          {
+            title: "ListPage",
+            name: "CALlistpage",
+            access: false,
+          },
+        ],
+        WHIndirect: [
+          {
+            title: "Report",
+            name: "WHIndirectReport",
+            access: false,
+          },
+          {
+            title: "Item Master",
+            name: "WHIndirectItem",
+            access: false,
+          },
+          {
+            title: "Manage Item",
+            name: "WHIndirectReceive",
+            access: false,
+          },
+          {
+            title: "Request",
+            name: "WHIndirectRequest",
+            access: false,
+          },
+          {
+            title: "Approve",
+            name: "WHIndirectApprove",
+            access: false,
+          },
+          {
+            title: "Issue",
+            name: "WHIndirectIssue",
+            access: false,
+          },
+          {
+            title: "Manage",
+            name: "WHIndirectManage",
+            access: false,
+          },
+        ],
+        Sales: [
+          {
+            title: "A/R Invoice Report",
+            name: "SalesInvoice",
+            access: false,
+          },
+        ]
       },
     };
   },

@@ -187,9 +187,9 @@
       </div>
     </template>
     <template #view>
-      <div class="grid grid-cols-1 gap-6">
+      <div class="gap-3 py-3">
         <div class="card shadow-lg bg-base-100">
-          <div class="card-body overflow-auto p-2 lg:p-4">
+          <div class="card-body overflow-auto">
             <div>
               <div
                 v-if="base.loading"

@@ -1,38 +1,54 @@
 <template>
-  <div class="Department">
-    <AppLayout>
-      <template #modal> </template>
+  <AppLayout>
+      <template #modal></template>
       <template #view>
-        <div class="grid grid-cols-1 gap-6 lg:px-10 lg:py-2">
-          <div class="card col-span-4 row-span-4 shadow-lg bg-base-100">
-            <div class="md:card-body h-auto overflow-auto">
-              <!-- COMING SOON -->
-
-              <div id="chart">
-                <apexchart
-                  type="bar"
-                  height="350"
-                  :options="chartOptions"
-                  :series="series"
-                ></apexchart>
-              </div>
-              <div class="grid gap-4 md:grid-cols-2 grid-cols-1">
-                <div id="chart">
+        <div class="gap-3 lg:px-3 lg:py-3">
+          <!-- <div class="card shadow-lg bg-base-100">
+            <div class="md:card-body h-auto overflow-auto"> -->
+              <!-- {{ base.rows }} -->
+              <div class="grid gap-3 md:grid-cols-2 grid-cols-1">
+                <div class="card shadow-lg bg-base-100 border-2">
+                  <div id="chart" class="card-body overflow-auto">
+                    <h3 class="font-semibold opacity-70 font-mono">
+                      ราคาซื้อเข้า ของ Item Master Top 5 (มาก-น้อย)
+                    </h3>
+                    <apexchart
+                      type="bar"
+                      height="300"
+                      :options="importOpions"
+                      :series="importSeries"
+                    ></apexchart>
+                  </div>
+                </div>
+                <div class="card shadow-lg bg-base-100 border-2">
+                  <div id="chart" class="card-body overflow-auto">
+                    <h3 class="font-semibold opacity-70 font-mono">
+                      จำนวนการ Issue ของ Item Master Top 5 (มาก-น้อย)
+                    </h3>
+                    <apexchart
+                      type="bar"
+                      height="300"
+                      :options="exportOpions"
+                      :series="exportSeries"
+                    ></apexchart>
+                  </div>
+                </div>
+                <!-- <div id="chart">
                   <apexchart
-                    type="pie"
+                    type="line"
                     width="380"
                     :options="chartOptions2"
                     :series="series2"
                   ></apexchart>
-                </div>
-                <div id="chart">
+                </div> -->
+                <!-- <div id="chart">
                   <apexchart
-                    type="pie"
+                    type="donut"
                     width="380"
                     :options="chartOptions2"
                     :series="series2"
                   ></apexchart>
-                </div>
+                </div> -->
               </div>
               <AppModulePagesQAWHIndirectLogs />
               <!-- <div class="join mt-5 w-full md:justify-center lg:justify-end">
@@ -119,13 +135,13 @@
                   "
                 />
               </div> -->
-            </div>
-          </div>
+            <!-- </div>
+          </div> -->
         </div>
       </template>
-    </AppLayout>
-  </div>
+  </AppLayout>
 </template>
+
 <style>
 .crop {
   white-space: nowrap;
@@ -134,6 +150,7 @@
   max-width: 1px;
 }
 </style>
+
 <script>
 // @ is an alias to /src
 import AppLayout from "@/components/App/layout.vue";
@@ -141,14 +158,15 @@ import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageinati
 import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
 import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
 import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
-
 import AppModulePagesQAWHIndirectLogs from "@/components/App/Module/Pages/QA/WHIndirect/Logs.vue";
 // import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
+import Query from "@/assets/js/fetch.js";
+
 let colors = [
   "#E74645",
   "#FB7756",
   "#FACD60",
-  "#FDFA66",
+  // "#FDFA66",
   "#1AC0C6",
   "#454D66",
   "#309975",
@@ -167,7 +185,7 @@ let colors = [
   "#F45B69",
 ];
 export default {
-  name: "Department",
+  name: "IndirectReport",
   components: {
     AppLayout,
     AppModuleGlobalUpload,
@@ -179,75 +197,80 @@ export default {
   },
   data() {
     return {
-      series2: [44, 55, 13, 43, 22],
-      chartOptions2: {
-        chart: {
-          width: 380,
-          type: "pie",
-        },
-        labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
-        responsive: [
-          {
-            breakpoint: 480,
-            options: {
-              chart: {
-                width: 200,
-              },
-              legend: {
-                position: "bottom",
-              },
-            },
-          },
-        ],
-      },
+      // pieSeries: [44, 55, 13, 43, 22],
+      // pieOptions: {
+      //   chart: {
+      //     width: 380,
+      //     type: "donut",
+      //   },
+      //   labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+      //   responsive: [
+      //     {
+      //       breakpoint: 480,
+      //       options: {
+      //         chart: {
+      //           width: 200,
+      //         },
+      //         legend: {
+      //           position: "bottom",
+      //         },
+      //       },
+      //     },
+      //   ],
+      // },
+      // barSeries: [
+      //   {
+      //     data: [21, 22, 10, 28, 16, 21, 13, 30],
+      //   },
+      // ],
+      // barOptions: {
+      //   chart: {
+      //     height: 350,
+      //     type: "bar",
+      //     events: {
+      //       click: function (chart, w, e) {
+      //         // console.log(chart, w, e)
+      //       },
+      //     },
+      //   },
+      //   colors: colors,
+      //   plotOptions: {
+      //     bar: {
+      //       columnWidth: "45%",
+      //       distributed: true,
+      //     },
+      //   },
+      //   dataLabels: {
+      //     enabled: false,
+      //   },
+      //   legend: {
+      //     position: "left",
+      //     show: true,
+      //   },
+      //   xaxis: {
+      //     categories: [
+      //       ["John", "Doe"],
+      //       ["Joe", "Smith"],
+      //       ["Jake", "Williams"],
+      //       "Amber",
+      //       ["Peter", "Brown"],
+      //       ["Mary", "Evans"],
+      //       ["David", "Wilson"],
+      //       ["Lily", "Roberts"],
+      //     ],
+      //     labels: {
+      //       style: {
+      //         colors: colors,
+      //         fontSize: "12px",
+      //       },
+      //     },
+      //   },
+      // },
 
-      series: [
-        {
-          data: [21, 22, 10, 28, 16, 21, 13, 30],
-        },
-      ],
-      chartOptions: {
-        chart: {
-          height: 350,
-          type: "bar",
-          events: {
-            click: function (chart, w, e) {
-              // console.log(chart, w, e)
-            },
-          },
-        },
-        colors: colors,
-        plotOptions: {
-          bar: {
-            columnWidth: "45%",
-            distributed: true,
-          },
-        },
-        dataLabels: {
-          enabled: false,
-        },
-        legend: {
-          show: false,
-        },
-        xaxis: {
-          categories: [
-            ["John", "Doe"],
-            ["Joe", "Smith"],
-            ["Jake", "Williams"],
-            "Amber",
-            ["Peter", "Brown"],
-            ["Mary", "Evans"],
-            ["David", "Wilson"],
-            ["Lily", "Roberts"],
-          ],
-          labels: {
-            style: {
-              colors: colors,
-              fontSize: "12px",
-            },
-          },
-        },
-      },
+      importSeries: [ { data: [] } ],
+      importOpions: [],
+      exportSeries: [ { data: [] } ],
+      exportOpions: [],
 
       selectEN: "",
       loadimage: false,
@@ -256,13 +279,6 @@ export default {
       },
       checkbox: "",
       refresh: false,
-      
-      category: {
-        rows: [],
-        page: 1,
-        row: 9999,
-        q: "",
-      },
       base: {
         rows: [],
         total: 0,
@@ -307,19 +323,11 @@ export default {
       return this.$store.getters.serviceUrl;
     },
     user_token() {
-      // console.log("token");
-      //console.log(this.$store.getters.user_token);
       return this.$store.getters.user_token;
     },
     user() {
       return this.$store.getters.user;
-    },
-    transpotationItem() {
-      return this.$store.getters.transpotationItem;
-    },
-    transpotation() {
-      return this.$store.getters.transpotation;
-    },
+    }
   },
   methods: {
     changeData() {
@@ -327,37 +335,9 @@ export default {
         ...this.base.rows.find((v) => v.code == this.selectEN),
       };
     },
-    // error() {
-    //   this.loadimage = false;
-    // },
-    // loaded() {
-    //   this.loadimage = true;
-    // },
-
     change() {
       this.base_search();
     },
-
-    // undo() {
-    //   this.$refs.signaturePad.undoSignature();
-    // },
-    // save() {
-    //   const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
-
-    //   alert("Open DevTools see the save data.");
-    //   console.log(isEmpty);
-    //   console.log(data);
-    // },
-    // change() {
-    //   this.options = {
-    //     penColor: "#00f",
-    //   };
-    // },
-    // resume() {
-    //   this.options = {
-    //     penColor: "#c0f",
-    //   };
-    // },
     makeid(length) {
       let result = "";
       const characters =
@@ -372,8 +352,7 @@ export default {
       }
       return result;
     },
-
-    // base
+    // Base
     base_search() {
       this.base.loading = true;
       this.base_get((res) => {
@@ -386,202 +365,241 @@ export default {
       });
     },
     base_get(callback) {
-      let data = this.transpotation.filter((v, i) => v.status == "shipping");
-      return callback({
-        rows: data,
-        total: data.length,
-      });
-      fetch(
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
-        }api/controllers/MYSQL/INTERNAL/HR/employee?total=1&page=${this.base.page}${
-          this.base.row ? `&rows=${this.base.row}` : ""
-        }${this.base.q ? `&q=${this.base.q}` : ""}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.user_token}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
-          } else {
-            res.rows.forEach((v, i) => {
-              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-              res.rows[i].master = 0;
-            });
+        }api/controllers/MYSQL/INTERNAL/QA/Indirect/transaction?total=1&page=${
+          this.base.page
+        }${this.base.row ? `&rows=${this.base.row}` : ""}${
+          this.base.q ? `&q=${this.base.q}` : ""
+        }`, (res) => {
+        if (res.success) {
+          let importCategory = []
+          res.rows.filter(x => x.price && x.price > 0).sort((a, b) => b.sum - a.sum).slice(0, 5).forEach(x => {
+            this.importSeries[0]['data'].push(x.sum)
+            importCategory.push([ x.title, '('+this.$moment(x.created_at).format("DD-MM-YYYY HH:mm:ss")+')' ])
+          });
+
+          this.importOpions = {
+            chart: {
+              height: 300,
+              type: "bar",
+              events: {
+                click: function (chart, w, e) {
+                  // console.log(chart, w, e)
+                },
+              },
+            },
+            colors: colors,
+            plotOptions: {
+              bar: {
+                columnWidth: "20%",
+                distributed: true,
+              },
+            },
+            dataLabels: {
+              enabled: true,
+            },
+            legend: {
+              position: "left",
+              show: false,
+            },
+            xaxis: {
+              categories: importCategory,
+              labels: {
+                style: {
+                  colors: colors,
+                  fontSize: "12px",
+                },
+              },
+            },
           }
-          callback(
-            res.success
-              ? { rows: res.rows, total: res.total }
-              : { rows: [], total: 0 }
-          );
-        })
-        .catch((error) => {
-          // callback([]);
-          // localStorage.removeItem("user_token");
-          // this.$router.push({ name: "AppLogin" });
-          console.error("Error:", error);
-        });
-    },
-    base_create() {
-      this.base.current = 0;
-      this.base.form = {
-        code: this.makeid(5),
-        status: "",
-      };
-      console.log(this.base.form);
-      this.detail.rows = [];
-      this.base.controll = "create";
-    },
-    base_edit(code, index) {
-      this.base.form = { ...this.base.rows[index] };
-      this.base.current = code;
-      this.detail.rows = [];
-      this.base.controll = "edit";
-      this.detail_search();
-      this.refresh = true;
-    },
-    base_save() {
-      // this.base.form.created_at
 
-      // this.base.form.code = "111111",
-      // this.base.form.en= "product_1234",
-      // this.base.form.packingList= "lotNumber_1234",
-      // this.base.form.shippingMark= "111",
-      // this.base.form.shippingDate= "2020-01-02",
-      this.base.form.created_at = "2020-01-02";
-      this.base.form.created_by = "tets";
-      this.base.form.updated_at = "2020-01-02";
-      this.base.form.updated_by = "tets";
-      this.base.form.deleted_at = "2020-01-02";
-      this.base.form.deleted_by = "tets";
-      // this.base.form.status= "pending",
+          let exportCategory = []
+          res.rows.filter(x => x.status == 'export').sort((a, b) => (b.qty) - a.qty).slice(0, 5).forEach(x => {
+            this.exportSeries[0]['data'].push(x.qty)
+            exportCategory.push([ x.title, '('+this.$moment(x.created_at).format("DD-MM-YYYY HH:mm:ss")+')' ])
+          });
 
-      let index = this.transpotation.findIndex(
-        (v) => v.code == this.base.current
-      );
-      index >= 0
-        ? (this.transpotation[index] = { ...this.base.form })
-        : this.transpotation.push({ ...this.base.form });
-      this.$store.commit("transpotation", this.transpotation);
-      // console.log(index)
-      this.base.modal = false;
-      const promise_arr = [];
+          // console.log(this.exportSeries)
+          // console.log(exportCategory)
+          // return
 
-      // console.log(this.transpotation);
-      if (this.base.current == 0) {
-        let vm = this;
-        this.base.current = this.base.form.code;
-        let i = this.detail.rows.length;
-        this.detail.controll = "create";
-        for (i; i > 0; i--) {
-          this.detail.form = {
-            // code: this.detail.rows[i - 1]["code"],
-            // title: this.detail.rows[i - 1]["title"],
-
-            code: this.detail.rows[i - 1]["code"],
-            transpotation_code: this.detail.rows[i - 1]["transpotation_code"],
-            product: this.detail.rows[i - 1]["product"],
-            lotNumber: this.detail.rows[i - 1]["lotNumber"],
-            quantity: this.detail.rows[i - 1]["quantity"],
-            mfg: this.detail.rows[i - 1]["mfg"],
-            exp: this.detail.rows[i - 1]["exp"],
-            created_at: "2020-01-02",
-            created_by: "tets",
-            updated_at: "2020-01-02",
-            updated_by: "tets",
-            deleted_at: "2020-01-02",
-            deleted_by: "tets",
-          };
-          promise_arr.push(
-            new Promise(async function (resolve, reject) {
-              let res = await vm.detail_save("dynamic");
-              await resolve(res);
-              return;
-            })
-          );
+          this.exportOpions = {
+            chart: {
+              height: 300,
+              type: "bar",
+              events: {
+                click: function (chart, w, e) {
+                  // console.log(chart, w, e)
+                },
+              },
+            },
+            colors: colors,
+            plotOptions: {
+              bar: {
+                columnWidth: "20%",
+                distributed: true,
+              },
+            },
+            dataLabels: {
+              enabled: true,
+            },
+            legend: {
+              position: "left",
+              show: false,
+            },
+            xaxis: {
+              categories: exportCategory,
+              labels: {
+                style: {
+                  colors: colors,
+                  fontSize: "12px",
+                },
+              },
+            },
+          }
         }
-      }
-
-      Promise.all(promise_arr).then((res) => {
-        this.base_search();
+        callback({ ...res });
       });
-      return;
-
-      let vm = this;
-      fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, {
-        method: this.base.controll == "create" ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.user_token}`,
-        },
-        body: JSON.stringify({
-          code: this.base.current,
-          uid: this.base.form.uid,
-          firstname: this.base.form.firstname,
-          lastname: this.base.form.lastname,
-          current_password: this.base.form.current_password,
-          password: this.base.form.new_password,
-          confirm_password: this.base.form.confirm_password,
-          email: this.base.form.email,
-          tel: this.base.form.tel,
-          birthdate: this.base.form.birthdate,
-          department: this.base.form.department,
-          branch: this.base.form.branch,
-          company: this.base.form.company,
-          position: this.base.form.position,
-          started_at: this.base.form.started_at,
-          leaves_at: this.base.form.leaves_at,
-          access_code: this.base.form.access_code,
-          // image: image ? [image] : "",
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-                   if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            const promise_arr = [];
-            console.log(this.base.current);
-            if (this.base.current == 0) {
-              this.base.current = res.row.code;
-              let i = this.detail.rows.length;
-              this.detail.controll = "create";
-              for (i; i > 0; i--) {
-                this.detail.form = {
-                  code: this.detail.rows[i - 1]["code"],
-                  title: this.detail.rows[i - 1]["title"],
-                };
-                promise_arr.push(
-                  new Promise(async function (resolve, reject) {
-                    let res = await vm.detail_save("dynamic");
-                    await resolve(res);
-                    return;
-                  })
-                );
-              }
-            }
-
-            Promise.all(promise_arr)
-              .then((res) => {
-                // console.log(res);
-                vm.base_search();
-              })
-              .catch((err) => console.error(err));
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
     },
+    // base_create() {
+    //   this.base.current = 0;
+    //   this.base.form = {
+    //     code: this.makeid(5),
+    //     status: "",
+    //   };
+    //   this.detail.rows = [];
+    //   this.base.controll = "create";
+    // },
+    // base_edit(code, index) {
+    //   this.base.form = { ...this.base.rows[index] };
+    //   this.base.current = code;
+    //   this.detail.rows = [];
+    //   this.base.controll = "edit";
+    //   this.detail_search();
+    //   this.refresh = true;
+    // },
+    // base_save() {
+    //   this.base.form.created_at = "2020-01-02";
+    //   this.base.form.created_by = "tets";
+    //   this.base.form.updated_at = "2020-01-02";
+    //   this.base.form.updated_by = "tets";
+    //   this.base.form.deleted_at = "2020-01-02";
+    //   this.base.form.deleted_by = "tets";
+
+    //   let index = this.transpotation.findIndex(
+    //     (v) => v.code == this.base.current
+    //   );
+    //   index >= 0
+    //     ? (this.transpotation[index] = { ...this.base.form })
+    //     : this.transpotation.push({ ...this.base.form });
+    //   this.$store.commit("transpotation", this.transpotation);
+    //   this.base.modal = false;
+    //   const promise_arr = [];
+    //   if (this.base.current == 0) {
+    //     let vm = this;
+    //     this.base.current = this.base.form.code;
+    //     let i = this.detail.rows.length;
+    //     this.detail.controll = "create";
+    //     for (i; i > 0; i--) {
+    //       this.detail.form = {
+    //         code: this.detail.rows[i - 1]["code"],
+    //         transpotation_code: this.detail.rows[i - 1]["transpotation_code"],
+    //         product: this.detail.rows[i - 1]["product"],
+    //         lotNumber: this.detail.rows[i - 1]["lotNumber"],
+    //         quantity: this.detail.rows[i - 1]["quantity"],
+    //         mfg: this.detail.rows[i - 1]["mfg"],
+    //         exp: this.detail.rows[i - 1]["exp"],
+    //         created_at: "2020-01-02",
+    //         created_by: "tets",
+    //         updated_at: "2020-01-02",
+    //         updated_by: "tets",
+    //         deleted_at: "2020-01-02",
+    //         deleted_by: "tets",
+    //       };
+    //       promise_arr.push(
+    //         new Promise(async function (resolve, reject) {
+    //           let res = await vm.detail_save("dynamic");
+    //           await resolve(res);
+    //           return;
+    //         })
+    //       );
+    //     }
+    //   }
+
+    //   Promise.all(promise_arr).then((res) => {
+    //     this.base_search();
+    //   });
+    //   return;
+
+    //   let vm = this;
+    //   fetch(`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/HR/employee`, {
+    //     method: this.base.controll == "create" ? "POST" : "PUT",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${this.user_token}`,
+    //     },
+    //     body: JSON.stringify({
+    //       code: this.base.current,
+    //       uid: this.base.form.uid,
+    //       firstname: this.base.form.firstname,
+    //       lastname: this.base.form.lastname,
+    //       current_password: this.base.form.current_password,
+    //       password: this.base.form.new_password,
+    //       confirm_password: this.base.form.confirm_password,
+    //       email: this.base.form.email,
+    //       tel: this.base.form.tel,
+    //       birthdate: this.base.form.birthdate,
+    //       department: this.base.form.department,
+    //       branch: this.base.form.branch,
+    //       company: this.base.form.company,
+    //       position: this.base.form.position,
+    //       started_at: this.base.form.started_at,
+    //       leaves_at: this.base.form.leaves_at,
+    //       access_code: this.base.form.access_code,
+    //       // image: image ? [image] : "",
+    //     }),
+    //   })
+    //     .then((response) => response.json())
+    //     .then((res) => {
+    //       if (!res.success) {
+    //         // localStorage.removeItem("user_token");
+    //         // this.$router.push({ name: `Login` });
+    //       } else {
+    //         this.base.modal = false;
+    //         const promise_arr = [];
+    //         console.log(this.base.current);
+    //         if (this.base.current == 0) {
+    //           this.base.current = res.row.code;
+    //           let i = this.detail.rows.length;
+    //           this.detail.controll = "create";
+    //           for (i; i > 0; i--) {
+    //             this.detail.form = {
+    //               code: this.detail.rows[i - 1]["code"],
+    //               title: this.detail.rows[i - 1]["title"],
+    //             };
+    //             promise_arr.push(
+    //               new Promise(async function (resolve, reject) {
+    //                 let res = await vm.detail_save("dynamic");
+    //                 await resolve(res);
+    //                 return;
+    //               })
+    //             );
+    //           }
+    //         }
+
+    //         Promise.all(promise_arr)
+    //           .then((res) => {
+    //             // console.log(res);
+    //             vm.base_search();
+    //           })
+    //           .catch((err) => console.error(err));
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error:", error);
+    //     });
+    // },
     // DETAIL
     detail_search() {
       this.detail.loading = true;
@@ -730,7 +748,7 @@ export default {
         })
           .then((response) => response.json())
           .then((res) => {
-                     if (!res.success) {
+          if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
           } else {
@@ -770,7 +788,7 @@ export default {
       })
         .then((response) => response.json())
         .then((res) => {
-                   if (!res.success) {
+          if (!res.success) {
             // localStorage.removeItem("user_token");
             // this.$router.push({ name: `Login` });
           } else {
@@ -788,46 +806,8 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      //console.log(this.user_token);
       this.base_search();
-      
     });
   },
 };
 </script>
-<style scrop>
-tr,
-td {
-  white-space: nowrap;
-}
-/* 
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
-
-#signature {
-  border: double 3px transparent;
-  border-radius: 5px;
-  background-image: linear-gradient(white, white),
-    radial-gradient(circle at top left, #000000, #000000);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-}
-
-.container {
-  width: "100%";
-  padding: 8px 16px;
-}
-
-.buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 8px;
-}
-</style>
