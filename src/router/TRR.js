@@ -4,6 +4,8 @@ import TRRVisitorManagementItem from "../views/App/TRR/VisitorManagement/Item.vu
 // import TRRVisitor from "../views/App/TRR/Visitor.vue";
 import TRRAutomateTicketReport from "../views/App/TRR/AutomateTicket/Report.vue";
 import TRRAutomateTicketTimestamp from "../views/App/TRR/AutomateTicket/Timestamp.vue";
+import TRRAutomateTicketManage from "../views/App/TRR/AutomateTicket/Manage.vue";
+
 import TRRAutomateTicketHistory from "../views/App/TRR/AutomateTicket/History.vue";
 const TRRRoutes = [
   {
@@ -29,6 +31,12 @@ const TRRRoutes = [
     path: "/TRR/AutomateTicket/Report",
     name: "TRRAutomateTicketReport",
     component: TRRAutomateTicketReport,
+    props: { default: true, menu: true, type: "member" },
+  },
+  {
+    path: "/TRR/AutomateTicket/Manage",
+    name: "TRRAutomateTicketManage",
+    component: TRRAutomateTicketManage,
     props: { default: true, menu: true, type: "member" },
   },
   {

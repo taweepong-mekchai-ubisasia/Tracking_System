@@ -73,10 +73,16 @@ const menu = {
         ],
         HR: [
           {
+            title: "Registering",
+            name: "HRRegistering",
+            access: false,
+          },
+          {
             title: "Employee",
             name: "HREmployee",
             access: false,
           },
+          
         ],
         LabelPrint: [
           {
@@ -500,6 +506,11 @@ const menu = {
               {
                 title: "Report",
                 name: "TRRAutomateTicketReport",
+                access: false,
+              },
+              {
+                title: "Manage",
+                name: "TRRAutomateTicketManage",
                 access: false,
               },
               {

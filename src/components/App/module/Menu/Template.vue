@@ -4,9 +4,13 @@
   <li v-if="havemenu || menutype == 'Access'">
     <details
       id="disclosure-components"
-      :open="((checkmenu || menutype == 'Access') && !prefix) || ($route.meta.parent == 'Doc' && prefix == 'Doc' && $route.meta.sub == head)"
+      :open="
+        ((checkmenu || menutype == 'Access') && !prefix) ||
+        ($route.meta.parent == 'Doc' &&
+          prefix == 'Doc' &&
+          $route.meta.sub == head)
+      "
     >
-  
       <summary class="group">
         <span>
           <Icon :icon="icon" class="w-5 h-5" :class="`${color}`" />
@@ -23,22 +27,24 @@
           <a
             href="#"
             class="flex gap-4 group hover:no-underline"
-            :class="
-              $route.name == `${prefix}${v.title}` ? 'active' : ''
-            "
+            :class="$route.name == `${prefix}${v.title}` ? 'active' : ''"
             @click="
               this.menutype == 'Access' ? '' : changepage(`${prefix}${v.title}`)
             "
           >
-
-       
             <span class="flex-1 text-1xl">
               {{ v.title }}
             </span>
           </a>
         </li>
 
-        <li v-for="(v, i) in menu" :key="i" class="bg-transparent m-0" v-else           :class="menutype == 'Access'?`  pointer-events-none`:''">
+        <li
+          v-for="(v, i) in menu"
+          :key="i"
+          class="bg-transparent m-0"
+          v-else
+          :class="menutype == 'Access' ? `  pointer-events-none` : ''"
+        >
           <details
             v-if="
               v.menu &&
@@ -56,7 +62,7 @@
                 v-for="(vv, ii) in v.menu"
                 :key="ii"
                 class="bg-transparent m-0"
-                :class="menutype == 'Access'?`  pointer-events-none`:''"
+                :class="menutype == 'Access' ? `  pointer-events-none` : ''"
               >
                 <a
                   v-if="
@@ -66,7 +72,10 @@
                   href="#"
                   class="flex gap-4 group hover:no-underline"
                   :class="
-                    menutype == 'Menu' && $route.name == `${prefix?prefix:''}${vv.name}` ? 'active' : ''
+                    menutype == 'Menu' &&
+                    $route.name == `${prefix ? prefix : ''}${vv.name}`
+                      ? 'active'
+                      : ''
                   "
                   @click="this.menutype == 'Access' ? '' : changepage(vv.name)"
                 >
@@ -238,6 +247,12 @@ export default {
       return obj ? obj : null;
     },
     changepage(page) {
+      if (page == "HRRegistering") {
+        const routeData = this.$router.resolve({
+          name: "HRRegistering" /*query: {data: "someData"}*/,
+        });
+        return window.open(routeData.href, "_blank");
+      }
       this.$router.push({ name: `${page}` });
     },
   },

@@ -10,7 +10,7 @@
         <VueSignaturePad
           id="signature"
           width="100%"
-          height="100px"
+          height="200px"
           ref="signaturePad"
           :scaleToDevicePixelRatio="true"
         />
@@ -113,15 +113,15 @@ export default {
     tab: function (val) {
       if (val == "editsignature") {
         this.temp = { ...this.user };
-        if (this.user.type != "fb" && this.user.type != "gmail") {
-          this.temp.image = this.temp.image ? JSON.parse(this.temp.image) : [];
-          this.temp.imageLink =
-            this.temp.image.length > 0
-              ? this.temp.image[0].file
-                ? `${this.serviceUrl}api/upload/user/`
-                : ""
-              : "";
-        }
+        // if (this.user.type != "fb" && this.user.type != "gmail") {
+        //   this.temp.image = this.temp.image ? JSON.parse(this.temp.image) : [];
+        //   this.temp.imageLink =
+        //     this.temp.image.length > 0
+        //       ? this.temp.image[0].file
+        //         ? `${this.serviceUrl}api/upload/user/`
+        //         : ""
+        //       : "";
+        // }
       }
     },
   },
