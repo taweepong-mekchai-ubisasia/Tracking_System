@@ -575,6 +575,18 @@
                     @click="base_create()"
                     >Create</label
                   >
+                  <!-- <label
+                 
+                    class="join-item btn-sm btn btn-primary modal-button text-white"
+                    @click="exportExcel()"  
+                    >Export</label
+                  > -->
+                  <button
+            class="join-item btn btn-sm btn-primary"
+            @click="exportExcel()"
+          >
+            <Icon icon="mdi:file-excel-outline" class="h-5 w-5 text-white" />
+          </button>
                 </div>
                 <div
                   class="overflow-x-auto w-full max-h-[69vh] my-2"
@@ -946,6 +958,46 @@ export default {
     },
   },
   methods: {
+    // exportExcel() {
+    //   return window.open(`${
+    //     this.serviceUrl
+    //   }api/controllers/MYSQL/INTERNAL/WH/exports?db=shelf&total=1&page=${
+    //     this.base.page
+    //   }${this.base.row ? `&rows=${this.base.row}` : ""}${
+    //     this.base.q ? `&q=${this.base.q}` : ""
+    //   }${this.wh ? `&wh=${this.wh}` : ""}${
+    //     this.date.from ? `&createFrom=${this.date.from}` : ""
+    //   }${
+    //     this.date.to ? `&createTo=${this.date.to}` : ""
+    //   }&transref=I&transref_type_null=1&sumQuantitys=1
+
+    //     `);
+    // },
+    // exportExcel() {
+    //   return window.open(`${
+    //     this.serviceUrl
+    //   }api/controllers/MYSQL/INTERNAL/GLOBAL/exports?type=stock&total=1&page=${
+    //     this.base.page
+    //   }${this.base.row ? `&rows=${this.base.row}` : ""}${
+    //     this.base.q ? `&q=${this.base.q}` : ""
+    //   }${this.wh ? `&wh=${this.wh}` : ""}${
+    //     this.date.from ? `&createFrom=${this.date.from}` : ""
+    //   }${
+    //     this.date.to ? `&createTo=${this.date.to}` : ""
+    //   }&transref=I&transref_type_null=1`);
+    // },
+    exportExcel() {
+      // console.log("DASDSAASD")
+      return window.open(`${
+        this.serviceUrl
+      }api/controllers/MYSQL/INTERNAL/GLOBAL/exports?type=emp&total=1&page=${
+        this.base.page
+      }${this.base.row ? `&rows=${this.base.row}` : ""}${
+        this.base.q ? `&q=${this.base.q}` : ""
+      }
+
+        `);
+    },
     // base
     base_search() {
       this.base.loading = true;

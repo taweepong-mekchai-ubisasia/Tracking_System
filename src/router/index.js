@@ -121,43 +121,28 @@ router.afterEach(async (to, from) => {
     "language",
     localStorage.getItem("language") ? localStorage.getItem("language") : "th"
   );
-
-  if (to.name == "Login" && store.getters.user_token) {
+  if (to.name == "Login" && store.getters.user_token)
     return { name: "Dashboard" };
-  }
-
   if (store.getters.user_token) {
     if (store.getters.user) {
-      if (to.name == "Dashboard") {
-        return true;
-      }
+      if (to.name == "Dashboard") return true;
+      if (to.name == "HRRegistering") return true;
       let checkaccess = await canUserAccess(to);
-      if (checkaccess) {
-        return true;
-      } else {
-        return router.push({ name: "Dashboard" });
-      }
+      if (checkaccess) return true;
+      else return router.push({ name: "Dashboard" });
     } else {
       let auth = await authentication();
       // let checkuser = await haveUser();
       if (auth.status) {
-        if (to.name == "Dashboard") {
-          return true;
-        }
+        if (to.name == "Dashboard") return true;
+        if (to.name == "HRRegistering") return true;
         let checkaccess = await canUserAccess(to);
-        if (checkaccess.status) {
-          return true;
-        } else {
-          return router.push({ name: "Dashboard" });
-        }
-      } else {
-        return router.push({ name: "Login" });
-      }
+        if (checkaccess.status) return true;
+        else return router.push({ name: "Dashboard" });
+      } else return router.push({ name: "Login" });
     }
   } else {
-    if (to.name == "Login") {
-      return true;
-    }
+    if (to.name == "Login") return true;
     return router.push({ name: "Login" });
   }
 });
@@ -170,35 +155,34 @@ router.afterEach(async (to, from) => {
 //   }
 // }
 function canUserAccess(to) {
-  if (Object.keys(store.getters.user.access).length == 0) {
+  if (Object.keys(store.getters.user.access).length == 0)
     return { status: false };
-  }
-
-  if (!store.getters.user.access[to.href.split("/")[1]]) {
+  if (!store.getters.user.access[to.href.split("/")[1]])
     return { status: true };
-  }
   if (
     store.getters.user.access[to.href.split("/")[1]][to.name] &&
     store.getters.user.access[to.href.split("/")[1]][to.name] != "none"
-  ) {
+  )
     return { status: true };
-  } else {
-    return { status: false };
-  }
+  else return { status: false };
 }
 async function authentication() {
-  return await new Query(null,'get').get({ user_token: store.getters.user_token }, `${store.getters.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/auth`, (res) => {
-    // console.log(res)
-    if (!res.success) {
-      localStorage.removeItem("user_token");
-    } else {
-      res.row.image = res.row.image ? JSON.parse(res.row.image) : [];
-      res.row.access = res.row.access ? JSON.parse(res.row.access) : {};
-      store.commit("user", res.row);
-      store.commit("user_token", store.getters.user_token);
+  return await new Query(null, "get").get(
+    { user_token: store.getters.user_token },
+    `${store.getters.serviceUrl}api/controllers/MYSQL/INTERNAL/GLOBAL/auth`,
+    (res) => {
+      // console.log(res)
+      if (!res.success) {
+        localStorage.removeItem("user_token");
+      } else {
+        res.row.image = res.row.image ? JSON.parse(res.row.image) : [];
+        res.row.access = res.row.access ? JSON.parse(res.row.access) : {};
+        store.commit("user", res.row);
+        store.commit("user_token", store.getters.user_token);
 
-      return { status: res.success };
+        return { status: res.success };
+      }
     }
-  });
+  );
 }
 export default router;

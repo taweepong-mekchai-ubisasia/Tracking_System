@@ -934,15 +934,6 @@ td {
   margin-top: 60px;
 } */
 
-#signature {
-  border: double 3px transparent;
-  border-radius: 5px;
-  background-image: linear-gradient(white, white),
-    radial-gradient(circle at top left, #000000, #000000);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-}
-
 .container {
   width: "100%";
   padding: 8px 16px;

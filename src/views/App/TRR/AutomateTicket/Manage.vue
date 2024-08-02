@@ -134,24 +134,14 @@
             <div class="card-body overflow-auto p-0 lg:p-0 max-h-[60vh]">
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text">Ticket No.</span>
+                  <span class="label-text">No.</span>
                 </label>
-                <div
-                  class="flex flex-row justify-center items-center justify-items-center flex-nowrap"
-                >
-                  <input
-                    type="text"
-                    placeholder="From"
-                    class="input input-bordered border-base-content w-[45%]"
-                    v-model="detail.form.ticket_no_first"
-                  /><span class="w-[5%]">-</span
-                  ><input
-                    type="text"
-                    placeholder="To"
-                    class="input input-bordered border-base-content w-[45%]"
-                    v-model="detail.form.ticket_no_last"
-                  />
-                </div>
+                <input
+                  type="text"
+                  placeholder="No."
+                  class="input input-bordered border-base-content"
+                  v-model="detail.form.ticket_no"
+                />
               </div>
             </div>
             <div
@@ -284,15 +274,7 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr
-                                  v-for="(v, i) in base.rows"
-                                  :key="v.code"
-                                  :style="`${
-                                    v.ticket
-                                      ? '    text-decoration: line-through rgba(0, 0, 0, 0.45); color:rgba(150, 150, 150, 1)'
-                                      : ''
-                                  }`"
-                                >
+                                <tr v-for="(v, i) in base.rows" :key="v.code">
                                   <th>{{ v.code }}</th>
                                   <td>
                                     {{
@@ -315,7 +297,7 @@
                                     }}
                                   </td>
                                   <td>
-                                    {{ v.ticket ? "Used" : "Active" }}
+                                    {{ v.ticket ? "Active" : "-" }}
                                   </td>
                                 </tr>
                               </tbody>
@@ -369,10 +351,7 @@
                                 <tr v-for="(v, i) in detail.rows" :key="v.code">
                                   <th>{{ v.code }}</th>
                                   <th>{{ v.ticket }}</th>
-                                  <th>
-                                    {{ v.ticket_no_first }} -
-                                    {{ v.ticket_no_last }}
-                                  </th>
+                                  <th>{{ v.ticket_no }}</th>
                                   <td>
                                     <div class="flex items-center space-x-3">
                                       <div>
@@ -640,70 +619,6 @@ export default {
       this.dashboard.page = 1;
       this.dashboard_search();
     },
-    // lastticket
-    lastticket_search() {
-      this.lastticket.loading = true;
-      this.lastticket_get((res) => {
-        this.lastticket.rows = res.rows;
-        this.lastticket.total = res.total;
-        this.lastticket.next =
-          this.lastticket.page * this.lastticket.row >= this.lastticket.total
-            ? false
-            : true;
-        this.lastticket.back = this.lastticket.page > 1 ? true : false;
-        this.lastticket.loading = false;
-      });
-    },
-    lastticket_get(callback) {
-      new Query("lastticket", "get").get(
-        this,
-        `${
-          this.serviceUrl
-        }api/controllers/MYSQL/INTERNAL/TRR/timestamp?total=1&onlyme=1&today=1&page=${
-          this.lastticket.page
-        }${this.lastticket.row ? `&rows=${this.lastticket.row}` : ""}${
-          this.lastticket.q ? `&q=${this.lastticket.q}` : ""
-        }`,
-        (res) => {
-          if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
-          } else {
-            res.rows.forEach((v, i) => {
-              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-              res.rows[i].master = 0;
-            });
-
-            if (res.rows.length > 0) {
-              this.ticket.hours = this.$moment
-                .duration(
-                  this.$moment(res.rows[res.rows.length - 1].timestamp).diff(
-                    this.$moment(res.rows[0].timestamp),
-                    "minutes"
-                  ),
-                  "minutes"
-                )
-                .hours();
-
-              this.ticket.minutes = this.$moment
-                .duration(
-                  this.$moment(res.rows[res.rows.length - 1].timestamp).diff(
-                    this.$moment(res.rows[0].timestamp),
-                    "minutes"
-                  ),
-                  "minutes"
-                )
-                .minutes();
-
-              this.ticket.get =
-                this.ticket.hours + (this.ticket.minutes > 0 ? 1 : 0);
-              // console.error(this.ticket.hours);
-            }
-          }
-          callback({ ...res });
-        }
-      );
-    },
     // base
     base_search() {
       this.base.loading = true;
@@ -717,58 +632,50 @@ export default {
       });
     },
     base_get(callback) {
-      new Query("base", "get").get(
-        this,
-        `${
+      new Query('base','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/timestamp?total=1&onlyme=1&today=1&page=${
           this.base.page
         }${this.base.row ? `&rows=${this.base.row}` : ""}${
           this.base.q ? `&q=${this.base.q}` : ""
-        }`,
-        (res) => {
-          if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
-          } else {
-            res.rows.forEach((v, i) => {
-              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-              res.rows[i].master = 0;
-            });
-
-            let tm = res.rows.filter((v) => !v.ticket);
-            console.log(tm);
-
-            if (res.rows.length > 0) {
-              this.ticket.hours = this.$moment
-                .duration(
-                  this.$moment(res.rows[res.rows.length - 1].timestamp).diff(
-                    this.$moment(res.rows[0].timestamp),
-                    "minutes"
-                  ),
+        }`, (res) => {
+        if (!res.success) {
+          // localStorage.removeItem("user_token");
+          // this.$router.push({ name: `Login` });
+        } else {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
+          
+          if (res.rows.length > 0) {
+            this.ticket.hours = this.$moment
+              .duration(
+                this.$moment(res.rows[res.rows.length - 1].timestamp).diff(
+                  this.$moment(res.rows[0].timestamp),
                   "minutes"
-                )
-                .hours();
-
-              this.ticket.minutes = this.$moment
-                .duration(
-                  this.$moment(res.rows[res.rows.length - 1].timestamp).diff(
-                    this.$moment(res.rows[0].timestamp),
-                    "minutes"
-                  ),
+                ),
+                "minutes"
+              )
+              .hours();
+  
+            this.ticket.minutes = this.$moment
+              .duration(
+                this.$moment(res.rows[res.rows.length - 1].timestamp).diff(
+                  this.$moment(res.rows[0].timestamp),
                   "minutes"
-                )
-                .minutes();
-
-              this.ticket.get =
-                this.ticket.hours + (this.ticket.minutes > 0 ? 1 : 0);
-              console.error(this.ticket.hours);
-              console.error(this.ticket.minutes);
-            }
+                ),
+                "minutes"
+              )
+              .minutes();
+  
+            this.ticket.get =
+            this.ticket.hours + (this.ticket.minutes > 0 ? 1 : 0);
+          // console.error(this.ticket.hours);
           }
-          callback({ ...res });
         }
-      );
+        callback({ ...res });
+      });
     },
     base_create() {
       this.base.current = 0;
@@ -798,21 +705,16 @@ export default {
         ],
       };
 
-      new Query("base", this.base.controll == "create" ? "POST" : "PUT").set(
-        this,
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/timestamp`,
-        obj,
-        (res) => {
-          if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
-          } else {
-            this.base.modal = false;
-            this.base.page = 1;
-            this.base_search();
-          }
+      new Query('base', this.base.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/timestamp`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.base.modal = false;
+          this.base.page = 1;
+          this.base_search();
         }
-      );
+      });
     },
     // DETAIL
     detail_search() {
@@ -832,9 +734,7 @@ export default {
       });
     },
     detail_get(callback) {
-      new Query("detail", "get").get(
-        this,
-        `${
+      new Query('detail','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/ticket?total=1&onlyme=1&page=${
           this.detail.page
@@ -842,17 +742,15 @@ export default {
           this.detail.q ? `&q=${this.detail.q}` : ""
         }${
           this.base.current ? `&current=${this.base.current}` : ``
-        }&dash_from=${this.date.from}&dash_to=${this.date.to}`,
-        (res) => {
-          if (res.success) {
-            res.rows.forEach((v, i) => {
-              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
-              res.rows[i].master = 0;
-            });
-          }
-          callback({ ...res });
+        }&dash_from=${this.date.from}&dash_to=${this.date.to}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      );
+        callback({ ...res });
+      });
     },
     detail_create() {
       this.detail.current = 0;
@@ -880,29 +778,24 @@ export default {
         ],
       };
 
-      new Query("base", this.detail.controll == "create" ? "POST" : "PUT").set(
-        this,
-        `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/ticket`,
-        obj,
-        (res) => {
-          if (!res.success) {
-            // localStorage.removeItem("user_token");
-            // this.$router.push({ name: `Login` });
-          } else {
-            this.detail.modal = false;
-            this.detail.page = 1;
-            this.detail_search();
+      new Query('base', this.detail.controll == "create" ? "POST" : "PUT").set(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/TRR/ticket`, obj, (res) => {
+        if (!res.success) {
+        // localStorage.removeItem("user_token");
+        // this.$router.push({ name: `Login` });
+        } else {
+          this.detail.modal = false;
+          this.detail.page = 1;
+          this.detail_search();
 
-            this.base.modal = false;
-            this.base.page = 1;
-            this.base_search();
+          this.base.modal = false;
+          this.base.page = 1;
+          this.base_search();
 
-            console.log("DSA");
-            this.dashboard.page = 1;
-            this.dashboard_search();
-          }
+          console.log("DSA");
+          this.dashboard.page = 1;
+          this.dashboard_search();
         }
-      );
+      });
 
       // this.detail.controll = "create";
       // let obj = { ...this.detail.form };
@@ -954,9 +847,7 @@ export default {
       });
     },
     dashboard_get(callback) {
-      new Query("dashboard", "get").get(
-        this,
-        `${
+      new Query('dashboard','get').get(this, `${
           this.serviceUrl
         }api/controllers/MYSQL/INTERNAL/TRR/ticket?onlyme=1&dashboard=1&dash_from=${
           this.date.from
@@ -964,9 +855,10 @@ export default {
           this.dashboard.row ? `&rows=${this.dashboard.row}` : ""
         }${this.dashboard.q ? `&q=${this.dashboard.q}` : ""}${
           this.base.current ? `&current=${this.base.current}` : ``
-        }`,
-        (res) => {
-          if (res.week.success) {
+        }`, (res) => {
+        if (res.success) {
+          if (res["week"].success) {
+            console.log("week");
             this.pieSeries = [0, 0, 0, 0, 0, 0, 0];
             this.pieOptions.labels = [
               "Sun.",
@@ -984,16 +876,20 @@ export default {
               this.pieSeries[index] = parseInt(v.total);
             });
           }
-          if (res.month.success) {
+          if (res["month"].success) {
             this.series[0].data = [0];
-            res.month.rows.forEach((v) => {
+            res["month"].rows.forEach((v) => {
               this.series[0].data[parseInt(v.m) - 1] = parseInt(v.total);
             });
           }
 
-          callback({ ...res });
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
         }
-      );
+        callback({ ...res });
+      });
     },
   },
   mounted() {

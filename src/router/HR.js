@@ -1,9 +1,12 @@
 import HREmployee from "../views/App/HR/Employee.vue";
-import HRDashboard from "../views/App/HR/Stationery/Dashboard.vue";
-import HRRequest from "../views/App/HR/Stationery/Request.vue";
-import HRShelfs from "../views/App/HR/Stationery/Shelfs.vue";
-import HRItem from "../views/App/HR/Stationery/Item.vue";
 const HRRoutes = [
+  {
+    path: "/HR/Registering",
+    name: "HRRegistering",
+    component: HRRegistering,
+    props: { default: true, menu: true, type: "member" },
+    
+  },
   {
     path: "/HR/Employee",
     name: "HREmployee",

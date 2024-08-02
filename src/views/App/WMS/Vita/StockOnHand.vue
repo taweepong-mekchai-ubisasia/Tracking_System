@@ -748,14 +748,3 @@ export default {
   }
 };
 </script>
-
-<style scrop>
-  .tab-content {
-    border-radius: 10px 10px 10px 10px;
-  }
-
-  tr,
-  td {
-    white-space: nowrap;
-  }
-</style>

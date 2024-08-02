@@ -1388,10 +1388,3 @@ export default {
   }
 };
 </script>
-
-<style scrop>
-  tr,
-  td {
-    white-space: nowrap;
-  }
-</style>
