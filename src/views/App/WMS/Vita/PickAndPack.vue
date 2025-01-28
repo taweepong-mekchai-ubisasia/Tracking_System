@@ -1,0 +1,2021 @@
+<template>
+  <AppLayout>
+    <template #modal>
+      <!-- modal base -->
+      <input
+        type="checkbox"
+        id="modal-base"
+        class="modal-toggle"
+        v-model="base.modal"
+      />
+      <div class="modal" v-if="base.modal">
+        <div class="modal-box w-11/12 max-w-4xl">
+          <label
+            for="modal-base"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">Delivery To Customer</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto" style="max-height: 66vh;">
+            <div class="grid gap-3 grid-cols-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Delivery Order No.</span><span class="text-xs text-error">{{ msg.sale }}</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="delivery order no."
+                  class="input input-bordered border-gray-300"
+                  :class="base.form.sale ? 'bg-green-50 text-black' : ''"
+                  v-model="base.form.sale"
+                  :disabled="edit"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Sending Date</span><span class="text-xs text-error">{{ msg.send_date }}</span>
+                </label>
+                <input
+                  type="date"
+                  placeholder="sending date"
+                  class="input input-bordered border-gray-300"
+                  :class="base.form.sending_date ? 'bg-green-50 text-black' : ''"
+                  v-model="base.form.sending_date"
+                  :disabled="edit"
+                />
+              </div>
+            </div>
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-semibold">Customer</span><span class="text-xs text-error">{{ msg.customer }}</span>
+              </label>
+              <div class="join">
+                <input
+                  type="text"
+                  placeholder="eng customer"
+                  class="join-item input input-bordered border-gray-300 w-full"
+                  :class="base.form.customer_eng ? 'bg-green-50 text-black' : ''"
+                  :value="base.form.customer_eng"
+                  :readonly="!edit"
+                  :disabled="edit"
+                />
+                <input
+                  type="text"
+                  placeholder="ch customer"
+                  class="join-item input input-bordered border-gray-300 w-full"
+                  :class="base.form.customer_ch ? 'bg-green-50 text-black' : ''"
+                  :value="base.form.customer_ch"
+                  :readonly="!edit"
+                  :disabled="edit"
+                />
+                <label
+                  for="modal-customer"
+                  class="join-item btn btn-primary"
+                  :class="edit ? 'btn-disabled' : ''"
+                  @click="customer_search()"
+                >
+                  <Icon
+                    icon="tabler:search"
+                    :class="!edit ? 'text-white' : ''"
+                    width="18" height="18"
+                  />
+                </label>
+              </div>
+            </div>
+            <div class="form-control mt-5">
+              <div class="overflow-x-auto min-h-40 max-h-40 border">
+                <table class="table table-xs table-pin-rows table-pin-cols table-zebra table-auto">
+                  <thead>
+                    <tr>
+                      <th v-if="doc_status == 'packing'">Check</th>
+                      <td>
+                        <button
+                          v-if="base.controll == 'edit'"
+                          class="btn btn-xs btn-accent"
+                          @click="exportExcel()"
+                        >
+                          <Icon icon="mdi:paper-outline" width="14" height="14" />
+                          <!-- form -->
+                        </button>
+                        <span v-else>
+                          Order
+                        </span>
+                      </td>
+                      <td>Product</td>
+                      <td>Lot No.</td>
+                      <td class="text-end">Quantity</td>
+                      <td class="text-center" colspan="2">Pack Size</td>
+                      <td class="text-center" colspan="2">Net Weight</td>
+                      <td class="text-center">Expire Date</td>
+                      <th class="text-right">
+                        <label
+                          v-if="doc_status == 'picking'"
+                          for="modal-detail"
+                          class="btn btn-primary modal-button btn-xs text-white me-1"
+                          @click="detail_create();"
+                        >
+                          + new
+                        </label>
+                        <label
+                          v-if="doc_status == 'picking'"
+                          for="modal-qr"
+                          class="btn btn-secondary modal-button btn-xs text-white"
+                          @click="select = !select; scan = true"
+                        >
+                          # scan
+                        </label>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="text-center" v-if="msg.detail">
+                      <td colspan="10">
+                        <span class="text-xs text-error">{{ msg.detail }}</span>
+                      </td>
+                    </tr>
+                    <tr v-for="(row, index) in detail.rows" :key="index">
+                      <th class="text-center" v-if="doc_status == 'packing'">
+                        <input type="checkbox" class="checkbox checkbox-xs checkbox-success" v-model="row.checked" @click="gotCheck(index)" />
+                      </th>
+                      <td>{{ index + 1 }}</td>
+                      <td>
+                        <div class="flex space-x-3 font-semibold">
+                          <div>
+                            <div class='text-end'>
+                              {{ row.stock_desc }}
+                            </div>
+                            <div class="opacity-50">
+                              ( WH{{ row.wh }} )
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{{ row.lot }}</td>
+                      <td>
+                        <div class="flex items-center justify-end space-x-3">
+                          <div>
+                            <div class='text-end'>
+                              {{ new Intl.NumberFormat("en-US").format(Math.abs(row.quantity)) }}
+                            </div>
+                            <div class="opacity-50" v-if="row.return_qty">
+                              ( Return {{ row.return_qty }} )
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-end">{{ new Intl.NumberFormat("en-US").format(row.pack_size) }}</td>
+                      <td>{{ row.unit }}</td>
+                      <td class="text-end">{{ new Intl.NumberFormat("en-US").format(row.pack_size*Math.abs(row.quantity)) }}</td>
+                      <td>{{ row.unit }}</td>
+                      <td class="text-center">{{ $moment(row.exp).format("DD-MM-YYYY") }}</td>
+                      <th class="text-right" v-if="doc_status == 'picking' || doc_status == 'packing'">
+                        <label
+                          for="modal-detail"
+                          class="btn btn-ghost modal-button btn-xs"
+                          @click="detail_edit(`${row.code}`, `${index}`)"
+                        >
+                          <span class="underline underline-offset-2">edit</span>
+                        </label>
+                        |
+                        <label
+                          for="modal-remove"
+                          class="btn btn-ghost modal-button btn-xs"
+                          @click="
+                            remove_item(
+                              `${row.code}`,
+                              'detail',
+                              'api/controllers/MYSQL/INTERNAL/WMS/logs',
+                              `${row.lot}`
+                            )
+                          "
+                        >
+                          remove
+                        </label>
+                      </th>
+                      <th v-else>
+                        <label
+                          for="modal-return"
+                          class="btn btn-success modal-button btn-xs"
+                          @click="detail_edit(`${row.code}`, `${index}`)"
+                        >
+                          create return
+                        </label>
+                      </th>
+                    </tr>
+                  </tbody>
+                  <tfoot v-if="detail.rows.length && base.controll != 'create'">
+                    <tr class="text-right">
+                      <td :colspan="doc_status == 'picking' || doc_status == 'packing' ? '9' : '8'"></td>
+                      <th colspan="2">Total Quantity : {{ sum }}</th>
+                    </tr>
+                    <tr class="text-right">
+                      <td :colspan="doc_status == 'picking' || doc_status == 'packing' ? '9' : '8'"></td>
+                      <th colspan="2">Total Net Weight : {{ new Intl.NumberFormat("en-US").format(total_net) }}</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            <div class="grid gap-3 grid-cols-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Creator</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="ผู้ทำรายการ"
+                  class="input input-bordered"
+                  disabled
+                  :value="base.form.creator_name ? base.form.creator_name : user.firstname+' '+user.lastname"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Status</span>
+                </label>
+                <label class="form-control w-full">
+                  <select 
+                    class="select select-bordered border-gray-300" 
+                    :class="base.form.status ? 'bg-green-50' : ''"
+                    v-model="base.form.status" 
+                    :disabled="doc_status == 'packing' ? !base.form.allcheck : locked"
+                  >
+                    <option disabled selected value="">เลือกรายการ</option>
+                    <option value="picking" :disabled="doc_status == 'picking' ? false : true">Picking</option>
+                    <option value="packing" :disabled="doc_status == 'picking' || doc_status == 'packing' ? false : true">Packing</option>
+                    <option value="delivery" :disabled="doc_status != 'delivered' ? false : true">Delivery</option>
+                    <option value="delivered" :disabled="doc_status == 'delivery' ? false : true">Delivered</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+          <hr v-if="!locked" />
+          <div
+            class="backdrop-blur sticky top-0 items-center gap-3 px-4 flex"
+            v-if="!locked"
+          >
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-base" class="btn">Cancel</label>
+            </div>
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-primary text-white"
+                :disabled="doc_status == 'packing' ? !base.form.allcheck : false"
+                @click="base_save('static')"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal customer -->
+      <input
+        type="checkbox"
+        id="modal-customer"
+        class="modal-toggle"
+        v-model="customer.modal"
+      />
+      <div class="modal" v-if="customer.modal">
+        <div class="modal-box relative w-11/12 max-w-2xl">
+          <label
+            for="modal-customer"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <div class="flex justify-center items-center gap-3">
+            <h3 class="text-lg font-bold text-secondary">Customer : </h3>
+            <AppModuleGlobalSearch
+              :class="'join-item input input-sm input-bordered border-gray-300 w-60'"
+              @search="
+                (q) => {
+                  customer.q = q;
+                  customer_search();
+                }
+              "
+            />
+          </div>
+          <hr class="mt-5" />
+          <div
+            v-if="customer.loading"
+            class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-white bg-opacity-50 top-0 left-0"
+          >
+            <AppModuleGlobalLoadingText
+              :type="'text'"
+              :class="`p-4 py-12 text-3xl text-center`"
+            />
+          </div>
+          <div class="overflow-x-auto max-h-[60vh] my-5">
+            <table class="table table-xs table-pin-rows table-pin-cols">
+              <thead>
+                <tr>
+                  <th>Select</th>
+                  <td>English Name</td>
+                  <td>Chinese Name</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(v, i) in customer.rows" :class="v.code == base.form.new_customer ? 'bg-primary text-white' : ''">
+                  <th class="flex items-center justify-center"><input type="radio" name="radio-1" class="radio radio-xs" :value="v.code" v-model="base.form.new_customer" /></th>
+                  <td>{{ v.eng_name }}</td>
+                  <td>{{ v.suda_ch_name }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="backdrop-blur sticky top-0 items-center gap-3 flex"> 
+            <div class="flex-1 form-control">
+              <label 
+                for="modal-customer" class="btn btn-sm btn-primary text-white"
+                :class="!base.form.new_customer ? 'btn-disabled' : ''"
+                @click="customer_save(customer.rows.find(x => x.code == base.form.new_customer))"
+              >
+                Confirm
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal detail -->
+      <input
+        type="checkbox"
+        id="modal-detail"
+        class="modal-toggle"
+        v-model="detail.modal"
+      />
+      <div class="modal" v-if="detail.modal">
+        <div class="modal-box w-11/12 max-w-3xl">
+          <label
+            for="modal-detail"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">Product</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto" style="max-height: 76vh;">
+            <div class="flex" v-if="detail.controll == 'create'">
+              <div class="form-control">
+                <label class="label cursor-pointer gap-2">
+                  <input type="radio" name="radio-10" class="radio radio-xs checked:bg-primary" value="prod" v-model="wh" />
+                  <span class="label-text font-bold">WH-VIT</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer gap-2">
+                  <input type="radio" name="radio-10" class="radio radio-xs checked:bg-primary" value="return" v-model="wh" />
+                  <span class="label-text font-bold">WH-VIT-Return</span>
+                </label>
+              </div>
+            </div>
+            <div :class="detail.controll == 'create' ? 'grid gap-3 grid-cols-2 md:grid-cols-2' : 'grid gap-3 grid-cols-3 md:grid-cols-3'">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Product</span><span class="text-xs text-error">{{ msg.product }}</span>
+                </label>
+                <AppModuleGlobalSelectSearch
+                  v-if="
+                    !edit
+                  "
+                  :placeholder="'product code'"
+                  :label="'stock_desc'"
+                  :code="'stock_desc'"
+                  :minChar="3"
+                  :delay="0.5"
+                  :limit="10"
+                  :customClass="`input input-bordered ${
+                    checkbox == 'M' ? 'input-disabled' : ''
+                  } ${detail.form.stock_desc ? 'bg-green-50 text-black' : ''}`"
+                  :disabled="checkbox == 'M' ? true : false"
+                  :current="detail.form.stock_desc"
+                  :refresh="refresh.descrip"
+                  @updateValue="
+                    (obj) => {
+                      detail.form.product = obj.product;
+                      detail.form.lot = '';
+                      detail.form.stock_desc = obj.stock_desc;
+                      detail.form.pack_size = obj.pack_size;
+                      detail.form.unit = obj.unit;
+                      detail.form.mfg = '';
+                      detail.form.exp = '';
+                      detail.form.remain = ''
+                      detail.form.quantity = ''
+                    }
+                  "
+                  @stopRefresh="
+                    (obj) => {
+                      refresh.descrip = obj.value;
+                    }
+                  "
+                  :url="`${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/logs`"
+                  :param="`${wh == 'prod' ? '&wh=VIT&type=add' : '&wh=VITReturn&type=return'}&vita=true&received=1&groupby=true&total=1`"
+                />
+                <input
+                  v-else
+                  type="text"
+                  placeholder="product code"
+                  class="input input-bordered border-gray-300"
+                  v-model="detail.form.stock_desc"
+                  disabled
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Lot No.</span><span class="text-xs text-error">{{ msg.lot }}</span>
+                </label>
+                <select 
+                  class="select select-bordered w-full border-gray-300" 
+                  :class="detail.form.lot ? 'bg-green-50' : ''"
+                  v-model="detail.form.lot"
+                  :disabled="edit"
+                >
+                  <option value="" disabled selected>Select Lot</option>
+                  <option v-for="v in datalist">{{ v.lot }}</option>
+                </select>
+              </div>
+              <div class="form-control" v-if="detail.controll == 'create'">
+                <label class="label">
+                  <span class="label-text font-semibold">Remaining</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="remaining"
+                  class="input input-bordered border-gray-300"
+                  :class="detail.form.remain ? 'bg-green-50 text-black' : ''"
+                  v-model="detail.form.remain"
+                  :readonly="!edit"
+                  :disabled="edit"
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Picking</span><span class="text-xs text-error">{{ msg.pick }}</span>
+                </label>
+                <input
+                  type="number"
+                  placeholder="picking"
+                  class="input input-bordered border-gray-300"
+                  :class="detail.form.quantity ? 'bg-green-50 text-black' : ''"
+                  min="0"
+                  :max="detail.form.remain"
+                  v-model="detail.form.quantity"
+                />
+              </div>
+            </div>
+            <div class="mt-5 p-3 rounded-lg border-dotted border-2">
+              <div class="grid gap-3 grid-cols-3">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Pack Size</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="packing"
+                    class="input input-sm input-bordered"
+                    v-model="detail.form.pack_size"
+                    disabled
+                  />
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Unit</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="unit"
+                    class="input input-sm input-bordered"
+                    v-model="detail.form.unit"
+                    disabled
+                  />
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">EXP Date</span>
+                  </label>
+                  <input
+                    type="date"
+                    placeholder="exp date"
+                    class="input input-sm input-bordered"
+                    v-model="detail.form.exp"
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
+            <div class="flex-1 form-control mt-6">
+              <label for="modal-detail" class="btn btn-danger">Cancel</label>
+            </div>
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-primary text-white"
+                :disabled="!detail.form.quantity"
+                @click="detail_save('static')"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- qr modal -->
+      <input
+        type="checkbox"
+        id="modal-qr"
+        class="modal-toggle"
+        v-model="qrmodal.modal"
+      />
+      <div class="modal" v-if="qrmodal.modal">
+        <div class="modal-box">
+          <label
+            for="modal-qr"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+            @click="select = !select; scan = !scan"
+          >
+            ✕
+          </label>
+          <div class="form-control my-3">
+            <label class="label cursor-pointer">
+              <span class="label-text">QR Code</span> 
+              <input type="checkbox" class="toggle toggle-sm" v-model="choose" />
+              <span class="label-text">Barcode</span> 
+            </label>
+          </div>
+          <qrcode-stream
+            @detect="onDetect"
+            @error="onError"
+            @camera-on="onReady"
+            :track="selected.value"
+            :formats="['code_128', 'qr_code', 'ean_13', 'ean_8']"
+            class="max-h-lg max-w-lg border-dashed border-2 p-2"
+            v-if="!choose"
+          ></qrcode-stream>
+          <div class="max-h-lg max-w-lg border-dashed border-2 p-2" v-else>
+            <AppModuleGlobalScannerDetect
+              class="my-20"
+              @response="
+                (res) => {
+                  input = res
+                }
+              "
+            />
+          </div>
+        </div>
+      </div>
+      <!-- modal return -->
+      <input
+        type="checkbox"
+        id="modal-return"
+        class="modal-toggle"
+        v-model="returns.modal"
+      />
+      <div class="modal" v-if="returns.modal">
+        <div class="modal-box w-11/12 max-w-sm">
+          <label
+            for="modal-return"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <h3 class="text-lg font-bold text-primary">Return Request</h3>
+          <hr class="mt-5" />
+          <div class="card-body overflow-auto" style="max-height: 74vh;">
+            <div class="grid gap-3 grid-cols-1">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Product</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="product code"
+                  class="input input-sm input-bordered border-gray-300"
+                  v-model="detail.form.stock_desc"
+                  disabled
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Lot</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="product code"
+                  class="input input-sm input-bordered border-gray-300"
+                  v-model="detail.form.lot"
+                  disabled
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">EXP Date</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="product code"
+                  class="input input-sm input-bordered border-gray-300"
+                  v-model="detail.form.exp"
+                  disabled
+                />
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Return Quantity</span>
+                </label>
+                <input
+                  type="number"
+                  :max="Math.abs(detail.rows.find(x => x.lot == detail.form.lot).quantity) - detail.form.return_qty"
+                  min="0"
+                  placeholder="quantity"
+                  class="input input-sm input-bordered border-gray-300"
+                  :class="detail.form.quantity ? 'bg-green-50 text-black' : ''"
+                  v-model="detail.form.quantity"
+                />
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="backdrop-blur sticky top-0 items-center gap-2 px-4 flex">
+            <div class="flex-1 form-control mt-6">
+              <button
+                class="btn btn-primary text-white"
+                @click="returns_save('static')"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- modal remove -->
+      <input
+        type="checkbox"
+        id="modal-remove"
+        class="modal-toggle"
+        v-model="remove.modal"
+      />
+      <div class="modal" v-if="remove.modal">
+        <div class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700" role="alert">
+          <div class="flex p-4">
+            <div class="flex-shrink-0">
+              <svg class="size-5 text-gray-600 mt-1 dark:text-neutral-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+              </svg>
+            </div>
+            <div class="ms-4">
+              <h3 class="text-error font-semibold dark:text-white underline underline-offset-2">
+                System notification
+              </h3>
+              <div class="mt-2 text-sm text-slate-500 dark:text-neutral-400">
+                Are your sure for remove this item?
+              </div>
+              <div class="mt-4">
+                <div class="flex space-x-3">
+                  <label for="modal-remove" type="label" class="btn btn-xs btn-active decoration-2 font-medium text-xs text-white dark:text-blue-500">
+                    Cancel
+                  </label>
+                  <label class="btn btn-xs btn-error decoration-2 font-semibold text-xs text-white dark:text-blue-500" @click="confirm_remove()">
+                    Confirm
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template #view>
+      <div class="gap-3 py-3">
+        <div class="card card-compact shadow-lg bg-base-100">
+          <div class="card-body overflow-auto">
+            <div
+              v-if="base.loading"
+              class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-white bg-opacity-50 top-0 left-0"
+            >
+              <AppModuleGlobalLoadingText
+                :type="'text'"
+                :class="`p-4 py-12 text-3xl text-center`"
+              />
+            </div>
+            <div class="flex justify-end mb-2">
+              <label
+                for="modal-base"
+                class="join-item btn btn-sm btn-primary modal-button text-white shadow"
+                @click="base_create()"
+              >
+                <Icon icon="uil:create-dashboard" width="18" height="18" />
+                Create List
+              </label>
+            </div>
+            <div class="border-2 border-dashed rounded-xl p-2">
+              <div class="join w-full">
+                <button
+                  class="join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                  disabled
+                >
+                  Date Type:
+                </button>
+                <select 
+                  class="join-item select select-bordered select-sm border-gray-300 w-full shadow"
+                  :class="base.date ? 'bg-yellow-50 text-black' : ''"
+                  v-model="base.date"
+                >
+                  <option value="sending_date" selected>sending date</option>
+                  <option value="created_at">pick date</option>
+                  <option value="packed_at">pack date</option>
+                </select>
+                <button
+                  class="md:block hidden join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                  disabled
+                >
+                  Start from:
+                </button>
+                <input type="date" class="join-item input input-bordered input-sm border-gray-300 w-full shadow"
+                  v-model="base.from"
+                />
+                <button
+                  class="md:block hidden join-item btn btn-sm disabled:border-gray-300 disabled:bg-transparent disabled:text-base-content"
+                  disabled
+                >
+                  -
+                </button>
+                <input type="date" class="join-item input input-bordered input-sm border-gray-300 w-full shadow"
+                  v-model="base.to"
+                />
+                <button class="join-item btn btn-sm btn-active text-white shadow border-gray-300" 
+                  @click="searching"
+                >
+                  <Icon
+                    icon="tabler:search"
+                    class="text-white"
+                    width="18" height="18"
+                  />
+                  <span class="sm:block hidden">Search</span>
+                </button>
+              </div>
+            </div>
+            <div class="p-2">
+              <div class="flex justify-end">
+                <AppModuleGlobalSearch
+                  :class="`join-item input input-sm input-bordered border-gray-300 w-full md:max-w-xs ${base.q ? 'bg-yellow-50 text-black' : ''}`"
+                  @search="
+                    (q) => {
+                      base.q = q;
+                      base.page = 1;
+                      base_search();
+                    }
+                  "
+                />
+              </div>
+              <div class="overflow-x-auto w-full max-h-[60vh] my-3">
+                <div v-if="!base.loading && base.rows.length == 0">
+                  <AppModuleGlobalEmptyData
+                    :class="`p-4 py-12 text-3xl text-center`"
+                  />
+                </div>
+                <table class="table table-xs table-pin-rows table-pin-cols table-zebra" v-else>
+                  <thead>
+                    <tr class="italic">
+                      <th>Delivery Order No.</th>
+                      <td>Status</td>
+                      <td>Customer</td>
+                      <td>Sending</td>
+                      <td>Pick</td>
+                      <td>Pack</td>
+                      <td colspan="2">Deliver</td>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, i) in base.rows">
+                      <th>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ row.sale }}
+                            </div>
+                            <div class="opacity-50">
+                              ( {{ row.code }} )
+                            </div>
+                          </div>
+                        </div>
+                      </th>
+                      <td>
+                        <span 
+                          class="badge badge-sm font-semibold italic px-4 py-2 w-20 text-base-100" 
+                          :class="row.status == 'packing' ? 'badge-info' : row.status == 'delivery' ? 'badge-warning' : row.status == 'delivered' ? 'badge-success' : 'badge-error'">
+                            {{ row.status }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ row.eng_name }}
+                            </div>
+                            <div class="text-slate-500">
+                              ( {{ row.suda_ch_name }} )
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="italic">{{ $moment(row.sending_date).format("DD-MM-YYYY") }}</td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ $moment(row.created_at).format("DD-MM-YYYY HH:mm:ss") }}
+                            </div>
+                            <div class="text-slate-500">
+                              {{ row.creator_name }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ row.packed_at ? $moment(row.packed_at).format("DD-MM-YYYY HH:mm:ss") : '-' }}
+                            </div>
+                            <div class="text-slate-500" v-if="row.packed_at">
+                              {{ row.packer_name || '-' }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div class="text-right">
+                            <div>
+                              delivery at :
+                            </div>
+                            <hr>
+                            <div>
+                              delivered at :
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex items-center space-x-3">
+                          <div>
+                            <div>
+                              {{ row.delivering_at ? $moment(row.delivering_at).format("DD-MM-YYYY HH:mm:ss")  : '-' }}
+                            </div>
+                            <hr v-if="row.delivering_at">
+                            <div v-if="row.delivering_at">
+                              {{ row.delivered_at ? $moment(row.delivered_at).format("DD-MM-YYYY HH:mm:ss")  : '-' }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <th class="text-center">
+                        <label
+                          for="modal-base"
+                          class="join-item btn btn-xs btn-ghost text-warning hover:text-black modal-button"
+                          @click="base_edit(`${row.code}`, `${i}`)"
+                          v-if="row.status == 'picking' || row.status == 'packing'"
+                        >
+                          <span class="underline underline-offset-2">edit</span>
+                        </label>
+                        <label
+                          for="modal-base"
+                          class="join-item btn btn-xs btn-ghost text-slate-500 hover:text-black modal-button"
+                          @click="base_edit(`${row.code}`, `${i}`)"
+                          v-else
+                        >
+                          <span class="underline underline-offset-2">detail</span>
+                        </label>
+                        <label
+                          for="modal-remove"
+                          class="join-item btn btn-xs btn-ghost text-error hover:text-black modal-button"
+                          v-if="row.status == 'picking'"
+                          @click="
+                            remove_item(
+                              `${row.code}`,
+                              'base',
+                              'api/controllers/MYSQL/INTERNAL/WMS/vita'
+                            )
+                          "
+                        >
+                          remove
+                        </label>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="grid gap-3 md:grid-cols-2 grid-cols-1">
+                <div class="md:text-left text-center text-sm">
+                  Show :
+                  <select class="select select-bordered select-xs w-fit bg-yellow-50 text-black" 
+                    v-model="base.row" 
+                    @change="base_search()"
+                  >
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="25">30</option>
+                    <option value="50">10</option>
+                  </select>
+                  |
+                  Showing {{ base.page == Math.ceil(base.total/base.row) ? 1 + (base.row*(base.page - 1)) : 1 + ((base.page - 1)*base.row) }} to {{ base.page == Math.ceil(base.total/base.row) ? base.total : base.row*base.page }} of {{ base.total }} entries
+                </div>
+                <div class="join w-full justify-center lg:justify-end">
+                  <AppModuleGlobalPageination
+                    :page="base.page"
+                    :total="base.total"
+                    :row="base.row"
+                    :back="base.back"
+                    :next="base.next"
+                    :loading="base.loading"
+                    @search="
+                      (res) => {
+                        base.page = res.page;
+                        this.base_search();
+                      }
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </AppLayout>
+</template>
+
+<style>
+  .crop {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 1px;
+  }
+</style>
+
+<script>
+// @ is an alias to /src
+import AppLayout from "@/components/App/layout.vue";
+import AppModuleGlobalPageination from "@/components/App/Module/Global/Pageination.vue";
+import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
+import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
+import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
+import AppModuleGlobalScannerDetect from "@/components/App/Module/Global/ScannerDetect.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
+import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
+import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from "vue-qrcode-reader";
+import VueQRCodeComponent from "vue-qrcode-component";
+import VueBarcode from '@chenfengyuan/vue-barcode';
+import { useToast } from "vue-toastification";
+import Query from "@/assets/js/fetch.js";
+import { socket } from "@/socket";
+
+export default {
+  name: "PickAndPack",
+  components: {
+    AppLayout,
+    AppModuleGlobalUpload,
+    AppModuleGlobalPageination,
+    AppModuleGlobalSelectSearch,
+    AppModuleGlobalSearch,
+    AppModuleGlobalShowImage,
+    AppModuleGlobalScannerDetect,
+    AppModuleGlobalLoadingText,
+    AppModuleGlobalEmptyData,
+    QrcodeStream,
+    QrcodeDropZone,
+    QrcodeCapture,
+    VueQRCodeComponent,
+    VueBarcode,
+  },
+  setup() {
+    const toast = useToast();
+
+    return {
+      toast
+    }
+  },
+  data() {
+    const option = [
+      { text: "nothing (default)", value: undefined },
+      { text: "outline", value: this.paintOutline },
+      { text: "centered text", value: this.paintCenterText },
+      { text: "bounding box", value: this.paintBoundingBox },
+    ];
+    const selected = option[1];
+
+    return {
+      camera: 'auto',
+      selected: selected,
+      choose: false,
+      select: false,
+      scan: false,
+      wh: 'prod',
+      input: '',
+      doc_status: '',
+      sum: 0,
+      total_net: 0,
+      locked: false,
+      edit: false,
+      checkbox: "",
+      refresh: false,
+      msg: {
+        sale: '',
+        customer: '',
+        send_date: '',
+        product: '',
+        lot: '',
+        pick: '',
+        detail: ''
+      },
+      datalist: [],
+      deletes: [],
+      base: {
+        rows: [],
+        total: 0,
+        page: 1,
+        row: 15,
+        q: "",
+        date: "sending_date",
+        from: "",
+        to: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: {
+          title: "",
+          ref: "",
+        },
+      },
+      customer: {
+        rows: [],
+        total: 0,
+        page: 1,
+        row: 10,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: {
+          title: "",
+          ref: "",
+        },
+      },
+      detail: {
+        rows: [],
+        total: 0,
+        page: 1,
+        row: 10,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: {
+          title: "",
+          ref: "",
+        },
+      },
+      temp: {
+        rows: [],
+        total: 0,
+        page: 1,
+        row: 10,
+        q: "",
+        next: false,
+        back: false,
+        loading: false,
+        modal: false,
+        form: {
+          title: "",
+          ref: "",
+        },
+      },
+      qrmodal: {
+        modal: false,
+      },
+      returns: {
+        modal: false,
+      },
+      remove: {
+        current: 0,
+        model: false,
+        controll: "",
+        tb: "",
+      }
+    };
+  },
+  computed: {
+    serviceUrl() {
+      return this.$store.getters.serviceUrl;
+    },
+    user_token() {
+      return this.$store.getters.user_token;
+    },
+    user() {
+      return this.$store.getters.user;
+    },
+  },
+  methods: {
+    exportExcel() {
+      return window.open(`${
+        this.serviceUrl
+      }api/controllers/MYSQL/INTERNAL/WMS/picking_form?for=picking&doc_code=${this.base.form.code}&deliver=1&asc=1&total=1&delivery=${
+        this.base.form.sale}&sending=${this.base.form.sending_date}&eng=${this.base.form.eng_name}&ch=${this.base.form.suda_ch_name}`);
+    },
+    dateNow() {
+      let d = new Date();
+      return d.getFullYear() + '-' + (d.getMonth() >= 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)) + '-' + (d.getDate() > 9 ? d.getDate() : '0' + d.getDate())
+              + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+    },
+    ymd(start, life) {
+      let expire = new Date((new Date(start)).getTime() + life * 86400E3);
+      return expire.getFullYear() + '-' + (expire.getMonth() >= 9 ? expire.getMonth() + 1 : '0' + (expire.getMonth() + 1)) + '-' + (expire.getDate() > 9 ? expire.getDate() : '0' + expire.getDate());
+    },
+    makeid(length) {
+      let result = "";
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const charactersLength = characters.length;
+      let counter = 0;
+      while (counter < length) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        );
+        counter += 1;
+      }
+      return result;
+    },
+    searching() {
+      this.base.page = 1;
+      this.base_search();
+    },
+    paintOutline(detectedCodes, ctx) {
+      for (const detectedCode of detectedCodes) {
+        const [firstPoint, ...otherPoints] = detectedCode.cornerPoints;
+
+        ctx.strokeStyle = "red";
+        ctx.beginPath();
+        ctx.moveTo(firstPoint.x, firstPoint.y);
+        for (const { x, y } of otherPoints) {
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(firstPoint.x, firstPoint.y);
+        ctx.closePath();
+        ctx.stroke();
+      }
+    },
+    paintBoundingBox(detectedCodes, ctx) {
+      for (const detectedCode of detectedCodes) {
+        const {
+          boundingBox: { x, y, width, height },
+        } = detectedCode;
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#007bff";
+        ctx.strokeRect(x, y, width, height);
+      }
+    },
+    paintCenterText(detectedCodes, ctx) {
+      for (const detectedCode of detectedCodes) {
+        const { boundingBox, rawValue } = detectedCode;
+
+        const centerX = boundingBox.x + boundingBox.width / 2;
+        const centerY = boundingBox.y + boundingBox.height / 2;
+
+        const fontSize = Math.max(
+          12, (50 * boundingBox.width) / ctx.canvas.width
+        );
+        // console.log(boundingBox.width, ctx.canvas.width);
+
+        ctx.font = `bold ${fontSize}px sans-serif`;
+        ctx.textAlign = "center";
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#35495e";
+        ctx.strokeText(detectedCode.rawValue, centerX, centerY);
+
+        ctx.fillStyle = "#5cb984";
+        ctx.fillText(rawValue, centerX, centerY);
+      }
+    },
+    onDetect(detectedCodes) {
+      let ar = JSON.stringify(detectedCodes[0].rawValue);
+      // console.log(ar)
+
+      this.scan_search(ar, 'qr')
+    },
+    onReady(capabilities) {
+      // console.log(capabilities);
+    },
+    onError(error) {
+      if (error.name === "NotAllowedError") {
+        console.log("user denied camera access permission");
+      } else if (error.name === "NotFoundError") {
+        console.log("no suitable camera device installed");
+      } else if (error.name === "NotSupportedError") {
+        console.log("page is not served over HTTPS (or localhost)");
+      } else if (error.name === "NotReadableError") {
+        console.log("maybe camera is already in use");
+      } else if (error.name === "OverconstrainedError") {
+        console.log("did you request the front camera although there is none?");
+      } else if (error.name === "StreamApiNotSupportedError") {
+        console.log("browser seems to be lacking features");
+      }
+    },
+    // base
+    base_search() {
+      this.base.loading = true;
+      this.base_get((res) => {
+        setTimeout(() => {
+          this.base.rows = res.rows;
+          this.base.total = res.total;
+          this.base.next =
+            this.base.page * this.base.row >= this.base.total ? false : true;
+          this.base.back = this.base.page > 1 ? true : false;
+          this.base.loading = false;
+        }, 200);
+      });
+    },
+    base_get(callback) {
+      new Query('base','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/vita?total=1&page=${this.base.page}${this.base.row ? `&rows=${this.base.row}` : ""}${
+        this.base.q ? `&q=${this.base.q}` : ""}&date=${this.base.date}&from=${this.base.from ? this.base.from : ''}&to=${this.base.to  ? this.base.to : ''}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
+        }
+        callback({ ...res });
+      });
+    },
+    base_create() {
+      this.sum = 0
+      this.total_net = 0
+
+      this.msg.sale = ''
+      this.msg.customer = ''
+      this.msg.send_date = ''
+      this.msg.detail = ''
+
+      this.base.current = this.makeid(15);
+      this.base.form = {
+        code: this.base.current,
+        sale: '',
+        customer: '',
+        customer_eng: '',
+        customer_ch: '',
+        sending: '',
+        status: 'picking',
+      };
+      this.doc_status = 'picking'
+  
+      this.detail.rows = [];
+      this.detail.new = [];
+      this.base.controll = "create";
+      this.edit = false;
+      this.locked = false;
+    },
+    base_edit(code, index) {
+      this.sum = 0
+      this.total_net = 0
+
+      this.msg.sale = ''
+      this.msg.customer = ''
+      this.msg.send_date = ''
+      this.msg.detail = ''
+
+      this.base.form = { ...this.base.rows[index] };
+      this.base.form.customer_ch = this.base.form.suda_ch_name
+      this.base.form.customer_eng = this.base.form.eng_name
+      this.doc_status = this.base.form.status
+
+      this.base.current = code;
+      this.detail.rows = [];
+      this.detail.new = [];
+      this.base.controll = "edit";
+      this.detail_search();
+      this.refresh = true;
+      this.doc_status = this.base.form.status
+      this.edit = this.base.form.status == 'picking' || this.base.form.status == 'packing' ? false : true;
+      this.locked = this.base.form.status == 'delivered' ? true : false;
+    },
+    base_save(type) {
+      if(!this.base.form.sale || !this.base.form.customer || !this.base.form.sending_date) {
+        if(!this.base.form.sale) this.msg.sale = '*fill in information*'
+        else this.msg.sale = ''
+        if(!this.base.form.customer) this.msg.customer = '*fill in information*'
+        else this.msg.customer = ''
+        if(!this.base.form.sending_date) this.msg.send_date = '*fill in information*'
+        else this.msg.send_date = ''
+        return;
+      } else {
+        this.msg.sale = ''
+        this.msg.customer = ''
+        this.msg.send_date = ''
+      }
+
+      if(this.base.form.status == 'packing') {
+        if(!this.detail.rows.length) {
+          this.msg.detail = '*Add Product before sending*'
+          return;
+        }
+      }
+
+      let obj = {
+        rows: [
+          {
+            code: this.base.form.code,
+            sale : this.base.form.sale,
+            customer : this.base.form.customer,
+            sending_date: this.base.form.sending_date,
+            status: this.base.form.status,
+          },
+        ],
+        socket: socket.id
+      };
+
+      if (this.base.form.status == 'packing') {
+        obj['rows'][0]["packed_at"] = this.dateNow()
+        obj['rows'][0]["packed_by"] = this.user.code
+      }
+
+      if (this.base.form.status == 'delivery') {
+        obj['rows'][0]["delivering_at"] = this.dateNow()
+        obj['rows'][0]["delivering_by"] = this.user.code
+      }
+
+      if (this.base.form.status == 'delivered') {
+        obj['rows'][0]["delivered_at"] = this.dateNow()
+        obj['rows'][0]["delivered_by"] = this.user.code
+      }
+
+      if (this.base.controll == "create") {
+        socket.emit('pick', obj)
+      } else {
+        socket.emit('picked', obj)
+      }
+    },
+    gotCheck(index) {
+      let obj = { rows: [], socket: socket.id }
+      obj['rows'][0] = {
+        code: this.detail.rows[index].code,
+        checked: this.detail.rows[index].checked ? 1 : 0
+      }
+
+      socket.emit('delete', obj)
+    },
+    // customer
+    customer_search() {
+      this.customer.rows = []
+      this.customer.loading = true;
+      this.customer_get((res) => {
+        setTimeout(() => {
+          this.customer.rows = res.rows;
+          this.customer.total = res.total;
+          this.customer.next =
+            this.customer.page * this.customer.row >= this.customer.total
+              ? false
+              : true;
+          this.customer.back = this.customer.page > 1 ? true : false;
+          this.customer.loading = false;
+
+          this.base.form.new_customer = this.base.form.customer
+        }, 250);
+      });
+    },
+    customer_get(callback) {
+      new Query('customer','get').get(this, `${
+          this.serviceUrl
+        }api/controllers/MYSQL/INTERNAL/WMS/customer?total=1${this.customer.q ? `&q=${this.customer.q}` : ""}`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
+        }
+        callback({ ...res });
+      });
+    },
+    customer_save(row) {
+      this.base.form.customer = this.base.form.new_customer
+      this.base.form.customer_eng = row.eng_name
+      this.base.form.customer_ch = row.suda_ch_name
+    },
+    // DETAIL
+    detail_search() {
+      this.sum = 0
+      this.total_net = 0
+
+      this.detail.loading = true;
+      this.detail_get((res) => {
+        this.detail.rows = res.rows;
+        this.detail.total = res.total;
+        this.detail.next =
+          this.detail.page * this.detail.row >= this.detail.total
+            ? false
+            : true;
+        this.detail.back = this.detail.page > 1 ? true : false;
+        this.detail.loading = false;
+
+        this.deletes = res.rows;
+      });
+    },
+    detail_get(callback) {
+      new Query('detail','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/logs?doc_code=${this.base.form.code}&deliver=1&asc=1&total=1`, (res) => {
+        if (res.success) {
+          this.base.form['allcheck'] = true
+          res.rows.filter(x => x.code).forEach(x => {
+            this.sum += parseFloat(Math.abs(x.quantity))
+            x['net_weight'] = Math.abs(x.quantity)*x.pack_size
+            this.total_net += x.net_weight
+            x['checked'] = x['checked'] ? true : false
+
+            if (this.base.form['allcheck']) {
+              this.base.form['allcheck'] = x['checked'] = x['checked'] ? true : false
+            }
+          })
+        }
+        callback({ ...res });
+      });
+    },
+    detail_create() {
+      this.datalist = []
+      this.wh = 'prod'
+
+      this.msg.product = ''
+      this.msg.lot = ''
+      this.msg.pick = ''
+
+      this.detail.form = {
+        product: "",
+        stock_desc: "",
+        lot: "",
+        remain: "",
+        quantity: "",
+        pack_size: "",
+        unit: "",
+        mfg: "",
+      };
+
+      this.detail.controll = "create";
+      this.edit = false;
+    },
+    detail_edit(code, index) {
+      this.msg.product = ''
+      this.msg.lot = ''
+      this.msg.pick = ''
+  
+      this.detail.form = Object.assign({}, this.detail.rows[index]);
+      this.detail.form.quantity = Math.abs(this.detail.form.quantity)
+      this.detail.current = code;
+      this.detail.controll = "edit";
+      this.refresh = true;
+      this.edit = true;
+    },
+    detail_save(type) {
+      if (!this.detail.form.stock_desc || !this.detail.form.lot || !this.detail.form.quantity) {
+        if(!this.detail.form.stock_desc) this.msg.product = '*fill in information*'
+        else this.msg.product = ''
+        if(!this.detail.form.lot) this.msg.lot = '*fill in information*'
+        else this.msg.lot = ''
+        if(!this.detail.form.quantity) this.msg.pick = '*fill in information*'
+        else this.msg.pick = ''
+        return;
+      }
+
+      if (this.base.controll == "create") {
+        this.detail.form['wh'] = (this.wh == 'prod') ? 'VIT' : 'VITReturn'
+
+        if (this.detail.rows.find(x => x.lot == this.detail.form.lot)) {
+          this.detail.controll == 'create' 
+            ? this.detail.rows.find(x => x.lot == this.detail.form.lot).quantity + this.detail.form.quantity > this.detail.form.remain
+              ? this.detail.rows.find(x => x.lot == this.detail.form.lot).quantity = this.detail.form.remain
+              : this.detail.rows.find(x => x.lot == this.detail.form.lot).quantity + this.detail.form.quantity
+            : this.detail.rows.find(x => x.lot == this.detail.form.lot).quantity = this.detail.form.quantity
+        } else {
+          this.detail.rows.push({ ...this.detail.form });
+        }
+
+        if (this.detail.new.find(x => x.lot == this.detail.form.lot)) {
+          this.detail.controll == 'create' 
+          ? this.detail.new.find(x => x.lot == this.detail.form.lot).quantity + this.detail.form.quantity > this.detail.form.remain
+            ? this.detail.new.find(x => x.lot == this.detail.form.lot).quantity = this.detail.form.remain
+            : this.detail.new.find(x => x.lot == this.detail.form.lot).quantity + this.detail.form.quantity
+          : this.detail.new.find(x => x.lot == this.detail.form.lot).quantity = this.detail.form.quantity
+        } else {
+          this.detail.new.push({ ...this.detail.form });
+        }
+  
+        this.msg.detail = ''
+        this.detail.modal = false;
+      } else {
+        let obj = {
+          rows: [
+            {
+              code : this.detail.rows.filter(x => x.lot == this.detail.form.lot).length ? this.detail.rows.find(x => x.lot == this.detail.form.lot).code : this.detail.form.code,
+              ref_code : this.detail.form.ref_code,
+              doc_code : this.base.form.code,
+              lot : this.detail.form.lot,
+              quantity : this.detail.controll == 'create'
+                ? this.detail.rows.filter(x => x.lot == this.detail.form.lot).length 
+                  ? parseFloat(this.detail.rows.find(x => x.lot == this.detail.form.lot).quantity) - ( this.detail.form.quantity > this.detail.form.remain ? parseFloat(this.detail.form.remain) : parseFloat(this.detail.form.quantity) )
+                  : -this.detail.form.quantity
+                : this.detail.form.quantity > this.datalist.find(x => x.lot == this.detail.form.lot).total_qty
+                  ? ( this.datalist.find(x => x.lot == this.detail.form.lot).total_qty > Math.abs(this.detail.rows.find(x => x.lot == this.detail.form.lot).quantity) ? -this.datalist.find(x => x.lot == this.detail.form.lot).total_qty : this.detail.rows.find(x => x.lot == this.detail.form.lot).quantity ) 
+                  : -this.detail.form.quantity,
+              mfg : this.detail.form.mfg,
+              exp : this.detail.form.exp,
+              type : 'pick',
+              wh : (this.wh == 'prod') ? 'VIT' : 'VITReturn'
+            },
+          ],
+          socket: socket.id
+        };
+
+        if (this.detail.rows.filter(x => x.lot == this.detail.form.lot).length) {
+          socket.emit('delete', obj)
+        } else {
+          socket.emit('logs', obj)
+        }
+      }
+    },
+    returns_save(type) {
+      this.detail.form['type'] = 'return'
+      this.detail.form['wh'] = 'VITReturn'
+
+      let obj = {
+        rows: [
+          this.detail.form
+        ],
+        socket: socket.id
+      }
+
+      socket.emit('logs', obj)
+    },
+    // Scan
+    scan_search(data , session) {
+      this.scan = !this.scan
+
+      if (data.indexOf('ubis') == -1) {
+        this.toast.error(`It's not UBIS ${session}code.`, {
+          position: "top-center",
+          timeout: 4000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: false,
+          draggable: true,
+          draggablePercent: 0.5,
+          showCloseButtonOnHover: true,
+          hideProgressBar: true,
+          closeButton: "button",
+          icon: true,
+          rtl: false
+        });
+
+        return;
+      }
+
+      let used
+      // เช็ค QR หรือ Barcode
+      if (session == 'qr') {
+        used = data.split('"')[1].split('?')[1].split('&')
+      } else {
+        used = data.split('&')
+      }
+      this.code = used[0]
+      this.sheet = used[1]
+      this.floor = used[2]
+
+      this.temp.loading = true;
+      this.scan_get((res) => {
+        this.temp.rows = res.rows;
+        this.temp.total = res.total;
+        this.temp.next =
+        this.temp.page * this.temp.row >= this.temp.total
+          ? false
+          : true;
+        this.temp.back = this.temp.page > 1 ? true : false;
+        this.temp.loading = false;
+
+        if (this.temp.rows == undefined) return;
+
+        if (this.temp.rows.length) {
+          if (this.base.controll == 'create') {
+            this.temp.rows.forEach((v, i) => {
+              if (this.detail.rows.find(x => x.lot == v.lot)) {
+                this.detail.controll == 'create' 
+                  ? this.detail.rows.find(x => x.lot == v.lot).quantity + v.quantity > v.remain
+                    ? this.detail.rows.find(x => x.lot == v.lot).quantity = v.remain
+                    : this.detail.rows.find(x => x.lot == v.lot).quantity + v.quantity
+                  : this.detail.rows.find(x => x.lot == v.lot).quantity = v.quantity
+              } else {
+                this.detail.rows.push({ ...v });
+              }
+
+              if (this.detail.new.find(x => x.lot == v.lot)) {
+                this.detail.controll == 'create' 
+                ? this.detail.new.find(x => x.lot == v.lot).quantity + v.quantity > v.remain
+                  ? this.detail.new.find(x => x.lot == v.lot).quantity = v.remain
+                  : this.detail.new.find(x => x.lot == v.lot).quantity + v.quantity
+                : this.detail.new.find(x => x.lot == v.lot).quantity = v.quantity
+              } else {
+                this.detail.new.push({ ...v });
+              }
+              this.msg.detail = ''
+
+              this.toast.success(`Finished adding products.`, {
+                position: "top-center",
+                timeout: 4000,
+                closeOnClick: true,
+                pauseOnFocusLoss: true,
+                pauseOnHover: false,
+                draggable: true,
+                draggablePercent: 0.5,
+                showCloseButtonOnHover: true,
+                hideProgressBar: true,
+                closeButton: "button",
+                icon: true,
+                rtl: false
+              });
+
+              this.qrmodal.modal = false
+            })
+          } else {
+            let obj = { rows: [], socket: socket.id }
+            this.temp.rows.forEach((x, i) => {
+              if (this.detail.rows.filter(d => d.lot == x.lot).length) {
+                obj['rows'][0] = {
+                  code : this.detail.rows.find(d => d.lot == x.lot).code,
+                  quantity : parseFloat(this.detail.rows.find(d => d.lot == x.lot).quantity) - parseFloat(x.quantity),
+                }
+              } else {
+                obj['rows'][0] = {
+                  ref_code : x.ref_code,
+                  doc_code : this.base.form.code,
+                  lot : x.lot,
+                  quantity : -x.quantity,
+                  mfg : x.mfg,
+                  exp : x.exp,
+                  type: 'pick'
+                }
+              }
+  
+              if (this.detail.rows.filter(d => d.lot == x.lot).length) {
+                socket.emit('delete', obj)
+              } else {
+                socket.emit('logs', obj)
+              }
+            })
+          }
+        } else {
+          this.toast.error(`Not found data.`, {
+            position: "top-center",
+            timeout: 4000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: false,
+            draggable: true,
+            draggablePercent: 0.5,
+            showCloseButtonOnHover: true,
+            hideProgressBar: true,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+          });
+        }
+      });
+    },
+    scan_get(callback) {
+      new Query('temp','get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/logs?doc_code=${this.code}&pallet=${this.sheet}&type=add&request=0`, (res) => {
+        if (res.success) {
+          res.rows.forEach((v, i) => {
+            res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+            res.rows[i].master = 0;
+          });
+        }
+        callback({ ...res });
+      });
+    },
+    // REMOVE
+    remove_item(code, controll, tb, lot = null) {
+      if (controll == 'base') {
+        this.base.form.code = code;
+        this.detail_search()
+      }
+
+      this.remove.code = code;
+      this.remove.lot = lot;
+      this.remove.controll = controll;
+      this.remove.tb = tb;
+    },
+    confirm_remove() {
+      if (this.remove.controll == 'detail') {
+        if 
+        (this.base.controll == 'create') {
+          this.detail.rows = this.detail.rows.filter(x => x.lot != this.remove.lot)
+          this.remove.modal = false;
+        } 
+        else 
+        {
+          socket.emit('remove', {
+            rows: [
+              { code: this.remove.code }
+            ],
+            socket: socket.id
+          })
+        }
+      } else {
+        fetch(`${this.serviceUrl}${this.remove.tb}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.user_token}`,
+          },
+          body: JSON.stringify({
+            rows: [
+              { code: this.remove.code }
+            ]
+          }),
+        })
+        .then((response) => response.json())
+        .then((res) => {
+          if (res.success) {
+            this.sum = 0
+            this.total_net = 0
+            this.base_search();
+  
+            if (this.remove.controll == 'base') {
+              this.remove.controll = 'detail';
+              this.remove.tb = 'api/controllers/MYSQL/INTERNAL/WMS/logs';
+  
+              socket.emit('remove', {
+                rows: [
+                  {
+                    ...Object.assign({ ...this.deletes[0] }),
+                  }
+                ],
+                socket: socket.id
+              })
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+      }
+    },
+    logs(res) {
+      if (res.socket != socket.id) {
+        return
+      }
+
+      if (!res.success) {
+      } else {
+        if (this.detail.modal) {
+          this.msg.detail = ''
+
+          this.detail.modal = false;
+          this.detail_search()
+        } else if (this.qrmodal.modal) {
+          this.toast.success(`Finished adding products.`, {
+            position: "top-center",
+            timeout: 4000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: false,
+            draggable: true,
+            draggablePercent: 0.5,
+            showCloseButtonOnHover: true,
+            hideProgressBar: true,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+          });
+
+          this.qrmodal.modal = false
+          this.detail_search()
+        } else if (this.return.modal) {
+          this.returns.modal = false;
+          this.detail_search()
+        } else {
+          this.base.modal = false;
+          this.base_search();
+        }
+      }
+    },
+    update_logs(res) {
+      if (res.socket != socket.id) {
+        return
+      }
+
+      if (!res.success) {
+      } else {
+        if (this.detail.modal) {
+          this.msg.detail = ''
+
+          this.detail.modal = false;
+          this.detail_search();
+        } else if (this.qrmodal.modal) {
+          this.toast.success(`Finished adding products.`, {
+            position: "top-center",
+            timeout: 4000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: false,
+            draggable: true,
+            draggablePercent: 0.5,
+            showCloseButtonOnHover: true,
+            hideProgressBar: true,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+          });
+
+          this.qrmodal.modal = false
+          this.detail_search();
+        } else if (this.base.modal) {
+          this.base.modal = false;
+          this.base_search();
+        } else {
+          this.toast.success(`Update Success!.`, {
+            position: "top-center",
+            timeout: 4000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: false,
+            draggable: true,
+            draggablePercent: 0.5,
+            showCloseButtonOnHover: true,
+            hideProgressBar: true,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+          });
+
+          this.base.form['allcheck'] = true
+          this.detail.rows.forEach(x => {
+            x['checked'] = x['checked'] ? true : false
+
+            if (this.base.form['allcheck']) {
+              this.base.form['allcheck'] = x['checked'] = x['checked'] ? true : false
+            }
+          })
+        }
+      }
+    },
+    remove_logs(res) {
+      if (res.socket != socket.id) {
+        return
+      }
+
+      if (!res.success) {
+      } else {
+        this.sum = 0
+        this.total_net = 0
+        this.remove.modal = false;
+        this.detail_search();
+      }
+    },
+    pick(res) {
+      if (res.socket != socket.id) {
+        return
+      }
+
+      if (!res.success) {
+      } else {
+        if(this.detail.new.length) {
+          let obj = { rows: [], socket: socket.id }
+          this.detail.new.forEach((x, i) => {
+            obj['rows'][i] = {
+              ref_code : x.ref_code,
+              doc_code : res.rows[0].code,
+              lot : x.lot,
+              quantity : -x.quantity,
+              mfg : x.mfg,
+              exp : x.exp,
+              type: 'pick',
+              wh: 'VIT'
+            }
+          })
+
+          socket.emit('logs', obj)
+        }
+      }
+    },
+    update_pick(res) {
+      if (res.socket != socket.id) {
+        return
+      }
+
+      if (!res.success) {
+      } else {
+        if (this.base.form.status != 'picking' && this.base.form.status != 'packing') {
+          let obj = { rows: [], socket: socket.id }
+          this.detail.rows.forEach((x, i) => {
+            obj['rows'][i] = {
+              code: x.code,
+              type: this.base.form.status == 'delivery' ? 'delivery' : 'issue'
+            }
+          })
+
+          socket.emit('delete', obj)
+        }
+      }
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.base_search();
+
+      socket.on("connect", () => {
+        console.log("CONNECT")
+      });
+
+      socket.on("disconnect", () => {
+        console.log("DICONNECT")
+        socket.connect()
+      });
+
+      socket.on("logs", this.logs);
+      socket.on("delete", this.update_logs);
+      socket.on("remove", this.remove_logs);
+      socket.on("pick", this.pick);
+      socket.on("picked", this.update_pick);
+    });
+  },
+  unmounted() {
+    socket.off("logs", this.logs);
+    socket.off("delete", this.update_logs);
+    socket.off("remove", this.remove_logs);
+    socket.off("pick", this.pick);
+    socket.off("picked", this.update_pick);
+  },
+  watch: {
+    base: function (v) {
+      // console.log(v);
+    },
+    detail: function (v) {
+      // console.log(v);
+    },
+    select: function (v) {
+      // console.log(v)
+      if (!v) {
+        this.choose = false
+      }
+    },
+    input: function(v) {
+      // console.log(v)
+      if (v) {
+        if (this.select) {
+          this.scan_search(v, 'bar')
+          setTimeout(() => {
+            this.input = ''
+          }, 500);
+        }
+      }
+    },
+    "detail.form.stock_desc": function (val) {
+      // console.log(val)
+      if (val) {
+        new Query(null,'get').get(this, `${this.serviceUrl}api/controllers/MYSQL/INTERNAL/WMS/logs?${this.wh == 'prod' ? '&wh=VIT' : '&wh=VITReturn'}&parent=${this.detail.form.product}&descrip=${val}&forselect=true&total=1`, (res) => {
+          if (res.success) {
+            res.rows.forEach((v, i) => {
+              res.rows[i].image = v.image ? JSON.parse(v.image) : [];
+              res.rows[i].master = 0;
+            });
+            this.datalist = [ ...res.rows ]
+          }
+        });
+      }
+    },
+    "detail.form.lot": function (val) {
+      // console.log(val)
+      if (val && this.detail.controll == 'create') {
+        this.detail.form.ref_code = this.datalist.find(x => x.lot == val).ref_code
+        this.detail.form.remain = this.datalist.find(x => x.lot == val).total_qty
+        this.detail.form.mfg = this.datalist.find(x => x.lot == val).mfg
+        this.detail.form.exp = this.datalist.find(x => x.lot == val).exp
+      }
+    },
+  }
+};
+</script>
+
+<style scrop>
+  tr,
+  td {
+    white-space: nowrap;
+  }
+</style>

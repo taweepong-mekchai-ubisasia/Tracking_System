@@ -1,0 +1,344 @@
+<template>
+  <AppLayout ref="AppLayoutComponent">
+    <template #modal>
+      <AppModulePagesHRVisitorModalItem
+        v-model="base.data"
+        @update:success="fnBase.success"
+        ref="baseModal"
+      />
+      <AppModuleGlobalRemove
+        v-model="remove"
+        @update:success="fnRemove.success"
+        ref="removeModal"
+      />
+    </template>
+    <template #view>
+      <div class="grid grid-cols-1 gap-6">
+        <div class="card shadow-lg bg-base-100">
+          <div class="card-body overflow-auto p-2 lg:p-4">
+            <div>
+              <div
+                v-if="base.pagination.loading"
+                class="absolute z-10 w-full h-full flex flex-row flex-nowrap content-center justify-center items-center bg-base-100 bg-opacity-50 top-0 left-0"
+              >
+                <AppModuleGlobalLoadingText
+                  :class="`p-4 py-12 text-3xl text-center`"
+                />
+              </div>
+              <div :class="`${base.pagination.loading ? 'blur-sm' : ''}`">
+                <div ref="titleZone">
+                  <div
+                    class="gap-2 sm:gap-4 flex-row flex w-full justify-end items-center relative"
+                  >
+                    <h3 class="text-lg font-bold text-primary px-2 sm:px-4 ">MASTER&nbsp;ITEM&nbsp;LISTS</h3>
+                    <div
+                      class="gap-2 sm:gap-4 flex-row flex w-full justify-end relative"
+                    >
+                      <AppModuleGlobalSearchV2
+                        @update:search="fnBase.search"
+                        v-model="base.search"
+                        :loading="base.pagination.loading"
+                      />
+                      <label
+                        class="btn btn-xs sm:btn-sm btn-primary modal-button text-white"
+                        @click="$refs.baseModal.fnBase.create"
+                      >
+                        <Icon
+                          icon="material-symbols:add"
+                          class="w-4 h-4 block lg:hidden"
+                        />
+                        <span class="hidden lg:block">Create</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="divider my-1"></div>
+                </div>
+                <div
+                  class="overflow-x-auto w-full my-2"
+                  :style="{
+                    maxHeight: contentHeight,
+                    minHeight: contentHeight,
+                  }"
+                >
+                  <div
+                    v-if="
+                      !base.pagination.loading && base.data.rows.length == 0
+                    "
+                  >
+                    <AppModuleGlobalEmptyData
+                      :class="`p-4 py-12 text-3xl text-center`"
+                    />
+                  </div>
+                  <table
+                    v-else
+                    class="table table-xs table-pin-rows table-pin-cols table-zebra"
+                  >
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <td>Code</td>
+                        <td>Name</td>
+                        <td>Department</td>
+                        <td>Creation</td>
+                        <td>Updation</td>
+                        <th class="text-right"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(v, i) in base.data.rows" :key="v.code">
+                        <th>{{ v.id }}</th>
+                        <td>{{ v.code }}</td>
+                        <td class="font-bold">
+                          {{ v.name }}
+                        </td>
+                        <td class="font-semibold">
+                          {{ v.departmentTitle || '-' }}
+                        </td>
+                        <td>
+                          <div class="flex items-center space-x-3">
+                            <div>
+                              <div class="text-xs">
+                                {{
+                                  v.created_at
+                                    ? $moment(v.created_at).format("DD-MM-YYYY HH:mm:ss")
+                                    : "-"
+                                }}
+                              </div>
+                              <div class="text-xs opacity-30">
+                                {{ v.created_fullname || "-" }}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="flex items-center space-x-3">
+                            <div>
+                              <div class="text-xs">
+                                {{
+                                  v.updated_at
+                                  ? $moment(v.updated_at).format("DD-MM-YYYY HH:mm:ss")
+                                    : "-"
+                                }}
+                              </div>
+                              <div v-if="v.updated_at" class="text-xs opacity-30">
+                                {{ v.updated_fullname || "-" }}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <th class="text-right">
+                          <label
+                            class="join-item btn btn-link text-warning no-underline modal-button btn-xs"
+                            @click="
+                              $refs.baseModal.fnBase.edit(`${v.code}`, `${i}`)
+                            "
+                          >
+                            <Icon
+                              icon="icon-park-solid:edit"
+                              class="w-4 h-4 block lg:hidden"
+                            />
+                            <span class="hidden lg:block">Edit</span>
+                          </label>
+                          <label
+                            class="join-item btn btn-link text-error no-underline modal-button btn-xs"
+                            @click="
+                              fnRemove.item(
+                                `${v.code}`,
+                                'controllers/MYSQL/INTERNAL/TRR/visitor_item'
+                              )
+                            "
+                          >
+                            <Icon
+                              icon="material-symbols:delete"
+                              class="w-4 h-4 block lg:hidden"
+                            />
+                            <span class="hidden lg:block">Remove</span>
+                          </label>
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <AppModuleGlobalPagination
+                v-model="base.pagination"
+                @update:page="fnBase.get"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </AppLayout>
+</template>
+<script>
+import { useStore } from "vuex";
+import { useContentHeight } from "@/composables/useContentHeight";
+import { fetchQuery, buildPath, configureQuery } from "@/composables/useQuery";
+
+import {
+  defineAsyncComponent,
+  shallowRef,
+  computed,
+  defineComponent,
+  ref,
+  watch,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+} from "vue";
+
+import AppLayout from "@/components/App/layout.vue";
+import AppModuleGlobalPagination from "@/components/App/Module/Global/Pagination.vue";
+import AppModuleGlobalUpload from "@/components/App/Module/Global/Upload.vue";
+import AppModuleGlobalSearch from "@/components/App/Module/Global/Search.vue";
+import AppModuleGlobalSelectSearch from "@/components/App/Module/Global/SelectSearch.vue";
+import AppModuleGlobalShowImage from "@/components/App/Module/Global/ShowImage.vue";
+import AppModuleGlobalLoadingText from "@/components/App/Module/Global/LoadingText.vue";
+import AppModuleGlobalEmptyData from "@/components/App/Module/Global/EmptyData.vue";
+import AppModulePagesHRVisitorModalItem from "@/components/App/Module/Pages/HR/Visitor/Modal/Item.vue";
+import AppModuleGlobalRemove from "@/components/App/Module/Global/Remove.vue";
+import AppModuleGlobalSearchV2 from "@/components/App/Module/Global/SearchV2.vue";
+
+export default {
+  name: "Item",
+  components: {
+    AppLayout,
+    AppModuleGlobalUpload,
+    AppModuleGlobalPagination,
+    AppModuleGlobalSelectSearch,
+    AppModuleGlobalSearch,
+    AppModuleGlobalShowImage,
+    AppModuleGlobalLoadingText,
+    AppModuleGlobalEmptyData,
+    AppModulePagesHRVisitorModalItem,
+    AppModuleGlobalRemove,
+    AppModuleGlobalSearchV2,
+  },
+  setup() {
+    const store = useStore();
+    configureQuery(store);
+
+    const user = computed(() => store.getters.user);
+
+    const AppLayoutComponent = ref(null);
+    const titleZone = ref(null);
+
+    const { contentHeight } = useContentHeight(AppLayoutComponent, titleZone);
+
+    const base = ref({
+      pagination: {
+        page: 1,
+        row: 20,
+        next: false,
+        back: false,
+        loading: false,
+        total: 0,
+      },
+      data: {
+        rows: [],
+        form: {
+          loading: false,
+          modal: false,
+          object: {
+            title: "",
+          },
+        },
+      },
+
+      search: [
+        {
+          type: "search",
+          id: "q",
+          placeholder: "Search",
+          label: "Search",
+          value: "",
+        },
+      ],
+    });
+
+    const remove = ref({
+      current: 0,
+      model: false,
+      path: "",
+      loading: false,
+    });
+
+    const fnBase = {
+      search: async () => {
+        try {
+          base.value.page = 1;
+          await fnBase.get();
+        } catch (error) {
+          console.error("Error during search:", error);
+        }
+      },
+      get: async () => {
+        if (base.value.pagination.loading) return;
+        base.value.pagination.loading = true;
+        try {
+          const queryObj = {
+            page: base.value.pagination.page,
+            row: base.value.pagination.row,
+            search: base.value.search,
+            getTotal: true,
+          };
+          user.value.access.HR.HRVisitorManagementItem == 'user' ? queryObj['department'] = user.value.department : "";
+          const path = buildPath(
+            queryObj,
+            "api/controllers/MYSQL/INTERNAL/TRR/visitor_item"
+          );
+          const res = await fetchQuery({}, "GET", path);
+          if (res.success) {
+            base.value.data.rows = res.rows;
+            base.value.pagination.total = res.total;
+            base.value.pagination.next =
+              base.value.pagination.page * base.value.pagination.row <
+              base.value.pagination.total;
+            base.value.pagination.back = base.value.pagination.page > 1;
+          } else {
+            console.error("Error fetching base:", res.errorMsg);
+          }
+          return res;
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          return { success: false, errorMsg: error.message };
+        } finally {
+          base.value.pagination.loading = false;
+        }
+      },
+      success: () => {
+        base.value.pagination.page = 1;
+        fnBase.search();
+      },
+    };
+
+    const fnRemove = {
+      item: (code, path) => {
+        remove.value.modal = true;
+        remove.value.code = code;
+        remove.value.path = path;
+      },
+      success: (res) => {
+        if (!res.success) {
+        } else {
+          remove.value.modal = false;
+          this[`${remove.value.method}_search`]();
+        }
+      },
+    };
+
+    fnBase.search();
+
+    return {
+      base,
+      remove,
+      fnBase,
+      fnRemove,
+      titleZone,
+      contentHeight,
+      AppLayoutComponent,
+    };
+  },
+};
+</script>
